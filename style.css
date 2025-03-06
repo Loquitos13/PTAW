@@ -1,0 +1,152 @@
+body{
+  margin: 0;
+  padding: 0;
+}
+
+header{
+  display: flex;
+  margin-left: auto;
+}
+.left{
+  width: 50%;
+  display: flex;
+  align-items: center;
+}
+.left a{
+width: 20%;
+}
+
+.left form{
+  flex: 1;
+  
+}
+.right{
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.container ul{
+  align-items: center;
+}
+
+
+
+.d-flex{
+
+}
+
+#containerHeroe{
+  display: flex;
+  flex-direction: row;
+  height: 50vh;
+  justify-content: center;
+  background-color: #EEF2FF;
+  width: 100%;
+}
+
+.esqHeroe{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.botoesHeroes{
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+.dirHeroe{
+  width: 50%;
+  display: flex;
+  justify-content: center;
+}
+.dirHeroe img{
+  position: absolute;
+  height: 50vh;
+  border-radius:7px;
+  margin-top: 20px;
+}
+
+#prodDestaques{
+  display: flex;
+  flex-direction: column;
+  margin-top: 5em;
+  text-align: center;
+}
+
+.containerDestaques{
+  margin-top: 5em;
+  display: flex;
+  justify-content: center;
+  gap: 5%;
+}
+.boxItem{
+  width: 15em;
+  height: 25em;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  justify-content: space-around;
+  border-radius: 15px;
+  padding-bottom: 20px;
+}
+
+.boxItem .boxItemDescription{
+  line-height: 10px;
+}
+
+.boxItem .boxItemImg{
+  width: 100%;
+  height: 100%;
+  margin-bottom: 10px;
+  border-radius: 15px;
+}
+
+.boxItem .boxItemFooter{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.boxItemLink{
+  text-decoration: none;
+  color: black;
+  transition: transform 1s;
+}
+
+.boxItemLink:hover{
+  transform: scale(1.1);
+  
+}
+
+#containerFeedbacks{
+  display:flex;
+  margin-top: 5em;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+}
+
+#containerFeedbacks > h2{
+  margin-bottom: 5vh;
+}
+#containerFeatures{
+  width: 100%;
+  margin: 0;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  justify-content: center;
+  gap: 5vh;
+  align-items: center;
+}
+
+#featureImagem{
+  padding: 20px;
+  background-color: #c3d1ff;
+  border-radius: 100%;
+}
