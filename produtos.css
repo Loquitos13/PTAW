@@ -1,0 +1,251 @@
+body{
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    align-items: center;
+  }
+
+.left{
+    width: 50%;
+    display: flex;
+    align-items: center;
+}
+
+.left a{
+  width: 20%;
+}
+  
+.left form{
+    flex: 1; 
+}
+
+.right{
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.containerPrincipal {
+    display: flex;
+    gap: 20px; 
+    margin-top: 20px; 
+    align-items: flex-start;
+    flex-wrap: nowrap;
+}
+
+.filtros {
+    width: 25%;
+    background-color: #f8f9fa; 
+    padding: 15px; 
+    border-radius: 8px; 
+    box-sizing: border-box;
+    
+}
+
+.custom-range {
+    height: 6px;
+    background: #e2e8f0; 
+    border: none;
+}
+
+.custom-range::-webkit-slider-runnable-track {
+    background: #4F46E5; 
+    height: 4px;
+    border-radius: 4px;
+}
+
+
+.custom-range::-webkit-slider-thumb {
+    background: #4F46E5;
+    width: 20px;
+    height: 20px;
+    margin-top: -8px;
+    border: 3px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.form-range {
+    height: 4px;
+}
+
+.color-circle {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+.bg-red { background-color: #ff4444 !important; }
+.bg-blue { background-color: #4477ff !important; }
+.bg-green { background-color: #44dd44 !important; }
+.bg-orange { background-color: #ff8844 !important; }
+.bg-purple { background-color: #8844ff !important; }
+.bg-black { background-color: #333333 !important; }
+
+
+.form-check-input:checked + .color-circle {
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 2px #4F46E5;
+    transform: scale(1.1);
+}
+
+.color-circle:hover {
+    transform: scale(1.05);
+}
+
+.btnSize {
+    border: 1px solid black;
+}
+
+.btnSize.active {
+    background-color: #4F46E5;
+    border-color: #4F46E5;
+    color: white;
+    font-weight: 500;
+}
+
+#containerTitulo {
+    background-color: #EEF2FF;
+    padding: 4rem 1rem;
+}
+
+.esqTitulo {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+@media (max-width: 768px) {
+    #containerTitulo {
+        padding: 2rem 1rem;
+    }
+}
+
+.containerOrdenar {
+    display: flex;
+    justify-content: space-between; /* Distribui o espaço entre os elementos */
+    align-items: center;
+    padding: 0 20px;
+}
+
+.produtos {
+    flex-direction: column;
+    display: flex;
+    width: 75%; /* Largura da coluna de produtos */
+    box-sizing: border-box;
+}
+
+.containerProdutos{
+    margin-top: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 5%;
+    width: 100%;
+}
+
+.boxItem{
+    width: 15em;
+    /* height: 25em; */
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    justify-content: space-around;
+    border-radius: 15px;
+    padding-bottom: 20px;
+}
+
+.boxItemLink{
+    text-decoration: none;
+    color: black;
+    transition: transform 1s;
+    margin-bottom: 20px;
+}
+
+.boxItem .boxItemTitle {
+    font-weight: bold;
+}
+
+.boxItem .boxItemImg{
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    /*margin-bottom: 10px; */
+    border-radius: 15px 15px 0 0;;
+}
+
+.boxItem .boxItemDescription{
+    line-height: 10px;
+}
+
+.boxItem .boxItemFooter{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+.containerPrincipalinho {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 40px;
+}
+
+footer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: auto;
+    padding: 20px 0 ;
+    background-color: #111827;
+    margin-top: 5em;
+    position: static;
+    bottom: 0;
+    margin-bottom: 0;
+    width: 100%;
+  }
+  
+  #containerFooter{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+  }
+  
+  #containerFooter li{
+    list-style: none;
+  }
+  
+  .divFooter1{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    color:white;
+  }
+  
+  .divFooter{
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: justify;
+    color:white;
+  }
+  
+  .divFooter a{
+    text-decoration: none;
+    color: gray;
+  }
+  footer p {
+    color: gray;
+  }
