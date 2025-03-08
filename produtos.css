@@ -29,6 +29,7 @@ body{
 .containerPrincipal {
     display: flex;
     gap: 20px; 
+    width: 100%;
     margin-top: 20px; 
     align-items: flex-start;
     flex-wrap: nowrap;
@@ -40,9 +41,10 @@ body{
     padding: 15px; 
     border-radius: 8px; 
     box-sizing: border-box;
+    justify-content: flex-start;
     position: sticky;
     top: 20px;
-    transition: all 0.3s
+    transition: all 0.3s;
 }
 
 .custom-range {
@@ -153,9 +155,10 @@ body{
 }
 
 .produtos {
-    flex-direction: column;
     display: flex;
-    width: 75%; /* Largura da coluna de produtos */
+    flex-direction: column;
+    justify-content: flex-start;
+    width:75%;
     box-sizing: border-box;
 }
 
@@ -163,7 +166,6 @@ body{
     margin-top: 0;
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
     gap: 5%;
     width: 100%;
 }
@@ -180,6 +182,7 @@ body{
     transition: all 0.5s ease-out;
     border-radius: 15px;
     padding-bottom: 20px;
+    text-align: center;
 }
 
 .boxItem.visible {
@@ -231,6 +234,7 @@ body{
     flex-direction: column;
     justify-content: center;
     padding-top: 40px;
+    margin-top: 4vh;
 }
 
 footer{
