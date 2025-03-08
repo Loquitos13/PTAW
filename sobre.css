@@ -1,0 +1,26 @@
+header{
+  display: flex;
+  margin-left: auto;
+}
+.left{
+  width: 50%;
+  display: flex;
+  align-items: center;
+}
+.left a{
+width: 20%;
+}
+
+.left form{
+  flex: 1;
+  
+}
+.right{
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.container ul{
+  align-items: center;
+}

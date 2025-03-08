@@ -33,11 +33,6 @@ width: 20%;
 }
 
 
-
-.d-flex{
-
-}
-
 #containerHeroe{
   display: flex;
   flex-direction: row;
