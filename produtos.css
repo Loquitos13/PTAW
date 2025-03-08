@@ -22,7 +22,7 @@ body{
 .right{
     width: 50%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -40,7 +40,9 @@ body{
     padding: 15px; 
     border-radius: 8px; 
     box-sizing: border-box;
-    
+    position: sticky;
+    top: 20px;
+    transition: all 0.3s
 }
 
 .custom-range {
@@ -80,14 +82,12 @@ body{
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-
 .bg-red { background-color: #ff4444 !important; }
 .bg-blue { background-color: #4477ff !important; }
 .bg-green { background-color: #44dd44 !important; }
 .bg-orange { background-color: #ff8844 !important; }
 .bg-purple { background-color: #8844ff !important; }
 .bg-black { background-color: #333333 !important; }
-
 
 .form-check-input:checked + .color-circle {
     border: 3px solid #ffffff;
@@ -99,8 +99,24 @@ body{
     transform: scale(1.05);
 }
 
+.color-circle::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px solid white;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.form-check-input:checked + .color-circle::after {
+    opacity: 1;
+}
+
 .btnSize {
     border: 1px solid black;
+    transition: all 0.2s, transform 0.1s;
 }
 
 .btnSize.active {
@@ -108,6 +124,8 @@ body{
     border-color: #4F46E5;
     color: white;
     font-weight: 500;
+    transform: scale(1.1);
+    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
 }
 
 #containerTitulo {
@@ -158,8 +176,15 @@ body{
     flex-direction: column;
     padding: 0;
     justify-content: space-around;
+    transform: translateY(20px);
+    transition: all 0.5s ease-out;
     border-radius: 15px;
     padding-bottom: 20px;
+}
+
+.boxItem.visible {
+    opacity: 1;
+    transform: translateY(0.3);
 }
 
 .boxItemLink{
@@ -167,6 +192,11 @@ body{
     color: black;
     transition: transform 1s;
     margin-bottom: 20px;
+}
+
+.boxItemLink:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(79, 70, 229, 0.15);
 }
 
 .boxItem .boxItemTitle {
@@ -177,8 +207,12 @@ body{
     width: 100%;
     height: 200px;
     object-fit: cover;
-    /*margin-bottom: 10px; */
-    border-radius: 15px 15px 0 0;;
+    border-radius: 15px 15px 0 0;
+    transition: transform 0.3s;
+}
+
+.boxItem:hover .boxItemImg {
+    transform: scale(1.05);
 }
 
 .boxItem .boxItemDescription{
