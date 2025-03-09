@@ -31,12 +31,12 @@ let mouse, raycaster, helper, customDecal, decalTexture, decalMaterial;
 
 
 document.getElementById("openModal").addEventListener("click", function () {
-    document.getElementById("modal").style.display = "flex";
+    document.getElementById("modal3D").style.display = "flex";
     document.getElementById("modalImage").style.display = "flex";
 });
 
 document.getElementById("closeModal").addEventListener("click", function () {
-    document.getElementById("modal").style.display = "none";
+    document.getElementById("modal3D").style.display = "none";
     document.getElementById("modalImage").style.display = "none";
 });
 
@@ -118,7 +118,7 @@ function checkSupport() {
     } else {
 
         const warning =  WebGL.getWebGL2ErrorMessage();
-        document.getElementById('modal').appendChild(warning);
+        document.getElementById('modal3D').appendChild(warning);
 
         alert(`The device or the browser don't support this functionality! \n Please reconsider updating. \n Error: ${warning}`);
 
