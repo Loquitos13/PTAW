@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Orders - PrintCraft</title>
+    <link rel="stylesheet" href="SavedDesigns.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 shadow-sm">
+        <div class="left">
+            <a href="/"
+                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <img src="imagens" alt="">
+                <img class="ms-3" src="/imagens/Print&Go.png" alt="" style="width: 100px;">
+            </a>
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder=" 🔍 Search" aria-label="Search">
+            </form>
+        </div>
+        <div class="right">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="index.html" class="nav-link active"
+                        style="background-color: #4F46E5;">Home</a>
+                </li>
+                <li class="nav-item"><a href="produtos.html" class="nav-link" style="color: #4F46E5;">Products</a>
+                </li>
+                <li class="nav-item"><a href="customdesign.html" class="nav-link" style="color: #4F46E5; ">Custom
+                        Design</a></li>
+                <li class="nav-item"><a href="sobre.html" class="nav-link" style="color: #4F46E5;">About</a>
+                </li>
+                <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                            viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
+                            <path
+                                d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
+                        </svg></a></li>
+                <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                            viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
+                            <path
+                                d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z" />
+                        </svg></a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Orders Section -->
+    <div class="container mt-4 ">
+        <h3>My Saved Designs</h3>
+        <p>View and manage all your saved designs</p>
+
+        <!-- Tabs -->
+
+        <div class="d-flex mb-3 bg-custom p-3 rounded">
+            <div class="container">
+                <div class="row">
+                    <div class="col-9 d-flex">
+                        <div class="dropdown me-3">
+                            <button class="btn text-dark btn-secondary dropdown-toggle bg-transparent" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                All Categories
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Cat1</a></li>
+                                <li><a class="dropdown-item" href="#">Cat2</a></li>
+                                <li><a class="dropdown-item" href="#">Cat3</a></li>
+                            </ul>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn text-dark btn-secondary dropdown-toggle bg-transparent" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Sort by: Newest
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-3 d-flex justify-content-end">
+                        <button type="button" class="btn btn-light">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-list-ul" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" stroke="currentColor" stroke-width="0.2"
+                                    d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                            </svg>
+                            List View
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cartão do produto salvo -->
+        <!-- Cartões de produtos salvos -->
+        <div class="container py-4">
+            <div class="row">
+                <!-- Iten salvo 1 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="position-relative">
+                            <img src="/imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <div class="position-absolute top-0 end-0 p-2 d-flex">
+                                <button
+                                    class="btn btn-light rounded-circle me-2 shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red"
+                                        class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                            d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+                                    </svg>
+                                </button>
+                                <button
+                                    class="btn btn-light rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                        class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                        <path
+                                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body px-3 pb-3">
+                            <h5 class="card-title fw-bold mb-1">Summer Collection T-shirt</h5>
+                            <p class="card-text text-muted small mb-3">Last edited: March 18, 2025</p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-light text-primary px-3 py-2 rounded-pill">T-Shirt</span>
+                                <button
+                                    class="btn btn-light rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#0d6efd"
+                                        class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Iten salvo 2 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="position-relative">
+                            <img src="/imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <div class="position-absolute top-0 end-0 p-2 d-flex">
+                                <button
+                                    class="btn btn-light rounded-circle me-2 shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red"
+                                        class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                            d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+                                    </svg>
+                                </button>
+                                <button
+                                    class="btn btn-light rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                        class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                        <path
+                                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body px-3 pb-3">
+                            <h5 class="card-title fw-bold mb-1">Summer Collection T-shirt</h5>
+                            <p class="card-text text-muted small mb-3">Last edited: March 18, 2025</p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-light text-primary px-3 py-2 rounded-pill">T-Shirt</span>
+                                <button
+                                    class="btn btn-light rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#0d6efd"
+                                        class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Iten salvo 3 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="position-relative">
+                            <img src="/imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <div class="position-absolute top-0 end-0 p-2 d-flex">
+                                <button
+                                    class="btn btn-light rounded-circle me-2 shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red"
+                                        class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                            d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+                                    </svg>
+                                </button>
+                                <button
+                                    class="btn btn-light rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                        class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                        <path
+                                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body px-3 pb-3">
+                            <h5 class="card-title fw-bold mb-1">Summer Collection T-shirt</h5>
+                            <p class="card-text text-muted small mb-3">Last edited: March 18, 2025</p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-light text-primary px-3 py-2 rounded-pill">T-Shirt</span>
+                                <button
+                                    class="btn btn-light rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#0d6efd"
+                                        class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Iten salvo 4 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="position-relative">
+                            <img src="/imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <div class="position-absolute top-0 end-0 p-2 d-flex">
+                                <button
+                                    class="btn btn-light rounded-circle me-2 shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red"
+                                        class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                            d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+                                    </svg>
+                                </button>
+                                <button
+                                    class="btn btn-light rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                        class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                        <path
+                                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body px-3 pb-3">
+                            <h5 class="card-title fw-bold mb-1">Summer Collection T-shirt</h5>
+                            <p class="card-text text-muted small mb-3">Last edited: March 18, 2025</p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-light text-primary px-3 py-2 rounded-pill">T-Shirt</span>
+                                <button
+                                    class="btn btn-light rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#0d6efd"
+                                        class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Iten salvo 5 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="position-relative">
+                            <img src="/imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <div class="position-absolute top-0 end-0 p-2 d-flex">
+                                <button
+                                    class="btn btn-light rounded-circle me-2 shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red"
+                                        class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                            d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+                                    </svg>
+                                </button>
+                                <button
+                                    class="btn btn-light rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                        class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                        <path
+                                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body px-3 pb-3">
+                            <h5 class="card-title fw-bold mb-1">Summer Collection T-shirt</h5>
+                            <p class="card-text text-muted small mb-3">Last edited: March 18, 2025</p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-light text-primary px-3 py-2 rounded-pill">T-Shirt</span>
+                                <button
+                                    class="btn btn-light rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+                                    style="width: 38px; height: 38px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#0d6efd"
+                                        class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <footer>
+        <div id="containerFooter">
+            <div class="divFooter1">
+                <h4>PrintCraft</h4>
+                <p>Custom printing solutions for everyone.</p>
+            </div>
+            <div class="divFooter">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="produtos.html">Products</a></li>
+                    <li><a href="customdesign.html">Custom Design</a></li>
+                    <li><a href="sobre.html">About Us</a></li>
+                </ul>
+            </div>
+            <div class="divFooter">
+                <h4>Help</h4>
+                <ul>
+                    <li><a href="">FAQ</a></li>
+                    <li><a href="">Shipping</a></li>
+                    <li><a href="">Returns</a></li>
+                    <li><a href="">Size Guide</a></li>
+                </ul>
+            </div>
+            <div class="divFooter">
+                <h4>Follow Us</h4>
+                <ul class="social">
+                    <li><a href="https://facebook.com" class="iconSocial"><img src="/imagens/fb.png" alt="Facebook"></a>
+                    </li>
+                    <li><a href="https://instagram.com" class="iconSocial"><img src="/imagens/ig.png"
+                                alt="Instagram"></a>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="divFooter">
+                <h4>Contact Us</h4>
+                <ul>
+                    <li><a href="mailto:info@printandgo.com">Email</a></li>
+                    <li><a href="tel:+123456789">Phone</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <hr>
+
+        <p class="direitos"> &#169; 2025 <b>Print&Go. </b>All rights reserved</p>
+
+    </footer>
+</body>
+
+</html>
