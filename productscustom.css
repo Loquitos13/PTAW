@@ -31,28 +31,26 @@ button:hover {
 
 /* Button add to Cart */
 .buttonAdd {
-    margin-top: 20px;
-    padding: 10px 50px;
-    font-size: 16px;
+    font-size: 100%;
     background: #6200ea;
     color: white;
     border: none;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 10%;
 }
 .btnAddCart {
-    position: absolute;
-    bottom: 10px;
-    right: 15px;
+    position: fixed;
+    bottom: 6%;
+    right: 1%;
     cursor: pointer;
 }
 /* Button add to Cart */
 
 /* Button upload Image */
 .imageUpload {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding: 15px 100px;
+    margin-top: 10%;
+    margin-bottom: 5%;
+    padding: 25% 20%;
     font-size: 16px;
     background: #00000000;
     color: rgb(0, 0, 0);
@@ -140,31 +138,40 @@ button:hover {
 }
 /* Disable buttons */
 
+
+div.modalsContainers {
+    width: 100%;
+    overflow: auto;
+  }
+div.modalsContainers div.modal3D{
+    width: 80%;  
+    float: left;
+}
+
+
 /* Modal of the 3D Model */
 .modal3D {
     display: none;
     position: fixed;
     top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     justify-content: center;
+    float: left;
 }
 .modal3D-content {
     position: relative;
     width: 95%;
-    height: 70%;
+    height: 95%;
     background: #F3F4F6;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 #modelCanvas {
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
 }
 /* Modal of the 3D Model */
 
@@ -172,15 +179,18 @@ button:hover {
 .modalImage {
     display: none;
     position: fixed;
-    top: 75%;
-    width: 100%;
+    top: 0;
+    right: 0;
+    width: 20%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: baseline;
 }
 .modal-content-image {
     position: relative;
     width: 95%;
-    height: 25%;
+    height: 95%;
     background: #F3F4F6;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -203,7 +213,17 @@ button:hover {
     position: absolute;
     top: 10px;
     right: 15px;
-    font-size: 24px;
     cursor: pointer;
+    background-color: #F3F4F6;
 }
 /* Close Modal Button */
+
+.warnings {
+    position: fixed;
+    bottom: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:rgb(0, 0, 0);
+    font-size: 20px;
+}

@@ -1,12 +1,8 @@
 /*
 TODO:
-- Layout similar to figma
 - Connect to DB
-- Zoom bugs
-- Decal placement bugs
 - Admin check model with decal
 - Limit image type, size and dimensions
-- Images go over the limit of the modal
 */
 
 // check for remove
@@ -19,15 +15,15 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'; // import own 3
 
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'; // import to rotate the GLTF model using mouse click and drag
 
-import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js'; // import to place image on top of model
+import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js'; // import to place decal on top of model
 
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js'; // import to export the scene
 
 
-let logo, decalPlaced = false;
-let scene, camera, renderer, controls, light;
+let loadingText, logo, decalPlaced = false;
+let canvas, scene, camera, renderer, controls, light;
 let loader, model, box, center, size;
-let mouse, raycaster, helper, customDecal, decalTexture, decalMaterial;
+let mouse, raycaster, helper, customDecal, decal, decalTexture, decalMaterial;
 
 
 document.getElementById("openModal").addEventListener("click", function () {
@@ -55,11 +51,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 logo = reader.src;
     
-                label.innerHTML = `<img id="myImg" src="${e.target.result}" alt="Uploaded Image" style="max-width: 50%; height: 50%;">`;
+                label.innerHTML = `<img id="chosenImg" src="${e.target.result}" alt="Uploaded Image" style="max-width: 50%; height: 50%;">`;
 
                 checkSupport();
 
             };
+
+            document.getElementById('warningsId').innerText = "Double Click to place decal!"
 
             reader.readAsDataURL(event.target.files[0]);
             removeClass("btnReplaceImage", "hideButton");
@@ -69,33 +67,22 @@ document.addEventListener("DOMContentLoaded", function () {
 })
 
 document.addEventListener("DOMContentLoaded", function () {
-    const label = document.getElementById("btnReplaceImage");
-    const fileInput = label.querySelector("input[type='file']");
+    const fileInput = document.getElementById("inputReplaceImage");
 
     fileInput.addEventListener("change", function (event) {
-
         if (event.target.files && event.target.files[0]) {
-
             const reader = new FileReader();
             reader.onload = function (e) {
-
-                reader.src = URL.createObjectURL(event.target.files[0]); // set src to blob url
-
-                logo = reader.src;
-
-                let newSrc = document.getElementById("myImg");
-
-                newSrc.src = e.target.result; 
-
+                logo = e.target.result;
+                document.getElementById("chosenImg").src = logo;
                 checkSupport();
-
             };
-
             reader.readAsDataURL(event.target.files[0]);
-           
+            removeDecal();
         }
-    })
-})
+    });
+});
+
 
 function removeClass(id, className) {
 
@@ -117,29 +104,30 @@ function checkSupport() {
 
     } else {
 
-        const warning =  WebGL.getWebGL2ErrorMessage();
-        document.getElementById('modal3D').appendChild(warning);
+        const webGLError =  WebGL.getWebGL2ErrorMessage();
+        //document.getElementById('modal3D').appendChild(warning);
 
-        alert(`The device or the browser don't support this functionality! \n Please reconsider updating. \n Error: ${warning}`);
+        loadingText = document.getElementById("loading");
+        loadingText.style.display = webGLError;
 
     }
 }
 
 function initThreeJS() {
 
-    const canvas = document.getElementById("modelCanvas");
-    const loadingText = document.getElementById("loading");
+    canvas = document.getElementById("modelCanvas");
+    loadingText = document.getElementById("loading");
 
     // Scene
     scene = new THREE.Scene();
 
     // Camera
-    camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 2000);
 
     // Renderer
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(canvas.devicePixelRatio);
     
     // Adding OrbitControls
     controls = new OrbitControls( camera, renderer.domElement );
@@ -187,14 +175,12 @@ function initThreeJS() {
     });
 
     // Hide loading text when model is ready
-    setTimeout(() => {
-        loadingText.style.display = "none";
-    }, 500); 
+    loadingText.style.display = "none";
 
     animate();
 
     // Resize Handling
-    window.addEventListener("resize", () => {
+    canvas.addEventListener("resize", () => {
         camera.aspect = canvas.clientWidth / canvas.clientHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(canvas.clientWidth, canvas.clientHeight);
@@ -223,7 +209,7 @@ function addCustomDecal() {
     customDecal = new THREE.TextureLoader();
     decalTexture = customDecal.load(logo);
 
-    document.addEventListener('click', onClick);
+    document.addEventListener('dblclick', onClick);
 
 }
 
@@ -231,8 +217,8 @@ function onClick(event){
 
     event.preventDefault();
 
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    mouse.x = (event.clientX / canvas.width) * 2 - 1;
+    mouse.y = - (event.clientY / canvas.height) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
 
@@ -261,39 +247,40 @@ function onClick(event){
 
         if (!decalPlaced) {
 
-            let decal = new THREE.Mesh(decalGeometry, decalMaterial);
+            decal = new THREE.Mesh(decalGeometry, decalMaterial);
             scene.add(decal);
 
             decalPlaced = true;
 
+            document.getElementById('warningsId').innerText = "Limit to only one decal!"
+
             removeClass("rmvDecal", "disableButton");
             removeClass("btnAdd", "disableButton");
+            document.removeEventListener('click', onClick);
 
 
             addToCart();
 
-
             document.querySelectorAll(".removeDecal").forEach(button => {
                 button.addEventListener("click", function() {
- 
-                    scene.remove(decal);
-                    decalPlaced = false;
-
-                    //button.removeEventListener();
-                    addClass("rmvDecal", "disableButton");
-                    addClass("btnAdd", "disableButton");
-            
+                    removeDecal()
                 });
             });
 
-
-
-        } else {
-
-            alert("Limit to only one decal!");
-
         }
     }
+}
+
+function removeDecal() {
+
+    scene.remove(decal);
+    decalPlaced = false;
+
+    document.getElementById('warningsId').innerText = "Double Click to place decal!"
+    document.addEventListener('dblclick', onClick);
+    addClass("rmvDecal", "disableButton");
+    addClass("btnAdd", "disableButton");
+
 }
 
 function addToCart() {

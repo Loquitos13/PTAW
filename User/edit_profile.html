@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print&Go - Edit Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="userProfile.css">
+</head>
+<body>
+    <!-- Top Navigation Bar (Same as profile page) -->
+    <header> 
+        <div class="container">
+            <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+              <div class="left">
+                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                  <img src="imagens/Print&Go-logo.png" alt="" style="width: 100px;">
+                </a>
+                <form class="d-flex" role="search">
+                  <input class="form-control me-2" type="search" placeholder=" 🔍 Search" aria-label="Search">
+        
+                </form>
+              </div>
+        
+              <div class="right">
+                <ul class="nav nav-pills">
+                  <li class="nav-item"><a href="index.html" class="nav-link active" style="background-color: #4F46E5;">Home</a>
+                  </li>
+                  <li class="nav-item"><a href="produtos.html" class="nav-link" style="color: #4F46E5;">Products</a></li>
+                  <li class="nav-item"><a href="customdesign.html" class="nav-link" style="color: #4F46E5; ">Custom Design</a></li>
+                  <li class="nav-item"><a href="sobre.html" class="nav-link" style="color: #4F46E5;">About</a></li>
+                  <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                        viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
+                        <path
+                          d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
+                      </svg></a></li>
+                  <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                        viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
+                        <path
+                          d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z" />
+                      </svg></a></li>
+                </ul>
+              </div>
+    </header>
+    <!-- Edit Profile Content -->
+    
+    <div class="container py-5">
+        <h2 class="mb-4">Edit Profile</h2>
+        <p class="text-muted mb-4">Update your personal information</p>
+        <div class="row">
+            <!-- Profile Picture Section -->
+            <div class="col-md-3 text-center">
+                <img src="https://via.placeholder.com/110" alt="Profile Picture" class="rounded-circle img-thumbnail mb-3">
+                <input type="file" class="form-control" id="profilePicture">
+            </div>
+            
+            <!-- Personal Information & Password -->
+            <div class="col-md-5">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="mb-3">Personal Information</h5>
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control mb-3" value="Sarah Anderson">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control mb-3" value="sarah.anderson@example.com">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" value="+1 (555) 123-4567">
+                    </div>
+                </div>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="mb-3">Password</h5>
+                        <label class="form-label">Current Password</label>
+                        <input type="password" class="form-control mb-3" placeholder="••••••••">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="form-control" placeholder="••••••••">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payment & Address Information -->
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="mb-3">Payment Methods</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Visa •••• 4589</span>
+                            <button class="btn btn-outline-primary btn-sm">Edit</button>
+                        </div>
+                        <button class="btn btn-outline-secondary w-100 mt-3">Add New Card</button>
+                    </div>
+                </div>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="mb-3">Shipping Address</h5>
+                        <label class="form-label">Street Address</label>
+                        <input type="text" class="form-control mb-2" value="123 Main Street">
+                        <label class="form-label">City</label>
+                        <input type="text" class="form-control mb-2" value="New York">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">State</label>
+                                <input type="text" class="form-control" value="NY">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">ZIP Code</label>
+                                <input type="text" class="form-control" value="10001">
+                            </div>
+                        </div>
+                        <label class="form-label mt-2">Country</label>
+                        <input type="text" class="form-control" value="United States">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end gap-3 mt-4">
+            <button type="button" class="btn btn-secondary">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Footer (Same as profile page) -->
+    <footer>
+        <div id="containerFooter">
+          <div class="divFooter1">
+            <h4>PrintCraft</h4>
+            <p>Custom printing solutions for everyone.</p>
+          </div>
+          <div class="divFooter">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="produtos.html">Products</a></li>
+              <li><a href="customdesign.html">Custom Design</a></li>
+              <li><a href="sobre.html">About Us</a></li>
+            </ul>
+          </div>
+          <div class="divFooter">
+            <h4>Help</h4>
+            <ul>
+              <li><a href="">FAQ</a></li>
+              <li><a href="">Shipping</a></li>
+              <li><a href="">Returns</a></li>
+              <li><a href="">Size Guide</a></li>
+            </ul>
+          </div>
+          <div class="divFooter">
+            <h4>Follow Us</h4>
+            <ul class="socialFooter">
+              <li><a href="https://facebook.com" class="iconSocial"><img src="imagens/fb.png" alt="Facebook"></a></li>
+              <li><a href="https://instagram.com" class="iconSocial"><img src="imagens/ig.png" alt="Instagram"></a></li>
+            </ul>
+          </div>
+          <div class="divFooter">
+            <h4>Contact Us</h4>
+            <ul>
+              <li><a href="mailto:info@printandgo.com">Email</a></li>
+              <li><a href="tel:+123456789">Phone</a></li>
+            </ul>
+          </div>
+        </div>
+    
+        <hr>
+        
+        <p class="direitos"> &#169; 2025 <b>Print&Go. </b>All rights reserved</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
