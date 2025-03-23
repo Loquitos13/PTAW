@@ -68,7 +68,6 @@ body {
   display: none;
   background: none;
   border:none;
-  margin: 0 auto;
 }
 
 
@@ -77,11 +76,14 @@ body {
   #logo-header-mobile {
     display: flex;
     visibility: visible;
+    justify-self: center;
     justify-content: center;
     align-items: center;
+    padding-top:20px;
   }
   #menu-toggle {
     display: block;
+    top: 0;
   }
 
 #menu-mobile {
@@ -170,17 +172,11 @@ body {
 </style>
 
 <body>
-  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none" >
-    <img src="imagens/Print&Go-logo.png" alt="" style="width: 100px;" id="logo-header-mobile">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"  id="logo-header-mobile">
+    <img src="imagens/Print&Go.png" alt="" style="width: 100px;">
   </a>
   <button id="menu-toggle">☰</button>
     <div id="menu-mobile">
-        <div class="social">
-            <span style="font-size: 30px;">Follow Us:</span>
-            <a class="instagram" href="https://www.instagram.com//"><img
-                    src="https://img.icons8.com/m_outlined/512/40C057/instagram-new.png" alt="instagram"
-                    style="width: 2.5em; height: 2.5em"></a>
-        </div>
         <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
           viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
           <path
@@ -195,18 +191,14 @@ body {
         <a href="#contactos">Custom Design</a>
         <a href="produtos.html">Products</a>
         <a href="index.html">Home</a>
-        <div id="logoMobile">
-            <a href="index.html"><img style="width: 200px; height: auto;" src="imagens/Print&Go.png"
-                    alt="Logo"></a>
-        </div>
+      
     </div>
-
 
   <div class="container">
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
       <div class="left">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-          <img src="imagens/Print&Go-logo.png" alt="" style="width: 100px;">
+          <img src="imagens/Print&Go.png" alt="" style="width: 100px;">
         </a>
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder=" 🔍 Search" aria-label="Search">
