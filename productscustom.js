@@ -3,6 +3,7 @@ TODO:
 - Connect to DB
 - Admin check model with decal
 - Limit image type, size and dimensions
+- Export
 */
 
 // check for remove
@@ -19,11 +20,72 @@ import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js'; // imp
 
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js'; // import to export the scene
 
-
 let loadingText, logo, decalPlaced = false;
 let canvas, scene, camera, renderer, controls, light;
 let loader, model, box, center, size;
 let mouse, raycaster, helper, customDecal, decal, decalTexture, decalMaterial;
+
+
+
+document.querySelectorAll(".thumbnail").forEach(thumbnail => {
+    thumbnail.addEventListener("click", function () {
+        document.getElementById("bigImage").src = this.src;
+
+        // Remove 'active' class from all thumbnails
+        document.querySelectorAll(".thumbnail").forEach(img => img.classList.remove("active"));
+
+        // Add 'active' class to the clicked thumbnail
+        this.classList.add("active");
+    });
+});
+
+// Define sizes dynamically
+const sizes = ["S", "M", "L", "XL", "2XL"]; 
+
+// Generate size buttons dynamically
+const sizeContainer = document.getElementById("idSizeOptions");
+sizes.forEach(size => {
+    const btn = document.createElement("button");
+    btn.classList.add("sizeBtn");
+    btn.textContent = size;
+    
+    // Set click event immediately
+    btn.onclick = function () {
+        document.querySelectorAll(".sizeBtn").forEach(sizeBtn => sizeBtn.classList.remove("activeSize"));
+        this.classList.add("activeSize");
+    };
+
+    sizeContainer.appendChild(btn);
+});
+
+// Define colors dynamically
+const colors = ["white", "black", "blue", "red"]; 
+
+// Generate color buttons dynamically
+const colorContainer = document.getElementById("idColorOptions");
+colors.forEach(color => {
+    const btn = document.createElement("button");
+    btn.classList.add("colorBtn");
+    btn.style.backgroundColor = color;
+    btn.setAttribute("data-color", color);
+    
+    // Set click event immediately (slow for whatever reason and not working as intended)
+    btn.onclick = function () {
+        document.querySelectorAll(".colorBtn").forEach(colorBtn => colorBtn.classList.remove("activeColor"));
+        this.classList.add("activeColor");
+    };
+
+    colorContainer.appendChild(btn);
+});
+
+
+
+
+
+
+
+
+
 
 
 document.getElementById("openModal").addEventListener("click", function () {
@@ -51,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 logo = reader.src;
     
-                label.innerHTML = `<img id="chosenImg" src="${e.target.result}" alt="Uploaded Image" style="max-width: 50%; height: 50%;">`;
+                label.innerHTML = `<img id="chosenImg" class="chosenImg" src="${e.target.result}" alt="Uploaded Image" style="max-width: 50%; height: 50%;">`;
 
                 checkSupport();
 
@@ -70,14 +132,23 @@ document.addEventListener("DOMContentLoaded", function () {
     const fileInput = document.getElementById("inputReplaceImage");
 
     fileInput.addEventListener("change", function (event) {
+
         if (event.target.files && event.target.files[0]) {
+
             const reader = new FileReader();
+
             reader.onload = function (e) {
+
                 logo = e.target.result;
+
                 document.getElementById("chosenImg").src = logo;
+
                 checkSupport();
+
             };
+
             reader.readAsDataURL(event.target.files[0]);
+
             removeDecal();
         }
     });
@@ -98,7 +169,7 @@ function addClass(id, className) {
 
 function checkSupport() {
 
-    if ( WebGL.isWebGL2Available() ) {
+    if (WebGL.isWebGL2Available()) {
 
         initThreeJS();
 
@@ -153,15 +224,15 @@ function initThreeJS() {
         scene.add(model);
 
         // Center model
-        box = new THREE.Box3().setFromObject( model );
-        center = box.getCenter( new THREE.Vector3() );
+        box = new THREE.Box3().setFromObject(model);
+        center = box.getCenter(new THREE.Vector3());
 
         // Place the model in the center
-        model.position.sub( center );
+        model.position.sub(center);
 
         // Move camera to fit model
-        size = box.getSize( new THREE.Vector3()).length();
-        camera.position.set( 0, size * 0.5, size * 1.5 );
+        size = box.getSize(new THREE.Vector3()).length();
+        camera.position.set(0, size * 0.5, size * 1.5);
         camera.lookAt(model.position);
 
 
@@ -226,7 +297,7 @@ function onClick(event){
 
     if (intersects.length > 0) {
 
-        let intersectedMesh = intersects[0].object; // Get the specific mesh
+        let intersectedMesh = intersects[0].object;
         let position = intersects[0].point;
         let normal = intersects[0].face.normal.clone();
         normal.transformDirection(intersectedMesh.matrixWorld);
@@ -256,7 +327,7 @@ function onClick(event){
 
             removeClass("rmvDecal", "disableButton");
             removeClass("btnAdd", "disableButton");
-            document.removeEventListener('click', onClick);
+            document.removeEventListener('dblclick', onClick);
 
 
             addToCart();
