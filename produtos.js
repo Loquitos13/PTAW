@@ -39,3 +39,60 @@ document.addEventListener('DOMContentLoaded', function () {
     // Inicializar o slider
     updateSlider();
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const menuToggle = document.getElementById('menu-toggle');
+    const menuMobile = document.getElementById('menu-mobile');
+
+    menuToggle.addEventListener('click', function () {
+        if (menuMobile.style.display === 'flex') {
+            menuMobile.style.display = 'none';
+        } else {
+            menuMobile.style.display = 'flex';
+        }
+    });
+
+    // Optionally close the menu when clicking a link
+    const links = menuMobile.querySelectorAll('a');
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+            menuMobile.style.display = 'none';
+        });
+    });
+});
+
+// Verificar responsividade
+function checkResponsiveness() {
+    const isMobile = window.innerWidth <= 576;
+    const isTablet = window.innerWidth <= 768 && window.innerWidth > 576;
+
+    // Ajustar altura do carrossel com base no tamanho da tela
+    const carouselContent = document.querySelector('.carousel-content');
+    const dataFeedbacks = document.querySelectorAll('.feedback-date');
+    if (carouselContent) {
+        if (isMobile) {
+            carouselContent.style.minHeight = '350px';
+            dataFeedbacks.forEach(item => {
+                item.style.display = 'none';
+            });
+        } else if (isTablet) {
+            carouselContent.style.minHeight = '320px';
+            dataFeedbacks.forEach(item => {
+                item.style.display = 'none';
+            });
+        } else {
+            carouselContent.style.minHeight = '300px';
+            dataFeedbacks.forEach(item => {
+                item.style.display = 'block';
+            });
+        }
+    }
+}
+
+// Variável para controlar o índice atual
+let currentIndex = 0;
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    checkResponsiveness();
+});
