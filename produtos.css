@@ -33,11 +33,11 @@ body{
   }
 .containerPrincipal {
     display: flex;
-    gap: 20px;
     width: 100%;
     margin-top: 20px;
     align-items: flex-start;
     flex-wrap: nowrap;
+    justify-content: center;
 }
 
 .filtros {
@@ -171,26 +171,22 @@ body{
 
 .containerOrdenar {
     display: flex;
-    justify-content: space-between;
-    /* Distribui o espaço entre os elementos */
-    align-items: center;
-    padding: 0 20px;
 }
 
-.produtos {
+#produtos {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    width: 75%;
-    box-sizing: border-box;
+    justify-content: space-between;
+    align-items: center;
+    align-self: center;
+    width: 80%;
 }
 
 .containerProdutos {
     margin-top: 0;
     display: flex;
-    flex-wrap: wrap;
-    gap: 5%;
-    width: 100%;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .boxItem {
@@ -217,7 +213,8 @@ body{
     text-decoration: none;
     color: black;
     transition: transform 1s;
-    margin-bottom: 20px;
+    width: max-content;
+    justify-content: center;
 }
 
 .boxItemLink:hover {
@@ -488,25 +485,16 @@ input[type="range"]::-webkit-slider-thumb {
         justify-content:space-around;
     }
 
-    .containerOrdenar {
-        display: flex;
-        flex-direction: column;
-
-    }
 }
 
 /* Filtros Mobile */
 #filters-toggle {
     display: none;
-    position: absolute;
-    top: 222px;
-    left: 25px;
-    z-index: 1000;
+    position: relative;
     background: none;
     color: black;
     border: none;
     padding: 5px 10px;
-    border-radius: 5px;
   }
   
   #filters-sidebar {
@@ -518,7 +506,7 @@ input[type="range"]::-webkit-slider-thumb {
     background: white;
     z-index: 1001;
     transition: right 0.3s ease;
-    overflow-y: auto;
+    overflow: hidden; 
     padding: 20px;
     box-shadow: -2px 0 10px rgba(0,0,0,0.1);
   }
@@ -559,4 +547,14 @@ input[type="range"]::-webkit-slider-thumb {
     #filters-toggle {
       display: block;
     }
+    .container-filtros{
+        display: flex;
+        width:100%;
+        justify-content: space-around;
+        jmargin:0 auto;
+    }
+    .containerOrdenar{
+        justify-content: space-around;
+    }
+    
   }
