@@ -483,4 +483,80 @@ input[type="range"]::-webkit-slider-thumb {
     .left a {
         width: auto;
     }
+
+    .produtos {
+        justify-content:space-around;
+    }
+
+    .containerOrdenar {
+        display: flex;
+        flex-direction: column;
+
+    }
 }
+
+/* Filtros Mobile */
+#filters-toggle {
+    display: none;
+    position: absolute;
+    top: 222px;
+    left: 25px;
+    z-index: 1000;
+    background: none;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  
+  #filters-sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 280px;
+    height: 100%;
+    background: white;
+    z-index: 1001;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    padding: 20px;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+  }
+  
+  #filters-sidebar.open {
+    right: 0;
+  }
+  
+  #close-filters {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+  }
+  
+  #filters-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+  }
+  
+  #filters-overlay.active {
+    display: block;
+  }
+  
+  /* Esconde os filtros desktop em mobile */
+  @media (max-width: 768px) {
+    .filtros {
+      display: none;
+    }
+    #filters-toggle {
+      display: block;
+    }
+  }
