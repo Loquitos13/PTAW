@@ -12,10 +12,12 @@
 </head>
 
 <style>
+    /* Estilos base */
     body {
         margin: 0;
         padding: 0;
         overflow: auto;
+        align-items: center;
     }
 
     #menu-mobile {
@@ -28,10 +30,12 @@
         background-color: white;
         transform: translateX(-10%);
         transition: transform 2000ms ease;
+        overflow: hidden;
         z-index: 999;
         flex-direction: column-reverse;
+        margin-top: 0;
         justify-content: flex-end;
-        gap: 50px;
+        gap: 20px;
         align-items: center;
         padding-top: 100px;
     }
@@ -63,23 +67,41 @@
 
     #logo-header-mobile {
         display: none;
-        margin: 0 auto;
+        background: none;
+        border: none;
     }
 
+
+    /* Ajustes para telas menores */
     @media (max-width: 768px) {
-        #logo-header-mobile {
+        body {
+            width: 100%;
+        }
+
+        #a-logo-header-mobile {
             display: flex;
+            width: max-content;
             justify-content: center;
-            align-items: center;
+            padding-top: 20px;
+            width: 100%;
+        }
+
+        #logo-header-mobile {
+            display: block;
+            width: 100px;
+            height: auto;
+            margin: 0 auto;
         }
 
         #menu-toggle {
             display: block;
+            top: 0;
         }
 
         #menu-mobile {
             position: fixed;
             height: 100%;
+            overflow: hidden;
         }
 
         #menu-mobile li {
@@ -91,6 +113,7 @@
             height: 100%;
             width: 100%;
             align-items: center;
+            align-self: flex-end;
             justify-content: center;
         }
 
@@ -108,25 +131,78 @@
             width: auto;
         }
 
+        #containerHeroe {
+            flex-direction: column;
+            height: auto;
+            padding: 20px 0;
+        }
+
+        .esqHeroe,
+        .dirHeroe {
+            width: 100%;
+            text-align: center;
+        }
+
+        .dirHeroe img {
+            position: static;
+            height: auto;
+            width: 80%;
+        }
+
+        .containerDestaques {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            gap: 20px;
+        }
+
         .feedback-carousel-container {
             max-width: 90%;
             max-height: 400px;
+        }
+
+        #featureSection {
+            padding: 5vh;
+        }
+
+        #containerFeatures {
+            flex-direction: column;
+        }
+
+        .featureBox p {
+            width: 90%;
+        }
+
+        #cta h3 {
+            text-align: center;
+            font-size: 100%;
+        }
+
+        #cta p {
+            text-align: center;
+            font-size: 90%;
+        }
+
+        footer {
+            text-align: center;
+        }
+
+        #containerFooter {
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
         }
     }
 </style>
 
 <body>
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+        id="a-logo-header-mobile">
         <img src="/imagens/Print&Go.png" alt="" style="width: 100px;" id="logo-header-mobile">
     </a>
     <button id="menu-toggle">☰</button>
     <div id="menu-mobile">
-        <div class="social">
-            <span style="font-size: 30px;">Follow Us:</span>
-            <a class="instagram" href="https://www.instagram.com//"><img
-                    src="https://img.icons8.com/m_outlined/512/40C057/instagram-new.png" alt="instagram"
-                    style="width: 2.5em; height: 2.5em"></a>
-        </div>
         <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
                     viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
                     <path
@@ -141,9 +217,6 @@
         <a href="#contactos">Custom Design</a>
         <a href="/produtos.html">Products</a>
         <a href="/index.html">Home</a>
-        <div id="logoMobile">
-            <a href="/index.html"><img style="width: 200px; height: auto;" src="/imagens/Print&Go.png" alt="Logo"></a>
-        </div>
     </div>
 
     <div class="container1">
@@ -155,7 +228,6 @@
                 </a>
                 <form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" placeholder=" 🔍 Search" aria-label="Search">
-
                 </form>
             </div>
 
