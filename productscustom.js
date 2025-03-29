@@ -354,7 +354,7 @@ function removeDecal() {
 
 }
 
-function addToCart() {
+/*function addToCart() {
 
     document.querySelectorAll(".buttonAdd").forEach(button => {
         button.addEventListener("click", function() {
@@ -367,7 +367,6 @@ function addToCart() {
               },
               { binary: true }
             );
-
         });
     });
 
@@ -379,9 +378,71 @@ function addToCart() {
     link.style.display = 'none';
     document.body.appendChild(link); // Firefox workaround, see #6594
     
-    function save(blob, filename) {
+    function save(blob, filename) {        
         link.href = URL.createObjectURL(blob);
         link.download = filename;
         link.click();
     }
+}*/
+
+function addToCart() {
+
+    document.querySelectorAll(".buttonAdd").forEach(button => {
+        button.addEventListener("click", function() {
+
+        const gltfExporter = new GLTFExporter();
+
+        gltfExporter.parse(
+            scene,
+            function (result) {
+
+                if (result instanceof ArrayBuffer) {
+
+                    saveArrayBuffer(result, 'scene.glb');
+
+                } else {
+
+                    const output = JSON.stringify(result, null, 2);
+                    saveString(output, 'scene.gltf');
+
+                }
+
+            },
+            function ( error ) {
+
+                console.log('An error happened during parsing', error);
+
+            },
+        );
+
+        });
+    });
+
+    }
+
+const link = document.createElement('a');
+link.style.display = 'none';
+document.body.appendChild(link); // Firefox workaround, see #6594
+
+function save(blob, filename) {
+
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+
+    // URL.revokeObjectURL( url ); breaks Firefox...
+
+}
+
+function saveString(text, filename) {
+
+    save(new Blob([text], {type: 'text/plain'} ), filename);
+
+}
+
+
+function saveArrayBuffer(buffer, filename) {
+
+    save(new Blob([buffer], {type: 'application/octet-stream'}), filename);
+
 }
