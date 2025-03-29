@@ -2,15 +2,14 @@
 TODO:
 - Connect to DB
 - Admin check model with decal
-- Limit image type, size and dimensions
-- Export
+- Limit image type, size and dimensions 
 */
 
 // check for remove
 
 import * as THREE from 'three';
 
-import WebGL from 'three/addons/capabilities/WebGL.js'; // import to see it device/browser supports WebGl 2
+import WebGL from 'three/addons/capabilities/WebGL.js'; // import to see if device/browser supports WebGl 2
 
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'; // import own 3D models
 
@@ -25,8 +24,6 @@ let canvas, scene, camera, renderer, controls, light;
 let loader, model, box, center, size;
 let mouse, raycaster, helper, customDecal, decal, decalTexture, decalMaterial;
 
-
-
 document.querySelectorAll(".thumbnail").forEach(thumbnail => {
     thumbnail.addEventListener("click", function () {
         document.getElementById("bigImage").src = this.src;
@@ -40,7 +37,7 @@ document.querySelectorAll(".thumbnail").forEach(thumbnail => {
 });
 
 // Define sizes dynamically
-const sizes = ["S", "M", "L", "XL", "2XL"]; 
+const sizes = ["S", "M", "L", "XL", "2XL"];
 
 // Generate size buttons dynamically
 const sizeContainer = document.getElementById("idSizeOptions");
@@ -59,7 +56,7 @@ sizes.forEach(size => {
 });
 
 // Define colors dynamically
-const colors = ["white", "black", "blue", "red"]; 
+const colors = ["white", "black", "blue", "red"];
 
 // Generate color buttons dynamically
 const colorContainer = document.getElementById("idColorOptions");
@@ -78,24 +75,16 @@ colors.forEach(color => {
     colorContainer.appendChild(btn);
 });
 
-
-
-
-
-
-
-
-
-
-
 document.getElementById("openModal").addEventListener("click", function () {
     document.getElementById("modal3D").style.display = "flex";
     document.getElementById("modalImage").style.display = "flex";
+    document.body.classList.add("no-scroll");
 });
 
 document.getElementById("closeModal").addEventListener("click", function () {
     document.getElementById("modal3D").style.display = "none";
     document.getElementById("modalImage").style.display = "none";
+    document.body.classList.remove("no-scroll");
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -354,37 +343,6 @@ function removeDecal() {
 
 }
 
-/*function addToCart() {
-
-    document.querySelectorAll(".buttonAdd").forEach(button => {
-        button.addEventListener("click", function() {
-    
-            const exporter = new GLTFExporter();
-            exporter.parse(
-              scene,
-              function (result) {
-                saveArrayBuffer(result, 'scene.glb');
-              },
-              { binary: true }
-            );
-        });
-    });
-
-    function saveArrayBuffer(buffer, filename) {
-        save(new Blob([buffer], { type: 'application/octet-stream' }), filename);
-    }
-
-    const link = document.createElement('a');
-    link.style.display = 'none';
-    document.body.appendChild(link); // Firefox workaround, see #6594
-    
-    function save(blob, filename) {        
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-        link.click();
-    }
-}*/
-
 function addToCart() {
 
     document.querySelectorAll(".buttonAdd").forEach(button => {
@@ -418,7 +376,7 @@ function addToCart() {
         });
     });
 
-    }
+}
 
 const link = document.createElement('a');
 link.style.display = 'none';

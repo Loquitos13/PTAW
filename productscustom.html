@@ -369,11 +369,124 @@
     </div>
   </div>
 
-  <div id="idRecomended" class="classRecomended">
-    <h1>You May Also Like</h1>
+
+  <div class="greyBackgroundContainer">
+    <div class="mayAlsoLike">
+      <h1 class="mayAlsoLikeText">You May Also Like</h1>
+      <div class="containerDestaques">
+        <a href="" class="boxItemLink">
+          <div class="boxItem">
+            <img src="imagens/TShirtfront.png" alt="" class="boxItemImg">
+            <p class="boxItemTitle">Product Title</p>
+            <div class="boxItemFooter">
+              <span class="boxItemPrice">10,00€</span>
+            </div>
+          </div>
+        </a>
+        <a href="" class="boxItemLink">
+          <div class="boxItem">
+            <img src="imagens/TShirtfront.png" alt="" class="boxItemImg">
+            <p class="boxItemTitle">Product Title</p>
+            <div class="boxItemFooter">
+              <span class="boxItemPrice">10,00€</span>
+            </div>
+          </div>
+        </a>
+        <a href="" class="boxItemLink">
+          <div class="boxItem">
+            <img src="imagens/TShirtfront.png" alt="" class="boxItemImg">
+            <p class="boxItemTitle">Product Title</p>
+            <div class="boxItemFooter">
+              <span class="boxItemPrice">10,00€</span>
+            </div>
+          </div>
+        </a>
+        <a href="" class="boxItemLink">
+          <div class="boxItem">
+            <img src="imagens/TShirtfront.png" alt="" class="boxItemImg">
+            <p class="boxItemTitle">Product Title</p>
+            <div class="boxItemFooter">
+              <span class="boxItemPrice">10,00€</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="feedback-carousel-container">
+      <div class="carousel-content">
+        <!-- Controles de navegação -->
+        <button class="nav-arrow nav-arrow-left" id="prevButton" aria-label="Feedback anterior">
+          <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true">
+            <path d="M13.5 14.5 9 10l4.5-4.5L12 4l-6 6 6 6 1.5-1.5z"></path>
+          </svg>
+        </button>
+        <button class="nav-arrow nav-arrow-right" id="nextButton" aria-label="Próximo feedback">
+          <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true">
+            <path d="M6.5 5.5 11 10l-4.5 4.5L8 16l6-6-6-6-1.5 1.5z"></path>
+          </svg>
+        </button>
+
+        <div id="carouselItems"></div>
+
+        <div class="indicator" id="indicator"></div>
+      </div>
+    </div>
   </div>
 
 
+  <div class="formContainer">
+    <h1 class="formTitle">Rate Your Experience</h1>
+    <form action="#" method="post" class="feedbackForm">
+      <!-- Overall Satisfaction -->
+      <div class="formGroup">
+        <label class="formLabel">Overall Satisfaction</label>
+        <div class="rating">
+          <input type="radio" id="rating1" name="rating" value="1" class="ratingInput">
+          <label for="rating1" class="ratingLabel">1</label>
+          <input type="radio" id="rating2" name="rating" value="2" class="ratingInput">
+          <label for="rating2" class="ratingLabel">2</label>
+          <input type="radio" id="rating3" name="rating" value="3" class="ratingInput">
+          <label for="rating3" class="ratingLabel">3</label>
+          <input type="radio" id="rating4" name="rating" value="4" class="ratingInput">
+          <label for="rating4" class="ratingLabel">4</label>
+          <input type="radio" id="rating5" name="rating" value="5" class="ratingInput">
+          <label for="rating5" class="ratingLabel">5</label>
+        </div>
+      </div>
+
+      <!-- Dropdown -->
+      <div class="formGroup">
+        <label for="purchase" class="formLabel">What did you purchase?</label>
+        <select id="purchase" name="purchase" class="selectBox">
+          <option value="">Select an option...</option>
+          <option value="tshirt">T-Shirt</option>
+          <option value="pants">Pants</option>
+          <option value="shoes">Shoes</option>
+        </select>
+      </div>
+
+      <!-- Comments -->
+      <div class="formGroup">
+        <label for="comments" class="formLabel">Your Comments</label>
+        <textarea id="comments" name="comments" placeholder="Share your experience with us..." class="textArea"></textarea>
+      </div>
+
+      <!-- Recommendation -->
+      <div class="formGroup">
+        <p class="formLabel">Would you recommend us?</p>
+        <div class = "recommendation">
+            <input type="radio" id="recommendYes" name="recommend" value="yes" class="recommendInput">
+            <label for="recommendYes" class="recommendLabel">Yes</label>
+            <input type="radio" id="recommendNo" name="recommend" value="no" class="recommendInput">
+            <label for="recommendNo" class="recommendLabel">No</label>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="submitButton">Submit Feedback</button>
+    </form>
+  </div>
 
 
 
@@ -429,6 +542,7 @@
 </body>
 
 <script type="module" src="productscustom.js"></script>
+<script src="script.js"></script>
 
 </html>
 
