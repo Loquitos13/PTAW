@@ -237,4 +237,23 @@ document.addEventListener("DOMContentLoaded", () => {
   checkResponsiveness();
 });
 
+// Adicionar evento para mostrar o carrinho
+document.addEventListener('DOMContentLoaded', () => {
+  const mostrarCarrinhoBtn = document.getElementById('mostrarCarrinho');
+  const conteudoCarrinho = document.getElementById('conteudoCarrinho');
 
+  mostrarCarrinhoBtn.addEventListener('click', () => {
+      fetch('header_footer_cart.php')
+          .then(response => response.text())
+          .then(data => {
+              conteudoCarrinho.innerHTML = data;
+              // Inicializa o Offcanvas do Bootstrap após inserir o HTML
+              const offcanvasElement = document.getElementById('carrinho');
+              const offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+              offcanvas.show();
+          })
+          .catch(error => {
+              console.error('Erro ao buscar o carrinho:', error);
+          });
+  });
+});

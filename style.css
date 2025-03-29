@@ -507,3 +507,38 @@ footer p {
 #contactos li {
   list-style: none;
 }
+
+/* Css do carrinho */
+.img-small {
+  width: 100px;
+  height: 100px;
+}
+
+.product-info {
+  line-height: 1.2; 
+  margin-bottom: 0; 
+}
+
+.product-info {
+  font-size: 1rem;
+  color: #333;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.btn-outline-secondary {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.btn-link {
+  color: #6c757d;
+}
