@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="userProfile.css">
 </head>
 <body>
-    <!-- Top Navigation Bar (Same as profile page) -->
+    <!-- Top Navigation Bar -->
     <header> 
         <div class="container">
             <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
@@ -18,7 +18,6 @@
                 </a>
                 <form class="d-flex" role="search">
                   <input class="form-control me-2" type="search" placeholder=" 🔍 Search" aria-label="Search">
-        
                 </form>
               </div>
         
@@ -41,9 +40,11 @@
                       </svg></a></li>
                 </ul>
               </div>
+            </header>
+        </div>
     </header>
+
     <!-- Edit Profile Content -->
-    
     <div class="container py-5">
         <h2 class="mb-4">Edit Profile</h2>
         <p class="text-muted mb-4">Update your personal information</p>
@@ -85,9 +86,9 @@
                         <h5 class="mb-3">Payment Methods</h5>
                         <div class="d-flex justify-content-between align-items-center">
                             <span>Visa •••• 4589</span>
-                            <button class="btn btn-outline-primary btn-sm">Edit</button>
+                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#paymentModal">Edit</button>
                         </div>
-                        <button class="btn btn-outline-secondary w-100 mt-3">Add New Card</button>
+                        <button class="btn btn-outline-secondary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#paymentModal">Add New Card</button>
                     </div>
                 </div>
                 <div class="card shadow-sm">
@@ -118,8 +119,50 @@
             <button type="submit" class="btn btn-primary">Save Changes</button>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Footer (Same as profile page) -->
+
+    <!-- Modal for Edit Payment Method -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentModalLabel">Edit Payment Method</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="expiryDate" class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <input type="text" class="form-control" id="cvv" placeholder="123">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cardholderName" class="form-label">Cardholder Name</label>
+                            <input type="text" class="form-control" id="cardholderName" placeholder="Name on card">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="saveCard">
+                            <label class="form-check-label" for="saveCard">Save this card for future payments</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Save Card</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
     <footer>
         <div id="containerFooter">
           <div class="divFooter1">
@@ -164,6 +207,7 @@
         <p class="direitos"> &#169; 2025 <b>Print&Go. </b>All rights reserved</p>
     </footer>
 
+    <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
