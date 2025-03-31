@@ -5,6 +5,7 @@ body {
   align-items: center;
 }
 
+/* Estilos do header */
 header {
   display: flex;
   margin-left: auto;
@@ -32,7 +33,7 @@ header {
   align-items: center;
 }
 
-.container ul {
+.header-desktop ul {
   align-items: center;
 }
 

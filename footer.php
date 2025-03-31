@@ -24,9 +24,13 @@
         <div class="divFooter">
             <h4>Follow Us</h4>
             <ul class="social">
-                <li><a href="https://facebook.com" class="iconSocial"><img src="imagens/fb.png" alt="Facebook"></a>
+                <li>
+                    <a href="https://facebook.com" class="iconSocial"><img src="/PTAW/imagens/fb.png" alt="Facebook">
+                    </a>
                 </li>
-                <li><a href="https://instagram.com" class="iconSocial"><img src="imagens/ig.png" alt="Instagram"></a>
+                <li>
+                    <a href="https://instagram.com" class="iconSocial"><img src="/PTAW/imagens/ig.png" alt="Instagram">
+                    </a>
                 </li>
 
             </ul>

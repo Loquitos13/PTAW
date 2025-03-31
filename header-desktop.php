@@ -1,8 +1,8 @@
-<div class="container">
+<div class="container header-desktop">
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
         <div class="left">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                <img src="imagens/Print&Go.png" alt="" style="width: 100px;">
+                <img src="/PTAW/imagens/Print&Go.png" alt="" style="width: 100px;">
             </a>
             <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder=" 🔍 Search" aria-label="Search">

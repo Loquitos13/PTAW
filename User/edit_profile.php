@@ -1,48 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Print&Go - Edit Profile</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="userProfile.css">
+    <?php include '../carrinho.php'; ?>
 </head>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: auto;
+        align-items: center;
+    }
+
+    #menu-mobile {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 80%;
+        height: 100%;
+        background-color: white;
+        transform: translateX(-10%);
+        transition: transform 2000ms ease;
+        overflow: hidden;
+        z-index: 999;
+        flex-direction: column-reverse;
+        margin-top: 0;
+        justify-content: flex-end;
+        gap: 20px;
+        align-items: center;
+        padding-top: 100px;
+    }
+
+    #menu-mobile.open {
+        display: flex;
+        transform: translateX(0);
+    }
+
+    #menu-mobile a {
+        color: #4F46E5;
+        text-decoration: none;
+        font-size: 1.5rem;
+        margin: 15px 0;
+    }
+
+    #menu-toggle {
+        display: none;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1000;
+        font-size: 2rem;
+        background: none;
+        border: none;
+        color: black;
+        cursor: pointer;
+    }
+
+    #logo-header-mobile {
+        display: none;
+        background: none;
+        border: none;
+    }
+
+
+    /* Ajustes para telas menores */
+    @media (max-width: 1200px) {
+        body {
+            width: 100%;
+        }
+
+        .header-desktop {
+            display: none;
+        }
+
+        #a-logo-header-mobile {
+            display: flex;
+            width: max-content;
+            justify-content: center;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            width: 100%;
+
+        }
+
+        #logo-header-mobile {
+            display: block;
+            width: 100px;
+            height: auto;
+            margin: 0 auto;
+        }
+
+        #menu-toggle {
+            display: block;
+            top: 0;
+        }
+
+        #menu-mobile {
+            position: fixed;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #menu-mobile li {
+            list-style: none;
+        }
+
+        #menu-mobile .social {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            align-items: center;
+            align-self: flex-end;
+            justify-content: center;
+        }
+
+        .container1 {
+            display: none;
+        }
+
+        .left,
+        .right {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .left a {
+            width: auto;
+        }
+
+        #containerHeroe {
+            flex-direction: column;
+            height: auto;
+            padding: 20px 20px;
+            width: 100%;
+        }
+
+        .esqHeroe,
+        .dirHeroe {
+            width: 100%;
+            text-align: center;
+        }
+
+        .dirHeroe img {
+            position: static;
+            height: auto;
+            width: 80%;
+        }
+
+        #prodDestaques {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+        }
+
+        .containerDestaques {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            gap: 20px;
+        }
+
+        .feedback-carousel-container {
+            max-width: 90%;
+            max-height: 400px;
+        }
+
+        #featureSection {
+            padding: 5vh;
+        }
+
+        #containerFeatures {
+            flex-direction: column;
+        }
+
+        .featureBox p {
+            width: 90%;
+        }
+
+        #cta h3 {
+            text-align: center;
+            font-size: 100%;
+        }
+
+        #cta p {
+            text-align: center;
+            font-size: 90%;
+        }
+
+        footer {
+            text-align: center;
+        }
+
+        #containerFooter {
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+    }
+</style>
+
 <body>
-    <!-- Top Navigation Bar -->
-    <header> 
-        <div class="container">
-            <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-              <div class="left">
-                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                  <img src="imagens/Print&Go-logo.png" alt="" style="width: 100px;">
-                </a>
-                <form class="d-flex" role="search">
-                  <input class="form-control me-2" type="search" placeholder=" 🔍 Search" aria-label="Search">
-                </form>
-              </div>
-        
-              <div class="right">
-                <ul class="nav nav-pills">
-                  <li class="nav-item"><a href="index.html" class="nav-link active" style="background-color: #4F46E5;">Home</a>
-                  </li>
-                  <li class="nav-item"><a href="produtos.html" class="nav-link" style="color: #4F46E5;">Products</a></li>
-                  <li class="nav-item"><a href="customdesign.html" class="nav-link" style="color: #4F46E5; ">Custom Design</a></li>
-                  <li class="nav-item"><a href="sobre.html" class="nav-link" style="color: #4F46E5;">About</a></li>
-                  <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
-                        viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
-                        <path
-                          d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
-                      </svg></a></li>
-                  <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
-                        viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
-                        <path
-                          d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z" />
-                      </svg></a></li>
-                </ul>
-              </div>
-            </header>
-        </div>
-    </header>
+    <a href="/header-mobile.php" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+        id="a-logo-header-mobile">
+        <img src="imagens/Print&Go.png" alt="" id="logo-header-mobile">
+    </a>
+    <button id="menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+        ☰
+    </button>
+
+    <!-- Menu Mobile -->
+    <?php include '../header-mobile.php'; ?>
+
+    <!-- Menu Desktop -->
+    <?php include '../header-desktop.php'; ?>
 
     <!-- Edit Profile Content -->
     <div class="container py-5">
@@ -51,10 +230,10 @@
         <div class="row">
             <!-- Profile Picture Section -->
             <div class="col-md-3 text-center">
-                <img src="https://via.placeholder.com/110" alt="Profile Picture" class="rounded-circle img-thumbnail mb-3">
+                <img src="" alt="">
                 <input type="file" class="form-control" id="profilePicture">
             </div>
-            
+
             <!-- Personal Information & Password -->
             <div class="col-md-5">
                 <div class="card shadow-sm mb-4">
@@ -78,7 +257,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Payment & Address Information -->
             <div class="col-md-4">
                 <div class="card shadow-sm mb-4">
@@ -163,51 +342,10 @@
     </div>
 
     <!-- Footer -->
-    <footer>
-        <div id="containerFooter">
-          <div class="divFooter1">
-            <h4>PrintCraft</h4>
-            <p>Custom printing solutions for everyone.</p>
-          </div>
-          <div class="divFooter">
-            <h4>Quick Links</h4>
-            <ul>
-              <li><a href="produtos.html">Products</a></li>
-              <li><a href="customdesign.html">Custom Design</a></li>
-              <li><a href="sobre.html">About Us</a></li>
-            </ul>
-          </div>
-          <div class="divFooter">
-            <h4>Help</h4>
-            <ul>
-              <li><a href="">FAQ</a></li>
-              <li><a href="">Shipping</a></li>
-              <li><a href="">Returns</a></li>
-              <li><a href="">Size Guide</a></li>
-            </ul>
-          </div>
-          <div class="divFooter">
-            <h4>Follow Us</h4>
-            <ul class="socialFooter">
-              <li><a href="https://facebook.com" class="iconSocial"><img src="imagens/fb.png" alt="Facebook"></a></li>
-              <li><a href="https://instagram.com" class="iconSocial"><img src="imagens/ig.png" alt="Instagram"></a></li>
-            </ul>
-          </div>
-          <div class="divFooter">
-            <h4>Contact Us</h4>
-            <ul>
-              <li><a href="mailto:info@printandgo.com">Email</a></li>
-              <li><a href="tel:+123456789">Phone</a></li>
-            </ul>
-          </div>
-        </div>
-    
-        <hr>
-        
-        <p class="direitos"> &#169; 2025 <b>Print&Go. </b>All rights reserved</p>
-    </footer>
+    <?php include '../footer.php'; ?>
 
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

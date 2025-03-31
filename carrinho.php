@@ -7,7 +7,7 @@ $cart_items = [
         'color' => 'White',
         'price' => 29.99,
         'quantity' => 1,
-        'image' => 'imagens/produtos varios hero.png'
+        'image' => '/PTAW/imagens/produtos varios hero.png'
     ],
     [
         'name' => 'Premium Cotton T-shirt',
@@ -15,7 +15,7 @@ $cart_items = [
         'color' => 'White',
         'price' => 29.99,
         'quantity' => 1,
-        'image' => 'imagens/produtos varios hero.png'
+        'image' => '/PTAW/imagens/produtos varios hero.png'
     ]
 ];
 ?>

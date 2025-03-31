@@ -12,7 +12,8 @@
   <script src="script.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
+    crossorigin="anonymous">
+  </script>
   <?php include 'carrinho.php'; ?>
 </head>
 <style>
@@ -81,7 +82,7 @@
       width: 100%;
     }
 
-    .container {
+    .header-desktop {
       display: none;
     }
 
@@ -214,11 +215,13 @@
 </style>
 
 <body>
-  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+  <a href="/header-mobile.php" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
     id="a-logo-header-mobile">
     <img src="imagens/Print&Go.png" alt="" id="logo-header-mobile">
   </a>
-  <button id="menu-toggle">☰</button>
+  <button id="menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+    ☰
+  </button>
 
   <!-- Menu Mobile -->
   <?php include 'header-mobile.php'; ?>
