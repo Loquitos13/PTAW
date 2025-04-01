@@ -21,10 +21,10 @@
         </a>
       </div>
 
-      <a href="sobre.html" class="nav-link py-2">About Us</a>
-      <a href="#contactos" class="nav-link py-2">Custom Design</a>
-      <a href="produtos.html" class="nav-link py-2">Products</a>
-      <a href="index.html" class="nav-link py-2">Home</a>
+      <a href="/PTAW/sobre.php" class="nav-link py-2">About Us</a>
+      <a href="/PTAW/customdesign.php" class="nav-link py-2">Custom Design</a>
+      <a href="/PTAW/produtos.php" class="nav-link py-2">Products</a>
+      <a href="/PTAW/index.php" class="nav-link py-2">Home</a>
     </div>
   </div>
 </div>

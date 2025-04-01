@@ -13,12 +13,12 @@
             <ul class="nav nav-pills">
                 <li class="nav-item"><a href="/PTAW/index.php" class="nav-link active" style="background-color: #4F46E5;">Home</a>
                 </li>
-                <li class="nav-item"><a href="/PTAW/produtos.html" class="nav-link" style="color: #4F46E5;">Products</a></li>
-                <li class="nav-item"><a href="/PTAW/customdesign.html" class="nav-link" style="color: #4F46E5; ">Custom Design</a>
+                <li class="nav-item"><a href="/PTAW/produtos.php" class="nav-link" style="color: #4F46E5;">Products</a></li>
+                <li class="nav-item"><a href="/PTAW/customdesign.php" class="nav-link" style="color: #4F46E5; ">Custom Design</a>
                 </li>
-                <li class="nav-item"><a href="/PTAW/sobre.html" class="nav-link" style="color: #4F46E5;">About</a></li>
+                <li class="nav-item"><a href="/PTAW/sobre.php" class="nav-link" style="color: #4F46E5;">About</a></li>
                 <li class="nav-item">
-                    <a href="/PTAW/login.php" class="nav-link">
+                    <a href="/PTAW/SignIn.php" class="nav-link">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                             fill="#0d6efd">
                             <path

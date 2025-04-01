@@ -1,12 +1,15 @@
+/* Estilos do header */
 header {
   display: flex;
   margin-left: auto;
 }
+
 .left {
   width: 50%;
   display: flex;
   align-items: center;
 }
+
 .left a {
   width: 20%;
 }
@@ -14,13 +17,15 @@ header {
 .left form {
   flex: 1;
 }
+
 .right {
   width: 50%;
   display: flex;
   justify-content: flex-end;
   align-items: center;
 }
-.container ul {
+
+.header-desktop ul {
   align-items: center;
 }
 
@@ -42,21 +47,25 @@ header {
   justify-content: flex-start;
   align-items: flex-start;
 }
+
 .esqHeroe h1 {
   font-weight: 650;
 }
+
 .botoesHeroes {
   display: flex;
   justify-content: space-around;
   width: 100%;
 }
+
 .dirHeroe {
-  float:left;
+  float: left;
   width: 40%;
   height: max-content;
   display: flex;
   justify-content: center;
 }
+
 .dirHeroe img {
   border-radius: 7px;
   margin-top: 20px;
@@ -73,19 +82,23 @@ header {
   margin-right: auto;
   padding: 0;
 }
+
 .featureBox {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .featureBox div {
   margin-bottom: 4vh;
   justify-self: center;
 }
+
 .featureBox p {
   width: 70%;
   text-align: center;
 }
+
 .featureBox .featureImagem {
   padding: 20px;
   background-color: #c3d1ff;
@@ -98,13 +111,13 @@ header {
   border-radius: 120%;
 }
 
-#meetTeam{
+#meetTeam {
   width: 100%;
   background-color: rgba(168, 164, 164, 0.09);
-  padding:10px 0 100px 0;
+  padding: 10px 0 100px 0;
 }
 
-.containerTeam{
+.containerTeam {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -112,22 +125,23 @@ header {
   margin-left: auto;
   margin-right: auto;
   height: min-content;
-  gap:30px;
+  gap: 30px;
 }
 
-.boxTeam{
+.boxTeam {
   width: fit-content;
   height: min-content;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
-  border-radius:10px;
+  border-radius: 10px;
   padding-bottom: 20px;
 }
 
-.boxTeam img{
+.boxTeam img {
   width: 300px;
   border-radius: 10px 10px 0 0;
 }
-.boxText{
+
+.boxText {
   margin-top: 30px;
   display: flex;
   flex-direction: column;
@@ -135,31 +149,33 @@ header {
   padding-left: 20px;
 
 }
-.boxText .nome{
+
+.boxText .nome {
   font-size: 1.5em;
 
 }
 
-.boxText .role{
-  padding:0;
-  margin:0;
+.boxText .role {
+  padding: 0;
+  margin: 0;
   font-size: 1em;
   color: rgb(94, 29, 206);
 }
 
-.social{
+.social {
   display: flex;
   justify-content: flex-start;
   width: 20%;
   padding-top: 20px;
   padding-left: 20px;
 }
-.social a{
-  width:20px;
+
+.social a {
+  width: 20px;
   height: 20px;
 }
 
-#stats{
+#stats {
   width: 100%;
   display: grid;
   grid-template-columns: auto auto auto auto;
@@ -167,7 +183,8 @@ header {
   align-items: center;
   padding: 20px 0;
 }
-.stat{
+
+.stat {
   width: 20%;
   display: flex;
   flex-direction: column;
@@ -178,13 +195,13 @@ header {
   text-align: center;
 }
 
-.stat h2{
+.stat h2 {
   color: #4f46e5;
   font-weight: 700;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
-#cta{
+#cta {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -193,84 +210,134 @@ header {
   padding: 5% 0;
   background-color: #4f46e5;
 }
-#cta h3{
+
+#cta h3 {
   color: white;
 }
-#cta p{
-  color:white;
+
+#cta p {
+  color: white;
 }
 
-footer{
+/* Footer */
+
+footer {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   height: auto;
-  padding: 20px 0 ;
+  padding: 20px 0;
   background-color: #111827;
   position: static;
   bottom: 0;
-  margin:0;
+  margin-bottom: 0;
   width: 100%;
 }
 
-#containerFooter{
+#containerFooter {
   display: flex;
   justify-content: space-around;
   width: 100%;
 }
 
-#containerFooter li{
+#containerFooter li {
   list-style: none;
 }
-hr{
+
+hr {
   width: 100%;
 }
 
-.divFooter1{
+.divFooter1 {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  color:white;
+  color: white;
 }
 
-.divFooter{
+.divFooter {
   width: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   text-align: justify;
-  color:white;
+  color: white;
 }
 
-.divFooter a{
+.divFooter a {
   text-decoration: none;
   color: gray;
 }
+
 footer p {
   color: gray;
 }
-.socialFooter{
+
+.social {
   display: flex;
   gap: 15px;
 }
-.socialFooter img{
+
+.social img {
   width: 20px;
   height: 20px;
 }
 
-#contactos{
+#contactos {
   color: white;
 }
 
-#contactos a{
+#contactos a {
   text-align: center;
   text-decoration: none;
   color: gray;
 }
 
-#contactos li{
+#contactos li {
   list-style: none;
+}
+
+/* Css carrinho */
+
+.img-small {
+  width: 100px;
+  height: 100px;
+}
+
+.product-info {
+  line-height: 1.2;
+  margin-bottom: 0;
+}
+
+.product-info {
+  font-size: 1rem;
+  color: #333;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.btn-outline-secondary {
+  width: 30px;
+  height: 30px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0;
+}
+
+/* Make trash icon consistent */
+.btn-link .bi-trash {
+  color: #6c757d;
+  transition: color 0.3s ease;
+}
+
+.btn-link:hover .bi-trash {
+  color: #4F46E5;
 }
