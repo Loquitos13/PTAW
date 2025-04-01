@@ -1,16 +1,7 @@
-body {
-    margin: 0;
-    padding: 0;
-    overflow: auto;
-    align-items: center;
-    background-color: #F9FAFB !important;
-}
-
+/* Estilos do header */
 header {
     display: flex;
     margin-left: auto;
-    background-color: rgb(255, 255, 255);
-    padding: 0 5%;
 }
 
 .left {
@@ -34,7 +25,7 @@ header {
     align-items: center;
 }
 
-.container ul {
+.header-desktop ul {
     align-items: center;
 }
 
@@ -61,6 +52,7 @@ header {
     background-color: #ffffff;
 }
 
+/* Footer */
 footer {
     display: flex;
     flex-direction: column;
@@ -138,4 +130,40 @@ footer p {
 
 #contactos li {
     list-style: none;
+}
+
+/* Css carrinho */
+
+.img-small {
+    width: 100px;
+    height: 100px;
+}
+
+.product-info {
+    line-height: 1.2;
+    margin-bottom: 0;
+}
+
+.product-info {
+    font-size: 1rem;
+    color: #333;
+}
+
+.price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.btn-outline-secondary {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.btn-link {
+    color: #6c757d;
 }

@@ -9,10 +9,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="SavedDesigns.js"></script>
+    <?php include '../carrinho.php'; ?>
 </head>
 
 <style>
-    /* Estilos base */
     body {
         margin: 0;
         padding: 0;
@@ -73,9 +73,13 @@
 
 
     /* Ajustes para telas menores */
-    @media (max-width: 768px) {
+    @media (max-width: 1200px) {
         body {
             width: 100%;
+        }
+
+        .header-desktop {
+            display: none;
         }
 
         #a-logo-header-mobile {
@@ -83,7 +87,9 @@
             width: max-content;
             justify-content: center;
             padding-top: 20px;
+            padding-bottom: 20px;
             width: 100%;
+
         }
 
         #logo-header-mobile {
@@ -134,7 +140,8 @@
         #containerHeroe {
             flex-direction: column;
             height: auto;
-            padding: 20px 0;
+            padding: 20px 20px;
+            width: 100%;
         }
 
         .esqHeroe,
@@ -147,6 +154,13 @@
             position: static;
             height: auto;
             width: 80%;
+        }
+
+        #prodDestaques {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
         }
 
         .containerDestaques {
@@ -197,66 +211,19 @@
 </style>
 
 <body>
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+    <a href="/header-mobile.php" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
         id="a-logo-header-mobile">
-        <img src="/imagens/Print&Go.png" alt="" style="width: 100px;" id="logo-header-mobile">
+        <img src="imagens/Print&Go.png" alt="" id="logo-header-mobile">
     </a>
-    <button id="menu-toggle">☰</button>
-    <div id="menu-mobile">
-        <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
-                    viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
-                    <path
-                        d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
-                </svg></a></li>
-        <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
-                    viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
-                    <path
-                        d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z" />
-                </svg></a></li>
-        <a href="/sobre.html">About Us</a>
-        <a href="#contactos">Custom Design</a>
-        <a href="/produtos.html">Products</a>
-        <a href="/index.html">Home</a>
-    </div>
+    <button id="menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+        ☰
+    </button>
 
-    <div class="container1">
-        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-            <div class="left">
-                <a href="/"
-                    class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                    <img src="/imagens/Print&Go.png" alt="" style="width: 100px;">
-                </a>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder=" 🔍 Search" aria-label="Search">
-                </form>
-            </div>
+    <!-- Menu Mobile -->
+    <?php include '../header-mobile.php'; ?>
 
-            <div class="right">
-                <ul class="nav nav-pills">
-                    <li class="nav-item"><a href="index.html" class="nav-link active"
-                            style="background-color: #4F46E5;">Home</a>
-                    </li>
-                    <li class="nav-item"><a href="produtos.html" class="nav-link" style="color: #4F46E5;">Products</a>
-                    </li>
-                    <li class="nav-item"><a href="customdesign.html" class="nav-link" style="color: #4F46E5; ">Custom
-                            Design</a>
-                    </li>
-                    <li class="nav-item"><a href="sobre.html" class="nav-link" style="color: #4F46E5;">About</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg"
-                                height="24px" viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
-                                <path
-                                    d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
-                            </svg></a></li>
-                    <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg"
-                                height="24px" viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
-                                <path
-                                    d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z" />
-                            </svg></a></li>
-                </ul>
-            </div>
-
-        </header>
-    </div>
+    <!-- Menu Desktop -->
+    <?php include '../header-desktop.php'; ?>
 
     <!-- Orders Section -->
     <div class="container mt-4 ">
@@ -305,7 +272,7 @@
                         <!-- Imagem do produto -->
                         <div class="position-relative">
                             <!-- Imagem do produto -->
-                            <img src="/imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <img src="../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
                             <div class="position-absolute top-0 end-0 p-2 d-flex">
                                 <!-- Botão de favoritar -->
                                 <button
@@ -356,7 +323,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card border-0 shadow-sm">
                         <div class="position-relative">
-                            <img src="/imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <img src="../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
                             <div class="position-absolute top-0 end-0 p-2 d-flex">
                                 <button
                                     class="btn btn-light rounded-circle me-2 shadow-sm d-flex justify-content-center align-items-center"
@@ -402,7 +369,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card border-0 shadow-sm">
                         <div class="position-relative">
-                            <img src="/imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <img src="../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
                             <div class="position-absolute top-0 end-0 p-2 d-flex">
                                 <button
                                     class="btn btn-light rounded-circle me-2 shadow-sm d-flex justify-content-center align-items-center"
@@ -448,7 +415,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card border-0 shadow-sm">
                         <div class="position-relative">
-                            <img src="/imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <img src="../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
                             <div class="position-absolute top-0 end-0 p-2 d-flex">
                                 <button
                                     class="btn btn-light rounded-circle me-2 shadow-sm d-flex justify-content-center align-items-center"
@@ -494,7 +461,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card border-0 shadow-sm">
                         <div class="position-relative">
-                            <img src="/imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <img src="../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
                             <div class="position-absolute top-0 end-0 p-2 d-flex">
                                 <button
                                     class="btn btn-light rounded-circle me-2 shadow-sm d-flex justify-content-center align-items-center"
@@ -542,54 +509,9 @@
 
     </div>
 
-    <footer>
-        <div id="containerFooter">
-            <div class="divFooter1">
-                <h4>PrintCraft</h4>
-                <p>Custom printing solutions for everyone.</p>
-            </div>
-            <div class="divFooter">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="produtos.html">Products</a></li>
-                    <li><a href="customdesign.html">Custom Design</a></li>
-                    <li><a href="sobre.html">About Us</a></li>
-                </ul>
-            </div>
-            <div class="divFooter">
-                <h4>Help</h4>
-                <ul>
-                    <li><a href="">FAQ</a></li>
-                    <li><a href="">Shipping</a></li>
-                    <li><a href="">Returns</a></li>
-                    <li><a href="">Size Guide</a></li>
-                </ul>
-            </div>
-            <div class="divFooter">
-                <h4>Follow Us</h4>
-                <ul class="social">
-                    <li><a href="https://facebook.com" class="iconSocial"><img src="/imagens/fb.png" alt="Facebook"></a>
-                    </li>
-                    <li><a href="https://instagram.com" class="iconSocial"><img src="/imagens/ig.png"
-                                alt="Instagram"></a>
-                    </li>
+    <!-- Footer -->
+    <?php include '../footer.php'; ?>
 
-                </ul>
-            </div>
-            <div class="divFooter">
-                <h4>Contact Us</h4>
-                <ul>
-                    <li><a href="mailto:info@printandgo.com">Email</a></li>
-                    <li><a href="tel:+123456789">Phone</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <hr>
-
-        <p class="direitos"> &#169; 2025 <b>Print&Go. </b>All rights reserved</p>
-
-    </footer>
 </body>
 
 </html>
