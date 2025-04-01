@@ -215,14 +215,6 @@
 </style>
 
 <body>
-  <a href="/header-mobile.php" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
-    id="a-logo-header-mobile">
-    <img src="imagens/Print&Go.png" alt="" id="logo-header-mobile">
-  </a>
-  <button id="menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
-    ☰
-  </button>
-
   <!-- Menu Mobile -->
   <?php include 'header-mobile.php'; ?>
 

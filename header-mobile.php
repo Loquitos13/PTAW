@@ -1,3 +1,13 @@
+<div class="fixed-header">
+  <button id="menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+    ☰
+  </button>
+  <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+    id="a-logo-header-mobile">
+    <img src="/PTAW/imagens/Print&Go.png" alt="" id="logo-header-mobile" href="index.php">
+  </a>
+</div>
+
 <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title" id="mobileMenuLabel">Menu</h5>

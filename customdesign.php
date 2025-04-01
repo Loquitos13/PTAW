@@ -43,6 +43,18 @@
     padding-top: 100px;
   }
 
+  .fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
   #menu-mobile.open {
     display: flex;
     transform: translateX(0);
@@ -79,6 +91,7 @@
   @media (max-width: 1200px) {
     body {
       width: 100%;
+      padding-top: 70px;
     }
 
     .header-desktop {
@@ -214,14 +227,6 @@
 </style>
 
 <body>
-
-  <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
-    id="a-logo-header-mobile">
-    <img src="imagens/Print&Go.png" alt="" id="logo-header-mobile" href="index.php">
-  </a>
-  <button id="menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
-    ☰
-  </button>
 
   <!-- Menu Mobile -->
   <?php include 'header-mobile.php'; ?>
