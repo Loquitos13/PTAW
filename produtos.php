@@ -328,15 +328,13 @@
     </div>
     <div id="produtos">
       <div class="containerOrdenar">
+        <button id="filters-toggle">Filters</button>
         <select class="form-select" style="width: auto;" aria-label="Sort options">
           <option selected>Popular (Best Seller)</option>
           <option value="1">Newest</option>
           <option value="2">Relevant</option>
           <option value="3">Sought-After</option>
         </select>
-      </div>
-      <div class="container-filtros"> <!-- Filtros para mobile -->
-        <button id="filters-toggle">Filters</button>
       </div>
       <div class="containerProdutos">
         <a href="" class="boxItemLink">
