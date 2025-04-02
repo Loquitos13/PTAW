@@ -1,0 +1,1 @@
+2025-04-02 16:07:07 - SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SELECTS * FROM clientes' at line 1
