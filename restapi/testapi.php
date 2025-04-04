@@ -117,69 +117,12 @@ function deleteData($table, $data) {
 
 }
 
-$newClient = [
-    
-    "nome_cliente"      => "Diogo Pinto",
-    "email_cliente"     => "diogo@mail.com",
-    "pass_cliente"      => "pass",
-    "contacto_cliente"  => "123456789",
-    "morada_cliente"    => "Rua y",
-    "nif_cliente"       => "87654321 5 5GP",
-    "id_gift"           =>  1,
-    "id_favoritos"      =>  6,
-    "id_boletim"        =>  1
 
-];
 
-$allowedTables = json_decode(file_get_contents('restapi/tables_config.json'), true);
 
-$notNullableColumns = [];
 
-// Process columns to identify 'not nullable' ones
-foreach ($allowedTables['clientes']['columns'] as $key => $value) {
 
-    if (str_contains($value, 'not nullable')) {
 
-        printf("$key = $value --> This returned true!\n");
-
-        $columnName = preg_replace('/\s*=\s*[^=]+$/', "", "$key = $value");
-
-        array_push($notNullableColumns, $columnName);
-
-    } else {
-
-        printf("$key = $value --> This returned false!\n");
-
-    }
-}
-
-// Print not nullable columns
-print_r($notNullableColumns);
-
-// Find missing columns
-$missingColumns = array_diff($notNullableColumns, array_keys($newClient));
-
-if (in_array($allowedTables['clientes']['id_column'], $missingColumns)) {
-
-    $index = array_search($allowedTables['clientes']['id_column'], $missingColumns);
-
-    if ($index !== false) {
-
-        unset($missingColumns[$index]);
-        
-    }
-
-} 
-
-if (empty($missingColumns)) {
-
-    printf("Every column required is here!");
-
-} else {
-
-    printf("Missing columns: " . implode(", ", $missingColumns));
-
-}
 
 // Testing the functions
 

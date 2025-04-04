@@ -6,7 +6,7 @@
 header("Content-Type: application/json");
 include 'db_connection.php';
 
-$allowedTables = json_decode(file_get_contents('restapi/tables_config.json'), true);
+$allowedTables = json_decode(file_get_contents('tables_config.json'), true);
 $table = $_GET['table'] ?? '';
 
 if (!isset($allowedTables[$table])) 
@@ -20,6 +20,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 $input = json_decode(file_get_contents('php://input'), true) ?? [];
 
 switch ($method) {
+    
     case 'GET':
         handleGet($pdo, $table);
         break;
@@ -67,6 +68,8 @@ Paste this in:
 "contacto_cliente": "999999999",
 "morada_cliente": "Rua x",
 "nif_cliente": "12345678 1 LI8",
+"ip_cliente": "192.168.0.1",
+"data_criacao_cliente": "2025-04-04 11:53:25",
 "id_gift": "5",
 "id_favoritos": "1",
 "id_boletim": "10"
@@ -74,31 +77,39 @@ Paste this in:
 */
 function handlePost($pdo, $table, $input) {
 
-    $columns = implode(', ', array_keys($input));
-    $values = ':' . implode(', :', array_keys($input));
-    
-    $sql = "INSERT INTO $table ($columns) VALUES ($values)";
+    if (requiredFields($table, $input)) {
 
-    try {
+        $columns = implode(', ', array_keys($input));
+        $values = ':' . implode(', :', array_keys($input));
+        
+        $sql = "INSERT INTO $table ($columns) VALUES ($values)";
 
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($input);
+        try {
 
-        if($stmt->rowCount() > 0) {
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($input);
 
-            echo json_encode(['message' => 'Create action was successfull']);
+            if($stmt->rowCount() > 0) {
 
-        } else {
+                echo json_encode(['message' => 'Create action was successfull']);
 
-            http_response_code(400);
-            echo json_encode(['error' => 'Column or value not found']);
+            } else {
+
+                http_response_code(400);
+                echo json_encode(['error' => 'Something went wrong']);
+
+            }
+        } catch (PDOException $e) {
+
+            logError($e->getMessage());
+            http_response_code(500);
+            echo json_encode(['error' => 'Internal server error']);
 
         }
-    } catch (PDOException $e) {
+    } else {
 
-        logError($e->getMessage());
-        http_response_code(500);
-        echo json_encode(['error' => 'Internal server error']);
+        http_response_code(400);
+        echo json_encode(['error' => 'Missing fields']);
 
     }
 
@@ -151,6 +162,7 @@ function handlePut($pdo, $table, $input) {
         echo json_encode(['error' => 'Internal server error']);
 
     }
+
 }
 
 /*
@@ -194,6 +206,52 @@ function handleDelete($pdo, $table, $input) {
     }
 }
 
-function logError(string $message): void {
+function requiredFields($table, $data) {
+
+    $validData = false;
+
+    global $allowedTables;
+
+    $notNullableColumns = [];
+
+    foreach ($allowedTables[$table]['columns'] as $key => $value) {
+
+        if (str_contains($value, 'not nullable')) {
+
+            $columnName = preg_replace('/\s*=\s*[^=]+$/', "", "$key = $value");
+
+            array_push($notNullableColumns, $columnName);
+
+        } 
+
+    }
+
+    $missingColumns = array_diff($notNullableColumns, array_keys($data));
+
+    if (in_array($allowedTables[$table]['id_column'], $missingColumns)) {
+
+        $index = array_search($allowedTables[$table]['id_column'], $missingColumns);
+
+        if ($index !== false) {
+
+            unset($missingColumns[$index]);
+            
+        }
+
+    } 
+
+    if (empty($missingColumns)) {
+
+        $validData = true;
+
+    } 
+
+    return $validData;
+
+}
+
+function logError(string $message) {
+
     file_put_contents('../logs/errors.log', date('Y-m-d H:i:s') . " - " . $message . PHP_EOL, FILE_APPEND);
+    
 }
