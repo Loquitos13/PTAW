@@ -5,10 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Products Custom</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="productscustom.css">
+  <link rel="stylesheet" href="css/productscustom.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
@@ -19,233 +19,226 @@
       }
     }
     </script>
+    <?php include 'includes/carrinho.php'; ?>
 </head>
 
 <style>
-  /* Estilos base */
- body {
-   margin: 0;
-   padding: 0;
-   overflow: auto;
-   align-items: center;
- }
- #menu-mobile {
-   display: none;
-   position: absolute;
-   top: 0;
-   left: 0;
-   width: 80%;
-   height: 100%;
-   background-color: white;
-   transform: translateX(-10%);
-   transition: transform 2000ms ease;
-   z-index: 999;
-   flex-direction: column-reverse;
-   margin-top: 0;
-   justify-content: flex-end;
-   gap: 50px;
-   align-items: center;
-   padding-top: 100px;
- }
- 
- #menu-mobile.open {
-   display: flex;
-   transform: translateX(0);
- }
- 
- #menu-mobile a {
-   color: #4F46E5;
-   text-decoration: none;
-   font-size: 1.5rem;
-   margin: 15px 0;
- }
- 
- #menu-toggle {
-   display: none;
-   position: fixed;
-   top: 15px;
-   left: 15px;
-   z-index: 1000;
-   font-size: 2rem;
-   background: none;
-   border: none;
-   color: black;
-   cursor: pointer;
- }
- #logo-header-mobile {
-   display: none;
-   background: none;
-   border:none;
- }
- 
- 
- /* Ajustes para telas menores */
- @media (max-width: 768px) {
-   body{
-     width: 100%;
-   }
-   #a-logo-header-mobile{
-     display: flex;
-     width: max-content;
-     justify-content: center;
-     padding-top: 20px;
-     width: 100%;
-   }
-   #logo-header-mobile {
-     display: block;
-     width: 100px;
-     height: auto;
-     margin: 0 auto;
-   }
-   #menu-toggle {
-     display: block;
-     top: 0;
-   }
- 
- #menu-mobile {
-     position: fixed;
-     height: 100%;
-     overflow: hidden;
- }
- #menu-mobile li{
-   list-style: none;
- }
- 
- #menu-mobile .social {
-     display: flex;
-     height: 100%;
-     width: 100%;
-     align-items: center;
-     align-self: flex-end;
-     justify-content: center;
- }
-   .container {
-     display: none;
-   }
-   .left, .right {
-     width: 100%;
-     justify-content: center;
-   }
-   .left a {
-     width: auto;
-   }
-   
-   #containerHeroe {
-     flex-direction: column;
-     height: auto;
-     padding: 20px 0;
-   }
-   .esqHeroe, .dirHeroe {
-     width: 100%;
-     text-align: center;
-   }
-   .dirHeroe img {
-     position: static;
-     height: auto;
-     width: 80%;
-   }
-   
-   .containerDestaques {
-     flex-direction: column;
-     align-items: center;
-     justify-content: center;
-     width: 100%;
-     gap: 20px;
-   }
-   .feedback-carousel-container {
-     max-width: 90%;
-     max-height: 400px;
-   }
-   
-   #featureSection {
-     padding: 5vh;
-   }
-   #containerFeatures {
-     flex-direction: column;
-   }
-   .featureBox p {
-     width: 90%;
-   }
-   
-   #cta h3 {
-     text-align: center;
-     font-size: 100%;
-   }
-   #cta p {
-     text-align: center;
-     font-size: 90%;
-   }
-   footer {
-     text-align: center;
-   }
-   #containerFooter {
-     flex-direction: column;
-     align-items: center;
-     gap: 20px;
-   }
- }
- 
- </style>
- 
- <body>
-   <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none" id="a-logo-header-mobile">
-     <img src="imagens/Print&Go.png" alt="" id="logo-header-mobile">
-   </a>
-   <button id="menu-toggle">☰</button>
-     <div id="menu-mobile">
-         <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
-           viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
-           <path
-             d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
-         </svg></a></li>
-     <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
-           viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
-           <path
-             d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z" />
-         </svg></a></li>
-         <a href="sobre.html">About Us</a>
-         <a href="#contactos">Custom Design</a>
-         <a href="produtos.html">Products</a>
-         <a href="index.html">Home</a>
-       
-     </div>
- 
-   <div class="container">
-     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-       <div class="left">
-         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-           <img src="imagens/Print&Go.png" alt="" style="width: 100px;">
-         </a>
-         <form class="d-flex" role="search">
-           <input class="form-control me-2" type="search" placeholder=" 🔍 Search" aria-label="Search">
- 
-         </form>
-       </div>
- 
-       <div class="right">
-         <ul class="nav nav-pills">
-           <li class="nav-item"><a href="index.html" class="nav-link active" style="background-color: #4F46E5;">Home</a>
-           </li>
-           <li class="nav-item"><a href="produtos.html" class="nav-link" style="color: #4F46E5;">Products</a></li>
-           <li class="nav-item"><a href="customdesign.html" class="nav-link" style="color: #4F46E5; ">Custom Design</a>
-           </li>
-           <li class="nav-item"><a href="sobre.html" class="nav-link" style="color: #4F46E5;">About</a></li>
-           <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
-                 viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
-                 <path
-                   d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
-               </svg></a></li>
-           <li class="nav-item"><a href="#" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
-                 viewBox="0 -960 960 960" width="24px" fill="#0d6efd">
-                 <path
-                   d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z" />
-               </svg></a></li>
-         </ul>
-       </div>
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    align-items: center;
+  }
 
-     </header>
-    </div>
+  #menu-mobile {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80%;
+    height: 100%;
+    background-color: white;
+    transform: translateX(-10%);
+    transition: transform 2000ms ease;
+    overflow: hidden;
+    z-index: 999;
+    flex-direction: column-reverse;
+    margin-top: 0;
+    justify-content: flex-end;
+    gap: 20px;
+    align-items: center;
+    padding-top: 100px;
+  }
 
+  .fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  #menu-mobile.open {
+    display: flex;
+    transform: translateX(0);
+  }
+
+  #menu-mobile a {
+    color: #4F46E5;
+    text-decoration: none;
+    font-size: 1.5rem;
+    margin: 15px 0;
+  }
+
+  #menu-toggle {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: black;
+    cursor: pointer;
+  }
+
+  #logo-header-mobile {
+    display: none;
+    background: none;
+    border: none;
+  }
+
+
+  /* Ajustes para telas menores */
+  @media (max-width: 1200px) {
+    body {
+      width: 100%;
+      padding-top: 70px;
+    }
+
+    .header-desktop {
+      display: none;
+    }
+
+    #a-logo-header-mobile {
+      display: flex;
+      width: max-content;
+      justify-content: center;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      width: 100%;
+
+    }
+
+    #logo-header-mobile {
+      display: block;
+      width: 100px;
+      height: auto;
+      margin: 0 auto;
+    }
+
+    #menu-toggle {
+      display: block;
+      top: 0;
+    }
+
+    #menu-mobile {
+      position: fixed;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #menu-mobile li {
+      list-style: none;
+    }
+
+    #menu-mobile .social {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      align-items: center;
+      align-self: flex-end;
+      justify-content: center;
+    }
+
+    .container1 {
+      display: none;
+    }
+
+    .left,
+    .right {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .left a {
+      width: auto;
+    }
+
+    #containerHeroe {
+      flex-direction: column;
+      height: auto;
+      padding: 20px 20px;
+      width: 100%;
+    }
+
+    .esqHeroe,
+    .dirHeroe {
+      width: 100%;
+      text-align: center;
+    }
+
+    .dirHeroe img {
+      position: static;
+      height: auto;
+      width: 80%;
+    }
+
+    #prodDestaques {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+    }
+
+    .containerDestaques {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      gap: 20px;
+    }
+
+    .feedback-carousel-container {
+      max-width: 90%;
+      max-height: 400px;
+    }
+
+    #featureSection {
+      padding: 5vh;
+    }
+
+    #containerFeatures {
+      flex-direction: column;
+    }
+
+    .featureBox p {
+      width: 90%;
+    }
+
+    #cta h3 {
+      text-align: center;
+      font-size: 100%;
+    }
+
+    #cta p {
+      text-align: center;
+      font-size: 90%;
+    }
+
+    footer {
+      text-align: center;
+    }
+
+    #containerFooter {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+  }
+</style>
+
+<body>
+  <!-- Menu Mobile -->
+  <?php include 'includes/header-mobile.php'; ?>
+
+  <!-- Menu Desktop -->
+  <?php include 'includes/header-desktop.php'; ?>
 
   <div class="productPreview">
 
@@ -259,14 +252,14 @@
 
       <!-- Main Product Image -->
       <div class="main-image">
-        <img id="bigImage" src="imagens/TShirtfront.png" alt="Product Image">
+        <img id="bigImage" src="../imagens/TShirtfront.png" alt="Product Image">
       </div>
       
       <!-- Thumbnail Images -->
       <div class="thumbnail-gallery">
       <!-- It will differentiate based on Data Base --> 
-        <img class="thumbnail active" src="imagens/TShirtfront.png" alt="TShirt Front">
-        <img class="thumbnail" src="imagens/TShirtback.png" alt="TShirt Back">
+        <img class="thumbnail active" src="../imagens/TShirtfront.png" alt="TShirt Front">
+        <img class="thumbnail" src="../imagens/TShirtback.png" alt="TShirt Back">
       </div>
     </div>
 
@@ -383,7 +376,7 @@
       <div class="containerDestaques">
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="imagens/TShirtfront.png" alt="" class="boxItemImg">
+            <img src="../imagens/TShirtfront.png" alt="" class="boxItemImg">
             <p class="boxItemTitle">Product Title</p>
             <div class="boxItemFooter">
               <span class="boxItemPrice">10,00€</span>
@@ -392,7 +385,7 @@
         </a>
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="imagens/TShirtfront.png" alt="" class="boxItemImg">
+            <img src="../imagens/TShirtfront.png" alt="" class="boxItemImg">
             <p class="boxItemTitle">Product Title</p>
             <div class="boxItemFooter">
               <span class="boxItemPrice">10,00€</span>
@@ -401,7 +394,7 @@
         </a>
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="imagens/TShirtfront.png" alt="" class="boxItemImg">
+            <img src="../imagens/TShirtfront.png" alt="" class="boxItemImg">
             <p class="boxItemTitle">Product Title</p>
             <div class="boxItemFooter">
               <span class="boxItemPrice">10,00€</span>
@@ -410,7 +403,7 @@
         </a>
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="imagens/TShirtfront.png" alt="" class="boxItemImg">
+            <img src="../imagens/TShirtfront.png" alt="" class="boxItemImg">
             <p class="boxItemTitle">Product Title</p>
             <div class="boxItemFooter">
               <span class="boxItemPrice">10,00€</span>
@@ -498,53 +491,8 @@
 
 
 
-  <footer>
-    <div id="containerFooter">
-      <div class="divFooter1">
-        <h4>Print&Go</h4>
-        <p>Custom printing solutions for everyone.</p>
-      </div>
-      <div class="divFooter">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="produtos.html">Products</a></li>
-          <li><a href="customdesign .html">Custom Design</a></li>
-          <li><a href="sobre.html">About Us</a></li>
-        </ul>
-      </div>
-      <div class="divFooter">
-        <h4>Help</h4>
-        <ul>
-          <li><a href="">FAQ</a></li>
-          <li><a href="">Shipping</a></li>
-          <li><a href="">Returns</a></li>
-          <li><a href="">Size Guide</a></li>
-        </ul>
-      </div>
-      <div class="divFooter">
-        <h4>Follow Us</h4>
-        <ul class="social">
-          <li><a href="https://facebook.com" class="iconSocial"><img src="imagens/fb.png" alt="Facebook"></a>
-          </li>
-          <li><a href="https://instagram.com" class="iconSocial"><img src="imagens/ig.png" alt="Instagram"></a>
-          </li>
-
-        </ul>
-      </div>
-      <div class="divFooter">
-        <h4>Contact Us</h4>
-        <ul>
-          <li><a href="mailto:info@printandgo.com">Email</a></li>
-          <li><a href="tel:+123456789">Phone</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <hr>
-
-    <p class="direitos"> &#169; 2025 <b>Print&Go. </b>All rights reserved</p>
-
-  </footer>
+  <!-- Footer -->
+  <?php include 'includes/footer.php'; ?>
 
 </body>
 

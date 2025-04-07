@@ -10,9 +10,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="produtos.css">
-  <script src="produtos.js"></script>
-  <?php include 'carrinho.php'; ?>
+  <link rel="stylesheet" href="css/produtos.css">
+  <script src="js/produtos.js"></script>
+  <?php include 'includes/carrinho.php'; ?>
 </head>
 
 <style>
@@ -228,10 +228,10 @@
 
 <body>
   <!-- Menu Mobile -->
-  <?php include 'header-mobile.php'; ?>
+  <?php include 'includes/header-mobile.php'; ?>
 
   <!-- Menu Desktop -->
-  <?php include 'header-desktop.php'; ?>
+  <?php include 'includes/header-desktop.php'; ?>
 
   <div id="containerTitulo">
     <div class="esqTitulo">
@@ -339,7 +339,7 @@
       <div class="containerProdutos">
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="imagens/produtos varios hero.png" alt="" class="boxItemImg">
+            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
             &nbsp;
             <p class="boxItemTitle">T-Shirts</p>
             <p class="boxItemDescription">Premium cotton tees</p>
@@ -353,7 +353,7 @@
         </a>
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="imagens/produtos varios hero.png" alt="" class="boxItemImg">
+            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
             &nbsp;
             <p class="boxItemTitle">T-Shirts</p>
             <p class="boxItemDescription">Premium cotton tees</p>
@@ -367,7 +367,7 @@
         </a>
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="imagens/produtos varios hero.png" alt="" class="boxItemImg">
+            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
             &nbsp;
             <p class="boxItemTitle">T-Shirts</p>
             <p class="boxItemDescription">Premium cotton tees</p>
@@ -381,7 +381,7 @@
         </a>
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="imagens/produtos varios hero.png" alt="" class="boxItemImg">
+            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
             &nbsp;
             <p class="boxItemTitle">Hoodies & Sweatshirts</p>
             <p class="boxItemDescription">Cozy comfort wear</p>
@@ -395,7 +395,7 @@
         </a>
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="imagens/produtos varios hero.png" alt="" class="boxItemImg">
+            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
             &nbsp;
             <p class="boxItemTitle">Caps & Hats</p>
             <p class="boxItemDescription">Stylish headwear</p>
@@ -409,7 +409,7 @@
         </a>
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="imagens/produtos varios hero.png" alt="" class="boxItemImg">
+            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
             &nbsp;
             <p class="boxItemTitle">Posters</p>
             <p class="boxItemDescription">High quality prints</p>
@@ -423,7 +423,7 @@
         </a>
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="imagens/produtos varios hero.png" alt="" class="boxItemImg">
+            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
             &nbsp;
             <p class="boxItemTitle">Home Textiles</p>
             <p class="boxItemDescription">Cushions and blankets</p>
@@ -437,7 +437,7 @@
         </a>
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="imagens/produtos varios hero.png" alt="" class="boxItemImg">
+            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
             &nbsp;
             <p class="boxItemTitle">Phone Cases</p>
             <p class="boxItemDescription">Protection with style</p>
@@ -459,7 +459,7 @@
       Sales Team</button>
   </div>
   <!-- Footer -->
-  <?php include 'footer.php'; ?>
+  <?php include 'includes/footer.php'; ?>
 
   <!-- Overlay para fechar ao clicar fora -->
   <div id="filters-overlay"></div>

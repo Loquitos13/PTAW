@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="userProfile.css">
-    <?php include '../carrinho.php'; ?>
+    <link rel="stylesheet" href="css/userProfile.css">
+    <?php include '../includes/carrinho.php'; ?>
 </head>
 
 <style>
@@ -226,10 +226,10 @@
 <body>
 
     <!-- Menu Mobile -->
-    <?php include '../header-mobile.php'; ?>
+    <?php include '../includes/header-mobile.php'; ?>
 
     <!-- Menu Desktop -->
-    <?php include '../header-desktop.php'; ?>
+    <?php include '../includes/header-desktop.php'; ?>
 
     <!-- Main Content -->
     <main class="container py-5">
@@ -353,7 +353,7 @@
     </main>
 
     <!-- Footer -->
-    <?php include '../footer.php'; ?>
+    <?php include '../includes/footer.php'; ?>
 </body>
 
 </html>

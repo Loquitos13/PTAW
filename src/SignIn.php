@@ -3,10 +3,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Print & Go</title>
-<link rel="stylesheet" href="SignIn.css">
+<link rel="stylesheet" href="css/SignIn.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-<script src="SignIn.js"></script>
+<script src="js/SignIn.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
@@ -15,68 +15,46 @@
 <body style="background-color: #EEF2FF;">
 
 </body>
+<!-- Cria a caixa para o login -->
 <div class="modal modal-sheet position-static d-block  p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin">
+
     <div class="modal-dialog" role="document">
+        <!-- Cria a caixa com background e sombras -->
         <div class="modal-content rounded-4 shadow">
-            <!-- Este é o cabeçalho do modal -->
+            <!-- Div da parte do "Cabeçalho do Sign in"-->
             <div class=" p-5 pb-4 border-bottom-0">
                 <h1 class="fw-bold mb-0 fs-2 text-center text-custom-color">Print&Go</h1>
-                <h4 class="fw-bold mb-0 fs-4 text-center text-welcome">Create Account</h4>
-                <p class=" mb-0 text-center">Join Print&Go today</p>
+                <h4 class="fw-bold mb-0 fs-4 text-center text-welcome">Welcome Back</h4>
+                <p class=" mb-0 text-center">Sign in to your account</p>
             </div>
 
+            <!-- Div da parte do formulario de Sign in -->
             <div class="modal-body p-5 pt-0">
+                <!-- Formulário de Sign in -->
                 <form class="">
-                    <!-- div para colocar o First name e Last Name na mesma linha -->
-                    <div class="row">
-                        <!-- Divide a lnha ao meio-->
-                        <div class="col-md-6">
-                            <h6>First Name</h6>
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control rounded-3" id="floatingInput"
-                                    placeholder="name@example.com">
-                                <label for="floatingInput">First Name</label>
-                            </div>
-                        </div>
-                        <!-- Divide a lnha ao meio-->
-                        <div class="col-md-6">
-                            <h6>Last Name</h6>
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control rounded-3" id="floatingInput"
-                                    placeholder="name@example.com">
-                                <label for="floatingInput">Last Name</label>
-                            </div>
-                        </div>
-                    </div>
                     <!-- Email -->
                     <h6>Email</h6>
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control rounded-3" id="floatingInput"
                             placeholder="name@example.com">
-                        <label for="floatingInput">Enter your email</label>
+                        <label for="floatingInput">Email address</label>
                     </div>
+
                     <!-- Password -->
                     <h6>Password</h6>
                     <div class="form-floating mb-3">
                         <input type="password" class="form-control rounded-3" id="floatingPassword"
                             placeholder="Password">
-                        <label for="floatingPassword">Create a password</label>
+                        <label for="floatingPassword">Password</label>
                     </div>
-                    <!-- Confirm Password -->
-                    <h6>Confirm Password</h6>
-                    <div class="form-floating mb-3">
-                        <input type="password" class="form-control rounded-3" id="floatingPassword"
-                            placeholder="Password">
-                        <label for="floatingPassword">Confirm your password</label>
-                    </div>
-                    
-                    <!-- Butão Create Account -->
-                    <button class="w-100 mb-2 btn btn-lg rounded-3" id="btnSignUp" type="submit">Create Account</button>
+
+                    <!-- butão de Sign in -->
+                    <button class="w-100 mb-2 btn btn-lg rounded-3" id="btnSignUp" type="submit">Sign in</button>
                     <small class="text-body-secondary">By clicking Sign up, you agree to the terms of use.</small>
                     <hr class="my-4">
                     <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
-                    
-                    <!-- Butão para criar conta com Facebook -->
+
+                    <!-- butão de Sign in com Facebook -->
                     <button
                         class="w-100 py-2 mb-2 btn btn-outline-primary rounded-3 d-flex align-items-center justify-content-center"
                         type="submit">
@@ -88,7 +66,7 @@
                         <span class="ms-2">Sign in with Facebook</span>
                     </button>
 
-                    <!-- Butão para criar conta com Google -->
+                    <!-- butão de Sign in com Google -->
                     <button
                         class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-3 d-flex align-items-center justify-content-center"
                         type="submit">
@@ -100,11 +78,11 @@
                         <span class="ms-2">Sign up with Google</span>
                     </button>
 
-                    <!-- Link para a página de Sign In -->
+                    <!-- Link para a página de Create Account -->
                     <div class="d-flex mt-4 justify-content-center">
-                        <h6>Already have an account?</h6>
+                        <h6>Don't have an account?</h6>
                         &nbsp;
-                        <a id="SingLink" class="link-offset-1" href="SignIn.html">Sign in</a>
+                        <a id="SingLink" class="link-offset-1" href="CreateAcc.php">Sign up</a>
                     </div>
                 </form>
             </div>

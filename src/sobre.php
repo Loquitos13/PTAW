@@ -5,15 +5,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Print & Go - About Us</title>
-  <link rel="stylesheet" href="sobre.css">
+  <link rel="stylesheet" href="css/sobre.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <script src="script.js"></script>
+  <script src="js/script.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
-  <?php include 'carrinho.php'; ?>
+  <?php include 'includes/carrinho.php'; ?>
 </head>
 
 <style>
@@ -229,10 +229,10 @@
 
 <body>
   <!-- Menu Mobile -->
-  <?php include 'header-mobile.php'; ?>
+  <?php include 'includes/header-mobile.php'; ?>
 
   <!-- Menu Desktop -->
-  <?php include 'header-desktop.php'; ?>
+  <?php include 'includes/header-desktop.php'; ?>
 
   <div id="containerHeroe">
     <div class="esqHeroe">
@@ -245,7 +245,7 @@
       </div>
     </div>
     <div class="dirHeroe">
-      <img src="imagens/produtos varios hero.png" alt="" style="width:70%;">
+      <img src="../imagens/produtos varios hero.png" alt="" style="width:70%;">
     </div>
   </div>
 
@@ -303,7 +303,7 @@
         <div class="col-lg-4 col-md-4 col-sm-6 mb-4">
           <div class="card border-0 shadow-sm">
             <div class="position-relative">
-              <img src="imagens/filipe.jpg" class="card-img-top bg-light" alt="Camiseta Branca">
+              <img src="../imagens/filipe.jpg" class="card-img-top bg-light" alt="Camiseta Branca">
             </div>
             <div class="card-body px-3 pb-3">
               <h5 class="card-title fw-bold mb-1">Filipe Rocha</h5>
@@ -334,7 +334,7 @@
         <div class="col-lg-4 col-md-4 col-sm-6 mb-4">
           <div class="card border-0 shadow-sm">
             <div class="position-relative">
-              <img src="imagens/sara.jpg" class="card-img-top bg-light" alt="Camiseta Branca">
+              <img src="../imagens/sara.jpg" class="card-img-top bg-light" alt="Camiseta Branca">
             </div>
             <div class="card-body px-3 pb-3">
               <h5 class="card-title fw-bold mb-1">Sara Presa</h5>
@@ -365,7 +365,7 @@
         <div class="col-lg-4 col-md-4 col-sm-6 mb-4">
           <div class="card border-0 shadow-sm">
             <div class="position-relative">
-              <img src="imagens/rodrigo.jpg" class="card-img-top bg-light" alt="Camiseta Branca">
+              <img src="../imagens/rodrigo.jpg" class="card-img-top bg-light" alt="Camiseta Branca">
             </div>
             <div class="card-body px-3 pb-3">
               <h5 class="card-title fw-bold mb-1">Rodrigo Oliveira</h5>
@@ -396,7 +396,7 @@
         <div class="col-lg-4 col-md-4 col-sm-6 mb-4">
           <div class="card border-0 shadow-sm">
             <div class="position-relative">
-              <img src="imagens/bruno.jpg" class="card-img-top bg-light" alt="Camiseta Branca">
+              <img src="../imagens/bruno.jpg" class="card-img-top bg-light" alt="Camiseta Branca">
             </div>
             <div class="card-body px-3 pb-3">
               <h5 class="card-title fw-bold mb-1">Bruno Jardim</h5>
@@ -427,7 +427,7 @@
         <div class="col-lg-4 col-md-4 col-sm-6 mb-4">
           <div class="card border-0 shadow-sm">
             <div class="position-relative">
-              <img src="imagens/diogo.JPG" class="card-img-top bg-light" alt="Camiseta Branca">
+              <img src="../imagens/diogo.JPG" class="card-img-top bg-light" alt="Camiseta Branca">
             </div>
             <div class="card-body px-3 pb-3">
               <h5 class="card-title fw-bold mb-1">Diogo Pinto</h5>
@@ -458,7 +458,7 @@
         <div class="col-lg-4 col-md-4 col-sm-6 mb-4">
           <div class="card border-0 shadow-sm">
             <div class="position-relative">
-              <img src="imagens/guilerme.jpg" class="card-img-top bg-light" alt="Camiseta Branca">
+              <img src="../imagens/guilerme.jpg" class="card-img-top bg-light" alt="Camiseta Branca">
             </div>
             <div class="card-body px-3 pb-3">
               <h5 class="card-title fw-bold mb-1">Guilherme Ferreira</h5>
@@ -516,7 +516,7 @@
   </div>
 
   <!-- Footer -->
-  <?php include 'footer.php'; ?>
+  <?php include 'includes/footer.php'; ?>
 
 </body>
 

@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Print&Go - Edit Profile</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="userProfile.css">
-    <?php include '../carrinho.php'; ?>
+    <link rel="stylesheet" href="css/userProfile.css">
+    <?php include '../includes/carrinho.php'; ?>
 </head>
 
 <style>
@@ -224,10 +224,10 @@
 <body>
 
     <!-- Menu Mobile -->
-    <?php include '../header-mobile.php'; ?>
+    <?php include '../includes/header-mobile.php'; ?>
 
     <!-- Menu Desktop -->
-    <?php include '../header-desktop.php'; ?>
+    <?php include '../includes/header-desktop.php'; ?>
 
     <!-- Edit Profile Content -->
     <div class="container py-5">
@@ -348,7 +348,7 @@
     </div>
 
     <!-- Footer -->
-    <?php include '../footer.php'; ?>
+    <?php include '../includes/footer.php'; ?>
 
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

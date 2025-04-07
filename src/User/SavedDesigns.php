@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Orders - PrintCraft</title>
-    <link rel="stylesheet" href="SavedDesigns.css">
+    <link rel="stylesheet" href="css/SavedDesigns.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="SavedDesigns.js"></script>
-    <?php include '../carrinho.php'; ?>
+    <script src="js/SavedDesigns.js"></script>
+    <?php include '../includes/carrinho.php'; ?>
 </head>
 
 <style>
@@ -227,10 +227,10 @@
 <body>
 
     <!-- Menu Mobile -->
-    <?php include '../header-mobile.php'; ?>
+    <?php include '../includes/header-mobile.php'; ?>
 
     <!-- Menu Desktop -->
-    <?php include '../header-desktop.php'; ?>
+    <?php include '../includes/header-desktop.php'; ?>
 
     <!-- Orders Section -->
     <div class="container mt-4 ">
@@ -279,7 +279,7 @@
                         <!-- Imagem do produto -->
                         <div class="position-relative">
                             <!-- Imagem do produto -->
-                            <img src="../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <img src="../../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
                             <div class="position-absolute top-0 end-0 p-2 d-flex">
                                 <!-- Botão de favoritar -->
                                 <button
@@ -330,7 +330,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card border-0 shadow-sm">
                         <div class="position-relative">
-                            <img src="../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <img src="../../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
                             <div class="position-absolute top-0 end-0 p-2 d-flex">
                                 <button
                                     class="btn btn-light rounded-circle me-2 shadow-sm d-flex justify-content-center align-items-center"
@@ -376,7 +376,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card border-0 shadow-sm">
                         <div class="position-relative">
-                            <img src="../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <img src="../../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
                             <div class="position-absolute top-0 end-0 p-2 d-flex">
                                 <button
                                     class="btn btn-light rounded-circle me-2 shadow-sm d-flex justify-content-center align-items-center"
@@ -422,7 +422,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card border-0 shadow-sm">
                         <div class="position-relative">
-                            <img src="../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <img src="../../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
                             <div class="position-absolute top-0 end-0 p-2 d-flex">
                                 <button
                                     class="btn btn-light rounded-circle me-2 shadow-sm d-flex justify-content-center align-items-center"
@@ -468,7 +468,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card border-0 shadow-sm">
                         <div class="position-relative">
-                            <img src="../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
+                            <img src="../../imagens/camisola.png" class="card-img-top bg-light" alt="Camiseta Branca">
                             <div class="position-absolute top-0 end-0 p-2 d-flex">
                                 <button
                                     class="btn btn-light rounded-circle me-2 shadow-sm d-flex justify-content-center align-items-center"
@@ -517,7 +517,7 @@
     </div>
 
     <!-- Footer -->
-    <?php include '../footer.php'; ?>
+    <?php include '../includes/footer.php'; ?>
 
 </body>
 

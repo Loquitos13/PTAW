@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Print & Go - Custom Design</title>
-<link rel="stylesheet" href="customdesign.css">
+<link rel="stylesheet" href="css/customdesign.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
   integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 <script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-<script src="customdesign.js"></script>
-<?php include 'carrinho.php'; ?>
+<script src="js/customdesign.js"></script>
+<?php include 'includes/carrinho.php'; ?>
 </head>
 
 <style>
@@ -229,10 +229,10 @@
 <body>
 
   <!-- Menu Mobile -->
-  <?php include 'header-mobile.php'; ?>
+  <?php include 'includes/header-mobile.php'; ?>
 
   <!-- Menu Desktop -->
-  <?php include 'header-desktop.php'; ?>
+  <?php include 'includes/header-desktop.php'; ?>
 
   <div id="containerHeroe">
     <div class="esqHeroe">
@@ -244,7 +244,7 @@
       </div>
     </div>
     <div class="dirHeroe">
-      <img src="imagens/produtos varios hero.png" alt="" style="width:70%;">
+      <img src="../imagens/produtos varios hero.png" alt="" style="width:70%;">
     </div>
   </div>
 
@@ -285,7 +285,7 @@
   </div>
 
   <!-- Footer -->
-  <?php include 'footer.php'; ?>
+  <?php include 'includes/footer.php'; ?>
 
 </body>
 

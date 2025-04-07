@@ -7,9 +7,9 @@
         <div class="divFooter">
             <h4>Quick Links</h4>
             <ul>
-                <li><a href="produtos.html">Products</a></li>
-                <li><a href="customdesign .html">Custom Design</a></li>
-                <li><a href="sobre.html">About Us</a></li>
+                <li><a href="/PTAW/src/produtos.php">Products</a></li>
+                <li><a href="/PTAW/src/customdesign.php">Custom Design</a></li>
+                <li><a href="/PTAW/src/sobre.php">About Us</a></li>
             </ul>
         </div>
         <div class="divFooter">
