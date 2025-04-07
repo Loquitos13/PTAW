@@ -9,8 +9,8 @@ include 'db_connection.php';
 $allowedTables = json_decode(file_get_contents('tables_config.json'), true);
 $table = $_GET['table'] ?? '';
 
-if (!isset($allowedTables[$table])) 
-{
+if (!isset($allowedTables[$table])) {
+
     http_response_code(403);
     die(json_encode(['error' => 'Invalid table']));
     
@@ -20,7 +20,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 $input = json_decode(file_get_contents('php://input'), true) ?? [];
 
 switch ($method) {
-    
+
     case 'GET':
         handleGet($pdo, $table);
         break;
@@ -44,6 +44,11 @@ function handleGet($pdo, $table) {
 
     try {
 
+        /*instead of $table, place $input
+            $input is going to have:
+                $table WHERE something
+        */
+
         $stmt = $pdo->query("SELECT * FROM $table");
         echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
 
@@ -54,7 +59,9 @@ function handleGet($pdo, $table) {
         echo json_encode(['error' => 'Internal server error']);
 
     }
+    
 }
+
 
 /*
 Use POST

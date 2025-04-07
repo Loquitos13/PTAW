@@ -42,25 +42,3 @@ Sendo assim a estrutura do projeto terá uma aparência similar a:
    └── audio/  
       └── audio1
 ```
-
-## Instalação
-
-Em primeiro lugar é preciso instalar o **[Node.js](https://nodejs.org/en)** para carregar as dependências e correr a _build tool Vite_. 
-
-De seguida instala-se o **three.js** e o **[Vite](https://threejs.org/docs/index.html#manual/en/introduction/Installation)**  utilizando o terminal no diretório do projeto.
-
-```bash
-# three.js
-npm install --save three
-
-# vite
-npm install --save-dev vite
-```
-
-Finalmente, apartir do terminal, executamos:
-
-```bash
-npx vite
-```
-
-Se não houver nenhum problema, o nosso servidor local está criado e ativo, como se pode ver no _URL_: _http://localhost:5173_

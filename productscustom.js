@@ -7,17 +7,19 @@ TODO:
 
 // check for remove
 
-import * as THREE from 'three';
+import * as THREE from 'https://unpkg.com/three@0.174.0/build/three.module.js';
 
-import WebGL from 'three/addons/capabilities/WebGL.js'; // import to see if device/browser supports WebGl 2
+import WebGL from "https://unpkg.com/three@0.174.0/examples/jsm/capabilities/WebGL.js"; // import to see if device/browser supports WebGl 2
 
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'; // import own 3D models
+import { GLTFLoader } from 'https://unpkg.com/three@0.174.0/examples/jsm/loaders/GLTFLoader.js'; // import own 3D models
 
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js'; // import to rotate the GLTF model using mouse click and drag
+import { OrbitControls } from 'https://unpkg.com/three@0.174.0/examples/jsm/controls/OrbitControls.js'; // import to rotate the GLTF model using mouse click and drag
 
-import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js'; // import to place decal on top of model
+import { DecalGeometry } from 'https://unpkg.com/three@0.174.0/examples/jsm/geometries/DecalGeometry.js'; // import to place decal on top of model
 
-import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js'; // import to export the scene
+import { GLTFExporter } from 'https://unpkg.com/three@0.174.0/examples/jsm/exporters/GLTFExporter.js'; // import to export the scene
+
+
 
 let loadingText, logo, decalPlaced = false;
 let canvas, scene, camera, renderer, controls, light;
@@ -206,7 +208,7 @@ function initThreeJS() {
     // Adding own model to the scene
     loader = new GLTFLoader();
 
-    loader.load('modelos3D/3D_Shirt.glb', function(gltf){
+    loader.load('public/modelos3D/3D_Shirt.glb', function(gltf){
 
         model = gltf.scene;
 

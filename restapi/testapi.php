@@ -2,9 +2,9 @@
 $apiUrl = "http://localhost:8081/PTAW/restapi/api.php?table=";
 
 function validateTableName(string $table): string {
-    static $allowedTables = ['clientes', 'admins']; 
+    static $allowedTables = json_decode(file_get_contents('tables_config.json'), true);
     
-    if (!in_array($table, $allowedTables, true)) {
+    if (!isset($allowedTables[$table])) {
 
         throw new InvalidArgumentException(
 
@@ -14,7 +14,7 @@ function validateTableName(string $table): string {
         
     }
     
-    return urlencode($table); // Return encoded name [1][6]
+    return urlencode($table);
 }
 
 function executeCurlRequest($ch) {
@@ -43,6 +43,10 @@ function fetchData($table) {
     global $apiUrl;
 
     $validatedTable = validateTableName($table);
+    
+    /*Add to the URL the rest of the query
+        WHERE something
+    */
 
     $url = $apiUrl . $validatedTable;
 
