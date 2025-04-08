@@ -208,7 +208,7 @@ function initThreeJS() {
     // Adding own model to the scene
     loader = new GLTFLoader();
 
-    loader.load('public/modelos3D/3D_Shirt.glb', function(gltf){
+    loader.load('../public/modelos3D/3D_Shirt.glb', function(gltf){
 
         model = gltf.scene;
 

@@ -496,8 +496,8 @@
 
 </body>
 
-<script type="module" src="productscustom.js"></script>
-<script src="script.js"></script>
+<script type="module" src="js/productscustom.js"></script>
+<script src="js/script.js"></script>
 
 </html>
 
