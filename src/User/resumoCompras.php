@@ -201,7 +201,73 @@
         }
     }
 </style>
-<body>
+<body>   
+<?php
+// Dados fictícios do produto
+$product = [
+    'name' => 'Premium Cotton T-shirt',
+    'size' => 'L',
+    'color' => 'White',
+    'qty' => 1,
+    'price' => 29.99,
+    'image' => 'https://via.placeholder.com/80'
+];
+
+// Custos adicionais
+$shipping = 5.00;
+$tax = 2.50;
+$subtotal = $product['price'] * $product['qty'];
+$total = $subtotal + $shipping + $tax;
+?>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 bg-white p-4 rounded shadow-sm">
+            <div class="row">
+                <!-- 🛒 Carrinho de Compras -->
+                <div class="col-md-8">
+                    <h4 class="mb-4">Shopping Cart</h4>
+                    <div class="d-flex align-items-center border-bottom pb-3 mb-3">
+                        <img src="<?php echo $product['image']; ?>" class="me-3" alt="Product" style="width:80px;">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1"><?php echo $product['name']; ?></h6>
+                            <small>Size: <?php echo $product['size']; ?> | Color: <?php echo $product['color']; ?></small>
+                            <div class="mt-2">Qty: <?php echo $product['qty']; ?></div>
+                        </div>
+                        <div>
+                            <strong>$<?php echo number_format($product['price'], 2); ?></strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 📦 Resumo da Encomenda -->
+                <div class="col-md-4">
+                    <h5>Order Summary</h5>
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Subtotal</span>
+                            <strong>$<?php echo number_format($subtotal, 2); ?></strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Shipping</span>
+                            <strong>$<?php echo number_format($shipping, 2); ?></strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Tax</span>
+                            <strong>$<?php echo number_format($tax, 2); ?></strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Total</span>
+                            <strong>$<?php echo number_format($total, 2); ?></strong>
+                        </li>
+                    </ul>
+                    <button class="btn btn-primary w-100">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     <header>Shopping Cart</header>
     
 </body>
