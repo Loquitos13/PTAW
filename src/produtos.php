@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/produtos.css">
   <script src="js/produtos.js"></script>
   <?php include 'includes/carrinho.php'; ?>
+  <?php include 'includes/filtros.php'; ?>
 </head>
 
 <style>
@@ -326,9 +327,11 @@
         </div>
       </div>
     </div>
+
+    <!-- Produtos -->
     <div id="produtos">
       <div class="containerOrdenar">
-        <button id="filters-toggle">Filters</button>
+        <button data-bs-toggle="offcanvas" data-bs-target="#filtros_mob" aria-controls="filtros_mob" id="filters-toggle">Filters</button>
         <select class="form-select" style="width: auto;" aria-label="Sort options">
           <option selected>Popular (Best Seller)</option>
           <option value="1">Newest</option>
@@ -336,121 +339,224 @@
           <option value="3">Sought-After</option>
         </select>
       </div>
-      <div class="containerProdutos">
-        <a href="" class="boxItemLink">
-          <div class="boxItem">
-            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
-            &nbsp;
-            <p class="boxItemTitle">T-Shirts</p>
-            <p class="boxItemDescription">Premium cotton tees</p>
-            <div class="boxItemFooter">
-              <span boxItemPrice>24,99€</span>
-              <span>100+ sold</span>
+
+      <!-- Todos os produtos -->
+      <div class="container py-4">
+        <div class="row">
+          <!-- Iten salvo 1 -->
+          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card border-0 shadow-sm">
+              <!-- Imagem do produto -->
+              <div class="position-relative">
+                <img src="../imagens/produtos varios hero.png" class="card-img-top bg-light" alt="T-Shirts">
+                <div class="position-absolute top-0 end-0 p-2 d-flex">
+                </div>
+              </div>
+              <!-- Informações do produto -->
+              <div class="card-body px-3 pb-3">
+                <h5 class="card-title fw-bold mb-1">T-Shirts</h5>
+                <p class="card-text text-muted small mb-3">Premium cotton tees</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <!-- Preço -->
+                  <span class="fw-bold">24,99€</span>
+                  <!-- Botão de comprar -->
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                </div>
+                <div class="mt-2">
+                  <span class="text-muted small">100+ sold</span>
+                </div>
+              </div>
             </div>
-            <button type="button" class="btn btn-primary ms-3 me-3" style="background-color: #4F46E5; border:0;">Shop
-              Now</button>
           </div>
-        </a>
-        <a href="" class="boxItemLink">
-          <div class="boxItem">
-            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
-            &nbsp;
-            <p class="boxItemTitle">T-Shirts</p>
-            <p class="boxItemDescription">Premium cotton tees</p>
-            <div class="boxItemFooter">
-              <span boxItemPrice>24,99€</span>
-              <span>100+ sold</span>
+
+          <!-- Iten salvo 2 -->
+          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card border-0 shadow-sm">
+              <!-- Imagem do produto -->
+              <div class="position-relative">
+                <img src="../imagens/produtos varios hero.png" class="card-img-top bg-light" alt="T-Shirts">
+                <div class="position-absolute top-0 end-0 p-2 d-flex">
+                </div>
+              </div>
+              <!-- Informações do produto -->
+              <div class="card-body px-3 pb-3">
+                <h5 class="card-title fw-bold mb-1">T-Shirts</h5>
+                <p class="card-text text-muted small mb-3">Premium cotton tees</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <!-- Preço -->
+                  <span class="fw-bold">24,99€</span>
+                  <!-- Botão de comprar -->
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                </div>
+                <div class="mt-2">
+                  <span class="text-muted small">100+ sold</span>
+                </div>
+              </div>
             </div>
-            <button type="button" class="btn btn-primary ms-3 me-3" style="background-color: #4F46E5; border:0;">Shop
-              Now</button>
           </div>
-        </a>
-        <a href="" class="boxItemLink">
-          <div class="boxItem">
-            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
-            &nbsp;
-            <p class="boxItemTitle">T-Shirts</p>
-            <p class="boxItemDescription">Premium cotton tees</p>
-            <div class="boxItemFooter">
-              <span boxItemPrice>24,99€</span>
-              <span>100+ sold</span>
+
+          <!-- Iten salvo 3 -->
+          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card border-0 shadow-sm">
+              <!-- Imagem do produto -->
+              <div class="position-relative">
+                <img src="../imagens/produtos varios hero.png" class="card-img-top bg-light" alt="T-Shirts">
+                <div class="position-absolute top-0 end-0 p-2 d-flex">
+                </div>
+              </div>
+              <!-- Informações do produto -->
+              <div class="card-body px-3 pb-3">
+                <h5 class="card-title fw-bold mb-1">T-Shirts</h5>
+                <p class="card-text text-muted small mb-3">Premium cotton tees</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <!-- Preço -->
+                  <span class="fw-bold">24,99€</span>
+                  <!-- Botão de comprar -->
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                </div>
+                <div class="mt-2">
+                  <span class="text-muted small">100+ sold</span>
+                </div>
+              </div>
             </div>
-            <button type="button" class="btn btn-primary ms-3 me-3" style="background-color: #4F46E5; border:0;">Shop
-              Now</button>
           </div>
-        </a>
-        <a href="" class="boxItemLink">
-          <div class="boxItem">
-            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
-            &nbsp;
-            <p class="boxItemTitle">Hoodies & Sweatshirts</p>
-            <p class="boxItemDescription">Cozy comfort wear</p>
-            <div class="boxItemFooter">
-              <span boxItemPrice>39,99€</span>
-              <span>50+ sold</span>
+
+          <!-- Iten salvo 4 -->
+          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card border-0 shadow-sm">
+              <!-- Imagem do produto -->
+              <div class="position-relative">
+                <img src="../imagens/produtos varios hero.png" class="card-img-top bg-light" alt="T-Shirts">
+                <div class="position-absolute top-0 end-0 p-2 d-flex">
+                </div>
+              </div>
+              <!-- Informações do produto -->
+              <div class="card-body px-3 pb-3">
+                <h5 class="card-title fw-bold mb-1">T-Shirts</h5>
+                <p class="card-text text-muted small mb-3">Premium cotton tees</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <!-- Preço -->
+                  <span class="fw-bold">24,99€</span>
+                  <!-- Botão de comprar -->
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                </div>
+                <div class="mt-2">
+                  <span class="text-muted small">100+ sold</span>
+                </div>
+              </div>
             </div>
-            <button type="button" class="btn btn-primary ms-3 me-3" style="background-color: #4F46E5; border:0;">Shop
-              Now</button>
           </div>
-        </a>
-        <a href="" class="boxItemLink">
-          <div class="boxItem">
-            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
-            &nbsp;
-            <p class="boxItemTitle">Caps & Hats</p>
-            <p class="boxItemDescription">Stylish headwear</p>
-            <div class="boxItemFooter">
-              <span boxItemPrice>19,99€</span>
-              <span>75+ sold</span>
+
+          <!-- Iten salvo 5 -->
+          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card border-0 shadow-sm">
+              <!-- Imagem do produto -->
+              <div class="position-relative">
+                <img src="../imagens/produtos varios hero.png" class="card-img-top bg-light" alt="T-Shirts">
+                <div class="position-absolute top-0 end-0 p-2 d-flex">
+                </div>
+              </div>
+              <!-- Informações do produto -->
+              <div class="card-body px-3 pb-3">
+                <h5 class="card-title fw-bold mb-1">T-Shirts</h5>
+                <p class="card-text text-muted small mb-3">Premium cotton tees</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <!-- Preço -->
+                  <span class="fw-bold">24,99€</span>
+                  <!-- Botão de comprar -->
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                </div>
+                <div class="mt-2">
+                  <span class="text-muted small">100+ sold</span>
+                </div>
+              </div>
             </div>
-            <button type="button" class="btn btn-primary ms-3 me-3" style="background-color: #4F46E5; border:0;">Shop
-              Now</button>
           </div>
-        </a>
-        <a href="" class="boxItemLink">
-          <div class="boxItem">
-            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
-            &nbsp;
-            <p class="boxItemTitle">Posters</p>
-            <p class="boxItemDescription">High quality prints</p>
-            <div class="boxItemFooter">
-              <span boxItemPrice>29,99€</span>
-              <span>150+ sold</span>
+
+          <!-- Iten salvo 6 -->
+          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card border-0 shadow-sm">
+              <!-- Imagem do produto -->
+              <div class="position-relative">
+                <img src="../imagens/produtos varios hero.png" class="card-img-top bg-light" alt="T-Shirts">
+                <div class="position-absolute top-0 end-0 p-2 d-flex">
+                </div>
+              </div>
+              <!-- Informações do produto -->
+              <div class="card-body px-3 pb-3">
+                <h5 class="card-title fw-bold mb-1">T-Shirts</h5>
+                <p class="card-text text-muted small mb-3">Premium cotton tees</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <!-- Preço -->
+                  <span class="fw-bold">24,99€</span>
+                  <!-- Botão de comprar -->
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                </div>
+                <div class="mt-2">
+                  <span class="text-muted small">100+ sold</span>
+                </div>
+              </div>
             </div>
-            <button type="button" class="btn btn-primary ms-3 me-3" style="background-color: #4F46E5; border:0;">Shop
-              Now</button>
           </div>
-        </a>
-        <a href="" class="boxItemLink">
-          <div class="boxItem">
-            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
-            &nbsp;
-            <p class="boxItemTitle">Home Textiles</p>
-            <p class="boxItemDescription">Cushions and blankets</p>
-            <div class="boxItemFooter">
-              <span boxItemPrice>34,99€</span>
-              <span>80+ sold</span>
+
+          <!-- Iten salvo 7 -->
+          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card border-0 shadow-sm">
+              <!-- Imagem do produto -->
+              <div class="position-relative">
+                <img src="../imagens/produtos varios hero.png" class="card-img-top bg-light" alt="T-Shirts">
+                <div class="position-absolute top-0 end-0 p-2 d-flex">
+                </div>
+              </div>
+              <!-- Informações do produto -->
+              <div class="card-body px-3 pb-3">
+                <h5 class="card-title fw-bold mb-1">T-Shirts</h5>
+                <p class="card-text text-muted small mb-3">Premium cotton tees</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <!-- Preço -->
+                  <span class="fw-bold">24,99€</span>
+                  <!-- Botão de comprar -->
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                </div>
+                <div class="mt-2">
+                  <span class="text-muted small">100+ sold</span>
+                </div>
+              </div>
             </div>
-            <button type="button" class="btn btn-primary ms-3 me-3" style="background-color: #4F46E5; border:0;">Shop
-              Now</button>
           </div>
-        </a>
-        <a href="" class="boxItemLink">
-          <div class="boxItem">
-            <img src="../imagens/produtos varios hero.png" alt="" class="boxItemImg">
-            &nbsp;
-            <p class="boxItemTitle">Phone Cases</p>
-            <p class="boxItemDescription">Protection with style</p>
-            <div class="boxItemFooter">
-              <span boxItemPrice>19,99€</span>
-              <span>120+ sold</span>
+
+          <!-- Iten salvo 8 -->
+          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card border-0 shadow-sm">
+              <!-- Imagem do produto -->
+              <div class="position-relative">
+                <img src="../imagens/produtos varios hero.png" class="card-img-top bg-light" alt="T-Shirts">
+                <div class="position-absolute top-0 end-0 p-2 d-flex">
+                </div>
+              </div>
+              <!-- Informações do produto -->
+              <div class="card-body px-3 pb-3">
+                <h5 class="card-title fw-bold mb-1">T-Shirts</h5>
+                <p class="card-text text-muted small mb-3">Premium cotton tees</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <!-- Preço -->
+                  <span class="fw-bold">24,99€</span>
+                  <!-- Botão de comprar -->
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                </div>
+                <div class="mt-2">
+                  <span class="text-muted small">100+ sold</span>
+                </div>
+              </div>
             </div>
-            <button type="button" class="btn btn-primary ms-3 me-3" style="background-color: #4F46E5; border:0;">Shop
-              Now</button>
           </div>
-        </a>
+
+
+        </div>
+
       </div>
     </div>
+
   </div>
   <div class="shadow p-3 mb-5 bg-body rounded containerPrincipalinho ">
     <h2>Need Bulk Orders?</h2>
@@ -460,93 +566,6 @@
   </div>
   <!-- Footer -->
   <?php include 'includes/footer.php'; ?>
-
-  <!-- Overlay para fechar ao clicar fora -->
-  <div id="filters-overlay"></div>
-  <div id="filters-sidebar" class="d-flex justify-content-end lign-items-center gap-2 mb-3">
-    <button id="close-filters">X</button>
-    <div class="filtros-mobile">
-      <!-- Categorias -->
-      <div>
-        <h6>Categories</h6>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCategory1">
-          <label class="form-check-label" for="labelCategory1">
-            Apparel
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCategory2">
-          <label class="form-check-label" for="labelCategory2">
-            Accessories
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCategory3">
-          <label class="form-check-label" for="labelCategory3">
-            Home & Living
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCategory4">
-          <label class="form-check-label" for="labelCategory4">
-            Stationery
-          </label>
-        </div>
-      </div>
-      <hr>
-      <div class="range-container">
-        <h6 class="mb-3 fw-semibold">Price Range</h6>
-        <div class="double-range-slider">
-          <div class="slider-track">
-            <div class="slider-track-highlight" id="track-highlight-mobile"></div>
-          </div>
-          <div class="slider-thumb" id="thumb-min-mobile"></div>
-          <div class="slider-thumb" id="thumb-max-mobile"></div>
-          <input type="range" class="range-input" id="range-min-mobile" min="0" max="100" value="30">
-          <input type="range" class="range-input" id="range-max-mobile" min="0" max="100" value="70">
-        </div>
-        <div class="price-labels mt-2">
-          <span class="price-label">$<span id="value-min-mobile">30</span></span>
-          <span class="price-label">$<span id="value-max-mobile">70</span></span>
-        </div>
-      </div>
-      <hr>
-      <div class="color-selector">
-        <h6>Colors</h6>
-        <div class="d-flex gap-2 flex-wrap">
-          <div id="idColorOptions-mobile" class="colorOptions-mobile"></div>
-        </div>
-      </div>
-      <hr>
-      <div>
-        <h6>Size</h6>
-        <div id="idSizeOptions-mobile" class="sizeOptions">
-        </div>
-        <hr>
-        <div>
-          <h6>Promotions</h6>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-            <label class="form-check-label" for="defaultCheck1">
-              On Sale
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-            <label class="form-check-label" for="defaultCheck1">
-              Home & Living
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-            <label class="form-check-label" for="defaultCheck1">
-              Stationery
-          </div>
-        </div>
-        <hr>
-        <!-- Botão de Aplicar -->
-        <button id="apply-filters" class="btn btn-primary">Apply Filters</button>
-      </div>
-    </div>
 
 
 </body>
