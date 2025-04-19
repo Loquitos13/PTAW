@@ -1,3 +1,6 @@
+<?php
+$base_url = "/~ptaw-2025-gr4";
+?>
 <footer>
     <div id="containerFooter">
         <div class="divFooter1">
@@ -25,11 +28,11 @@
             <h4>Follow Us</h4>
             <ul class="social">
                 <li>
-                    <a href="https://facebook.com" class="iconSocial"><img src="/PTAW/imagens/fb.png" alt="Facebook">
+                    <a href="https://facebook.com" class="iconSocial"><img src="<?= $base_url ?>/imagens/fb.png" alt="Facebook">
                     </a>
                 </li>
                 <li>
-                    <a href="https://instagram.com" class="iconSocial"><img src="/PTAW/imagens/ig.png" alt="Instagram">
+                    <a href="https://instagram.com" class="iconSocial"><img src="<?= $base_url ?>/imagens/ig.png" alt="Instagram">
                     </a>
                 </li>
 

@@ -25,7 +25,7 @@ const feedbacks = [
     name: "Ana Silva",
     avatar: "/api/placeholder/100/100",
     role: "Cliente desde 2021",
-    content: "Serviço excepcional! A Car Spot foi muito atenciosa e resolveu o meu problema rapidamente. Recomendo fortemente para todos os que precisam de um trabalho de qualidade.",
+    content: "Serviço excepcional! A Print & Go foi muito atenciosa e resolveu o meu problema rapidamente. Recomendo fortemente para todos os que precisam de um trabalho de qualidade.",
     rating: 5,
     date: "12 de Março, 2025",
     tags: ["Suporte", "Atendimento"],
@@ -35,7 +35,7 @@ const feedbacks = [
     name: "Carlos Mendes",
     avatar: "/api/placeholder/100/100",
     role: "Cliente desde 2020",
-    content: "Utilizei os serviços várias vezes e sempre fiquei satisfeito com os resultados. A Car Spot é muito profissional e eficiente.",
+    content: "Utilizei os serviços várias vezes e sempre fiquei satisfeito com os resultados. A Print & Go é muito profissional e eficiente.",
     rating: 5,
     date: "5 de Março, 2025",
     tags: ["Pontualidade", "Qualidade"],
@@ -55,10 +55,10 @@ const feedbacks = [
     name: "Pedro Almeida",
     avatar: "/api/placeholder/100/100",
     role: "Cliente desde 2023",
-    content: "Com certeza voltarei a contratar os serviços.",
+    content: "Com certeza voltarei a comprar!",
     rating: 5,
     date: "15 de Fevereiro, 2025",
-    tags: ["Preço", "Atendimento"],
+    tags: ["Preço", "Pontualidade"],
   },
   {
     id: 5,
@@ -91,7 +91,7 @@ function createFeedbackItem(feedback) {
 
   item.innerHTML = `
     <div class="feedback-item">
-      <div class="feedback-header">
+      <div class="feedback-header"> 
         <div class="feedback-author">
           <h3>${feedback.name}</h3>
           <p>${feedback.role}</p>

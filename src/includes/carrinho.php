@@ -1,4 +1,6 @@
 <?php
+$base_url = "/~ptaw-2025-gr4";
+
 // Array simulando itens do carrinho
 $cart_items = [
     [
@@ -7,7 +9,7 @@ $cart_items = [
         'color' => 'White',
         'price' => 29.99,
         'quantity' => 1,
-        'image' => '/PTAW/imagens/produtos varios hero.png'
+        'image' => "{$base_url}/imagens/produtos varios hero.png"
     ],
     [
         'name' => 'Premium Cotton T-shirt',
@@ -15,7 +17,7 @@ $cart_items = [
         'color' => 'White',
         'price' => 29.99,
         'quantity' => 1,
-        'image' => '/PTAW/imagens/produtos varios hero.png'
+        'image' => "{$base_url}/imagens/produtos varios hero.png"
     ]
 ];
 ?>

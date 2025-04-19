@@ -10,6 +10,10 @@
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
   <script src="src/js/script.js"></script>
+  <?php
+$base_url = "/~ptaw-2025-gr4";
+?>
+
 
   <?php include 'src/includes/carrinho.php'; ?>
 </head>
