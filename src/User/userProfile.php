@@ -237,10 +237,13 @@
             <!-- User Profile Card -->
             <div class="col-lg-4 mb-4">
                 <div class="text-center mb-4">
-                    <img src="https://via.placeholder.com/110" alt="Sarah Anderson" class="rounded-circle img-thumbnail mb-3">
+                    <img src="../../imagens/camisola.png" alt="Sarah Anderson" width="30%" height="30%" class="rounded-circle img-thumbnail mb-3">
                     <h4 class="mb-0">Sarah Anderson</h4>
                     <p class="text-muted">Member since January 2025</p>
-                    <button class="btn btn-primary px-4">Edit Profile</button>
+                    <a href="./edit_profile.php">
+                        <button class="btn btn-primary px-4">Edit Profile</button>
+                    </a>
+
                 </div>
 
                 <div class="card shadow-sm">
@@ -283,7 +286,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="card-title">Recent Orders</h5>
-                            <a href="#" class="text-decoration-none text-primary">View all</a>
+                            <a href="./my_orders.php" class="text-decoration-none text-primary">View all</a>
                         </div>
 
                         <div class="list-group">
@@ -314,19 +317,15 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="card-title">Saved Designs</h5>
-                            <a href="#" class="text-decoration-none text-primary">View all</a>
+                            <a href="./SavedDesigns.php" class="text-decoration-none text-primary">View all</a>
                         </div>
 
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-body p-2">
-                                        <div class="bg-light p-5 mb-2 d-flex align-items-center justify-content-center">
-                                            <!-- Placeholder for t-shirt design -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-image text-secondary" viewBox="0 0 16 16">
-                                                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-                                                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
-                                            </svg>
+                                        <div class=" d-flex align-items-center justify-content-center">
+                                            <img src="../../imagens/camisola.png" alt="Descrição da imagem" class="img-fluid" fill="currentColor">
                                         </div>
                                         <h6 class="card-title">Summer Collection T-shirt</h6>
                                         <small class="text-muted">Last edited: March 16, 2025</small>
@@ -336,9 +335,8 @@
                             <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-body p-2">
-                                        <div class="bg-light p-3 mb-2 d-flex align-items-center justify-content-center">
-                                            <!-- Mug design image -->
-                                            <img src="https://via.placeholder.com/150x120" alt="Birthday Mug Design" class="img-fluid">
+                                        <div class=" d-flex align-items-center justify-content-center">
+                                            <img src="../../imagens/camisola.png" alt="Descrição da imagem" class="img-fluid" fill="currentColor">
                                         </div>
                                         <h6 class="card-title">Birthday Mug Design</h6>
                                         <small class="text-muted">Last edited: March 16, 2025</small>

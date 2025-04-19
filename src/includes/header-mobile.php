@@ -7,7 +7,7 @@ $base_url = "/~ptaw-2025-gr4";
   <button id="menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
     ☰
   </button>
-  <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+  <a href="#" class="d-flex align-items-center mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
     id="a-logo-header-mobile">
     <img src="<?= $base_url ?>/imagens/Print&Go.png" alt="" id="logo-header-mobile" href="../index.php">
   </a>
