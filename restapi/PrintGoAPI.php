@@ -16,7 +16,11 @@ $router = new Router();
 
 $router->add('GET', '/users', fn() => $controller->getUsers());
 
-$router->add('GET', '/user/$id', fn($id) => $controller->getUserByID($id));
+$router->add('GET', '/userById/$id', fn($id) => $controller->getUserByID($id));
+
+$router->add('GET', '/userByEmail/$userEmail', fn($userEmail) => $controller->getUserByEmail($userEmail));
+
+$router->add('GET', '/adminByEmail/$adminEmail', fn($adminEmail) => $controller->getAdminByEmail($adminEmail));
 
 $router->add('GET', '/encomendas', fn() => $controller->getEncomendas());
 
@@ -29,6 +33,8 @@ $router->add('POST', '/insertUser', fn() => $controller->insertUser());
 $router->add('PUT', '/updateUser', fn() => $controller->updateUser());
 
 $router->add('DELETE', '/deleteUserByID/$id', fn($id) => $controller->deleteUserByID($id));
+
+
 
 $router->dispatch();
 

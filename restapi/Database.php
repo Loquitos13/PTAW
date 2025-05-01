@@ -4,8 +4,8 @@ class Database {
 
     private static string $hostname = 'localhost';
     private static string $database = 'ptaw';
-    private static string $username = 'root';
-    private static string $password = '';
+    private static string $username = 'filipe';
+    private static string $password = 'ptaw';
 
     private static ?PDO $connection = null;
 
@@ -15,7 +15,7 @@ class Database {
 
             $dsn = 'mysql:host=' . self::$hostname . ';dbname=' . self::$database;
 
-            self::$connection = new PDO($dsn, self::$username);
+            self::$connection = new PDO($dsn, self::$username, self::$password);
 
             self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

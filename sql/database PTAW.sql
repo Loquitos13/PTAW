@@ -6,7 +6,7 @@ CREATE TABLE Admins (
     nome_admin VARCHAR(255) NOT NULL,
     email_admin VARCHAR(255) NOT NULL UNIQUE,
     pass_admin VARCHAR(255) NOT NULL,
-    contacto_admin VARCHAR(255) NOT NULL,
+    contacto_admin VARCHAR(255),
     funcao_admin VARCHAR(255) NOT NULL,
     data_criacao_admin DATETIME NOT NULL
 );
@@ -16,9 +16,9 @@ CREATE TABLE Clientes (
     nome_cliente VARCHAR(255) NOT NULL,
     email_cliente VARCHAR(255) NOT NULL UNIQUE,
     pass_cliente VARCHAR(255) NOT NULL,
-    contacto_cliente VARCHAR(15) NOT NULL,
-    morada_cliente VARCHAR(255) NOT NULL,
-    nif_cliente VARCHAR(9) NOT NULL UNIQUE,
+    contacto_cliente VARCHAR(15),
+    morada_cliente VARCHAR(255),
+    nif_cliente VARCHAR(9),
     ip_cliente VARCHAR(45) NOT NULL UNIQUE,
     imagem_cliente VARCHAR(255),
     id_gift INT,
