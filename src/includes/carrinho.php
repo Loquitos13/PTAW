@@ -71,8 +71,8 @@ $cart_items = [
 
     </div>
 
-    <div style="align-self: center;  margin-bottom: 20%;">
-        <button type="button" class="btn btn-primary" style="" id="concluir-compra">Concluir Compra</button>
+    <div style="align-self: center;  height:100%;  display: flex; flex-direction: column; justify-items: space-between; gap: 5%;">
+        <button type="button" class="btn btn-primary" style="margin-bottom:5%;" id="concluir-compra">Concluir Compra</button>
         <button type="button" class="btn btn-outline-success" style="" id="continuar-compra">Continuar a Comprar</button>
     </div>
 
