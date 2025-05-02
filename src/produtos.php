@@ -300,8 +300,30 @@
       <hr>
       <div class="color-selector">
         <h6>Colors</h6>
-        <div class="d-flex gap-2 flex-wrap">
-          <div id="idColorOptions" class="colorOptions"></div>
+        <div id="idColorOptions" class="colorOptions d-flex gap-2">
+          <input type="radio" class="btn-check" name="color" id="color-red" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-red"
+            style="background-color: red; border: 2px solid #ccc;"></label>
+
+          <input type="radio" class="btn-check" name="color" id="color-blue" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-blue"
+            style="background-color: blue; border: 2px solid #ccc;"></label>
+
+          <input type="radio" class="btn-check" name="color" id="color-green" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-green"
+            style="background-color: green; border: 2px solid #ccc;"></label>
+
+          <input type="radio" class="btn-check" name="color" id="color-orange" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-orange"
+            style="background-color: orange; border: 2px solid #ccc;"></label>
+
+          <input type="radio" class="btn-check" name="color" id="color-purple" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-purple"
+            style="background-color: purple; border: 2px solid #ccc;"></label>
+
+          <input type="radio" class="btn-check" name="color" id="color-black" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-black"
+            style="background-color: black; border: 2px solid #ccc;"></label>
         </div>
       </div>
       <hr>
@@ -333,7 +355,8 @@
     <!-- Produtos -->
     <div id="produtos">
       <div class="containerOrdenar">
-        <button data-bs-toggle="offcanvas" data-bs-target="#filtros_mob" aria-controls="filtros_mob" id="filters-toggle">Filters</button>
+        <button data-bs-toggle="offcanvas" data-bs-target="#filtros_mob" aria-controls="filtros_mob"
+          id="filters-toggle">Filters</button>
         <select class="form-select" style="width: auto;" aria-label="Sort options">
           <option selected>Popular (Best Seller)</option>
           <option value="1">Newest</option>
@@ -362,7 +385,8 @@
                   <!-- Preço -->
                   <span class="fw-bold">24,99€</span>
                   <!-- Botão de comprar -->
-                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop
+                    Now</button>
                 </div>
                 <div class="mt-2">
                   <span class="text-muted small">100+ sold</span>
@@ -388,7 +412,8 @@
                   <!-- Preço -->
                   <span class="fw-bold">24,99€</span>
                   <!-- Botão de comprar -->
-                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop
+                    Now</button>
                 </div>
                 <div class="mt-2">
                   <span class="text-muted small">100+ sold</span>
@@ -414,7 +439,8 @@
                   <!-- Preço -->
                   <span class="fw-bold">24,99€</span>
                   <!-- Botão de comprar -->
-                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop
+                    Now</button>
                 </div>
                 <div class="mt-2">
                   <span class="text-muted small">100+ sold</span>
@@ -440,7 +466,8 @@
                   <!-- Preço -->
                   <span class="fw-bold">24,99€</span>
                   <!-- Botão de comprar -->
-                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop
+                    Now</button>
                 </div>
                 <div class="mt-2">
                   <span class="text-muted small">100+ sold</span>
@@ -466,7 +493,8 @@
                   <!-- Preço -->
                   <span class="fw-bold">24,99€</span>
                   <!-- Botão de comprar -->
-                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop
+                    Now</button>
                 </div>
                 <div class="mt-2">
                   <span class="text-muted small">100+ sold</span>
@@ -492,7 +520,8 @@
                   <!-- Preço -->
                   <span class="fw-bold">24,99€</span>
                   <!-- Botão de comprar -->
-                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop
+                    Now</button>
                 </div>
                 <div class="mt-2">
                   <span class="text-muted small">100+ sold</span>
@@ -518,7 +547,8 @@
                   <!-- Preço -->
                   <span class="fw-bold">24,99€</span>
                   <!-- Botão de comprar -->
-                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop
+                    Now</button>
                 </div>
                 <div class="mt-2">
                   <span class="text-muted small">100+ sold</span>
@@ -544,7 +574,8 @@
                   <!-- Preço -->
                   <span class="fw-bold">24,99€</span>
                   <!-- Botão de comprar -->
-                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop Now</button>
+                  <button type="button" class="btn btn-primary" style="background-color: #4F46E5; border: 0;">Shop
+                    Now</button>
                 </div>
                 <div class="mt-2">
                   <span class="text-muted small">100+ sold</span>

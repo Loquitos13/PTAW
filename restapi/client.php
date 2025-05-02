@@ -1,11 +1,8 @@
 <?php
 
 require_once 'Database.php';
-require_once 'QueryBuilder.php';
 
-$queryBuilder = new QueryBuilder();
-
-$apiUrl = "http://localhost:8081/PTAW/restapi/PrintGoAPI.php";
+$apiUrl = "http://localhost/PTAW/restapi/PrintGoAPI.php";
 
 function executeCurlRequest($ch) {
 
@@ -51,7 +48,7 @@ function getUserByID($id) {
 
     global $apiUrl;
 
-    $ch = curl_init("$apiUrl/user/$id");
+    $ch = curl_init("$apiUrl/userByID/$id");
 
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json'
@@ -73,21 +70,21 @@ function getEncomendasByUserID($id) {
     return json_decode(executeCurlRequest($ch), true);
 }
 
-function addUser($userData) {
-
-    global $apiUrl;
-
-    $ch = curl_init("$apiUrl/insertUser");
-
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json'
-    ]);
-
-    return json_decode(executeCurlRequest($ch), true);
-}
+// function addUser($userData) {
+//
+//     global $apiUrl;
+//
+//     $ch = curl_init("$apiUrl/insertUser");
+//
+//     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//     curl_setopt($ch, CURLOPT_POST, true);
+//     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
+//     curl_setopt($ch, CURLOPT_HTTPHEADER, [
+//         'Content-Type: application/json'
+//     ]);
+//
+//     return json_decode(executeCurlRequest($ch), true);
+// }
 
 function updateUser($userData) {
 

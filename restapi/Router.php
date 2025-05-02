@@ -22,21 +22,21 @@ class Router {
     public function dispatch(): void {
 
         $method = $_SERVER['REQUEST_METHOD'];
-        $url = parse_url($_SERVER['REQUEST_url'], PHP_URL_PATH);
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
         $script = $_SERVER['SCRIPT_NAME'];
 
-        if (strpos($url, $script) === 0) {
+        if (strpos($uri, $script) === 0) {
 
-            $url = substr($url, strlen($script));
+            $uri = substr($uri, strlen($script));
 
         }
 
-        if ($url === '') $url = '/';
+        if ($uri === '') $uri = '/';
 
         foreach ($this->routes as $route) {
 
-            if ($method === $route['method'] && preg_match($route['regex'], $url, $m)) {
+            if ($method === $route['method'] && preg_match($route['regex'], $uri, $m)) {
 
                 $args = [];
                 foreach ($route['vars'] as $v) $args[] = $m[$v];

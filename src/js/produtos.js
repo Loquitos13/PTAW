@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setupSlider('range-min-mobile', 'range-max-mobile', 'thumb-min-mobile', 'thumb-max-mobile', 'track-highlight-mobile', 'value-min-mobile', 'value-max-mobile');
 });
 
+/*
 document.addEventListener('DOMContentLoaded', function () {
     const colors = ["red","blue","green","orange","purple","black"]; 
 
@@ -80,44 +81,44 @@ colorsMobile.forEach(color => {
     colorContainerMobile.appendChild(btn);
 });
 
-})
+})*/
 
 document.addEventListener('DOMContentLoaded', function () {
-    const sizes = ["S", "M", "L", "XL", "2XL"]; 
+    const sizes = ["S", "M", "L", "XL", "2XL"];
 
-// Generate size buttons dynamically
-const sizeContainer = document.getElementById("idSizeOptions");
-sizes.forEach(size => {
-    const btn = document.createElement("button");
-    btn.classList.add("sizeBtn");
-    btn.textContent = size;
-    
-    // Set click event immediately
-    btn.onclick = function () {
-        document.querySelectorAll(".sizeBtn").forEach(sizeBtn => sizeBtn.classList.remove("activeSize"));
-        this.classList.add("activeSize");
-    };
+    // Generate size buttons dynamically
+    const sizeContainer = document.getElementById("idSizeOptions");
+    sizes.forEach(size => {
+        const btn = document.createElement("button");
+        btn.classList.add("sizeBtn");
+        btn.textContent = size;
 
-    sizeContainer.appendChild(btn);
-});
+        // Set click event immediately
+        btn.onclick = function () {
+            document.querySelectorAll(".sizeBtn").forEach(sizeBtn => sizeBtn.classList.remove("activeSize"));
+            this.classList.add("activeSize");
+        };
 
-const sizesMobile = ["S", "M", "L", "XL", "2XL"]; 
+        sizeContainer.appendChild(btn);
+    });
 
-// Generate size buttons dynamically
-const sizeContainerMobile = document.getElementById("idSizeOptions-mobile");
-sizesMobile.forEach(size => {
-    const btn = document.createElement("button");
-    btn.classList.add("sizeBtn");
-    btn.textContent = size;
-    
-    // Set click event immediately
-    btn.onclick = function () {
-        document.querySelectorAll(".sizeBtn").forEach(sizeBtn => sizeBtn.classList.remove("activeSize"));
-        this.classList.add("activeSize");
-    };
+    const sizesMobile = ["S", "M", "L", "XL", "2XL"];
 
-    sizeContainerMobile.appendChild(btn);
-});
+    // Generate size buttons dynamically
+    const sizeContainerMobile = document.getElementById("idSizeOptions-mobile");
+    sizesMobile.forEach(size => {
+        const btn = document.createElement("button");
+        btn.classList.add("sizeBtn");
+        btn.textContent = size;
+
+        // Set click event immediately
+        btn.onclick = function () {
+            document.querySelectorAll(".sizeBtn").forEach(sizeBtn => sizeBtn.classList.remove("activeSize"));
+            this.classList.add("activeSize");
+        };
+
+        sizeContainerMobile.appendChild(btn);
+    });
 
 })
 
