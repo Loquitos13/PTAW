@@ -225,6 +225,12 @@ $base_url = "/~ptaw-2025-gr4";
       align-items: center;
       gap: 20px;
     }
+
+    #carrinho{
+      display:flex;
+      flex-direction:column;
+      align-items: center;
+    }
   }
 </style>
 

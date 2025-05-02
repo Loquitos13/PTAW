@@ -1,20 +1,20 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const menuToggle = document.getElementById('menu-toggle');
-  const menuMobile = document.getElementById('menu-mobile');
+document.addEventListener("DOMContentLoaded", function () {
+  const menuToggle = document.getElementById("menu-toggle");
+  const menuMobile = document.getElementById("menu-mobile");
 
-  menuToggle.addEventListener('click', function () {
-    if (menuMobile.style.display === 'flex') {
-      menuMobile.style.display = 'none';
+  menuToggle.addEventListener("click", function () {
+    if (menuMobile.style.display === "flex") {
+      menuMobile.style.display = "none";
     } else {
-      menuMobile.style.display = 'flex';
+      menuMobile.style.display = "flex";
     }
   });
 
   // Optionally close the menu when clicking a link
-  const links = menuMobile.querySelectorAll('a');
-  links.forEach(link => {
-    link.addEventListener('click', () => {
-      menuMobile.style.display = 'none';
+  const links = menuMobile.querySelectorAll("a");
+  links.forEach((link) => {
+    link.addEventListener("click", () => {
+      menuMobile.style.display = "none";
     });
   });
 });
@@ -25,7 +25,8 @@ const feedbacks = [
     name: "Ana Silva",
     avatar: "/api/placeholder/100/100",
     role: "Cliente desde 2021",
-    content: "Serviço excepcional! A Print & Go foi muito atenciosa e resolveu o meu problema rapidamente. Recomendo fortemente para todos os que precisam de um trabalho de qualidade.",
+    content:
+      "Serviço excepcional! A Print & Go foi muito atenciosa e resolveu o meu problema rapidamente. Recomendo fortemente para todos os que precisam de um trabalho de qualidade.",
     rating: 5,
     date: "12 de Março, 2025",
     tags: ["Suporte", "Atendimento"],
@@ -35,7 +36,8 @@ const feedbacks = [
     name: "Carlos Mendes",
     avatar: "/api/placeholder/100/100",
     role: "Cliente desde 2020",
-    content: "Utilizei os serviços várias vezes e sempre fiquei satisfeito com os resultados. A Print & Go é muito profissional e eficiente.",
+    content:
+      "Utilizei os serviços várias vezes e sempre fiquei satisfeito com os resultados. A Print & Go é muito profissional e eficiente.",
     rating: 5,
     date: "5 de Março, 2025",
     tags: ["Pontualidade", "Qualidade"],
@@ -65,7 +67,8 @@ const feedbacks = [
     name: "Juliana Santos",
     avatar: "/api/placeholder/100/100",
     role: "Cliente desde 2022",
-    content: "Atendimento personalizado e de alta qualidade. Senti que realmente se importavam com o meu projeto e se esforçaram para entregar o melhor resultado possível.",
+    content:
+      "Atendimento personalizado e de alta qualidade. Senti que realmente se importavam com o meu projeto e se esforçaram para entregar o melhor resultado possível.",
     rating: 5,
     date: "7 de Fevereiro, 2025",
     tags: ["Personalização", "Atendimento"],
@@ -74,20 +77,22 @@ const feedbacks = [
 
 // Função para criar estrelas baseadas na avaliação
 function createStars(rating) {
-  let stars = '';
+  let stars = "";
   for (let i = 0; i < 5; i++) {
-    stars += `<span class="star">${i < rating ? '★' : '☆'}</span>`;
+    stars += `<span class="star">${i < rating ? "★" : "☆"}</span>`;
   }
   return stars;
 }
 
 // Função para criar item de feedback
 function createFeedbackItem(feedback) {
-  const item = document.createElement('div');
-  item.className = 'carousel-item-container hidden-item';
-  item.setAttribute('data-id', feedback.id);
+  const item = document.createElement("div");
+  item.className = "carousel-item-container hidden-item";
+  item.setAttribute("data-id", feedback.id);
 
-  const tags = feedback.tags.map(tag => `<span class="feedback-tag">${tag}</span>`).join('');
+  const tags = feedback.tags
+    .map((tag) => `<span class="feedback-tag">${tag}</span>`)
+    .join("");
 
   item.innerHTML = `
     <div class="feedback-item">
@@ -121,23 +126,23 @@ function checkResponsiveness() {
   const isTablet = window.innerWidth <= 768 && window.innerWidth > 576;
 
   // Ajustar altura do carrossel com base no tamanho da tela
-  const carouselContent = document.querySelector('.carousel-content');
-  const dataFeedbacks = document.querySelectorAll('.feedback-date');
+  const carouselContent = document.querySelector(".carousel-content");
+  const dataFeedbacks = document.querySelectorAll(".feedback-date");
   if (carouselContent) {
     if (isMobile) {
-      carouselContent.style.minHeight = '350px';
-      dataFeedbacks.forEach(item => {
-        item.style.display = 'none';
+      carouselContent.style.minHeight = "350px";
+      dataFeedbacks.forEach((item) => {
+        item.style.display = "none";
       });
     } else if (isTablet) {
-      carouselContent.style.minHeight = '320px';
-      dataFeedbacks.forEach(item => {
-        item.style.display = 'none';
+      carouselContent.style.minHeight = "320px";
+      dataFeedbacks.forEach((item) => {
+        item.style.display = "none";
       });
     } else {
-      carouselContent.style.minHeight = '300px';
-      dataFeedbacks.forEach(item => {
-        item.style.display = 'block';
+      carouselContent.style.minHeight = "300px";
+      dataFeedbacks.forEach((item) => {
+        item.style.display = "block";
       });
     }
   }
@@ -145,22 +150,22 @@ function checkResponsiveness() {
 
 // Inicializar o carrossel
 function initCarousel() {
-  const carouselItems = document.getElementById('carouselItems');
-  const indicator = document.getElementById('indicator');
-  const prevButton = document.getElementById('prevButton');
-  const nextButton = document.getElementById('nextButton');
+  const carouselItems = document.getElementById("carouselItems");
+  const indicator = document.getElementById("indicator");
+  const prevButton = document.getElementById("prevButton");
+  const nextButton = document.getElementById("nextButton");
 
   // Criar indicadores
   feedbacks.forEach((_, index) => {
-    const dot = document.createElement('div');
-    dot.className = index === 0 ? 'indicator-dot active' : 'indicator-dot';
-    dot.setAttribute('data-index', index);
-    dot.addEventListener('click', () => goToSlide(index));
+    const dot = document.createElement("div");
+    dot.className = index === 0 ? "indicator-dot active" : "indicator-dot";
+    dot.setAttribute("data-index", index);
+    dot.addEventListener("click", () => goToSlide(index));
     indicator.appendChild(dot);
   });
 
   // Criar e adicionar itens do carrossel
-  feedbacks.forEach(feedback => {
+  feedbacks.forEach((feedback) => {
     const feedbackItem = createFeedbackItem(feedback);
     carouselItems.appendChild(feedbackItem);
   });
@@ -169,8 +174,8 @@ function initCarousel() {
   updateCarouselState(0);
 
   // Adicionar event listeners para navegação
-  prevButton.addEventListener('click', goToPrevSlide);
-  nextButton.addEventListener('click', goToNextSlide);
+  prevButton.addEventListener("click", goToPrevSlide);
+  nextButton.addEventListener("click", goToNextSlide);
 }
 
 // Variável para controlar o índice atual
@@ -178,8 +183,8 @@ let currentIndex = 0;
 
 // Atualizar o estado do carrossel
 function updateCarouselState(newIndex) {
-  const items = document.querySelectorAll('.carousel-item-container');
-  const dots = document.querySelectorAll('.indicator-dot');
+  const items = document.querySelectorAll(".carousel-item-container");
+  const dots = document.querySelectorAll(".indicator-dot");
   const totalItems = items.length;
 
   // Normalizar o índice para carrossel infinito
@@ -187,12 +192,12 @@ function updateCarouselState(newIndex) {
 
   // Atualizar indicadores
   dots.forEach((dot, index) => {
-    dot.classList.toggle('active', index === currentIndex);
+    dot.classList.toggle("active", index === currentIndex);
   });
 
   // Atualizar classes dos itens
   items.forEach((item, index) => {
-    item.className = 'carousel-item-container';
+    item.className = "carousel-item-container";
 
     // Calcular a posição relativa no carrossel
     let position = (index - currentIndex + totalItems) % totalItems;
@@ -202,17 +207,17 @@ function updateCarouselState(newIndex) {
     if (position < -totalItems / 2) position += totalItems;
 
     if (position === 0) {
-      item.classList.add('center-item');
+      item.classList.add("center-item");
     } else if (position === 1 || position === -totalItems + 1) {
-      item.classList.add('right-item');
+      item.classList.add("right-item");
     } else if (position === -1 || position === totalItems - 1) {
-      item.classList.add('left-item');
+      item.classList.add("left-item");
     } else if (position === 2 || position === -totalItems + 2) {
-      item.classList.add('far-right-item');
+      item.classList.add("far-right-item");
     } else if (position === -2 || position === totalItems - 2) {
-      item.classList.add('far-left-item');
+      item.classList.add("far-left-item");
     } else {
-      item.classList.add('hidden-item');
+      item.classList.add("hidden-item");
     }
   });
 }
@@ -235,4 +240,12 @@ function goToSlide(index) {
 document.addEventListener("DOMContentLoaded", () => {
   initCarousel();
   checkResponsiveness();
+  
 });
+
+var deleteBtn = document.querySelector("#delete-item");
+  function deleteCartItem() {
+    var item = document.querySelector("#cart-item");
+    item.innerHTML = "";
+  }
+  deleteBtn.addEventListener('click', deleteCartItem);

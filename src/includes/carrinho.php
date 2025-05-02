@@ -18,11 +18,21 @@ $cart_items = [
         'price' => 29.99,
         'quantity' => 1,
         'image' => "{$base_url}/imagens/produtos varios hero.png"
+    ],
+    [
+        'name' => 'Premium Cotton T-shirt',
+        'size' => 'L',
+        'color' => 'White',
+        'price' => 29.99,
+        'quantity' => 1,
+        'image' => "{$base_url}/imagens/produtos varios hero.png"
     ]
 ];
+
+
 ?>
 
-<div class="offcanvas offcanvas-end" tabindex="-1" id="carrinho" aria-labelledby="offcanvasRightLabel">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="carrinho" aria-labelledby="offcanvasRightLabel" style="display:flex; flex-direction:column; height: fit-content; padding-bottom: 2vh;">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasRightLabel">Shopping Cart (<?php echo count($cart_items); ?>)</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -34,7 +44,7 @@ $cart_items = [
                     <div class="col-4">
                         <img src="<?php echo $item['image']; ?>" class="img-small" alt="produtos">
                     </div>
-                    <div class="col-8 d-flex justify-content-between align-items-start">
+                    <div class="col-8 d-flex justify-content-between align-items-start" id="cart-item">
                         <div>
                             <p class="product-info mb-1"><?php echo $item['name']; ?></p>
                             <span class="product-info">Size: <?php echo $item['size']; ?></span>
@@ -49,7 +59,7 @@ $cart_items = [
                             </div>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-link p-0">
+                            <button type="button" class="btn btn-link p-0" id="delete-item">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
@@ -58,5 +68,13 @@ $cart_items = [
                 <hr>
             <?php endforeach; ?>
         </div>
+
     </div>
+
+    <div style="align-self: center;  margin-bottom: 20%;">
+        <button type="button" class="btn btn-primary" style="" id="concluir-compra">Concluir Compra</button>
+        <button type="button" class="btn btn-outline-success" style="" id="continuar-compra">Continuar a Comprar</button>
+    </div>
+
+
 </div>

@@ -511,6 +511,16 @@ footer p {
 
 /* Css carrinho */
 
+#carrinho{
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  justify-content: center;
+}
+
+#compra{
+  width: 20%;
+}
+
 .img-small {
   width: 100px;
   height: 100px;
