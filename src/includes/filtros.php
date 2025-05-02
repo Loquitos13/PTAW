@@ -55,8 +55,36 @@
                     <hr>
                     <div class="color-selector">
                         <h6>Colors</h6>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <div id="idColorOptions-mobile" class="colorOptions-mobile"></div>
+                        <div id="idColorOptionsMobile" class="colorOptions d-flex gap-2">
+                            <input type="radio" class="btn-check" name="color-mobile" id="color-red-mobile"
+                                autocomplete="off">
+                            <label class="btnColor rounded-circle p-2" for="color-red-mobile"
+                                style="background-color: red; border: 2px solid #ccc;"></label>
+
+                            <input type="radio" class="btn-check" name="color-mobile" id="color-blue-mobile"
+                                autocomplete="off">
+                            <label class="btnColor rounded-circle p-2" for="color-blue-mobile"
+                                style="background-color: blue; border: 2px solid #ccc;"></label>
+
+                            <input type="radio" class="btn-check" name="color-mobile" id="color-green-mobile"
+                                autocomplete="off">
+                            <label class="btnColor rounded-circle p-2" for="color-green-mobile"
+                                style="background-color: green; border: 2px solid #ccc;"></label>
+
+                            <input type="radio" class="btn-check" name="color-mobile" id="color-orange-mobile"
+                                autocomplete="off">
+                            <label class="btnColor rounded-circle p-2" for="color-orange-mobile"
+                                style="background-color: orange; border: 2px solid #ccc;"></label>
+
+                            <input type="radio" class="btn-check" name="color-mobile" id="color-purple-mobile"
+                                autocomplete="off">
+                            <label class="btnColor rounded-circle p-2" for="color-purple-mobile"
+                                style="background-color: purple; border: 2px solid #ccc;"></label>
+
+                            <input type="radio" class="btn-check" name="color-mobile" id="color-black-mobile"
+                                autocomplete="off">
+                            <label class="btnColor rounded-circle p-2" for="color-black-mobile"
+                                style="background-color: black; border: 2px solid #ccc;"></label>
                         </div>
                     </div>
                     <hr>
