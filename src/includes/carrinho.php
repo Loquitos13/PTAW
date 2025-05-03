@@ -44,7 +44,7 @@ $cart_items = [
                     <div class="col-4">
                         <img src="<?php echo $item['image']; ?>" class="img-small" alt="produtos">
                     </div>
-                    <div class="col-8 d-flex justify-content-between align-items-start" id="cart-item">
+                    <div class="col-8 d-flex justify-content-between align-items-start cart-item">
                         <div>
                             <p class="product-info mb-1"><?php echo $item['name']; ?></p>
                             <span class="product-info">Size: <?php echo $item['size']; ?></span>
@@ -59,7 +59,7 @@ $cart_items = [
                             </div>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-link p-0" id="delete-item">
+                            <button type="button" class="btn btn-link p-0 delete-cart-btn">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
@@ -73,8 +73,7 @@ $cart_items = [
 
     <div style="align-self: center;  height:100%;  display: flex; flex-direction: column; justify-items: space-between; gap: 5%;">
         <button type="button" class="btn btn-primary" style="margin-bottom:5%;" id="concluir-compra">Concluir Compra</button>
-        <button type="button" class="btn btn-outline-success" style="" id="continuar-compra">Continuar a Comprar</button>
+        <!-- Modifique o botão para: -->
+        <button type="button" class="btn btn-outline-success" style="" id="continuar-compra" data-bs-dismiss="offcanvas">Continuar a Comprar</button>
     </div>
-
-
 </div>

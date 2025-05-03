@@ -17,10 +17,7 @@ session_start();
   <script src="src/js/script.js"></script>
   <?php
   $base_url = "/~ptaw-2025-gr4";
-  ?>
-
-
-  <?php include 'src/includes/carrinho.php'; ?>
+  include 'src/includes/carrinho.php'; ?>
 </head>
 <style>
   body {
@@ -231,9 +228,9 @@ session_start();
       gap: 20px;
     }
 
-    #carrinho{
-      display:flex;
-      flex-direction:column;
+    #carrinho {
+      display: flex;
+      flex-direction: column;
       align-items: center;
     }
   }
@@ -401,6 +398,8 @@ session_start();
   <script src="src/js/script.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="<?= $base_url ?>/src/js/carrinho.js"></script>
 </body>
 
 </html>
