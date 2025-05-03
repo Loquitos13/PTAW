@@ -47,7 +47,7 @@ header {
     display: flex;
     flex-direction: column;
     justify-self: flex-start;
-    width: 25%;
+    width: 375px;
     height: max-content;
     background-color: #f8f9fa;
     padding: 15px;
@@ -114,33 +114,17 @@ header {
     outline: 2px solid #333;
 }
 
-.sizeOptions {
-    margin-top: -1%;
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
+/* Css para os tamanhos dos filtros desktop e mobile */
 
-.sizeBtn {
-    border: 2px solid #f6f6f7;
-    background-color: transparent;
-    color: #333;
-    padding: 10px 10px;
-    border-radius: 10px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-.sizeBtn:hover {
-    background: #d1d1d1;
-}
-
-.sizeBtn.activeSize {
+.btn-check:checked+.btn-outline-primary {
     background-color: #eef2ff;
     outline: 2px solid #7671eb;
+    color: #333;
+}
+
+.btn-outline-primary {
+    color: #333;
+    border: 2px solid #5c5c66;
 }
 
 #containerTitulo {
@@ -153,7 +137,6 @@ header {
     margin: 0 auto;
     text-align: left;
 }
-
 
 .containerOrdenar {
     display: flex;
@@ -598,7 +581,8 @@ input[type="range"]::-webkit-slider-thumb {
     height: 30px;
     min-width: 30px;
     min-height: 18px;
-    padding: 0 !important;  /* Remove o padding */
+    padding: 0 !important;
+    /* Remove o padding */
     border-radius: 50% !important;
     border: 2px solid #ccc;
     transition: border 0.2s;

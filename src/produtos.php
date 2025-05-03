@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -245,8 +243,11 @@
 
   <div class="containerPrincipal">
     <hr>
+    <!-- Filtros para desktop -->
     <div class="filtros">
-      <!-- Filtros para desktop -->
+
+      <!-- Categorias -->
+
       <div>
         <h6>Categories</h6>
         <div class="form-check">
@@ -298,6 +299,9 @@
         </div>
       </div>
       <hr>
+
+      <!-- Cores da aba filtros -->
+
       <div class="color-selector">
         <h6>Colors</h6>
         <div id="idColorOptions" class="colorOptions d-flex gap-2">
@@ -327,10 +331,43 @@
         </div>
       </div>
       <hr>
+
+      <!-- Tamanhos -->
+      <!-- quando for para pegar o valor selecionado udar um querySelector .btn-check[name="size-desktop"] -->
+      <!-- Exemplo na linha 209 do profuto.js -->
+
       <div>
         <h6>Size</h6>
-        <div id="idSizeOptions" class="sizeOptions"></div>
+
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+          <div class="btn-group me-2" role="group" aria-label="First group">
+            <input type="radio" class="btn-check" name="size-desktop" value="S" id="btnradio1-desktop"
+              autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio1-desktop">S</label>
+          </div>
+          <div class="btn-group me-2" role="group" aria-label="Second group">
+            <input type="radio" class="btn-check" name="size-desktop" value="M" id="btnradio2-desktop"
+              autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio2-desktop">M</label>
+          </div>
+          <div class="btn-group me-2" role="group" aria-label="Third group">
+            <input type="radio" class="btn-check" name="size-desktop" value="L" id="btnradio3-desktop"
+              autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio3-desktop">L</label>
+          </div>
+          <div class="btn-group me-2" role="group" aria-label="Fourth group">
+            <input type="radio" class="btn-check" name="size-desktop" value="XL" id="btnradio4-desktop"
+              autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio4-desktop">XL</label>
+          </div>
+          <div class="btn-group me-2" role="group" aria-label="Fifth group">
+            <input type="radio" class="btn-check" name="size-desktop" value="2XL" id="btnradio5-desktop"
+              autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio5-desktop">2XL</label>
+          </div>
+        </div>
       </div>
+
       <hr>
       <div>
         <h6>Promotions</h6>

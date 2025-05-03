@@ -36,6 +36,8 @@
                         </div>
                     </div>
                     <hr>
+
+                    <!-- Range de preço para a aba filtros mobile-->
                     <div class="range-container">
                         <h6 class="mb-3 fw-semibold">Price Range</h6>
                         <div class="double-range-slider">
@@ -53,6 +55,8 @@
                         </div>
                     </div>
                     <hr>
+
+                    <!-- Cores para a aba filtros mobile -->
                     <div class="color-selector">
                         <h6>Colors</h6>
                         <div id="idColorOptionsMobile" class="colorOptions d-flex gap-2">
@@ -88,9 +92,41 @@
                         </div>
                     </div>
                     <hr>
+
+                    <!-- Tamanhos -->
+
                     <div>
                         <h6>Size</h6>
-                        <div id="idSizeOptions-mobile" class="sizeOptions"></div>
+
+                        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+                            <div class="btn-group me-2" role="group" aria-label="First group">
+                                <input type="radio" class="btn-check" name="size" value="S" id="btnradio1"
+                                    autocomplete="off">
+                                <label class="btn btn-outline-primary" for="btnradio1">S</label>
+                            </div>
+                            <div class="btn-group me-2" role="group" aria-label="Second group">
+                                <input type="radio" class="btn-check" name="size" value="M" id="btnradio2"
+                                    autocomplete="off">
+                                <label class="btn btn-outline-primary" for="btnradio2">M</label>
+                            </div>
+                            <div class="btn-group me-2" role="group" aria-label="Third group">
+                                <input type="radio" class="btn-check" name="size" value="L" id="btnradio3"
+                                    autocomplete="off">
+                                <label class="btn btn-outline-primary" for="btnradio3">L</label>
+                            </div>
+                            <div class="btn-group me-2" role="group" aria-label="Fourth group">
+                                <input type="radio" class="btn-check" name="size" value="XL" id="btnradio4"
+                                    autocomplete="off">
+                                <label class="btn btn-outline-primary" for="btnradio4">XL</label>
+                            </div>
+                            <div class="btn-group me-2" role="group" aria-label="Fifth group">
+                                <input type="radio" class="btn-check" name="size" value="2XL" id="btnradio5"
+                                    autocomplete="off">
+                                <label class="btn btn-outline-primary" for="btnradio5">2XL</label>
+                            </div>
+
+                        </div>
                     </div>
                     <hr>
                     <div>

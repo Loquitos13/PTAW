@@ -82,7 +82,7 @@ colorsMobile.forEach(color => {
 });
 
 })*/
-
+/* Descontinuado pois agora os tamanhos e feito pelo bootstrap
 document.addEventListener('DOMContentLoaded', function () {
     const sizes = ["S", "M", "L", "XL", "2XL"];
 
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 })
-
+*/
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -205,3 +205,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+/* Exemplo para obter o valor do tamanho selecionado, no desktop e mobile
+document.addEventListener('DOMContentLoaded', function () {
+    const radios = document.querySelectorAll('.btn-check[name="size"]');
+    radios.forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            if (radio.checked) {
+                console.log('Tamanho selecionado, mobile:', radio.value);
+            }
+        });
+    });
+
+    const radios_desktop = document.querySelectorAll('.btn-check[name="size-desktop"]');
+    radios_desktop.forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            if (radio.checked) {
+                console.log('Tamanho selecionado, desktop:', radio.value);
+            }
+        });
+    });
+});*/
