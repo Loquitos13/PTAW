@@ -1,16 +1,16 @@
 document.addEventListener("DOMContentLoaded", function() {
   console.log("Carrinho.js carregado");
   
-  // Garantir que o Bootstrap está carregado
+  // garantir que o bootstrap esta carregado
   if (typeof bootstrap === 'undefined') {
-      console.error("Bootstrap não está carregado! Certifique-se de incluir bootstrap.bundle.min.js antes deste script.");
+      console.error("Bootstrap nao esta carregado! Certifique-se de incluir bootstrap.bundle.min.js antes deste script.");
       return;
   }
   
-  // Usando delegação de eventos para o botão "Continuar a Comprar"
+  // usando delegacao de eventos para o botao "continuar a comprar"
   document.body.addEventListener("click", function(event) {
       if (event.target && event.target.id === "continuar-compra") {
-          console.log("Botão continuar compra clicado");
+          console.log("Botao continuar compra clicado");
           const carrinhoElement = document.getElementById("carrinho");
           
           if (carrinhoElement) {
@@ -20,14 +20,14 @@ document.addEventListener("DOMContentLoaded", function() {
                       offcanvasBS.hide();
                       console.log("Fechando offcanvas via Bootstrap API");
                   } else {
-                      console.log("Criando nova instância de offcanvas");
-                      // Se não existe instância, cria uma e depois fecha
+                      console.log("Criando nova instancia de offcanvas");
+                      // se nao existe instancia, cria uma e depois fecha
                       const newOffcanvas = new bootstrap.Offcanvas(carrinhoElement);
                       newOffcanvas.hide();
                   }
               } catch (error) {
                   console.error("Erro ao manipular offcanvas:", error);
-                  // Fallback simples como último recurso
+                  // fallback simples como ultimo recurso
                   carrinhoElement.classList.remove("show");
                   document.body.classList.remove("offcanvas-open");
                   document.querySelector(".offcanvas-backdrop")?.remove();
@@ -35,37 +35,37 @@ document.addEventListener("DOMContentLoaded", function() {
           }
       }
       
-      // Usando delegação para os botões de exclusão também
+      // usando delegacao para os botoes de exclusao tambem
       if (event.target && (event.target.classList.contains("delete-cart-btn") || 
           (event.target.parentElement && event.target.parentElement.classList.contains("delete-cart-btn")))) {
           
-          console.log("Botão de exclusão clicado");
+          console.log("Botao de exclusao clicado");
           
-          // Garantir que temos o botão mesmo se o clique foi no ícone dentro dele
+          // garantir que temos o botao mesmo se o clique foi no icone dentro dele
           const deleteBtn = event.target.classList.contains("delete-cart-btn") ? 
                             event.target : event.target.parentElement;
               
           const row = deleteBtn.closest(".row");
           if (row) {
-              // Remover o HR após o item
+              // remover o hr apos o item
               const nextElement = row.nextElementSibling;
               if (nextElement && nextElement.tagName.toLowerCase() === "hr") {
                   nextElement.remove();
               }
               
-              // Remover o próprio item
+              // remover o proprio item
               row.remove();
               
-              // Atualizar o contador no título
+              // atualizar o contador no titulo
               updateCartCount();
               
-              // Verificar se o carrinho está vazio
+              // verificar se o carrinho esta vazio
               checkEmptyCart();
           }
       }
   });
   
-  // Função para atualizar o contador de itens
+  // funcao para atualizar o contador de itens
   function updateCartCount() {
       const itemRows = document.querySelectorAll("#carrinho .offcanvas-body .row");
       const titleElement = document.getElementById("offcanvasRightLabel");
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
   }
   
-  // Função para verificar se o carrinho está vazio
+  // funcao para verificar se o carrinho esta vazio
   function checkEmptyCart() {
       const itemRows = document.querySelectorAll("#carrinho .offcanvas-body .row");
       const containerElement = document.querySelector("#carrinho .offcanvas-body .container");
@@ -85,14 +85,14 @@ document.addEventListener("DOMContentLoaded", function() {
           containerElement.innerHTML = `
               <div class="text-center py-4">
                   <i class="bi bi-cart-x" style="font-size: 3rem;"></i>
-                  <p class="my-3">O seu carrinho está vazio</p>
+                  <p class="my-3">O seu carrinho esta vazio</p>
               </div>
           `;
           console.log("Carrinho vazio - mensagem exibida");
       }
   }
   
-  // Verificar inicialmente se temos botões para configurar
-  console.log("Botão continuar compra:", document.getElementById("continuar-compra") ? "encontrado" : "não encontrado");
-  console.log("Botões de exclusão:", document.querySelectorAll(".delete-cart-btn").length);
+  // verificar inicialmente se temos botoes para configurar
+  console.log("Botao continuar compra:", document.getElementById("continuar-compra") ? "encontrado" : "nao encontrado");
+  console.log("Botoes de exclusao:", document.querySelectorAll(".delete-cart-btn").length);
 });
