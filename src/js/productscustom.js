@@ -56,7 +56,7 @@ sizes.forEach(size => {
 
     sizeContainer.appendChild(btn);
 });
-
+/*
 // Define colors dynamically
 const colors = ["white", "black", "blue", "red"];
 
@@ -75,7 +75,7 @@ colors.forEach(color => {
     };
 
     colorContainer.appendChild(btn);
-});
+});*/
 
 document.getElementById("openModal").addEventListener("click", function () {
     document.getElementById("modal3D").style.display = "flex";

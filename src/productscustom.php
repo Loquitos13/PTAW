@@ -12,14 +12,14 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
-  <script type="importmap"> 
+  <script type="importmap">
     {
       "imports": {
         "three": "https://unpkg.com/three@0.174.0/build/three.module.js"
       }
     }
     </script>
-    <?php include 'includes/carrinho.php'; ?>
+  <?php include 'includes/carrinho.php'; ?>
 </head>
 
 <style>
@@ -245,7 +245,8 @@
     <div id="productImage" class="productGallery">
       <button id="openModal" class="ViewModel">
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
-          <path d="M440-183v-274L200-596v274l240 139Zm80 0 240-139v-274L520-457v274Zm-40-343 237-137-237-137-237 137 237 137ZM160-252q-19-11-29.5-29T120-321v-318q0-22 10.5-40t29.5-29l280-161q19-11 40-11t40 11l280 161q19 11 29.5 29t10.5 40v318q0 22-10.5 40T800-252L520-91q-19 11-40 11t-40-11L160-252Zm320-228Z"/>
+          <path
+            d="M440-183v-274L200-596v274l240 139Zm80 0 240-139v-274L520-457v274Zm-40-343 237-137-237-137-237 137 237 137ZM160-252q-19-11-29.5-29T120-321v-318q0-22 10.5-40t29.5-29l280-161q19-11 40-11t40 11l280 161q19 11 29.5 29t10.5 40v318q0 22-10.5 40T800-252L520-91q-19 11-40 11t-40-11L160-252Zm320-228Z" />
         </svg>
         View 3D Model
       </button>
@@ -254,10 +255,10 @@
       <div class="main-image">
         <img id="bigImage" src="../imagens/TShirtfront.png" alt="Product Image">
       </div>
-      
+
       <!-- Thumbnail Images -->
       <div class="thumbnail-gallery">
-      <!-- It will differentiate based on Data Base --> 
+        <!-- It will differentiate based on Data Base -->
         <img class="thumbnail active" src="../imagens/TShirtfront.png" alt="TShirt Front">
         <img class="thumbnail" src="../imagens/TShirtback.png" alt="TShirt Back">
       </div>
@@ -265,26 +266,27 @@
 
     <div id="productInfo" class="productInformation">
       <h1 id="productName" class="nameOfProduct">Premium Cotton T-shirt</h1>
-      
-      <div class="starReviews"> 
+
+      <div class="starReviews">
         <svg width="150" height="30" viewBox="0 0 150 30">
-        <!-- Define a gradient for the half-star -->
-        <defs>
+          <!-- Define a gradient for the half-star -->
+          <defs>
             <linearGradient id="half-star" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="50%" stop-color="orange"/>  <!-- Left half is orange -->
-                <stop offset="50%" stop-color="lightgray"/>  <!-- Right half is gray -->
+              <stop offset="50%" stop-color="orange" /> <!-- Left half is orange -->
+              <stop offset="50%" stop-color="lightgray" /> <!-- Right half is gray -->
             </linearGradient>
-        </defs>
-    
-        <!-- Full stars -->
-        <polygon points="15,1 19,11 30,11 21,17 24,27 15,21 6,27 9,17 0,11 11,11" fill="orange"/>
-        <polygon points="45,1 49,11 60,11 51,17 54,27 45,21 36,27 39,17 30,11 41,11" fill="orange"/>
-        <polygon points="75,1 79,11 90,11 81,17 84,27 75,21 66,27 69,17 60,11 71,11" fill="orange"/>
-        <polygon points="105,1 109,11 120,11 111,17 114,27 105,21 96,27 99,17 90,11 101,11" fill="orange"/>
-        
-        <!-- Half-star -->
-        <polygon points="135,1 139,11 150,11 141,17 144,27 135,21 126,27 129,17 120,11 131,11" fill="url(#half-star)"/>
-      </svg>
+          </defs>
+
+          <!-- Full stars -->
+          <polygon points="15,1 19,11 30,11 21,17 24,27 15,21 6,27 9,17 0,11 11,11" fill="orange" />
+          <polygon points="45,1 49,11 60,11 51,17 54,27 45,21 36,27 39,17 30,11 41,11" fill="orange" />
+          <polygon points="75,1 79,11 90,11 81,17 84,27 75,21 66,27 69,17 60,11 71,11" fill="orange" />
+          <polygon points="105,1 109,11 120,11 111,17 114,27 105,21 96,27 99,17 90,11 101,11" fill="orange" />
+
+          <!-- Half-star -->
+          <polygon points="135,1 139,11 150,11 141,17 144,27 135,21 126,27 129,17 120,11 131,11"
+            fill="url(#half-star)" />
+        </svg>
         (128 reviews)
       </div>
 
@@ -297,21 +299,47 @@
       </div>
 
       <h5 id="productColor" class="colorOfProduct">Color</h5>
-      <div id="idColorOptions" class="colorOptions">
+      <div class="color-selector">
+        <div id="idColorOptions" class="colorOptions d-flex gap-2">
+          <input type="radio" class="btn-check" name="color" id="color-red" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-red"
+            style="background-color: red; border: 2px solid #ccc;"></label>
+
+          <input type="radio" class="btn-check" name="color" id="color-blue" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-blue"
+            style="background-color: blue; border: 2px solid #ccc;"></label>
+
+          <input type="radio" class="btn-check" name="color" id="color-green" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-green"
+            style="background-color: green; border: 2px solid #ccc;"></label>
+
+          <input type="radio" class="btn-check" name="color" id="color-orange" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-orange"
+            style="background-color: orange; border: 2px solid #ccc;"></label>
+
+          <input type="radio" class="btn-check" name="color" id="color-purple" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-purple"
+            style="background-color: purple; border: 2px solid #ccc;"></label>
+
+          <input type="radio" class="btn-check" name="color" id="color-black" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-black"
+            style="background-color: black; border: 2px solid #ccc;"></label>
+        </div>
       </div>
 
       <button id="btnAddToCart" class="addToCart">Add to Cart</button>
-      
+
       <button id="btnSaveToWishlist" class="saveToWishlist">Save to Wishlist</button>
-  
+
       <div class="couponContainer">
-          <input type="text" class="couponInput" placeholder="Enter coupon code">
-          <button class="applyButton">Apply</button>
+        <input type="text" class="couponInput" placeholder="Enter coupon code">
+        <button class="applyButton">Apply</button>
       </div>
 
       <p id="productDescription" class="descriptionTitle">Product Description</p>
       <p id="productDescriptionText" class="descriptionText">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua.
         Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
         Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
         Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
@@ -469,17 +497,18 @@
       <!-- Comments -->
       <div class="formGroup">
         <label for="comments" class="formLabel">Your Comments</label>
-        <textarea id="comments" name="comments" placeholder="Share your experience with us..." class="textArea"></textarea>
+        <textarea id="comments" name="comments" placeholder="Share your experience with us..."
+          class="textArea"></textarea>
       </div>
 
       <!-- Recommendation -->
       <div class="formGroup">
         <p class="formLabel">Would you recommend us?</p>
-        <div class = "recommendation">
-            <input type="radio" id="recommendYes" name="recommend" value="yes" class="recommendInput">
-            <label for="recommendYes" class="recommendLabel">Yes</label>
-            <input type="radio" id="recommendNo" name="recommend" value="no" class="recommendInput">
-            <label for="recommendNo" class="recommendLabel">No</label>
+        <div class="recommendation">
+          <input type="radio" id="recommendYes" name="recommend" value="yes" class="recommendInput">
+          <label for="recommendYes" class="recommendLabel">Yes</label>
+          <input type="radio" id="recommendNo" name="recommend" value="no" class="recommendInput">
+          <label for="recommendNo" class="recommendLabel">No</label>
         </div>
       </div>
 
@@ -500,6 +529,3 @@
 <script src="js/script.js"></script>
 
 </html>
-
-
-

@@ -1,5 +1,6 @@
 /* General Reset */
-html, body {
+html,
+body {
     width: 100%;
     height: 100%;
 }
@@ -38,7 +39,7 @@ hr {
     left: 35%;
     flex-shrink: 0;
     font-size: 100%;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     padding: 8px 20px;
     background: #ffffff;
     border-radius: 10px;
@@ -47,6 +48,7 @@ hr {
     cursor: pointer;
     border-radius: 5px;
 }
+
 .ViewModel:hover {
     background: #d1d1d1;
 }
@@ -58,6 +60,7 @@ hr {
     gap: 10px;
     margin-bottom: 20px;
 }
+
 .sizeBtn {
     border: 2px solid #f6f6f7;
     background-color: transparent;
@@ -68,15 +71,17 @@ hr {
     cursor: pointer;
     transition: all 0.3s ease;
 }
+
 .sizeBtn:hover {
     background: #d1d1d1;
 }
+
 .sizeBtn.activeSize {
     background-color: #eef2ff;
     border: 2px solid #7671eb;
 }
 
-/* Product Color Selection */
+/* Product Color Selection Antigo
 .colorOptions {
     margin-top: -1%;
     display: flex;
@@ -98,7 +103,33 @@ hr {
 }
 .colorBtn.activeColor {
     outline: 2px solid #333;
+}*/
+
+/*Css para a seleção de cores do produto*/
+.colorOptions .btn-check:checked+.btnColor {
+    border: 2px solid #000000 !important;
 }
+
+.colorOptions .btnColor {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0 !important;
+    /* Remove o padding */
+    border-radius: 50% !important;
+    border: 2px solid #ccc;
+    transition: border 0.2s;
+}
+
+.colorOptions .btnColor:hover {
+    border: 2px solid #4F46E5 !important;
+    box-shadow: 0 0 0 2px #eef2ff;
+    cursor: pointer;
+    filter: brightness(1.1);
+    transition: border 0.2s, box-shadow 0.2s, filter 0.2s;
+}
+
 
 /* Add to Cart Buttons */
 .addToCart {
@@ -112,9 +143,11 @@ hr {
     font-size: 16px;
     border: none;
 }
+
 .addToCart:hover {
     background: #3700b3;
 }
+
 .buttonAdd {
     padding: 10px 20px;
     font-size: 100%;
@@ -126,6 +159,7 @@ hr {
     bottom: 6%;
     right: 1%;
 }
+
 .buttonAdd:hover {
     background: #3700b3;
 }
@@ -143,6 +177,7 @@ hr {
     border: none;
     margin-bottom: 15px;
 }
+
 .saveToWishlist:hover {
     background: #d1d1d1;
 }
@@ -201,12 +236,15 @@ hr {
     align-items: center;
     text-align: center;
 }
+
 .imageUpload:hover {
     background: #adadad3b;
 }
+
 .imageUpload input {
     display: none;
 }
+
 .imageUpload span {
     font-weight: bold;
     margin-top: 5px;
@@ -223,8 +261,9 @@ hr {
     left: 15px;
     cursor: pointer;
 }
+
 .buttonReplace {
-	margin-top: 20px;
+    margin-top: 20px;
     padding: 1px 5px;
     font-size: 16px;
     background: #ffffff;
@@ -233,9 +272,11 @@ hr {
     cursor: pointer;
     border-radius: 5px;
 }
+
 .buttonReplace:hover {
     background: #bebebe67;
 }
+
 .buttonReplace input {
     display: none;
 }
@@ -248,7 +289,7 @@ hr {
 
 /* Decal Removal */
 .removeDecal {
-	margin-top: 20px;
+    margin-top: 20px;
     padding: 1px 5px;
     font-size: 16px;
     background: #ffffff;
@@ -257,12 +298,14 @@ hr {
     cursor: pointer;
     border-radius: 5px;
 }
+
 .btnRmvDecal {
     position: absolute;
     bottom: 10px;
     left: 15px;
     cursor: pointer;
 }
+
 .removeDecal:hover {
     background: #bebebe67;
 }
@@ -271,6 +314,7 @@ hr {
 .hideButton {
     display: none;
 }
+
 /* Hide buttons */
 
 /* Disable buttons */
@@ -278,6 +322,7 @@ hr {
     opacity: 0.4;
     pointer-events: none;
 }
+
 /* Disable buttons */
 
 /* Product Layout */
@@ -285,6 +330,7 @@ hr {
     display: flex;
     width: 100%;
 }
+
 .productGallery,
 .productInformation {
     width: 50%;
@@ -299,6 +345,7 @@ hr {
     text-align: center;
     position: relative;
 }
+
 .main-image {
     margin-top: 10%;
     width: 400px;
@@ -308,6 +355,7 @@ hr {
     justify-content: center;
     overflow: hidden;
 }
+
 .main-image img {
     max-width: 100%;
     max-height: 100%;
@@ -320,24 +368,27 @@ hr {
     gap: 5%;
     margin-top: 15%;
 }
+
 .thumbnail {
     width: 80px;
-	height: auto;
+    height: auto;
     cursor: pointer;
     border: 5px solid #f6f6f7;
     border-radius: 5px;
     transition: transform 0.2s ease-in-out;
 }
+
 .thumbnail:hover {
     transform: scale(1.1);
     border-color: #d1d1d1;
 }
+
 .thumbnail.active {
     border-color: #6200ea;
 }
 
 /* Stars Reviews and Price */
-.starReviews, 
+.starReviews,
 .classDivProductPrice {
     margin-bottom: 2%;
 }
@@ -347,10 +398,12 @@ hr {
     width: 100%;
     overflow: auto;
 }
-div.modalsContainers div.modal3D{
-    width: 80%;  
+
+div.modalsContainers div.modal3D {
+    width: 80%;
     float: left;
 }
+
 .modal3D {
     display: none;
     position: fixed;
@@ -361,6 +414,7 @@ div.modalsContainers div.modal3D{
     background: rgba(0, 0, 0, 0.5);
     justify-content: center;
 }
+
 .modalImage {
     display: none;
     position: fixed;
@@ -372,6 +426,7 @@ div.modalsContainers div.modal3D{
     justify-content: center;
     align-items: baseline;
 }
+
 .modal3D-content,
 .modal-content-image {
     position: relative;
@@ -382,6 +437,7 @@ div.modalsContainers div.modal3D{
     align-items: center;
     justify-content: center;
 }
+
 #modelCanvas {
     width: 100%;
     height: 100%;
@@ -393,6 +449,7 @@ div.modalsContainers div.modal3D{
     font-size: 25px;
     color: black;
 }
+
 .close {
     position: absolute;
     top: 10px;
@@ -400,6 +457,7 @@ div.modalsContainers div.modal3D{
     cursor: pointer;
     background-color: #F3F4F6;
 }
+
 .warnings {
     position: fixed;
     bottom: 20%;
@@ -422,7 +480,8 @@ div.modalsContainers div.modal3D{
 /* Ensures button ViewModel is visible and adapts on smaller screens */
 @media (max-width: 1300px) {
     .ViewModel {
-        left: 0; /* Moves it inside the div on smaller screens */
+        left: 0;
+        /* Moves it inside the div on smaller screens */
     }
 }
 
@@ -435,59 +494,62 @@ div.modalsContainers div.modal3D{
     border-radius: 8px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
-  }
-  
-  .formTitle {
+}
+
+.formTitle {
     text-align: center;
     color: #333;
-  }
-  
-  /* Form Group Styles */
-  .formGroup {
+}
+
+/* Form Group Styles */
+.formGroup {
     margin-bottom: 20px;
-  }
-  
-  .formLabel {
+}
+
+.formLabel {
     display: block;
     font-weight: bold;
     margin-bottom: 8px;
-  }
-  
-  .ratingLabel {
+}
+
+.ratingLabel {
     margin-right: 10px;
-  }
-  
-  .selectBox,
-  .textArea {
+}
+
+.selectBox,
+.textArea {
     width: calc(100% - 20px);
     padding: 10px;
     border-radius: 4px;
-    border: 1px solid #ccc; /* Corrected: Specify border width */
-  }
-  
-  /* Recommendation */
-  .recommendation{
-      display: flex;
-      gap: 20px;
-  }
-  
-  .recommendInput + .recommendLabel {
+    border: 1px solid #ccc;
+    /* Corrected: Specify border width */
+}
+
+/* Recommendation */
+.recommendation {
+    display: flex;
+    gap: 20px;
+}
+
+.recommendInput+.recommendLabel {
     margin-right: 10px;
-  }
-  
-  /* Submit Button */
-  .submitButton {
+}
+
+/* Submit Button */
+.submitButton {
     display: block;
     width: 100%;
-    background-color: #6200ea; /* Blue button */
+    background-color: #6200ea;
+    /* Blue button */
     color: white;
     text-align: center;
     padding: 10px;
     border-radius: 4px;
     border: none;
     cursor: pointer;
-  }
-  
-  .submitButton:hover {
-    background-color: #3700b3; /* Darker blue on hover */
-  }
+}
+
+.submitButton:hover {
+    background-color: #3700b3;
+    /* Darker blue on hover */
+}
