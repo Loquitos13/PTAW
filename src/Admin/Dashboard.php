@@ -1,13 +1,13 @@
 <?php
-
+/*
 session_start();
 
 if (!isset($_SESSION['admin_email'])) {
 
-  header("location: /PTAW/src/SignIn.html");
+  header("location: /~ptaw-2025-gr4/src/SignIn.html");
 
 }
-
+*/
 ?>
 
 
@@ -249,15 +249,59 @@ if (!isset($_SESSION['admin_email'])) {
     <!-- Conteudo principal -->
     <div class="flex-grow-1 p-4" id="main-content">
 
-      <?php echo ($_SESSION['admin_email']); ?>
+      <?php /*echo ($_SESSION['admin_email']); */ ?>
 
+      <!--
       <a href="/PTAW/src/logout.php" class="nav-link">
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5985E1">
           <path
             d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
         </svg>
-      </a>
+      </a> -->
 
+      <!-- Header aqui -->
+
+      <!-- experimentar depois colocar py-4 -->
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Special title treatment</h5>
+                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Special title treatment</h5>
+                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Special title treatment</h5>
+                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Special title treatment</h5>
+                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
     </div>
   </div>
