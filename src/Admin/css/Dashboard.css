@@ -9,5 +9,15 @@
 .nav-link.active {
     background-color: #EEF2FF;
     color: #000;
-    border-radius: 6px; 
+    border-radius: 6px;
+}
+
+/*Cores para numeros, caso positovo ou negativo */
+
+.per-possitivo {
+    color: #059669;
+}
+
+.per-negativo {
+    color: #FEE2E2;
 }
