@@ -263,13 +263,13 @@
                 <div class="card-body">
                   <!-- titulo do card -->
                   <div class="container-fluid p-0">
-                    <!-- cria uma linha para colocar o titulo e o valor -->
+                    <!-- cria uma linha para colocar o titulo e a percentagem -->
                     <div class="row">
-                      <div class="col-8">
+                      <div class="col-7">
                         <p class="card-title">Total Sales</p>
                       </div>
                       <!-- per-possitivo é uma classe que vai dar cor ao valor -->
-                      <div class="col-4 fw-bold per-possitivo">
+                      <div class="col-5 fw-bold per-possitivo">
                         <p>+12.5%</p>
                       </div>
                     </div>
@@ -282,69 +282,167 @@
 
             <!-- div para deixar cada um dos cards responsivos -->
             <div class="col-lg-3 col-md-6 mb-3">
-              <!-- card de vendas totais -->
+              <!-- card de numero de vendas -->
               <div class="card">
                 <!-- corpo do card -->
                 <div class="card-body">
                   <!-- titulo do card -->
                   <div class="container-fluid p-0">
-                    <!-- cria uma linha para colocar o titulo e o valor -->
+                    <!-- cria uma linha para colocar o titulo e a percentagem -->
                     <div class="row">
-                      <div class="col-8">
-                        <p class="card-title">Total Sales</p>
+                      <div class="col-7">
+                        <p class="card-title">Orders</p>
                       </div>
                       <!-- per-possitivo é uma classe que vai dar cor ao valor -->
-                      <div class="col-4 fw-bold per-possitivo">
-                        <p>+12.5%</p>
+                      <div class="col-5 fw-bold per-possitivo">
+                        <p>+8.2%</p>
                       </div>
                     </div>
-                    <h5>24,78€</h5>
+                    <h5>384</h5>
                   </div>
-                  <p class="card-text">vs. $22,123 last month</p>
+                  <p class="card-text">vs. 355 last month</p>
                 </div>
               </div>
             </div>
 
             <!-- div para deixar cada um dos cards responsivos -->
             <div class="col-lg-3 col-md-6 mb-3">
-              <!-- card de vendas totais -->
+              <!-- card de numero de clientes -->
               <div class="card">
                 <!-- corpo do card -->
                 <div class="card-body">
                   <!-- titulo do card -->
                   <div class="container-fluid p-0">
-                    <!-- cria uma linha para colocar o titulo e o valor -->
+                    <!-- cria uma linha para colocar o titulo e a percentagem -->
                     <div class="row">
-                      <div class="col-8">
-                        <p class="card-title">Total Sales</p>
+                      <div class="col-7">
+                        <p class="card-title">Customers</p>
                       </div>
                       <!-- per-possitivo é uma classe que vai dar cor ao valor -->
-                      <div class="col-4 fw-bold per-possitivo">
-                        <p>+12.5%</p>
+                      <div class="col-5 fw-bold per-possitivo">
+                        <p>+23.5%</p>
                       </div>
                     </div>
-                    <h5>24,78€</h5>
+                    <h5>1,842</h5>
                   </div>
-                  <p class="card-text">vs. $22,123 last month</p>
+                  <p class="card-text">vs. 1,492 last month</p>
                 </div>
               </div>
             </div>
 
             <!-- div para deixar cada um dos cards responsivos -->
             <div class="col-lg-3 col-md-6 mb-3">
+              <!-- card de preço medio de encomenda -->
+              <div class="card">
+                <!-- corpo do card -->
+                <div class="card-body">
+                  <!-- titulo do card -->
+                  <div class="container-fluid p-0">
+                    <!-- cria uma linha para colocar o titulo e a percentagem -->
+                    <div class="row">
+                      <div class="col-7">
+                        <p class="card-title">Avg. Order Value</p>
+                      </div>
+                      <!-- per-possitivo é uma classe que vai dar cor ao valor -->
+                      <div class="col-5 fw-bold per-negativo">
+                        <p>-2.3%</p>
+                      </div>
+                    </div>
+                    <h5>64.50€</h5>
+                  </div>
+                  <p class="card-text">vs. 66.02€ last month</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="container-fluid">
+          <div class="row">
+
+            <!-- div para deixar cada um dos cards responsivos -->
+            <div class="col-lg-6 col-md-12 mb-3">
+              <!-- card de numero de vendas -->
+              <div class="card">
+                <!-- corpo do card -->
+                <div class="card-body">
+                  <!-- titulo do card -->
+                  <div class="container-fluid p-0">
+                    <h5 class="card-title">Recent Orders</h5>
+                    <hr>
+
+                    <div style="max-height: 180px; overflow-y: auto;">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Order ID</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">7842</th>
+                            <td>Sarah Johnson</td>
+                            <td class="status-comleted">Completed</td>
+                            <td>128.50€</td>
+                          </tr>
+                          <tr>
+                            <th scope="row">7841</th>
+                            <td>Michael Chen</td>
+                            <td class="status-pending ">Pending</td>
+                            <td>85.20€</td>
+                          </tr>
+                          <tr>
+                            <th scope="row">7840</th>
+                            <td>Emily Wilson</td>
+                            <td class="status-processing">Processing</td>
+                            <td>242.00€</td>
+                          </tr>
+                          <tr>
+                            <th scope="row">7840</th>
+                            <td>Emily Wilson</td>
+                            <td class="status-processing">Processing</td>
+                            <td>242.00€</td>
+                          </tr>
+                          <tr>
+                            <th scope="row">7840</th>
+                            <td>Emily Wilson</td>
+                            <td class="status-processing">Processing</td>
+                            <td>242.00€</td>
+                          </tr>
+                          <tr>
+                            <th scope="row">7840</th>
+                            <td>Emily Wilson</td>
+                            <td class="status-processing">Processing</td>
+                            <td>242.00€</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- div para deixar cada um dos cards responsivos -->
+            <div class="col-lg-6 col-md-12 mb-3">
               <!-- card de vendas totais -->
               <div class="card">
                 <!-- corpo do card -->
                 <div class="card-body">
                   <!-- titulo do card -->
                   <div class="container-fluid p-0">
-                    <!-- cria uma linha para colocar o titulo e o valor -->
+                    <!-- cria uma linha para colocar o titulo e a percentagem -->
                     <div class="row">
-                      <div class="col-8">
+                      <div class="col-7">
                         <p class="card-title">Total Sales</p>
                       </div>
                       <!-- per-possitivo é uma classe que vai dar cor ao valor -->
-                      <div class="col-4 fw-bold per-possitivo">
+                      <div class="col-5 fw-bold per-possitivo">
                         <p>+12.5%</p>
                       </div>
                     </div>
@@ -357,8 +455,9 @@
 
           </div>
         </div>
-
       </div>
+
+    </div>
     </div>
 
 
