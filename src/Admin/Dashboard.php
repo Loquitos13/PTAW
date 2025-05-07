@@ -19,9 +19,8 @@ if (!isset($_SESSION['admin_email'])) {
 <link rel="stylesheet" href="css/Dashboard.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
   integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-<script src="js/Dashboard.js">
-
-</script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+<script src="js/Dashboard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
   </script>
@@ -259,7 +258,26 @@ if (!isset($_SESSION['admin_email'])) {
         </svg>
       </a> -->
 
-      <!-- Header aqui -->
+      <!-- Header do Dashboard -->
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center flex-wrap py-3">
+              <!-- Mensagem de boas vindas -->
+              <div class="mb-2 mb-lg-0">
+                <h1 class="mb-1">Dashboard</h1>
+                <p class="mb-0">Welcome back, Admin!</p>
+              </div>
+              <!-- Admin info -->
+              <div class="d-flex align-items-center">
+                <img src="../../imagens/admin.png" alt="" id="img-admin"
+                  style="width:40px; height:40px; object-fit:cover; border-radius:50%;">
+                <h6 class="mb-0 ms-3">John Doe</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- experimentar depois colocar py-4 -->
       <div class="container-fluid">
@@ -270,7 +288,6 @@ if (!isset($_SESSION['admin_email'])) {
             <div class="card">
               <!-- corpo do card -->
               <div class="card-body">
-                <!-- titulo do card -->
                 <div class="container-fluid p-0">
                   <!-- cria uma linha para colocar o titulo e a percentagem -->
                   <div class="row">
@@ -295,7 +312,6 @@ if (!isset($_SESSION['admin_email'])) {
             <div class="card">
               <!-- corpo do card -->
               <div class="card-body">
-                <!-- titulo do card -->
                 <div class="container-fluid p-0">
                   <!-- cria uma linha para colocar o titulo e a percentagem -->
                   <div class="row">
@@ -320,7 +336,6 @@ if (!isset($_SESSION['admin_email'])) {
             <div class="card">
               <!-- corpo do card -->
               <div class="card-body">
-                <!-- titulo do card -->
                 <div class="container-fluid p-0">
                   <!-- cria uma linha para colocar o titulo e a percentagem -->
                   <div class="row">
@@ -345,7 +360,6 @@ if (!isset($_SESSION['admin_email'])) {
             <div class="card">
               <!-- corpo do card -->
               <div class="card-body">
-                <!-- titulo do card -->
                 <div class="container-fluid p-0">
                   <!-- cria uma linha para colocar o titulo e a percentagem -->
                   <div class="row">
@@ -373,15 +387,16 @@ if (!isset($_SESSION['admin_email'])) {
 
           <!-- div para deixar cada um dos cards responsivos -->
           <div class="col-lg-6 col-md-12 mb-3">
-            <!-- card de numero de vendas -->
+            <!-- card ordens recentes -->
             <div class="card">
               <!-- corpo do card -->
               <div class="card-body">
-                <!-- titulo do card -->
                 <div class="container-fluid p-0">
                   <h5 class="card-title">Recent Orders</h5>
                   <hr>
 
+                  <!-- Tabela de ordens recentes com scroll -->
+                  <!-- A tabela tem um max-height de 180px e overflow-y: auto para permitir o scroll quando o conteúdo excede essa altura -->
                   <div style="max-height: 180px; overflow-y: auto;">
                     <table class="table">
                       <thead>
@@ -439,25 +454,90 @@ if (!isset($_SESSION['admin_email'])) {
 
           <!-- div para deixar cada um dos cards responsivos -->
           <div class="col-lg-6 col-md-12 mb-3">
-            <!-- card de vendas totais -->
-            <div class="card">
+            <!-- card dos produtos mais vendidos -->
+            <div class="card" style="min-height: 271px;">
               <!-- corpo do card -->
               <div class="card-body">
-                <!-- titulo do card -->
                 <div class="container-fluid p-0">
-                  <!-- cria uma linha para colocar o titulo e a percentagem -->
-                  <div class="row">
-                    <div class="col-7">
-                      <p class="card-title">Total Sales</p>
+                  <h5 class="card-title">Best Selling Products</h5>
+                  <hr>
+                  <!-- Tabela de produtos mais vendidos com scroll -->
+                  <div style="max-height: 180px; overflow-y: auto; overflow-x: hidden;">
+
+                    <div class="row">
+                      <!-- imagem do produto centrada ao meio -->
+                      <div class="col-3 align-items-center justify-content-center d-flex">
+                        <img src="../../imagens/produtos varios hero.png" alt="Product Image" class="" width="auto"
+                          height="55px">
+                      </div>
+                      <!-- Nome do produto e numero de vendas -->
+                      <div class="col-6">
+                        <p class="fw-bold">Classic T-Shirt</p>
+                        <p class="num-sales">1,242 sales</p>
+                      </div>
+                      <!-- Preço do produto e percentagem de vendas -->
+                      <div class="col-3">
+                        <p class="fw-bold">24.99€</p>
+                        <p class="num-sales per-possitivo">+12%</p>
+                      </div>
                     </div>
-                    <!-- per-possitivo é uma classe que vai dar cor ao valor -->
-                    <div class="col-5 fw-bold per-possitivo">
-                      <p>+12.5%</p>
+
+                    <div class="row">
+                      <!-- imagem do produto centrada ao meio -->
+                      <div class="col-3 align-items-center justify-content-center d-flex">
+                        <img src="../../imagens/produtos varios hero.png" alt="Product Image" width="auto"
+                          height="55px">
+                      </div>
+                      <!-- Nome do produto e numero de vendas -->
+                      <div class="col-6">
+                        <p class="fw-bold">Classic T-Shirt</p>
+                        <p class="num-sales">1,242 sales</p>
+                      </div>
+                      <!-- Preço do produto e percentagem de vendas -->
+                      <div class="col-3">
+                        <p class="fw-bold">24.99€</p>
+                        <p class="num-sales per-possitivo">+12%</p>
+                      </div>
                     </div>
+
+                    <div class="row">
+                      <!-- imagem do produto centrada ao meio -->
+                      <div class="col-3 align-items-center justify-content-center d-flex">
+                        <img src="../../imagens/produtos varios hero.png" alt="Product Image" width="auto"
+                          height="55px">
+                      </div>
+                      <!-- Nome do produto e numero de vendas -->
+                      <div class="col-6">
+                        <p class="fw-bold">Classic T-Shirt</p>
+                        <p class="num-sales">1,242 sales</p>
+                      </div>
+                      <!-- Preço do produto e percentagem de vendas -->
+                      <div class="col-3">
+                        <p class="fw-bold">24.99€</p>
+                        <p class="num-sales per-possitivo">+12%</p>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <!-- imagem do produto centrada ao meio -->
+                      <div class="col-3 align-items-center justify-content-center d-flex">
+                        <img src="../../imagens/produtos varios hero.png" alt="Product Image" width="auto"
+                          height="55px">
+                      </div>
+                      <!-- Nome do produto e numero de vendas -->
+                      <div class="col-6">
+                        <p class="fw-bold">Classic T-Shirt</p>
+                        <p class="num-sales">1,242 sales</p>
+                      </div>
+                      <!-- Preço do produto e percentagem de vendas -->
+                      <div class="col-3">
+                        <p class="fw-bold">24.99€</p>
+                        <p class="num-sales per-possitivo">+12%</p>
+                      </div>
+                    </div>
+
                   </div>
-                  <h5>24,78€</h5>
                 </div>
-                <p class="card-text">vs. $22,123 last month</p>
               </div>
             </div>
           </div>
