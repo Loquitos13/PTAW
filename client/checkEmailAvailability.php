@@ -41,6 +41,11 @@ try {
     }
     
     $result = getUserByEmail($data['email']);
+
+    if ($result === null) {
+      $result = getAdminByEmail($data['email']);
+    }
+
     echo json_encode([
         'status' => 'success',
         'data' => $result
@@ -63,6 +68,24 @@ function getUserByEmail($email) {
     }
 
     $ch = curl_init("$apiUrl/userByEmail/$email");
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json'
+    ]);
+
+    $response = executeCurlRequest($ch);
+    return json_decode($response, true);
+}
+
+function getAdminByEmail($email) {
+
+    global $apiUrl;
+
+    if(empty($email)) {
+      throw new Exception("No email provided");
+    }
+
+    $ch = curl_init("$apiUrl/adminByEmail/$email");
 
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json'

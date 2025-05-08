@@ -1,11 +1,5 @@
 <?php
 
-//Login
-//First Verify if the email exists
-//Then get the password of that account
-//Compare the password in the DB with the user input
-
-
 require_once 'QueryBuilder.php';
 
 class ApiController {
