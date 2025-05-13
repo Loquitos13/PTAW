@@ -24,6 +24,7 @@ if (!isset($_SESSION['admin_email'])) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
   </script>
+<script src="js/Dashboard.php"></script>
 
 
 <style>
@@ -242,7 +243,7 @@ if (!isset($_SESSION['admin_email'])) {
     <!-- Menu lateral -->
     <?php include '../includes/header-desktop-admin.php'; ?>
     <!-- Menu mobile -->
-    <?php /*include '../includes/header-mobile-admin.php'; */ ?>
+    <?php include '../includes/header-mobile-admin.php'; ?>
 
 
     <!-- Conteudo principal -->

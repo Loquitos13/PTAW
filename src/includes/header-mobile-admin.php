@@ -8,7 +8,7 @@ $base_url = "/~ptaw-2025-gr4";
     aria-controls="mobileMenu">
     ☰
   </button>
-  <a href="#" class="d-flex align-items-center mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+  <a href="Dashboard.php" class="d-flex align-items-center mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
     id="a-logo-header-mobile">
     <img src="<?= $base_url ?>/imagens/Print&Go.png" alt="" id="logo-header-mobile" href="../index.php">
   </a>
@@ -22,7 +22,7 @@ $base_url = "/~ptaw-2025-gr4";
   <div class="offcanvas-body">
     <div class="d-flex flex-column gap-3">
 
-      <a href="<?= $base_url ?>/index.php" class="nav-link py-2">
+      <a href="Dashboard.php" class="nav-link py-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" style="stroke:currentColor; stroke-width:1;"
           width="16" height="16" fill="currentColor" class="bi pe-none me-2 bi-graph-up" viewBox="0 0 16 16">
           <path fill-rule="evenodd"
@@ -30,7 +30,7 @@ $base_url = "/~ptaw-2025-gr4";
         </svg>
         Dashboard
       </a>
-      <a href="<?= $base_url ?>/src/produtos.php" class="nav-link py-2">
+      <a href="Products.php" class="nav-link py-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi me-2 bi-box2-fill"
           viewBox="0 0 16 16">
           <path
@@ -46,7 +46,7 @@ $base_url = "/~ptaw-2025-gr4";
         </svg>
         Orders
       </a>
-      <a href="<?= $base_url ?>/src/sobre.php" class="nav-link py-2">
+      <a href="analytics.php" class="nav-link py-2">
         <svg xmlns="http://www.w3.org/2000/svg" style="stroke:currentColor; stroke-width:1;" width="30" height="30"
           fill="currentColor" class="bi pe-none me-2 bi-graph-up" viewBox="0 0 16 16">
           <path fill-rule="evenodd"

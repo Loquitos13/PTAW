@@ -12,10 +12,10 @@
     <!-- Tabela com links -->
     <ul class="nav  flex-column mb-auto">
         <!-- Link ativo -->
-        <li class="nav-item nav-link.active">
-            <a href="#" class="nav-link active" aria-current="page">
+        <li id="link-dashboard">
+            <a href="Dashboard.php" class="nav-link link-body-emphasis" aria-current="page" id="">
                 <svg xmlns="http://www.w3.org/2000/svg"
-                    style="stroke:currentColor; stroke-width:1; color: #4F46E5;" width="16" height="16"
+                    style="stroke:currentColor" width="16" height="16"
                     fill="currentColor" class="bi pe-none me-2 bi-graph-up" viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
                         d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07" />
@@ -24,8 +24,8 @@
             </a>
         </li>
         <!-- Links para a pagina de produtos do admin-->
-        <li>
-            <a href="Products.html" class="nav-link link-body-emphasis">
+        <li id="link-products">
+            <a href="Products.php" class="nav-link link-body-emphasis">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi me-2 bi-box2-fill" viewBox="0 0 16 16">
                     <path
@@ -46,8 +46,8 @@
             </a>
         </li>
         <!-- Links para a pagina de analises do admin-->
-        <li>
-            <a href="#" class="nav-link link-body-emphasis">
+        <li id="link-analytics">
+            <a href="analytics.php" class="nav-link link-body-emphasis">
                 <svg xmlns="http://www.w3.org/2000/svg" style="stroke:currentColor; stroke-width:1;" width="16"
                     height="16" fill="currentColor" class="bi pe-none me-2 bi-graph-up" viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
