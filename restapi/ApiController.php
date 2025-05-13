@@ -64,6 +64,38 @@ class ApiController
             ->select(['id_encomenda', 'id_carrinho', 'preco_total_encomenda'])
             ->get();
     }
+    public function getOrder()
+{
+    $sql = "
+        SELECT 
+            e.id_encomenda,
+            e.preco_total_encomenda,
+            e.fatura,
+            e.status_encomenda,
+            e.data_criacao_encomenda,
+            e.data_rececao_encomenda,
+            c.id_cliente,
+            c.nome_cliente,
+            c.email_cliente
+        FROM Encomendas e
+        JOIN Carrinhos ca ON e.id_carrinho = ca.id_carrinho
+        JOIN Clientes c ON ca.id_cliente = c.id_cliente
+        ORDER BY e.data_criacao_encomenda DESC
+    ";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $encomendas = [];
+    while ($row = $result->fetch_assoc()) {
+        $encomendas[] = $row;
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode($encomendas);
+}
+
 
     public function getCarrinhos(): array
     {
