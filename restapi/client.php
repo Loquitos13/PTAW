@@ -118,6 +118,32 @@ function deleteUserByID($userID) {
     return json_decode(executeCurlRequest($ch), true);
 }
 
+function getProducts() {
+
+    global $apiUrl;
+
+    $ch = curl_init("$apiUrl/products");
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json'
+    ]);
+
+    return json_decode(executeCurlRequest($ch), true);
+}
+
+function insertProducts() {
+
+    global $apiUrl;
+
+    $ch = curl_init("$apiUrl/insertProduct");
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json'
+    ]);
+
+    return json_decode(executeCurlRequest($ch), true);
+}
+
 
 try {
 

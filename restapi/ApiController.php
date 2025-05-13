@@ -24,6 +24,15 @@ class ApiController
             ->get();
     }
 
+    public function getProducts(): array {
+
+        return $this->queryBuilder->table('Produtos')
+            ->select(['id_produto', 'descricao_produto', 'status_produto'])
+            ->order('id_produto', 'DESC')
+            ->get();
+
+    }
+
     public function getUserByID(int $userID): ?array
     {
 
@@ -311,5 +320,135 @@ class ApiController
         ->order('Encomendas.data_criacao_encomenda', 'DESC')
         ->get();
 }
+
+public function insertProduct(): array {
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+    
+        if (!is_array($data)) {
+
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+
+        }
+    
+        $requiredFields = [
+            'id_categoria', 'titulo_produto', 'descricao_produto', 'preco_produto', 'stock_produto', 'keywords_produto'
+        ];
+
+        $missingFields = [];
+    
+        foreach ($requiredFields as $field) {
+
+            if (empty($data[$field])) {
+
+                $missingFields[] = $field;
+
+            }
+        }
+    
+        $dataCriacao = date("Y-m-d H:i:s");
+
+        if (!empty($missingFields)) {
+
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+    
+        try {
+
+            $this->queryBuilder->table('produtos')
+                ->insert([
+                    'id_categoria' => $data['id_categoria'] ?? null,
+                    'titulo_produto' => $data['titulo_produto'] ?? null,
+                    'modelo3d_produto' => $data['modelo3d_produto'],
+                    'descricao_produto' => $data['descricao_produto'] ?? null,
+                    'imagem_principal' => $data['imagem_principal'] ?? null,
+                    'preco_produto' => $data['preco_produto'] ?? null,
+                    'stock_produto' => $data['stock_produto'] ?? null,
+                    'keywords_produto' => $data['keywords_produto'] ?? null,
+                    'status_produto' => $data['status_produto'],
+                    'data_criacao_produto' => $dataCriacao,
+                ]);
+    
+            return ['success' => 'Product created'];
+    
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error creating the product',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+
+        }
+    }
+
+    public function updateProduct(): array {
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+    
+        if (!is_array($data)) {
+
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+
+        }
+
+        $key_first_element = array_key_first($data);
+
+        $value_first_element = $data[$key_first_element];
+
+        unset($data[$key_first_element]);
+
+        try {
+
+            $this->queryBuilder->table('Produtos')
+                ->update($data)
+                ->where($key_first_element, '=', $value_first_element)
+                ->execute();
+
+            return ['success' => 'Product updated'];
+    
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error updating the product',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+
+        }
+
+    }
+
+    public function deleteProductByID($productID): array {
+
+        try {
+
+            $this->queryBuilder->table('Produtos')
+                ->delete()
+                ->where('id_produto', '=', $productID)
+                ->execute();
+
+            return ['success' => 'Product deleted'];
+    
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error deleting the product',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+
+        }
+
+  }
+
 
 }

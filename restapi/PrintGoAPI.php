@@ -38,6 +38,16 @@ $router->add('GET', '/getOrders', fn() => $controller->getOrders());
 
 $router->add('GET', '/feedbacks', fn() => $controller->getFeedbacks());
 
+$router->add('GET', '/products', fn() => $controller->getProducts());
+
+$router->add('GET', '/productByID/$id', fn($id) => $controller->getProductByID($id));
+
+$router->add('POST', '/insertProduct', fn() => $controller->insertProduct());
+
+$router->add('PUT', '/updateProduct', fn() => $controller->updateProduct());
+
+$router->add('DELETE', '/deleteProductByID/$id', fn($id) => $controller->deleteProductByID($id));
+
 $router->dispatch();
 
 
