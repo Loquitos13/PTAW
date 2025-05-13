@@ -2,10 +2,10 @@
 
 class Database {
 
-    private static string $hostname = 'localhost';
-    private static string $database = 'ptaw';
-    private static string $username = 'filipe';
-    private static string $password = 'ptaw';
+    private static string $hostname = 'estga-dev.ua.pt';
+    private static string $database = 'PTAW-2025-GR4';
+    private static string $username = 'ptaw-2025-gr4';
+    private static string $password = 'hMPu,j,=|h|X';
 
     private static ?PDO $connection = null;
 

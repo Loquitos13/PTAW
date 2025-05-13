@@ -406,3 +406,30 @@ function saveArrayBuffer(buffer, filename) {
     save(new Blob([buffer], {type: 'application/octet-stream'}), filename);
 
 }
+
+document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const feedback = document.querySelector('textarea[name="feedback"]').value;
+  const recommend = document.querySelector('input[name="recommend"]').checked ? "1" : "0";
+
+  const data = {
+    id_cliente: $userId,
+    id_produto: $productId,
+    feedback: feedback,
+    data_feedback: new Date().toISOString().split('T')[0], // "YYYY-MM-DD"
+    recommend: recommend
+  };
+
+  const response = await fetch('/restapi/ApiController.php?route=insertFeedback', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+
+  const result = await response.json();
+  alert(result.message || 'Feedback enviado!');
+});
+

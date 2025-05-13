@@ -465,7 +465,7 @@
 
   <div class="formContainer">
     <h1 class="formTitle">Rate Your Experience</h1>
-    <form action="#" method="post" class="feedbackForm">
+    <form id="feedbackForm" class="feedbackForm">
       <!-- Overall Satisfaction -->
       <div class="formGroup">
         <label class="formLabel">Overall Satisfaction</label>

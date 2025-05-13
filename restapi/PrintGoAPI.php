@@ -34,7 +34,9 @@ $router->add('PUT', '/updateUser', fn() => $controller->updateUser());
 
 $router->add('DELETE', '/deleteUserByID/$id', fn($id) => $controller->deleteUserByID($id));
 
+$router->add('POST', '/insertFeedback', fn() => $controller->insertFeedback());
 
+$router->add('GET', '/feedbacks', fn() => $controller->getFeedbacks());
 
 $router->dispatch();
 
