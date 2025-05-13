@@ -292,4 +292,24 @@ class ApiController
             ->order('data_feedback', 'DESC')
             ->get();
     }
+   public function getOrders(): array
+{
+    return $this->queryBuilder->table('Encomendas')
+        ->select([
+            'Encomendas.id_encomenda',
+            'Encomendas.preco_total_encomenda',
+            'Encomendas.fatura',
+            'Encomendas.status_encomenda',
+            'Encomendas.data_criacao_encomenda',
+            'Encomendas.data_rececao_encomenda',
+            'Clientes.id_cliente',
+            'Clientes.nome_cliente',
+            'Clientes.email_cliente'
+        ])
+        ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
+        ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
+        ->order('Encomendas.data_criacao_encomenda', 'DESC')
+        ->get();
+}
+
 }
