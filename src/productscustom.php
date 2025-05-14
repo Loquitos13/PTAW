@@ -1,3 +1,7 @@
+<?php
+session_start();
+$userId = $_SESSION['user_id'] ?? null;
+?>
 <!DOCTYPE html>
 <html lang="pt">
 
@@ -234,6 +238,7 @@
 </style>
 
 <body>
+  <input type="hidden" id="userId" value="<?php echo htmlspecialchars($userId); ?>">
   <!-- Menu Mobile -->
   <?php include 'includes/header-mobile.php'; ?>
 
@@ -488,9 +493,9 @@
         <label for="purchase" class="formLabel">What did you purchase?</label>
         <select id="purchase" name="purchase" class="selectBox">
           <option value="">Select an option...</option>
-          <option value="tshirt">T-Shirt</option>
-          <option value="pants">Pants</option>
-          <option value="shoes">Shoes</option>
+          <option value="1">T-Shirt</option>
+          <option value="2">Pants</option>
+          <option value="3">Shoes</option>
         </select>
       </div>
 

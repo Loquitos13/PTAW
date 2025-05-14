@@ -79,3 +79,17 @@ function addFeedback($data) {
 
 }
 
+function getFeedbacks() {
+    global $apiUrl;
+
+    $ch = curl_init("$apiUrl/feedbacks");
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json'
+    ]);
+
+    $response = executeCurlRequest($ch);
+
+    return json_decode($response, true);
+}

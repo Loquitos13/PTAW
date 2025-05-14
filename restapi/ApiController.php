@@ -267,7 +267,7 @@ public function insertFeedback(): array
 
         $requiredFields = [
             'id_cliente',
-            'id_produto',
+            'id_categoria',
             'comentario',
             'classificacao',
             'data_review',
@@ -286,7 +286,7 @@ public function insertFeedback(): array
             $this->queryBuilder->table('Reviews')
                 ->insert([
                     'id_cliente' => $data['id_cliente'],
-                    'id_produto' => $data['id_produto'],
+                    'id_categoria' => $data['id_categoria'],
                     'comentario' => $data['comentario'],
                     'classificacao' => $data['classificacao'],
                     'data_review' => $data['data_review'],

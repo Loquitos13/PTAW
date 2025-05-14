@@ -1,5 +1,6 @@
 CREATE DATABASE IF NOT EXISTS ptaw;
-USE ptaw;
+USE `PTAW-2025-GR4`;
+
 
 CREATE TABLE Admins (
     id_admin INT AUTO_INCREMENT PRIMARY KEY,
@@ -212,7 +213,7 @@ CREATE TABLE Personalizacao (
 CREATE TABLE Reviews (
     id_review INT AUTO_INCREMENT PRIMARY KEY,
     id_cliente INT NOT NULL,
-    id_produto INT NOT NULL,
+    id_categoria INT NOT NULL,
     comentario TEXT NOT NULL,
     classificacao INT NOT NULL,
     data_review DATETIME NOT NULL,
@@ -221,8 +222,9 @@ CREATE TABLE Reviews (
         REFERENCES Clientes(id_cliente)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (id_produto) 
-        REFERENCES Produtos(id_produto)
+    FOREIGN KEY (id_categoria) 
+        REFERENCES Categorias(id_categoria)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
+

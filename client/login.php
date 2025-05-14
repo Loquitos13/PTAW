@@ -82,6 +82,7 @@ function loginUser($userEmail, $userPassword) {
         ];
     }
 
+    $_SESSION['user_id'] = $userData['id_cliente'];
     $_SESSION['user_email'] = $userData['email_cliente'];
 
      return [
