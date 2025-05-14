@@ -388,8 +388,9 @@ document
 
 
     const id_cliente = document.getElementById("userId").value;
+
     // validar campos "obrigatorios"
-    if (!comentario || !id_produto || !classificacao) {
+    if (!comentario || !id_categoria || !classificacao) {
       alert("Preencha todos os campos.");
       return;
     }
@@ -407,7 +408,7 @@ document
     // enviar dados para o servidor
     try {
       const response = await fetch(
-        "/restapi/ApiController.php?route=insertFeedback",
+        "../client/productReview.php",
         {
           method: "POST",
           headers: {
