@@ -550,8 +550,6 @@ if (!isset($_SESSION['admin_email'])) {
   </div>
   </div>
 
-
-
 </body>
 
 </html>

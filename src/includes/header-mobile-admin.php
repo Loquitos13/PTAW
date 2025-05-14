@@ -2,7 +2,6 @@
 $base_url = "/~ptaw-2025-gr4";
 ?>
 
-
 <div class="fixed-header">
   <button id="menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu"
     aria-controls="mobileMenu">
@@ -62,7 +61,7 @@ $base_url = "/~ptaw-2025-gr4";
         </svg>
         Discounts
       </a>
-      <a href="<?= $base_url ?>/src/sobre.php" class="nav-link py-2">
+      <a href="Settings.php" class="nav-link py-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi me-2 bi-gear-fill"
           viewBox="0 0 16 16">
           <path
