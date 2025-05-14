@@ -55,6 +55,7 @@ try {
 }
 
 function addFeedback($data) {
+    
     global $apiUrl;
 
     if(empty($data)) {

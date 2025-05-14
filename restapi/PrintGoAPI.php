@@ -28,6 +28,8 @@ $router->add('GET', '/carrinhos', fn() => $controller->getCarrinhos());
 
 $router->add('GET', '/encomendasByUserID/$id', fn($id) => $controller->getEncomendasByUserID($id));
 
+$router->add('GET', '/productsSoldByID/$productID', fn($productID) => $controller->getProductsSoldByID($productID));
+
 $router->add('POST', '/insertUser', fn() => $controller->insertUser());
 
 $router->add('PUT', '/updateUser', fn() => $controller->updateUser());
