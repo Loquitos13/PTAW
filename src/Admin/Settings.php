@@ -2,75 +2,153 @@
 <html lang="pt-pt">
 <head>
   <meta charset="UTF-8">
-  <title>Admin - Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Print & Go - Settings</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/Dashboard.css">
   <link rel="stylesheet" href="css/Settings.css">
+  <script src="js/Settings.js" defer></script>
 </head>
-<body>
-  <?php include '../includes/header-desktop-admin.php'; ?>
-  <?php include '../includes/header-mobile-admin.php'; ?>
 
-  <main class="settings-container">
-    <aside class="sidebar">
-      <ul>
-        <li><a href="Dashboard.php">Dashboard</a></li>
-        <li><a href="Products.html">Products</a></li>
-        <li><a href="Orders.html">Orders</a></li>
-        <li><a href="analytics.php">Analytics</a></li>
-        <li><a href="Discounts.html">Discounts</a></li>
-        <li class="active"><a href="Settings.html">Settings</a></li>
-      </ul>
-    </aside>
+<body style="background-color: #E5E7EB;">
+  <div class="d-flex">
+    <!-- Menu lateral -->
+    <?php include '../includes/header-desktop-admin.php'; ?>
+    <!-- Menu mobile -->
+    <?php include '../includes/header-mobile-admin.php'; ?>
 
-    <section class="settings-content">
-      <h1>Settings</h1>
-      <p class="subtitle">Manage your store preferences and security</p>
-
-      <div class="tabs">
-        <button class="tab active">General</button>
-        <button class="tab">Security</button>
-        <button class="tab">Notifications</button>
-        <button class="tab">Team</button>
-        <button class="tab">Billing</button>
-      </div>
-
-      <div class="settings-panels">
-        <!-- Store Settings -->
-        <div class="panel store-settings">
-          <h2>Store Settings</h2>
-          <label>Store Name <input type="text" value="Print&Go"></label>
-          <label>Contact Email <input type="email" value="contact@print&go.com"></label>
-          <label>Currency 
-            <select>
-              <option>EUR (€)</option>
-              <option>USD ($)</option>
-            </select>
-          </label>
-        </div>
-
-        <!-- Security Settings -->
-        <div class="panel security-settings">
-          <h2>Security Settings</h2>
-          <div class="toggle-section">
-            <span>Two-factor Authentication</span>
-            <input type="checkbox">
-          </div>
-          <div class="history-link">
-            <span>Login History</span>
-            <a href="#">View History</a>
+    <!-- Conteúdo principal -->
+    <div class="flex-grow-1 p-4" id="main-content">
+      <div class="container-fluid">
+        <!-- Header da página -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+              <div>
+                <h1 class="mb-1">Settings</h1>
+                <p class="text-muted">Manage your store preferences and security</p>
+              </div>
+              <!-- Admin info -->
+              <div class="d-flex align-items-center">
+                <div class="me-3 text-end d-none d-sm-block">
+                  <i class="bi bi-bell fs-5"></i>
+                </div>
+                <img src="../../imagens/admin.png" alt="Admin Profile" id="img-admin">
+                <span class="ms-2">John Doe</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="panel quick-actions">
-          <h2>Quick Actions</h2>
-          <button class="export">Export Store Data</button>
-          <button class="clear">Clear Cache</button>
-          <button class="support">Contact Support</button>
+        <!-- Tabs de navegação -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <ul class="nav nav-tabs settings-tabs">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">General</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Security</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Notifications</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Team</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Billing</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Conteúdo principal das configurações -->
+        <div class="row gx-4">
+          <!-- Coluna principal (lado esquerdo) -->
+          <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+              <div class="card-body">
+                <h5 class="card-title mb-4">Store Settings</h5>
+                
+                <div class="mb-3">
+                  <label for="storeName" class="form-label">Store Name</label>
+                  <input type="text" class="form-control" id="storeName" value="Print&Go">
+                </div>
+                
+                <div class="mb-3">
+                  <label for="contactEmail" class="form-label">Contact Email</label>
+                  <input type="email" class="form-control" id="contactEmail" value="contact@print&go.com">
+                </div>
+                
+                <div class="mb-3">
+                  <label for="currency" class="form-label">Currency</label>
+                  <div class="position-relative">
+                    <select class="form-select" id="currency">
+                      <option selected>EUR (€)</option>
+                      <option>USD ($)</option>
+                      <option>GBP (£)</option>
+                    </select>
+                    <i class="bi bi-chevron-down position-absolute end-0 top-50 translate-middle-y me-3"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Security Settings -->
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title mb-4">Security Settings</h5>
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <div>
+                    <p class="mb-0 fw-medium">Two-factor Authentication</p>
+                    <p class="text-muted small mb-0">Add an extra layer of security to your account</p>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="twoFactorSwitch">
+                  </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="mb-0 fw-medium">Login History</p>
+                    <p class="text-muted small mb-0">View and manage devices where you're logged in</p>
+                  </div>
+                  <a href="#" class="link-primary">View History</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coluna lateral (lado direito) -->
+          <div class="col-lg-4">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title mb-4">Quick Actions</h5>
+                
+                <button class="btn btn-primary w-100 mb-3">
+                  <i class="bi bi-download me-2"></i>
+                  Export Store Data
+                </button>
+                
+                <button class="btn btn-light w-100 mb-3">
+                  <i class="bi bi-trash me-2"></i>
+                  Clear Cache
+                </button>
+                
+                <button class="btn btn-outline-secondary w-100">
+                  <i class="bi bi-envelope me-2"></i>
+                  Contact Support
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
-  </main>
-
-  <script src="js/Settings.js"></script>
+    </div>
+  </div>
 </body>
-</html>v
+</html>
