@@ -59,6 +59,14 @@ class QueryBuilder {
 
     }
 
+    public function groupBy(string $column): static {
+  
+      $this->query .= " GROUP BY $column";
+
+      return $this;
+
+    }
+
     public function insert(array $data): bool {
 
         $columns = implode(', ', array_keys($data));
