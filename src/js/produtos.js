@@ -237,49 +237,50 @@ fetch('http://localhost/PTAW/restapi/PrintGoAPI.php/products')
 
         data.forEach(produto => {
             
-            // Corrigido: criar elemento div
+            //cria o container principal para ficar responsivo
             let Containner = document.createElement('div');
             Containner.classList.add('col-lg-3', 'col-md-4', 'col-sm-6', 'mb-4');
-
+            // cria o card do produto
             let card = document.createElement('div');
             card.classList.add("card", "border-0", "shadow-sm");
-
+            // Cria a div que vai conter a imagem do produto
             let divImg = document.createElement('div');
-            divImg.classList.add("position-relative"); // Corrigido typo
-
+            divImg.classList.add("position-relative");
+            // Imagem do produto
             let img = document.createElement('img');
             img.src = produto.imagem_principal;
             img.classList.add("card-img-top", "bg-light");
             img.alt = produto.titulo_produto;
-
-            divImg.appendChild(img);
-
+            // cria uma div para conter as informações do produto
             let divInfo = document.createElement("div");
             divInfo.classList.add("card-body", "px-3", "pb-3");
-
+            // Titulo do produto
             let tituloProduto = document.createElement("h5");
             tituloProduto.classList.add("card-title", "fw-bold", "mb-1");
             tituloProduto.textContent = produto.titulo_produto;
-
+            // Cria uma div para conter o preço e o botão
             let divPrecoBtn = document.createElement("div");
             divPrecoBtn.classList.add("d-flex", "justify-content-between", "align-items-center");
-
+            // Preço do produto
             let precoProduto = document.createElement("span");
             precoProduto.classList.add("fw-bold");
             precoProduto.style.color = "#4F46E5";
             precoProduto.textContent = produto.preco_produto + "€";
-
+            // Botão de comprar
             let btnComprar = document.createElement("button");
             btnComprar.type = "button";
             btnComprar.classList.add("btn", "btn-primary");
             btnComprar.style = "background-color: #4F46E5; border: 0;"
             btnComprar.textContent = "Shop Now";
+            // Adiciona o evento de clique para redirecionar para a página do produto
             btnComprar.addEventListener('click', function () {
                 window.location.href = "productscustom.php?id=" + produto.id_produto;
             });
-
+            
             card.appendChild(divImg);
             card.appendChild(divInfo);
+
+            divImg.appendChild(img);
 
             divInfo.appendChild(tituloProduto);
             divInfo.appendChild(divPrecoBtn);

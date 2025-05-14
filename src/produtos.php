@@ -404,6 +404,7 @@
 
       <!-- Todos os produtos -->
       <div class="container py-4">
+        <!-- Todos os produtos serão exebidos aqui -->
         <div class="row" id="produtos-container">
 
         </div>
