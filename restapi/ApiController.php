@@ -94,6 +94,19 @@ class ApiController
             ->get();
     }
 
+    public function getProductsSoldByID(int $productID): ?array {
+
+        return $this->queryBuilder->table('Encomendas')
+            ->select(['Produtos.id_produto', 'COUNT(DISTINCT Encomendas.id_encomenda) AS total_encomendas'])
+            ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
+            ->join('CarrinhoItens', 'Carrinhos.id_carrinho', '=', 'CarrinhoItens.id_carrinho')
+            ->join('Produtos', 'CarrinhoItens.id_produto', '=', 'Produtos.id_produto')
+            ->where('Produtos.id_produto', '=', $productID)
+            ->groupBy('Produtos.id_produto')
+            ->get();
+
+  }
+
     public function insertUser(): array
     {
 
@@ -242,7 +255,7 @@ class ApiController
         return '0.0.0.0';
     }
 
-    public function insertFeedback(): array
+public function insertFeedback(): array
     {
 
         $json = file_get_contents('php://input');
@@ -255,8 +268,9 @@ class ApiController
         $requiredFields = [
             'id_cliente',
             'id_produto',
-            'feedback',
-            'data_feedback',
+            'comentario',
+            'classificacao',
+            'data_review',
             'recommend'
         ];
 
@@ -269,17 +283,15 @@ class ApiController
                     ];
                 }
             }
-
-            $insertResult = $this->queryBuilder->table('Reviews')
-                ->insert($data);
-
-
-            if (!$insertResult) {
-                return [
-                    'error' => 'Error inserting feedback',
-                    'message' => 'Insert operation failed'
-                ];
-            }
+            $this->queryBuilder->table('Reviews')
+                ->insert([
+                    'id_cliente' => $data['id_cliente'],
+                    'id_produto' => $data['id_produto'],
+                    'comentario' => $data['comentario'],
+                    'classificacao' => $data['classificacao'],
+                    'data_review' => $data['data_review'],
+                    'recommend' => $data['recommend']
+                ]);
 
             return ['success' => 'Feedback inserted'];
         } catch (PDOException $e) {

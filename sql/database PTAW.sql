@@ -216,6 +216,7 @@ CREATE TABLE Reviews (
     comentario TEXT NOT NULL,
     classificacao INT NOT NULL,
     data_review DATETIME NOT NULL,
+    recommend BOOLEAN DEFAULT 0,
     FOREIGN KEY (id_cliente) 
         REFERENCES Clientes(id_cliente)
         ON DELETE CASCADE

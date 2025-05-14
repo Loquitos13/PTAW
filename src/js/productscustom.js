@@ -410,18 +410,19 @@ function saveArrayBuffer(buffer, filename) {
 document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
-  const feedback = document.querySelector('textarea[name="feedback"]').value;
-  const recommend = document.querySelector('input[name="recommend"]').checked ? "1" : "0";
+  const comentario = document.getElementById("comments").value; 
+  const recommend = document.querySelector('input[name="recommend"]').checked ? "true" : "false";
 
   const data = {
-    id_cliente: $userId,
-    id_produto: $productId,
-    feedback: feedback,
-    data_feedback: new Date().toISOString().split('T')[0], // "YYYY-MM-DD"
+    id_cliente: 1,
+    id_produto: 1,
+    comentario: comentario,
+    data_review: new Date().toISOString().split('T')[0],
+    classificacao: 3,
     recommend: recommend
   };
 
-  const response = await fetch('/restapi/ApiController.php?route=insertFeedback', {
+  const response = await fetch('../client/productReview.php', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
