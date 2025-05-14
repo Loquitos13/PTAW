@@ -27,7 +27,7 @@ class ApiController
     public function getProducts(): array {
 
         return $this->queryBuilder->table('Produtos')
-            ->select(['id_produto', 'descricao_produto', 'status_produto'])
+            ->select(['*'])
             ->order('id_produto', 'DESC')
             ->get();
 
