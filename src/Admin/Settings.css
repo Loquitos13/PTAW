@@ -1,0 +1,14 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f8f9fb;
+  margin: 0;
+}
+
+.settings-container {
+  display: flex;
+}
+
+.settings-content {
+  padding: 30px;
+  flex-grow: 1;
+}
