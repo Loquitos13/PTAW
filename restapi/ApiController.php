@@ -26,29 +26,43 @@ class ApiController
 
     public function getFiltersProducts($categoria, $precoMinimo, $precoMaximo, $cor, $tamanho): array
     {
+        // Se vier '_', tratar como vazio
+        $categoria = ($categoria === '_') ? [] : explode(',', $categoria);
+        $cor = ($cor === '_') ? [] : explode(',', $cor);
+        $tamanho = ($tamanho === '_') ? [] : explode(',', $tamanho);
 
-        if (!is_array($categoria)) {
-
-            $categoria = [$categoria];
-
-        }
-
-        return $this->queryBuilder->table('Produtos')
-            ->select(['*'])
+        $qb = $this->queryBuilder->table('Produtos')
+            ->select(['Produtos.*'])
             ->join('Categorias', 'Produtos.id_categoria', '=', 'Categorias.id_categoria')
             ->join('Dimensoes', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
             ->join('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
-            ->join('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
-            ->where('Categorias.titulo_categoria', 'IN', $categoria)
-            ->where('Produtos.preco_produto', '>=', $precoMinimo)
-            ->where('Produtos.preco_produto', '<=', $precoMaximo)
-            ->where('Cores.nome_cor', '=', $cor)
-            ->where('Dimensoes.tamanho', '=', $tamanho)
-            ->order('Produtos.id_produto', 'DESC')
-            ->get();
+            ->join('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor');
+
+        if (!empty($categoria)) {
+            $qb->where('Categorias.titulo_categoria', 'IN', $categoria);
+        }
+
+        if (!empty($precoMinimo)) {
+            $qb->where('Produtos.preco_produto', '>=', $precoMinimo);
+        }
+
+        if (!empty($precoMaximo) && $precoMaximo < 999999) {
+            $qb->where('Produtos.preco_produto', '<=', $precoMaximo);
+        }
+
+        if (!empty($cor)) {
+            $qb->where('Cores.nome_cor', 'IN', $cor);
+        }
+
+        if (!empty($tamanho)) {
+            $qb->where('Dimensoes.tamanho', 'IN', $tamanho);
+        }
+
+        $qb->order('Produtos.id_produto', 'DESC');
+        return $qb->get();
     }
 
-   public function getCategories(): array
+    public function getCategories(): array
     {
 
         return $this->queryBuilder->table('Categorias')

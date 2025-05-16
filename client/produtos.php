@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 require_once '../restapi/Database.php';
 
@@ -8,7 +9,6 @@ function executeCurlRequest($ch)
 {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     if (curl_errno($ch)) {
         $error = curl_error($ch);
@@ -29,67 +29,56 @@ function executeCurlRequest($ch)
 header('Content-Type: application/json');
 
 try {
-    $json = file_get_contents('php://input');
+    // Receber filtros via GET
+    $categoria   = isset($_GET['categorias']) ? $_GET['categorias'] : '';
+    $precoMinimo = isset($_GET['precoMin'])   ? $_GET['precoMin']   : '0';
+    $precoMaximo = isset($_GET['precoMax'])   ? $_GET['precoMax']   : '999999';
+    $cor         = isset($_GET['cores'])      ? $_GET['cores']      : '';
+    $tamanho     = isset($_GET['tamanhos'])   ? $_GET['tamanhos']   : '';
 
-    if (empty($json)) {
-        throw new Exception("Empty request body");
+    // Montar placeholders se vazio
+    $categoriaParam = empty($categoria) ? '_' : $categoria;
+    $corParam       = empty($cor)       ? '_' : $cor;
+    $tamanhoParam   = empty($tamanho)   ? '_' : $tamanho;
+
+    // Se nenhum filtro, buscar todos
+    if ($categoriaParam === '_' && $corParam === '_' && $tamanhoParam === '_' &&
+        $precoMinimo === '0' && $precoMaximo === '999999') {
+        $url = "$apiUrl/products";
+        $ch  = curl_init($url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        $response = executeCurlRequest($ch);
+        echo $response;
+        exit;
     }
 
-    $data = json_decode($json, true);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception("Invalid JSON: " . json_last_error_msg());
+    // Se algum filtro for string com vírgula, transforma em array (se quiser)
+    if (!is_array($categoriaParam) && strpos($categoriaParam, ',') !== false) {
+        $categoriaParam = implode(',', $categoriaParam);
+    }
+    if (!is_array($corParam) && strpos($corParam, ',') !== false) {
+        $corParam = implode(',', $corParam);
+    }
+    if (!is_array($tamanhoParam) && strpos($tamanhoParam, ',') !== false) {
+        $tamanhoParam = implode(',', $tamanhoParam);
     }
 
-    $result = loginUser($data['email'], $data['pass']);
-    echo json_encode($result);
+    // Codificar antes de enviar
+    $categoriaParam = urlencode($categoriaParam);
+    $corParam       = urlencode($corParam);
+    $tamanhoParam   = urlencode($tamanhoParam);
+
+    $url = "$apiUrl/filterProducts/$categoriaParam/$precoMinimo/$precoMaximo/$corParam/$tamanhoParam";
+    $ch  = curl_init($url);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    $response = executeCurlRequest($ch);
+    echo $response;
+    exit;
 
 } catch (Exception $e) {
     http_response_code(400);
     echo json_encode([
-        'status' => 'error',
+        'status'  => 'error',
         'message' => $e->getMessage()
     ]);
 }
-
-function getproducts($userEmail, $userPassword)
-{
-    global $apiUrl;
-
-    if (empty($userEmail) || empty($userPassword)) {
-        throw new Exception("Some data is missing");
-    }
-
-    $ch = curl_init("$apiUrl/userByEmail/$userEmail");
-
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json'
-
-    ]);
-
-    $response = executeCurlRequest($ch);
-    $userData = json_decode($response, true);
-
-    if (!$userData) {
-        return [
-            'status' => 'error',
-            'message' => 'User not found'
-        ];
-    }
-
-    if (!password_verify($userPassword, $userData['pass_cliente'])) {
-        return [
-            'status' => 'error',
-            'message' => 'Incorrect password'
-        ];
-    }
-
-    $_SESSION['user_id'] = $userData['id_cliente'];
-    $_SESSION['user_email'] = $userData['email_cliente'];
-
-    return [
-        'status' => 'success',
-        'message' => 'Login successful',
-    ];
-}
-

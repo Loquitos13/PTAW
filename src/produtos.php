@@ -11,7 +11,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
   <link rel="stylesheet" href="css/produtos.css">
-  
+
   <?php include 'includes/carrinho.php'; ?>
   <?php include 'includes/filtros.php'; ?>
 </head>
@@ -251,25 +251,25 @@
       <div>
         <h6>Categories</h6>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCategory1">
+          <input class="form-check-input" type="checkbox" value="Apparel" id="defaultCategory1">
           <label class="form-check-label" for="labelCategory1">
             Apparel
           </label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCategory2">
+          <input class="form-check-input" type="checkbox" value="Accessories" id="defaultCategory2">
           <label class="form-check-label" for="labelCategory2">
             Accessories
           </label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCategory3">
+          <input class="form-check-input" type="checkbox" value="Home & Living" id="defaultCategory3">
           <label class="form-check-label" for="labelCategory3">
             Home & Living
           </label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCategory4">
+          <input class="form-check-input" type="checkbox" value="Stationery" id="defaultCategory4">
           <label class="form-check-label" for="labelCategory4">
             Stationery
           </label>
@@ -305,29 +305,33 @@
       <div class="color-selector">
         <h6>Colors</h6>
         <div id="idColorOptions" class="colorOptions d-flex gap-2">
-          <input type="radio" class="btn-check" name="color" id="color-red" autocomplete="off">
+          <input type="radio" class="btn-check" name="color" id="color-red" value="Vermelho" autocomplete="off">
           <label class="btnColor rounded-circle p-2" for="color-red"
             style="background-color: red; border: 2px solid #ccc;"></label>
 
-          <input type="radio" class="btn-check" name="color" id="color-blue" autocomplete="off">
+          <input type="radio" class="btn-check" name="color" id="color-blue" value="Azul" autocomplete="off">
           <label class="btnColor rounded-circle p-2" for="color-blue"
             style="background-color: blue; border: 2px solid #ccc;"></label>
 
-          <input type="radio" class="btn-check" name="color" id="color-green" autocomplete="off">
+          <input type="radio" class="btn-check" name="color" id="color-green" value="Verde" autocomplete="off">
           <label class="btnColor rounded-circle p-2" for="color-green"
             style="background-color: green; border: 2px solid #ccc;"></label>
 
-          <input type="radio" class="btn-check" name="color" id="color-orange" autocomplete="off">
+          <input type="radio" class="btn-check" name="color" id="color-orange" value="Laranja" autocomplete="off">
           <label class="btnColor rounded-circle p-2" for="color-orange"
             style="background-color: orange; border: 2px solid #ccc;"></label>
 
-          <input type="radio" class="btn-check" name="color" id="color-purple" autocomplete="off">
+          <input type="radio" class="btn-check" name="color" id="color-purple" value="Roxo" autocomplete="off">
           <label class="btnColor rounded-circle p-2" for="color-purple"
             style="background-color: purple; border: 2px solid #ccc;"></label>
 
-          <input type="radio" class="btn-check" name="color" id="color-black" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-black"
+          <input type="radio" class="btn-check" name="color" id="color-Preto" value="Preto" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-Preto"
             style="background-color: black; border: 2px solid #ccc;"></label>
+
+          <input type="radio" class="btn-check" name="color" id="color-Branco" value="Branco" autocomplete="off">
+          <label class="btnColor rounded-circle p-2" for="color-Branco"
+            style="background-color: white; border: 2px solid #ccc;"></label>
         </div>
       </div>
       <hr>
@@ -405,7 +409,7 @@
   <!-- Footer -->
   <?php include 'includes/footer.php'; ?>
 
-<script src="js/produtos.js"></script>
+  <script src="js/produtos.js"></script>
 </body>
 
 </html>
