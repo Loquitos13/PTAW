@@ -33,7 +33,13 @@ CREATE TABLE Clientes (
 CREATE TABLE Dimensoes (
     id_dimensao INT AUTO_INCREMENT PRIMARY KEY,
     dimensao_tipo VARCHAR(255) NOT NULL,
-    tamanho VARCHAR(255) NOT NULL
+    tamanho VARCHAR(255) NOT NULL,
+    id_produto INT NOT NULL,
+    CONSTRAINT fk_produto
+        FOREIGN KEY (id_produto)
+        REFERENCES Produtos(id_produto)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE Cores (
@@ -48,10 +54,6 @@ CREATE TABLE Categorias (
     descricao_categoria TEXT NOT NULL,
     id_dimensao INT NOT NULL,
     status_categoria BOOLEAN DEFAULT 0,
-    FOREIGN KEY (id_dimensao) 
-        REFERENCES Dimensoes(id_dimensao)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE
 );
 
 CREATE TABLE Produtos (

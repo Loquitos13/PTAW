@@ -25,15 +25,35 @@ class QueryBuilder {
 
     public function where(string $column, string $operator, mixed $value): self {
 
-        $placeholder = ':' . preg_replace('/[^a-zA-Z0-9_]/', '_', $column);
-    
-        $this->query .= (str_contains($this->query, 'WHERE') ? " AND" : " WHERE") . " $column $operator $placeholder";
+        if (strtoupper($operator) === 'IN' && is_array($value)) {
 
-        $this->bindings[$placeholder] = $value;
-    
+            $placeholders = [];
+
+            foreach ($value as $i => $val) {
+
+                $ph = ':' . preg_replace('/[^a-zA-Z0-9_]/', '_', $column) . "_$i";
+
+                $placeholders[] = $ph;
+
+                $this->bindings[$ph] = $val;
+
+            }
+
+            $this->query .= (str_contains($this->query, 'WHERE') ? " AND" : " WHERE") ." $column IN (" . implode(', ', $placeholders) . ")";
+
+        } else {
+
+            $placeholder = ':' . preg_replace('/[^a-zA-Z0-9_]/', '_', $column) . uniqid('_');
+
+            $this->query .= (str_contains($this->query, 'WHERE') ? " AND" : " WHERE") . " $column $operator $placeholder";
+
+            $this->bindings[$placeholder] = $value;
+
+        }
+
         return $this;
-        
     }
+
 
     public function join(string $table, string $column1, string $operator, string $column2): static {
 

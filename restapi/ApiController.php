@@ -24,22 +24,19 @@ class ApiController
             ->get();
     }
 
-
-    /*
-    SELECT * FROM Produtos 
-INNER JOIN Categorias ON Produtos.id_categoria = Categorias.id_categoria
-INNER JOIN Dimensoes  ON Categorias.id_dimensao = Dimensoes.id_dimensao
-INNER JOIN ProdutosVariantes ON Produtos.id_produto = ProdutosVariantes.id_produto
-INNER JOIN Cores ON ProdutosVariantes.id_cor  = Cores.id_cor
-WHERE Produtos.id_produto = 1
-
-    */
     public function getFiltersProducts($categoria, $precoMinimo, $precoMaximo, $cor, $tamanho): array
     {
+
+        if (!is_array($categoria)) {
+
+            $categoria = [$categoria];
+
+        }
+
         return $this->queryBuilder->table('Produtos')
             ->select(['*'])
             ->join('Categorias', 'Produtos.id_categoria', '=', 'Categorias.id_categoria')
-            ->join('Dimensoes', 'Categorias.id_dimensao', '=', 'Dimensoes.id_dimensao')
+            ->join('Dimensoes', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
             ->join('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
             ->join('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
             ->where('Categorias.titulo_categoria', 'IN', $categoria)
@@ -47,8 +44,17 @@ WHERE Produtos.id_produto = 1
             ->where('Produtos.preco_produto', '<=', $precoMaximo)
             ->where('Cores.nome_cor', '=', $cor)
             ->where('Dimensoes.tamanho', '=', $tamanho)
-            ->order('id_produto', 'DESC')
+            ->order('Produtos.id_produto', 'DESC')
             ->get();
+    }
+
+   public function getCategories(): array
+    {
+
+        return $this->queryBuilder->table('Categorias')
+            ->select(['*'])
+            ->get();
+
     }
 
     public function getProducts(): array
