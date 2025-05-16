@@ -50,8 +50,8 @@
                             <input type="range" class="range-input" id="range-max-mobile" min="0" max="100" value="70">
                         </div>
                         <div class="price-labels mt-2">
-                            <span class="price-label">$<span id="value-min-mobile">30</span></span>
-                            <span class="price-label">$<span id="value-max-mobile">70</span></span>
+                            <span class="price-label">€<span id="value-min-mobile">30</span></span>
+                            <span class="price-label">€<span id="value-max-mobile">70</span></span>
                         </div>
                     </div>
                     <hr>
@@ -126,28 +126,6 @@
                                 <label class="btn btn-outline-primary" for="btnradio5">2XL</label>
                             </div>
 
-                        </div>
-                    </div>
-                    <hr>
-                    <div>
-                        <h6>Promotions</h6>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="promoOnSale">
-                            <label class="form-check-label" for="promoOnSale">
-                                On Sale
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="promoHomeLiving">
-                            <label class="form-check-label" for="promoHomeLiving">
-                                Home & Living
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="promoStationery">
-                            <label class="form-check-label" for="promoStationery">
-                                Stationery
-                            </label>
                         </div>
                     </div>
                     <hr>

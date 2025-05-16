@@ -227,73 +227,104 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });*/
 
-// Chamada para API para obter produtos
-// depois sera trocado por: http://~ptaw-grp4/PTAW/restapi/products
-fetch('http://localhost/PTAW/restapi/PrintGoAPI.php/products')
-    .then(response => response.json())
-    .then(data => {
-        // Seleciona o container no HTML onde os produtos serão exibidos
-        const produtosLista = document.getElementById('produtos-container');
 
-        data.forEach(produto => {
-            
-            //cria o container principal para ficar responsivo
-            let Containner = document.createElement('div');
-            Containner.classList.add('col-lg-3', 'col-md-4', 'col-sm-6', 'mb-4');
-            // cria o card do produto
-            let card = document.createElement('div');
-            card.classList.add("card", "border-0", "shadow-sm");
-            // Cria a div que vai conter a imagem do produto
-            let divImg = document.createElement('div');
-            divImg.classList.add("position-relative");
-            // Imagem do produto
-            let img = document.createElement('img');
-            img.src = produto.imagem_principal;
-            img.classList.add("card-img-top", "bg-light");
-            img.alt = produto.titulo_produto;
-            // cria uma div para conter as informações do produto
-            let divInfo = document.createElement("div");
-            divInfo.classList.add("card-body", "px-3", "pb-3");
-            // Titulo do produto
-            let tituloProduto = document.createElement("h5");
-            tituloProduto.classList.add("card-title", "fw-bold", "mb-1");
-            tituloProduto.textContent = produto.titulo_produto;
-            // Cria uma div para conter o preço e o botão
-            let divPrecoBtn = document.createElement("div");
-            divPrecoBtn.classList.add("d-flex", "justify-content-between", "align-items-center");
-            // Preço do produto
-            let precoProduto = document.createElement("span");
-            precoProduto.classList.add("fw-bold");
-            precoProduto.style.color = "#4F46E5";
-            precoProduto.textContent = produto.preco_produto + "€";
-            // Botão de comprar
-            let btnComprar = document.createElement("button");
-            btnComprar.type = "button";
-            btnComprar.classList.add("btn", "btn-primary");
-            btnComprar.style = "background-color: #4F46E5; border: 0;"
-            btnComprar.textContent = "Shop Now";
-            // Adiciona o evento de clique para redirecionar para a página do produto
-            btnComprar.addEventListener('click', function () {
-                window.location.href = "productscustom.php?id=" + produto.id_produto;
-            });
-            
-            card.appendChild(divImg);
-            card.appendChild(divInfo);
 
-            divImg.appendChild(img);
-
-            divInfo.appendChild(tituloProduto);
-            divInfo.appendChild(divPrecoBtn);
-
-            divPrecoBtn.appendChild(precoProduto);
-            divPrecoBtn.appendChild(btnComprar);
-
-            Containner.appendChild(card);
-
-            // Adiciona o card ao container principal
-            produtosLista.appendChild(Containner);
-        });
+// Função para buscar produtos (com ou sem filtros)
+function buscarProdutos(filtros = {}) {
+    // Chamada para API para obter produtos
+    // depois sera trocado por: http://~ptaw-grp4/PTAW/restapi/products
+    fetch('http://localhost/PTAW/restapi/PrintGoAPI.php/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(filtros)
     })
-    .catch(error => {
-        console.error('Erro ao buscar produtos:', error);
+        .then(response => response.json())
+        .then(data => {
+            const produtosLista = document.getElementById('produtos-container');
+            produtosLista.innerHTML = ""; // Limpa antes de adicionar novos
+            data.forEach(produto => {
+
+                //cria o container principal para ficar responsivo
+                let Containner = document.createElement('div');
+                Containner.classList.add('col-lg-3', 'col-md-4', 'col-sm-6', 'mb-4');
+                // cria o card do produto
+                let card = document.createElement('div');
+                card.classList.add("card", "border-0", "shadow-sm");
+                // Cria a div que vai conter a imagem do produto
+                let divImg = document.createElement('div');
+                divImg.classList.add("position-relative");
+                // Imagem do produto
+                let img = document.createElement('img');
+                img.src = produto.imagem_principal;
+                img.classList.add("card-img-top", "bg-light");
+                img.alt = produto.titulo_produto;
+                // cria uma div para conter as informações do produto
+                let divInfo = document.createElement("div");
+                divInfo.classList.add("card-body", "px-3", "pb-3");
+                // Titulo do produto
+                let tituloProduto = document.createElement("h5");
+                tituloProduto.classList.add("card-title", "fw-bold", "mb-1");
+                tituloProduto.textContent = produto.titulo_produto;
+                // Cria uma div para conter o preço e o botão
+                let divPrecoBtn = document.createElement("div");
+                divPrecoBtn.classList.add("d-flex", "justify-content-between", "align-items-center");
+                // Preço do produto
+                let precoProduto = document.createElement("span");
+                precoProduto.classList.add("fw-bold");
+                precoProduto.style.color = "#4F46E5";
+                precoProduto.textContent = produto.preco_produto + "€";
+                // Botão de comprar
+                let btnComprar = document.createElement("button");
+                btnComprar.type = "button";
+                btnComprar.classList.add("btn", "btn-primary");
+                btnComprar.style = "background-color: #4F46E5; border: 0;"
+                btnComprar.textContent = "Shop Now";
+                // Adiciona o evento de clique para redirecionar para a página do produto
+                btnComprar.addEventListener('click', function () {
+                    window.location.href = "productscustom.php?id=" + produto.id_produto;
+                });
+
+                card.appendChild(divImg);
+                card.appendChild(divInfo);
+
+                divImg.appendChild(img);
+
+                divInfo.appendChild(tituloProduto);
+                divInfo.appendChild(divPrecoBtn);
+
+                divPrecoBtn.appendChild(precoProduto);
+                divPrecoBtn.appendChild(btnComprar);
+
+                Containner.appendChild(card);
+
+                // Adiciona o card ao container principal
+                produtosLista.appendChild(Containner);
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao buscar produtos:', error);
+        });
+}
+
+// Ao carregar a página, buscar todos os produtos (sem filtros)
+document.addEventListener('DOMContentLoaded', function () {
+    buscarProdutos();
+});
+
+const applyFiltersDesktop = document.getElementById('apply-filters-desktop');
+// Quando clicar em "Apply Filters", buscar com filtros
+if (applyFiltersDesktop) {
+    applyFiltersDesktop.addEventListener('click', function () {
+        const filtros = {
+            categorias: [...document.querySelectorAll('input[type=checkbox][id^="defaultCategory"]:checked')].map(cb => cb.nextElementSibling.textContent.trim()),
+            precoMin: document.getElementById('range-min').value,
+            precoMax: document.getElementById('range-max').value,
+            cores: [...document.querySelectorAll('input[name="color"]:checked')].map(cb => cb.id.replace('color-', '')),
+            tamanhos: [...document.querySelectorAll('input[name="size-desktop"]:checked')].map(cb => cb.value),
+        };
+        // visualizar se os filtros estão corretos
+        console.log(filtros);
+        buscarProdutos(filtros);
+        closeFiltersSidebar();
     });
+}

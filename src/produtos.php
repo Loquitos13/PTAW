@@ -11,7 +11,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
   <link rel="stylesheet" href="css/produtos.css">
-  <script src="js/produtos.js"></script>
+  
   <?php include 'includes/carrinho.php'; ?>
   <?php include 'includes/filtros.php'; ?>
 </head>
@@ -289,13 +289,13 @@
           <div class="slider-thumb" id="thumb-min"></div>
           <div class="slider-thumb" id="thumb-max"></div>
 
-          <input type="range" class="range-input" id="range-min" min="0" max="100" value="30">
-          <input type="range" class="range-input" id="range-max" min="0" max="100" value="70">
+          <input type="range" class="range-input" id="range-min" min="0" max="100" value="0">
+          <input type="range" class="range-input" id="range-max" min="0" max="100" value="100">
         </div>
 
         <div class="price-labels mt-2">
-          <span class="price-label">$<span id="value-min">30</span></span>
-          <span class="price-label">$<span id="value-max">70</span></span>
+          <span class="price-label">€<span id="value-min">30</span></span>
+          <span class="price-label">€<span id="value-max">70</span></span>
         </div>
       </div>
       <hr>
@@ -367,26 +367,9 @@
           </div>
         </div>
       </div>
-
       <hr>
-      <div>
-        <h6>Promotions</h6>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-          <label class="form-check-label" for="defaultCheck1">
-            On Sale
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-          <label class="form-check-label" for="defaultCheck1">
-            Home & Living
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-          <label class="form-check-label" for="defaultCheck1">
-            Stationery
-        </div>
-      </div>
+      <!-- Botão de Aplicar -->
+      <button id="apply-filters-desktop" class="btn btn-primary">Apply Filters</button>
     </div>
 
     <!-- Produtos -->
@@ -422,7 +405,7 @@
   <!-- Footer -->
   <?php include 'includes/footer.php'; ?>
 
-
+<script src="js/produtos.js"></script>
 </body>
 
 </html>
