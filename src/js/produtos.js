@@ -233,8 +233,8 @@ document.addEventListener('DOMContentLoaded', function () {
 function buscarProdutos(filtros = {}) {
     // Chamada para API para obter produtos
     // depois sera trocado por: http://~ptaw-grp4/PTAW/restapi/products
-    fetch('http://localhost/PTAW/restapi/PrintGoAPI.php/products', {
-        method: 'POST',
+    fetch('../client/produtos.php', {
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(filtros)
     })

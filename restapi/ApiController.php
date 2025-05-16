@@ -24,7 +24,35 @@ class ApiController
             ->get();
     }
 
-    public function getProducts(): array {
+
+    /*
+    SELECT * FROM Produtos 
+INNER JOIN Categorias ON Produtos.id_categoria = Categorias.id_categoria
+INNER JOIN Dimensoes  ON Categorias.id_dimensao = Dimensoes.id_dimensao
+INNER JOIN ProdutosVariantes ON Produtos.id_produto = ProdutosVariantes.id_produto
+INNER JOIN Cores ON ProdutosVariantes.id_cor  = Cores.id_cor
+WHERE Produtos.id_produto = 1
+
+    */
+    public function getFiltersProducts($categoria, $precoMinimo, $precoMaximo, $cor, $tamanho): array
+    {
+        return $this->queryBuilder->table('Produtos')
+            ->select(['*'])
+            ->join('Categorias', 'Produtos.id_categoria', '=', 'Categorias.id_categoria')
+            ->join('Dimensoes', 'Categorias.id_dimensao', '=', 'Dimensoes.id_dimensao')
+            ->join('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
+            ->join('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
+            ->where('Categorias.titulo_categoria', 'IN', $categoria)
+            ->where('Produtos.preco_produto', '>=', $precoMinimo)
+            ->where('Produtos.preco_produto', '<=', $precoMaximo)
+            ->where('Cores.nome_cor', '=', $cor)
+            ->where('Dimensoes.tamanho', '=', $tamanho)
+            ->order('id_produto', 'DESC')
+            ->get();
+    }
+
+    public function getProducts(): array
+    {
 
         return $this->queryBuilder->table('Produtos')
             ->select(['*'])
@@ -94,7 +122,8 @@ class ApiController
             ->get();
     }
 
-    public function getProductsSoldByID(int $productID): ?array {
+    public function getProductsSoldByID(int $productID): ?array
+    {
 
         return $this->queryBuilder->table('Encomendas')
             ->select(['Produtos.id_produto', 'COUNT(DISTINCT Encomendas.id_encomenda) AS total_encomendas'])
@@ -105,7 +134,7 @@ class ApiController
             ->groupBy('Produtos.id_produto')
             ->get();
 
-  }
+    }
 
     public function insertUser(): array
     {
@@ -150,7 +179,7 @@ class ApiController
                 ->insert([
                     'nome_cliente' => $data['nome_cliente'],
                     'email_cliente' => $data['email_cliente'],
-                    'pass_cliente' =>  password_hash($data['pass_cliente'], PASSWORD_DEFAULT),
+                    'pass_cliente' => password_hash($data['pass_cliente'], PASSWORD_DEFAULT),
                     'contacto_cliente' => $data['contacto_cliente'] ?? null,
                     'morada_cliente' => $data['morada_cliente'] ?? null,
                     'nif_cliente' => $data['nif_cliente'] ?? null,
@@ -255,7 +284,7 @@ class ApiController
         return '0.0.0.0';
     }
 
-public function insertFeedback(): array
+    public function insertFeedback(): array
     {
 
         $json = file_get_contents('php://input');
@@ -313,43 +342,49 @@ public function insertFeedback(): array
             ->order('data_feedback', 'DESC')
             ->get();
     }
-   public function getOrders(): array
-{
-    return $this->queryBuilder->table('Encomendas')
-        ->select([
-            'Encomendas.id_encomenda',
-            'Encomendas.preco_total_encomenda',
-            'Encomendas.fatura',
-            'Encomendas.status_encomenda',
-            'Encomendas.data_criacao_encomenda',
-            'Encomendas.data_rececao_encomenda',
-            'Clientes.id_cliente',
-            'Clientes.nome_cliente',
-            'Clientes.email_cliente'
-        ])
-        ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
-        ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
-        ->order('Encomendas.data_criacao_encomenda', 'DESC')
-        ->get();
-}
+    public function getOrders(): array
+    {
+        return $this->queryBuilder->table('Encomendas')
+            ->select([
+                'Encomendas.id_encomenda',
+                'Encomendas.preco_total_encomenda',
+                'Encomendas.fatura',
+                'Encomendas.status_encomenda',
+                'Encomendas.data_criacao_encomenda',
+                'Encomendas.data_rececao_encomenda',
+                'Clientes.id_cliente',
+                'Clientes.nome_cliente',
+                'Clientes.email_cliente'
+            ])
+            ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
+            ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
+            ->order('Encomendas.data_criacao_encomenda', 'DESC')
+            ->get();
+    }
 
-public function insertProduct(): array {
+    public function insertProduct(): array
+    {
 
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
-    
+
         if (!is_array($data)) {
 
             return ['success' => false, 'message' => 'Invalid JSON data received'];
 
         }
-    
+
         $requiredFields = [
-            'id_categoria', 'titulo_produto', 'descricao_produto', 'preco_produto', 'stock_produto', 'keywords_produto'
+            'id_categoria',
+            'titulo_produto',
+            'descricao_produto',
+            'preco_produto',
+            'stock_produto',
+            'keywords_produto'
         ];
 
         $missingFields = [];
-    
+
         foreach ($requiredFields as $field) {
 
             if (empty($data[$field])) {
@@ -358,7 +393,7 @@ public function insertProduct(): array {
 
             }
         }
-    
+
         $dataCriacao = date("Y-m-d H:i:s");
 
         if (!empty($missingFields)) {
@@ -368,7 +403,7 @@ public function insertProduct(): array {
                 'message' => 'Missing required fields: ' . implode(', ', $missingFields)
             ];
         }
-    
+
         try {
 
             $this->queryBuilder->table('produtos')
@@ -384,9 +419,9 @@ public function insertProduct(): array {
                     'status_produto' => $data['status_produto'],
                     'data_criacao_produto' => $dataCriacao,
                 ]);
-    
+
             return ['success' => 'Product created'];
-    
+
         } catch (PDOException $e) {
 
             error_log("Database error: " . $e->getMessage());
@@ -399,11 +434,12 @@ public function insertProduct(): array {
         }
     }
 
-    public function updateProduct(): array {
+    public function updateProduct(): array
+    {
 
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
-    
+
         if (!is_array($data)) {
 
             return ['success' => false, 'message' => 'Invalid JSON data received'];
@@ -424,7 +460,7 @@ public function insertProduct(): array {
                 ->execute();
 
             return ['success' => 'Product updated'];
-    
+
         } catch (PDOException $e) {
 
             error_log("Database error: " . $e->getMessage());
@@ -438,7 +474,8 @@ public function insertProduct(): array {
 
     }
 
-    public function deleteProductByID($productID): array {
+    public function deleteProductByID($productID): array
+    {
 
         try {
 
@@ -448,7 +485,7 @@ public function insertProduct(): array {
                 ->execute();
 
             return ['success' => 'Product deleted'];
-    
+
         } catch (PDOException $e) {
 
             error_log("Database error: " . $e->getMessage());
@@ -460,7 +497,7 @@ public function insertProduct(): array {
 
         }
 
-  }
+    }
 
 
 }

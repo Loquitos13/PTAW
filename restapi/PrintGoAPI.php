@@ -52,6 +52,8 @@ $router->add('PUT', '/updateProduct', fn() => $controller->updateProduct());
 
 $router->add('DELETE', '/deleteProductByID/$id', fn($id) => $controller->deleteProductByID($id));
 
+$router->add('GET', '/filterProducts/$categoria&$precoMinimo&$precoMaximo&$cor&$tamanho', fn($categoria, $precoMinimo, $precoMaximo, $cor, $tamanho) => $controller->getFiltersProducts($categoria, $precoMinimo, $precoMaximo, $cor, $tamanho));
+
 $router->dispatch();
 
 
