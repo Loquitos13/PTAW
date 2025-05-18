@@ -238,7 +238,8 @@ $userId = $_SESSION['user_id'] ?? null;
 </style>
 
 <body>
-  <input type="hidden" id="userId" value="<?php echo htmlspecialchars($userId); ?>">
+  <input type="hidden" id="userId" value="<?php echo $_SESSION['user_id']; ?>">
+
   <!-- Menu Mobile -->
   <?php include 'includes/header-mobile.php'; ?>
 
@@ -460,7 +461,7 @@ $userId = $_SESSION['user_id'] ?? null;
           </svg>
         </button>
 
-        <div id="carouselItems"></div>
+        <div id="carouselItems" class="carousel-content"></div>
 
         <div class="indicator" id="indicator"></div>
       </div>
@@ -471,7 +472,7 @@ $userId = $_SESSION['user_id'] ?? null;
   <div class="formContainer">
     <h1 class="formTitle">Rate Your Experience</h1>
     <form id="feedbackForm" class="feedbackForm">
-      <!-- Overall Satisfaction -->
+      <span id="sending-as"></span>
       <div class="formGroup">
         <label class="formLabel">Overall Satisfaction</label>
         <div class="rating">

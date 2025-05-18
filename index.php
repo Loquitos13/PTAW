@@ -1,5 +1,7 @@
 <?php
 session_start();
+$userId = $_SESSION['user_id'] ?? null;
+echo "<!-- USER ID: $userId -->"; // debug
 ?>
 
 
@@ -237,6 +239,7 @@ session_start();
 </style>
 
 <body>
+  <input type="hidden" id="userId" value="<?php echo htmlspecialchars($userId); ?>">
   <!-- Menu Mobile -->
   <?php include 'src/includes/header-mobile.php'; ?>
 

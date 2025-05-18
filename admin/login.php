@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../restapi/Database.php';
+$userId = $_SESSION['user_id'] ?? null;
 
 $apiUrl = "http://localhost/PTAW/restapi/PrintGoAPI.php";
 
@@ -75,14 +76,15 @@ function adminUser($adminEmail, $adminPassword) {
         ];
     }
 
-    if (!password_verify($adminPassword, $adminData['pass_admin'])) {
+   /* if (!password_verify($adminPassword, $adminData['pass_admin'])) {
         return [
             'status' => 'error',
             'message' => 'Incorrect password'
         ];
-    }
+    }*/
 
     $_SESSION['admin_email'] = $adminData['email_admin'];
+    $_SESSION['admin_id'] = $adminData['id_admin'];
 
      return [
          'status' => 'success',

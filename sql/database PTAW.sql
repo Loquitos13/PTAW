@@ -1,6 +1,14 @@
 CREATE DATABASE IF NOT EXISTS ptaw;
 USE `PTAW-2025-GR4`;
 
+SELECT * FROM Reviews;
+SELECT * FROM Clientes;
+
+
+INSERT INTO Admins(id_admin, nome_admin, email_admin, pass_admin, contacto_admin, funcao_admin, data_criacao_admin) 
+VALUES (1, "Geral", "geral@printandgo.pt", "senha123", "912345678", "teste", '2025-05-18');
+
+
 
 CREATE TABLE Admins (
     id_admin INT AUTO_INCREMENT PRIMARY KEY,
@@ -9,7 +17,7 @@ CREATE TABLE Admins (
     pass_admin VARCHAR(255) NOT NULL,
     contacto_admin VARCHAR(255),
     funcao_admin VARCHAR(255) NOT NULL,
-    data_criacao_admin DATETIME NOT NULL
+    data_criacao_admin DATE NOT NULL
 );
 
 CREATE TABLE Clientes (
@@ -215,6 +223,7 @@ CREATE TABLE Personalizacao (
 CREATE TABLE Reviews (
     id_review INT AUTO_INCREMENT PRIMARY KEY,
     id_cliente INT NOT NULL,
+    nome_cliente VARCHAR(200) NOT NULL,
     id_categoria INT NOT NULL,
     comentario TEXT NOT NULL,
     classificacao INT NOT NULL,

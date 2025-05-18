@@ -388,6 +388,12 @@ document
 
 
     const id_cliente = document.getElementById("userId").value;
+    if(!id_cliente){
+      console.log("nao existe ID");
+    }else{
+      console.log("ID:" +id_cliente);
+      console.log("Comentário: "+ comentario + "; Recomend: " + recommend + "; Classificação: " + classificacao + "; ID Categoria: " + id_categoria);
+    }
 
     // validar campos "obrigatorios"
     if (!comentario || !id_categoria || !classificacao) {
@@ -417,10 +423,18 @@ document
           body: JSON.stringify(data),
         }
       );
-
+      
       const result = await response.json();
       alert(result.success || result.message || "Feedback enviado!");
+      
     } catch (err) {
       alert("Erro ao enviar feedback.");
     }
+
+    
   });
+  
+
+
+
+  

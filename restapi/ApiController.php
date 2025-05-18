@@ -85,7 +85,7 @@ class ApiController
     {
 
         $result = $this->queryBuilder->table('Clientes')
-            ->select(['id_cliente', 'nome_cliente', 'email_cliente'])
+            ->select(['nome_cliente'])
             ->where('id_cliente', '=', $userID)
             ->get();
 
@@ -356,10 +356,9 @@ class ApiController
 
     public function getFeedbacks(): array
     {
-
         return $this->queryBuilder->table('Reviews')
-            ->select(['id_cliente', 'id_produto', 'feedback', 'data_feedback', 'recommend'])
-            ->order('data_feedback', 'DESC')
+            ->select(['id_cliente','id_categoria', 'comentario', 'classificacao', 'data_review', 'recommend'])
+            ->order('data_review', 'DESC')
             ->get();
     }
     public function getOrders(): array

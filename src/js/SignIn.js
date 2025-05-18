@@ -18,6 +18,7 @@ document.getElementById('signInForm').addEventListener('submit', async function(
     if (userResult.status === 'success') {
       
       window.location.href = "/PTAW/index.php";
+      console.log(email, pass, $user_id);
 
     } else if (userResult.message === 'User not found') {
       
@@ -66,6 +67,7 @@ async function adminLogin(formData) {
     },
     body: JSON.stringify(formData)
   });
+  console.log($adminEmail)
 
   return await response.json();
 }
