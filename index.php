@@ -16,7 +16,7 @@ echo "<!-- USER ID: $userId -->"; // debug
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-  <script src="src/js/script.js"></script>
+  <!--<script src="src/js/script.js"></script>-->
   <?php
   $base_url = "/~ptaw-2025-gr4";
   include 'src/includes/carrinho.php'; ?>
@@ -332,7 +332,7 @@ echo "<!-- USER ID: $userId -->"; // debug
         </svg>
       </button>
 
-      <div id="carouselItems"></div>
+      <div id="carouselItems" class="carousel-content"></div>
 
       <div class="indicator" id="indicator"></div>
     </div>

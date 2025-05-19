@@ -13,6 +13,7 @@ $userId = $_SESSION['user_id'] ?? null;
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="css/productscustom.css">
+  <script src="js/productscustom.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
@@ -23,7 +24,9 @@ $userId = $_SESSION['user_id'] ?? null;
       }
     }
     </script>
-  <?php include 'includes/carrinho.php'; ?>
+  <?php
+  $base_url = "/~ptaw-2025-gr4"; 
+  include 'includes/carrinho.php'; ?>
 </head>
 
 <style>
@@ -259,14 +262,14 @@ $userId = $_SESSION['user_id'] ?? null;
 
       <!-- Main Product Image -->
       <div class="main-image">
-        <img id="bigImage" src="../imagens/TShirtfront.png" alt="Product Image">
+        <img id="bigImage" src="<?= $base_url ?>/imagens/TShirtfront.png" alt="Product Image">
       </div>
 
       <!-- Thumbnail Images -->
       <div class="thumbnail-gallery">
         <!-- It will differentiate based on Data Base -->
-        <img class="thumbnail active" src="../imagens/TShirtfront.png" alt="TShirt Front">
-        <img class="thumbnail" src="../imagens/TShirtback.png" alt="TShirt Back">
+        <img class="thumbnail active" src="<?= $base_url ?>/imagens/TShirtfront.png" alt="TShirt Front">
+        <img class="thumbnail" src="<?= $base_url ?>/imagens/TShirtback.png" alt="TShirt Back">
       </div>
     </div>
 
@@ -410,7 +413,7 @@ $userId = $_SESSION['user_id'] ?? null;
       <div class="containerDestaques">
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="../imagens/TShirtfront.png" alt="" class="boxItemImg">
+            <img src="<?= $base_url ?>/imagens/TShirtfront.png" alt="" class="boxItemImg">
             <p class="boxItemTitle">Product Title</p>
             <div class="boxItemFooter">
               <span class="boxItemPrice">10,00€</span>
@@ -419,7 +422,7 @@ $userId = $_SESSION['user_id'] ?? null;
         </a>
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="../imagens/TShirtfront.png" alt="" class="boxItemImg">
+            <img src="<?= $base_url ?>/imagens/TShirtfront.png" alt="" class="boxItemImg">
             <p class="boxItemTitle">Product Title</p>
             <div class="boxItemFooter">
               <span class="boxItemPrice">10,00€</span>
@@ -428,7 +431,7 @@ $userId = $_SESSION['user_id'] ?? null;
         </a>
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="../imagens/TShirtfront.png" alt="" class="boxItemImg">
+            <img src="<?= $base_url ?>/imagens/TShirtfront.png" alt="" class="boxItemImg">
             <p class="boxItemTitle">Product Title</p>
             <div class="boxItemFooter">
               <span class="boxItemPrice">10,00€</span>
@@ -437,7 +440,7 @@ $userId = $_SESSION['user_id'] ?? null;
         </a>
         <a href="" class="boxItemLink">
           <div class="boxItem">
-            <img src="../imagens/TShirtfront.png" alt="" class="boxItemImg">
+            <img src="<?= $base_url ?>/imagens/TShirtfront.png" alt="" class="boxItemImg">
             <p class="boxItemTitle">Product Title</p>
             <div class="boxItemFooter">
               <span class="boxItemPrice">10,00€</span>
@@ -532,6 +535,6 @@ $userId = $_SESSION['user_id'] ?? null;
 </body>
 
 <script type="module" src="js/productscustom.js"></script>
-<script src="js/script.js"></script>
+<!--script src="js/script.js"></script>-->
 
 </html>
