@@ -35,8 +35,8 @@
             </a>
         </li>
         <!-- Links para a pagina de pedidos do admin-->
-        <li>
-            <a href="#" class="nav-link link-body-emphasis">
+        <li id="link-orders">
+            <a href="orders.php" class="nav-link link-body-emphasis">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi me-2 bi-cart-fill" viewBox="0 0 16 16">
                     <path

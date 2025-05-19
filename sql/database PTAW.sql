@@ -135,6 +135,8 @@ CREATE TABLE CarrinhoItens (
         ON UPDATE CASCADE
 );
 
+
+
 CREATE TABLE Encomendas (
     id_encomenda INT AUTO_INCREMENT PRIMARY KEY,
     id_carrinho INT NOT NULL,

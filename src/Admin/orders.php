@@ -5,6 +5,14 @@
   <meta charset="UTF-8">
   <title>Orders</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/Orders.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+  integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+<script src="js/Orders.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+  </script>
 </head>
 
 <style>
@@ -217,15 +225,51 @@
     }
   }
 </style>
-<body class="bg-light">
-   <!-- Menu Mobile -->
-   <?php include 'includes/header-mobile.php'; ?>
 
-   <!-- Menu Desktop -->
-   <?php include 'includes/header-desktop.php'; ?>
-   
-  <div class="container my-5">
-    <h2>Orders</h2>
+
+<body style="background-color: #E5E7EB;">
+  <div class="d-flex">
+    <!-- Menu lateral -->
+    <?php include '../includes/header-desktop-admin.php'; ?>
+    <!-- Menu mobile -->
+    <?php include '../includes/header-mobile-admin.php'; ?>
+    
+
+
+    <!-- Conteudo principal -->
+    <div class="flex-grow-1 p-4" id="main-content">
+
+      <?php /*echo ($_SESSION['admin_email']); */ ?>
+
+      <!--
+      <a href="/PTAW/src/logout.php" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5985E1">
+          <path
+            d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+        </svg>
+      </a> -->
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center flex-wrap py-3">
+              <!-- Mensagem de boas vindas -->
+              <div class="mb-2 mb-lg-0">
+                <h1 class="mb-1">Orders</h1>
+                <p class="mb-0">Welcome back, Admin!</p>
+              </div>
+              <!-- Admin info -->
+              <div class="d-flex align-items-center">
+                <img src="../../imagens/admin.png" alt="" id="img-admin"
+                  style="width:40px; height:40px; object-fit:cover; border-radius:50%;">
+                <h6 class="mb-0 ms-3">John Doe</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+       <h2>Orders</h2>
     <table class="table table-bordered bg-white">
       <thead class="table-light">
         <tr>
@@ -240,7 +284,7 @@
       </thead>
       <tbody>
         <tr>
-          <td><a href="order.html">#ORD-7842</a></td>
+          <td><a href="order_info.php">#</a></td>
           <td>Sarah Johnson</td>
           <td>Jan 15, 2025</td>
           <td><span class="badge bg-success">Completed</span></td>
@@ -249,7 +293,7 @@
           <td><button class="btn btn-sm btn-outline-secondary">...</button></td>
         </tr>
         <tr>
-          <td><a href="order.html">#ORD-7841</a></td>
+          <td><a href="order_info.php">#</a></td>
           <td>Michael Chen</td>
           <td>Jan 15, 2025</td>
           <td><span class="badge bg-warning text-dark">Pending</span></td>
@@ -259,6 +303,18 @@
         </tr>
       </tbody>
     </table>
+
+      
+      
+     
+
+      
+
+
+    </div>
+
   </div>
+
+
 </body>
 </html>
