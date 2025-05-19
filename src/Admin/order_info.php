@@ -23,6 +23,43 @@
     overflow: auto;
     align-items: center;
   }
+  .modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  padding-top: 60px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 700px;
+  position: relative;
+}
+
+.close-button {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: #000;
+}
+
 
   #menu-mobile {
     display: none;
@@ -266,7 +303,7 @@
         <div class="card mb-4">
           <div class="card-header d-flex justify-content-between">
             <span>Order Details</span>
-            <button class="btn btn-sm btn-primary">Process Items</button>
+            <button class="btn btn-sm btn-primary" id="button-process">Process Items</button>
           </div>
           <div class="card-body">
             <p><strong>Delivery Method:</strong> CTT Expresso</p>
@@ -339,6 +376,45 @@
     </div>
 
   </div>
+
+  <div id="processModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button">&times;</span>
+    <div id="modal-body-content">A carregar...</div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('processModal');
+    const closeBtn = document.querySelector('.close-button');
+    const modalContent = document.getElementById('modal-body-content');
+
+    document.getElementById('button-process').addEventListener('click', function () {
+      modal.style.display = 'block';
+
+      fetch('ProcessItems.php')
+        .then(response => response.text())
+        .then(data => {
+          modalContent.innerHTML = data;
+        })
+        .catch(error => {
+          modalContent.innerHTML = '<p>Erro ao carregar conteúdo.</p>';
+          console.error(error);
+        });
+    });
+
+    closeBtn.onclick = function () {
+      modal.style.display = 'none';
+    }
+
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    }
+  });
+</script>
 
 
 </body>

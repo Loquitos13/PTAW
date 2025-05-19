@@ -9,6 +9,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 Orders
             </a>
         </li>`;
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const processButton = document.getElementById('button-process');
+    processButton.addEventListener('click', function () {
+      window.open('ProcessItems.php', 'ProcessPopup', 'width=600,height=600,resizable=yes,scrollbars=yes');
+    });
+  });
 });
+
+
 
 
