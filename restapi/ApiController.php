@@ -517,6 +517,19 @@ class ApiController
         }
 
     }
-
+    public function getCarrinhoItens($userID): array{
+        return $this->queryBuilder->table('CarrinhoItens')
+       ->select(['CarrinhoItens.id_carrinho_item',
+            'CarrinhoItens.quantidade',
+            'CarrinhoItens.preco',
+            'Produtos.titulo_produto',
+            'Produtos.imagem_principal',
+            'Produtos.preco_produto',
+            'Carrinhos.id_carrinho'])
+            ->join('Carrinhos', 'CarrinhoItens.id_carrinho', '=', 'Carrinhos.id_carrinho')
+            ->join('Produtos', 'CarrinhoItens.id_produto', '=', 'Produtos.id_produto')
+            ->order('CarrinhoItens.id_carrinho_item', 'DESC')
+            ->get();
+    }
 
 }
