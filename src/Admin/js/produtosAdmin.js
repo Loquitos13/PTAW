@@ -2,38 +2,38 @@ document.getElementById("productForm").addEventListener("submit", async function
     e.preventDefault();
 
     let titulo_produto = document.getElementById("productName").querySelector("input").value;
-    let sku = document.getElementById("sku").querySelector("input").value;
+    let keywords_produto = document.getElementById("keywords").querySelector("input").value;
     let id_categoria = document.getElementById("category").querySelector("select").value;
     let preco_produto = parseFloat(document.getElementById("price").querySelector("input").value);
     let stock_produto = document.getElementById("stock").querySelector("input").value;
     let status_produto = document.getElementById("status").querySelector("select").value === "Active" ? 1 : 0;
     let descricao_produto = document.getElementById("description").querySelector("textarea").value;
-    /*let keywords_produto = document.getElementById("keywords").value;
-    let imagem_principal = document.getElementById("image").files[0];
-    let modelo3d_produto = document.getElementById("model3d").value; */
+   /* let imagem_principal = document.getElementById("image").files[0];
+    let modelo3d_produto = document.getElementById("model3d").value;  */
 
     console.log("Título:", titulo_produto);
-    console.log("SKU:", sku);
+    console.log("Keywords:", keywords_produto);
     console.log("Categoria:", id_categoria);
     console.log("Preço:", preco_produto);
     console.log("Stock:", stock_produto);
     console.log("Status:", status_produto);
     console.log("Descrição:", descricao_produto);
 
-    if (!titulo_produto || !sku || !id_categoria || !preco_produto || !stock_produto || !status_produto || !descricao_produto) {
+    if (!titulo_produto || !keywords_produto || !id_categoria || !preco_produto || !stock_produto || !status_produto || !descricao_produto) {
         alert("Por favor, preencha todos os campos obrigatórios.");
         return;
 
     } else {
 
         const formData = {
-            titulo_produto: titulo_produto,
-            sku: sku,
-            id_categoria: id_categoria,
-            preco_produto: preco_produto,
-            stock_produto: stock_produto,
-            status_produto: status_produto,
-            descricao_produto: descricao_produto,
+            titulo_produto: "titulo_produto",
+            keywords_produto: "keywords_produto",
+            id_categoria:  1,//id_categoria,
+            preco_produto: 100,//preco_produto,
+            stock_produto: 100,//stock_produto,
+            status_produto: 1,//status_produto,
+            descricao_produto: "descricao_produto",
+            imagem_principal: "imagem_principal"
         };
 
         const productResult = await productInsertion(formData);

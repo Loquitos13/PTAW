@@ -163,9 +163,9 @@
                                 <label class="form-label">Product Name</label>
                                 <input type="text" class="form-control" name="product_name">
                             </div>
-                            <div class="col-md-6" id="sku">
-                                <label class="form-label">SKU</label>
-                                <input type="text" class="form-control" name="sku">
+                            <div class="col-md-6" id="keywords">
+                                <label class="form-label">Keywords</label>
+                                <input type="text" class="form-control" name="keywords_product">
                             </div>
 
                             <div class="col-md-6" id="category">

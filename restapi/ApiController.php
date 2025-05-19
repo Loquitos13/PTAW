@@ -427,14 +427,14 @@ class ApiController
 
             $this->queryBuilder->table('produtos')
                 ->insert([
-                    'id_categoria' => $data['id_categoria'] ?? null,
-                    'titulo_produto' => $data['titulo_produto'] ?? null,
-                    'modelo3d_produto' => $data['modelo3d_produto'],
-                    'descricao_produto' => $data['descricao_produto'] ?? null,
-                    'imagem_principal' => $data['imagem_principal'] ?? null,
-                    'preco_produto' => $data['preco_produto'] ?? null,
-                    'stock_produto' => $data['stock_produto'] ?? null,
-                    'keywords_produto' => $data['keywords_produto'] ?? null,
+                    'id_categoria' => $data['id_categoria'] ,
+                    'titulo_produto' => $data['titulo_produto'] ,
+                    'modelo3d_produto' => $data['modelo3d_produto'] ?? null,
+                    'descricao_produto' => $data['descricao_produto'] ,
+                    'imagem_principal' => $data['imagem_principal'],
+                    'preco_produto' => $data['preco_produto'],
+                    'stock_produto' => $data['stock_produto'] ?? 0,
+                    'keywords_produto' => $data['keywords_produto'],
                     'status_produto' => $data['status_produto'],
                     'data_criacao_produto' => $dataCriacao,
                 ]);
