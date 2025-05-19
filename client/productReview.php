@@ -1,5 +1,5 @@
 <?php
-// Arquivo: client/productReview.php
+
 session_start();
 require_once '../restapi/Database.php';
 $base_url = "/~ptaw-2025-gr4"; 

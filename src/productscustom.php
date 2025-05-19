@@ -535,6 +535,5 @@ $userId = $_SESSION['user_id'] ?? null;
 </body>
 
 <script type="module" src="js/productscustom.js"></script>
-<!--script src="js/script.js"></script>-->
 
 </html>
