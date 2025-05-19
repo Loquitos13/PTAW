@@ -143,12 +143,24 @@ function insertProducts() {
 
     return json_decode(executeCurlRequest($ch), true);
 }
+function getCarrinhoItens($userID) {
+  global $apiUrl;
+  $ch = curl_init("$apiUrl/getCarrinhoItens/$userID");
 
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json'
+    ]);
+
+    return json_decode(executeCurlRequest($ch), true);
+
+}
 
 try {
+    $userByID = getCarrinhoItens(1);
+    print_r($userByID);
 
-    $deleteUserByID = deleteUserByID(3);
-    print_r($deleteUserByID);
+   // $deleteUserByID = deleteUserByID(3);
+    // print_r($deleteUserByID);
 
     /*$updateUser = [
         'id_cliente' => 6,
