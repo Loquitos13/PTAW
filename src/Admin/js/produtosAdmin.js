@@ -1,4 +1,41 @@
-document.getElementById("productForm").addEventListener("submit", async function (e) {
+document.getElementById('productForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+    const formData = {
+        id_categoria: 1,
+        titulo_produto: "Camisola",
+        modelo3d_produto: "",
+        descricao_produto: "abacaxi",
+        imagem_principal: "",
+        preco_produto: "100",
+        stock_produto: 1,
+        keywords_produto: "fruta", 
+        status_produto: 1,
+        data_criacao_produto: "2025-05-19 00:00:00"
+    }
+
+  try {
+    const response = await fetch('../../admin/insertProducts.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const data = await response.json();
+
+    console.log(data);
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+});
+
+
+/*document.getElementById("productForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
     let titulo_produto = document.getElementById("productName").querySelector("input").value;
@@ -8,8 +45,8 @@ document.getElementById("productForm").addEventListener("submit", async function
     let stock_produto = document.getElementById("stock").querySelector("input").value;
     let status_produto = document.getElementById("status").querySelector("select").value === "Active" ? 1 : 0;
     let descricao_produto = document.getElementById("description").querySelector("textarea").value;
-   /* let imagem_principal = document.getElementById("image").files[0];
-    let modelo3d_produto = document.getElementById("model3d").value;  */
+    let imagem_principal = document.getElementById("image").files[0];
+    let modelo3d_produto = document.getElementById("model3d").value;  
 
     console.log("Título:", titulo_produto);
     console.log("Keywords:", keywords_produto);
@@ -57,7 +94,7 @@ document.getElementById("productForm").addEventListener("submit", async function
         return await response.json();
     }
 
-})
+}) */
 /*
 async function fetchAndDisplayProducts() {
     try {

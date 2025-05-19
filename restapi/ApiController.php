@@ -425,7 +425,7 @@ class ApiController
 
         try {
 
-            $this->queryBuilder->table('produtos')
+            $this->queryBuilder->table('Produtos')
                 ->insert([
                     'id_categoria' => $data['id_categoria'] ,
                     'titulo_produto' => $data['titulo_produto'] ,
