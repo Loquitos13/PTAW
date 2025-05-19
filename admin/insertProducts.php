@@ -1,4 +1,5 @@
 <?php
+$base_url = "http://estga-dev.ua.pt/~ptaw-2025-gr4";
 /*
 require_once '../restapi/Database.php';
 
@@ -81,7 +82,8 @@ function insertProductData($data) {
 
 require_once '../restapi/Database.php';
 
-$apiUrl = "../restapi/PrintGoAPI.php";
+//para o servidor usar: $base_url/restapi/PrintGoAPI.php
+$apiUrl = "localhost/PTAW/restapi/PrintGoAPI.php";
 
 function executeCurlRequest($ch) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
