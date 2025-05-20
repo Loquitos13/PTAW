@@ -1,13 +1,8 @@
-CREATE DATABASE IF NOT EXISTS ptaw;
+CREATE DATABASE IF NOT EXISTS `PTAW-2025-GR4`;
 USE `PTAW-2025-GR4`;
-
-SELECT * FROM Reviews;
-SELECT * FROM Clientes;
-
 
 INSERT INTO Admins(id_admin, nome_admin, email_admin, pass_admin, contacto_admin, funcao_admin, data_criacao_admin) 
 VALUES (1, "Geral", "geral@printandgo.pt", "senha123", "912345678", "teste", '2025-05-18');
-
 
 
 CREATE TABLE Admins (
@@ -38,18 +33,6 @@ CREATE TABLE Clientes (
     data_criacao_cliente DATETIME NOT NULL
 );
 
-CREATE TABLE Dimensoes (
-    id_dimensao INT AUTO_INCREMENT PRIMARY KEY,
-    dimensao_tipo VARCHAR(255) NOT NULL,
-    tamanho VARCHAR(255) NOT NULL,
-    id_produto INT NOT NULL,
-    CONSTRAINT fk_produto
-        FOREIGN KEY (id_produto)
-        REFERENCES Produtos(id_produto)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE
-);
-
 CREATE TABLE Cores (
     id_cor INT AUTO_INCREMENT PRIMARY KEY,
     nome_cor VARCHAR(255) NOT NULL,
@@ -60,8 +43,7 @@ CREATE TABLE Categorias (
     id_categoria INT AUTO_INCREMENT PRIMARY KEY,
     titulo_categoria VARCHAR(255) NOT NULL,
     descricao_categoria TEXT NOT NULL,
-    id_dimensao INT NOT NULL,
-    status_categoria BOOLEAN DEFAULT 0,
+    status_categoria BOOLEAN DEFAULT 0
 );
 
 CREATE TABLE Produtos (
@@ -78,6 +60,18 @@ CREATE TABLE Produtos (
     status_produto BOOLEAN DEFAULT 0,
     FOREIGN KEY (id_categoria) 
         REFERENCES Categorias(id_categoria)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE Dimensoes (
+    id_dimensao INT AUTO_INCREMENT PRIMARY KEY,
+    dimensao_tipo VARCHAR(255) NOT NULL,
+    tamanho VARCHAR(255) NOT NULL,
+    id_produto INT NOT NULL,
+    CONSTRAINT fk_produto
+        FOREIGN KEY (id_produto)
+        REFERENCES Produtos(id_produto)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 );
@@ -134,8 +128,6 @@ CREATE TABLE CarrinhoItens (
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 );
-
-
 
 CREATE TABLE Encomendas (
     id_encomenda INT AUTO_INCREMENT PRIMARY KEY,
@@ -240,4 +232,3 @@ CREATE TABLE Reviews (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
-

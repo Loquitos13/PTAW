@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/checkout.css">
-    <script src="js/checkout.js"></script>
     <title>Checkout</title>
 </head>
 
@@ -395,6 +394,8 @@
     <footer>
 
     </footer>
+    <script src="js/checkout.js"></script>
+    <script src="js/checkoutA.js"></script>
 </body>
 
 </html>
