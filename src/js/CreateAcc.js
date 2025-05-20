@@ -30,6 +30,8 @@ async function getEmailAvailability(email) {
     })
 
     const data = await response.json();
+
+    infoMessage.textContent = JSON.stringify(data.data);
     
     return JSON.stringify(data.data);
   
@@ -73,9 +75,15 @@ document.getElementById('createAccForm').addEventListener('submit', async functi
 
         const result = await response.json();
 
+        console.log(result);
+
+        console.log("---------");
+
+        console.log(JSON.stringify(formData));
+
         if (result.status === 'success') {
 
-          window.location.href = "/PTAW/index.php";
+          window.location.href = "../index.php";
 
         } else {
 

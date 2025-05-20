@@ -156,8 +156,7 @@ class ApiController
 
     }
 
-    public function insertUser(): array
-    {
+    public function insertUser(): array {
 
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
@@ -213,7 +212,16 @@ class ApiController
                     'data_criacao_cliente' => $dataCriacao,
                 ]);
 
-            return ['success' => 'User created'];
+                $lastId = $qb->getLastInsertId();
+
+            //return ['success' => 'User created'];
+
+            return [
+                'success' => true,
+                'message' => 'User created',
+                'user_id' => $lastId
+            ];
+
         } catch (PDOException $e) {
 
             error_log("Database error: " . $e->getMessage());

@@ -2,7 +2,7 @@
 session_start();
 require_once '../restapi/Database.php';
 
-$apiUrl = "http://localhost/PTAW/restapi/PrintGoAPI.php";
+$apiUrl = "http://estga-dev.ua.pt/~ptaw-2025-gr4/restapi/PrintGoAPI.php";
 
 function executeCurlRequest($ch) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -72,7 +72,10 @@ function addUser($data) {
 
     $response = executeCurlRequest($ch);
 
+    $userData = json_decode($response, true);
+
     $_SESSION['user_email'] = $data['email_cliente'];
+    $_SESSION['user_id'] = $userData['id_cliente'];
 
      return [
          'status' => 'success',

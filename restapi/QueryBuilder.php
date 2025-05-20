@@ -101,6 +101,13 @@ class QueryBuilder {
         
     }
 
+    public function getLastInsertId(): string {
+            
+        $pdo = Database::getConnection();
+        return $pdo->lastInsertId();
+    
+    }
+
     public function update(array $data): self {
 
         $set = implode(', ', array_map(fn($col) => "$col = :$col", array_keys($data)));

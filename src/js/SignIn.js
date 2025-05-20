@@ -17,8 +17,7 @@ document.getElementById('signInForm').addEventListener('submit', async function(
 
     if (userResult.status === 'success') {
       
-      window.location.href = "/PTAW/index.php";
-      console.log(email, pass, $user_id);
+      window.location.href = "../index.php";
 
     } else if (userResult.message === 'User not found') {
       
@@ -26,7 +25,7 @@ document.getElementById('signInForm').addEventListener('submit', async function(
  
       if (adminResult.status === 'success') {
       
-        window.location.href = "/PTAW/src/Admin/Dashboard.php";
+        window.location.href = "Admin/Dashboard.php";
       
       } else {
         
@@ -67,7 +66,6 @@ async function adminLogin(formData) {
     },
     body: JSON.stringify(formData)
   });
-  console.log($adminEmail)
 
   return await response.json();
 }
