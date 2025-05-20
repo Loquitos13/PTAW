@@ -156,7 +156,8 @@ class ApiController
 
     }
 
-    public function insertUser(): array {
+    public function insertUser(): array
+    {
 
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
@@ -212,7 +213,7 @@ class ApiController
                     'data_criacao_cliente' => $dataCriacao,
                 ]);
 
-                $lastId = $this->queryBuilder->getLastInsertId();
+            $lastId = $this->queryBuilder->getLastInsertId();
 
             return [
                 'success' => true,
@@ -363,28 +364,37 @@ class ApiController
     public function getFeedbacks(): array
     {
         return $this->queryBuilder->table('Reviews')
-            ->select(['id_cliente','id_categoria', 'comentario', 'classificacao', 'data_review', 'recommend'])
+            ->select(['id_cliente', 'id_categoria', 'comentario', 'classificacao', 'data_review', 'recommend'])
             ->order('data_review', 'DESC')
             ->get();
     }
     public function getOrders(): array
     {
-        return $this->queryBuilder->table('Encomendas')
-            ->select([
-                'Encomendas.id_encomenda',
-                'Encomendas.preco_total_encomenda',
-                'Encomendas.fatura',
-                'Encomendas.status_encomenda',
-                'Encomendas.data_criacao_encomenda',
-                'Encomendas.data_rececao_encomenda',
-                'Clientes.id_cliente',
-                'Clientes.nome_cliente',
-                'Clientes.email_cliente'
-            ])
-            ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
-            ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
-            ->order('Encomendas.data_criacao_encomenda', 'DESC')
-            ->get();
+        try {
+            return $this->queryBuilder->table('Encomendas')
+                ->select([
+                    'Encomendas.id_encomenda',
+                    'Encomendas.preco_total_encomenda',
+                    'Encomendas.fatura',
+                    'Encomendas.status_encomenda',
+                    'Encomendas.data_criacao_encomenda',
+                    'Encomendas.data_rececao_encomenda',
+                    'Clientes.id_cliente',
+                    'Clientes.nome_cliente',
+                    'Clientes.email_cliente'
+                ])
+                ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
+                ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
+                ->order('Encomendas.data_criacao_encomenda', 'DESC')
+                ->get();
+        } catch (PDOException $e) {
+            error_log("Database error in getOrders: " . $e->getMessage());
+            throw $e;
+        } catch (Exception $e) {
+            error_log("General error in getOrders: " . $e->getMessage());
+            throw $e;
+        }
+
     }
 
     public function insertProduct(): array
@@ -433,10 +443,10 @@ class ApiController
 
             $this->queryBuilder->table('Produtos')
                 ->insert([
-                    'id_categoria' => $data['id_categoria'] ,
-                    'titulo_produto' => $data['titulo_produto'] ,
+                    'id_categoria' => $data['id_categoria'],
+                    'titulo_produto' => $data['titulo_produto'],
                     'modelo3d_produto' => $data['modelo3d_produto'] ?? null,
-                    'descricao_produto' => $data['descricao_produto'] ,
+                    'descricao_produto' => $data['descricao_produto'],
                     'imagem_principal' => $data['imagem_principal'],
                     'preco_produto' => $data['preco_produto'],
                     'stock_produto' => $data['stock_produto'] ?? 0,
@@ -523,15 +533,18 @@ class ApiController
         }
 
     }
-    public function getCarrinhoItens($userID): array{
+    public function getCarrinhoItens($userID): array
+    {
         return $this->queryBuilder->table('CarrinhoItens')
-       ->select(['CarrinhoItens.id_carrinho_item',
-            'CarrinhoItens.quantidade',
-            'CarrinhoItens.preco',
-            'Produtos.titulo_produto',
-            'Produtos.imagem_principal',
-            'Produtos.preco_produto',
-            'Carrinhos.id_carrinho'])
+            ->select([
+                'CarrinhoItens.id_carrinho_item',
+                'CarrinhoItens.quantidade',
+                'CarrinhoItens.preco',
+                'Produtos.titulo_produto',
+                'Produtos.imagem_principal',
+                'Produtos.preco_produto',
+                'Carrinhos.id_carrinho'
+            ])
             ->join('Carrinhos', 'CarrinhoItens.id_carrinho', '=', 'Carrinhos.id_carrinho')
             ->join('Produtos', 'CarrinhoItens.id_produto', '=', 'Produtos.id_produto')
             ->where('Carrinhos.id_cliente', '=', $userID)

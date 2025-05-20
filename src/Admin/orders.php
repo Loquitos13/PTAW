@@ -1,4 +1,7 @@
-
+<?php
+session_start();
+$adminId = $_SESSION['admin_id'] ?? null;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -282,7 +285,7 @@
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="orders-table">
         <tr>
           <td><a href="order_info.php">#</a></td>
           <td>Sarah Johnson</td>

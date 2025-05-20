@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelector("#link-orders").innerHTML = `<li>
+  const ordersLink = document.querySelector("#link-orders");
+  if (ordersLink) {
+    ordersLink.innerHTML = `<li>
             <a href="#" class="nav-link active" aria-current="page" id="">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi me-2 bi-cart-fill" viewBox="0 0 16 16">
@@ -9,15 +11,78 @@ document.addEventListener("DOMContentLoaded", function () {
                 Orders
             </a>
         </li>`;
+  }
 
-    document.addEventListener('DOMContentLoaded', function () {
-    const processButton = document.getElementById('button-process');
-    processButton.addEventListener('click', function () {
-      window.open('ProcessItems.php', 'ProcessPopup', 'width=600,height=600,resizable=yes,scrollbars=yes');
+  const processButton = document.getElementById("button-process");
+  if (processButton) {
+    processButton.addEventListener("click", function () {
+      window.open(
+        "ProcessItems.php",
+        "ProcessPopup",
+        "width=600,height=600,resizable=yes,scrollbars=yes"
+      );
     });
-  });
+  }
+
+  getOrders();
+
+  async function getOrders() {
+    try {
+      const response = await fetch("orderEngine.php");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const ordersTable = document.querySelector(".orders-table");
+
+      if (!ordersTable) {
+        return;
+      }
+
+      ordersTable.innerHTML = ""; 
+
+      if (data.status === 'error') {
+        ordersTable.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Error loading orders: ${data.message}</td></tr>`;
+        return;
+      }
+
+      if (!Array.isArray(data) || data.length === 0) {
+        ordersTable.innerHTML = '<tr><td colspan="7" class="text-center">No orders found</td></tr>';
+        return;
+      }
+
+      data.forEach((order) => {
+        const row = document.createElement("tr");
+        
+        let statusBadgeClass = "bg-secondary";
+        const status = order.status_encomenda || "Processing";
+        
+        if (status.toLowerCase() === "completed") statusBadgeClass = "bg-success";
+        if (status.toLowerCase() === "pending") statusBadgeClass = "bg-warning text-dark";
+        if (status.toLowerCase() === "cancelled") statusBadgeClass = "bg-danger";
+        
+        const isPaid = order.fatura && order.fatura.trim() !== "";
+        const paymentBadgeClass = isPaid ? "bg-primary" : "bg-danger";
+        const paymentStatus = isPaid ? "Paid" : "Unpaid";
+        
+        row.innerHTML = `
+          <td><a href="order_info.php?id=${order.id_encomenda}">#${order.id_encomenda}</a></td>
+          <td>${order.nome_cliente || "Unknown"}</td>
+          <td>${order.data_criacao_encomenda || "N/A"}</td>
+          <td><span class="badge ${statusBadgeClass}">${status}</span></td>
+          <td><span class="badge ${paymentBadgeClass}">${paymentStatus}</span></td>
+          <td>$${order.preco_total_encomenda || "0.00"}</td>
+          <td><button class="btn btn-sm btn-outline-secondary">...</button></td>
+        `;
+        
+        ordersTable.appendChild(row);
+      });
+    } catch (error) {
+      const ordersTable = document.querySelector(".orders-table");
+      if (ordersTable) {
+        ordersTable.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Failed to load orders: ${error.message}</td></tr>`;
+      }
+    }
+  }
 });
-
-
-
-
