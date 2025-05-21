@@ -212,14 +212,12 @@ class ApiController
                     'data_criacao_cliente' => $dataCriacao,
                 ]);
 
-                $lastId = $qb->getLastInsertId();
-
-            //return ['success' => 'User created'];
+                $lastId = $this->queryBuilder->getLastInsertId();
 
             return [
                 'success' => true,
                 'message' => 'User created',
-                'user_id' => $lastId
+                'id_cliente' => $lastId
             ];
 
         } catch (PDOException $e) {

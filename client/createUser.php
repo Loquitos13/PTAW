@@ -80,6 +80,7 @@ function addUser($data) {
      return [
          'status' => 'success',
          'message' => 'Register successful',
+         'id_Cliente' => $userData
      ];
 
 }

@@ -75,12 +75,6 @@ document.getElementById('createAccForm').addEventListener('submit', async functi
 
         const result = await response.json();
 
-        console.log(result);
-
-        console.log("---------");
-
-        console.log(JSON.stringify(formData));
-
         if (result.status === 'success') {
 
           window.location.href = "../index.php";
