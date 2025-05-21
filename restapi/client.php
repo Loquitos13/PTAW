@@ -70,21 +70,18 @@ function getEncomendasByUserID($id) {
     return json_decode(executeCurlRequest($ch), true);
 }
 
-// function addUser($userData) {
-//
-//     global $apiUrl;
-//
-//     $ch = curl_init("$apiUrl/insertUser");
-//
-//     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-//     curl_setopt($ch, CURLOPT_POST, true);
-//     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
-//     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-//         'Content-Type: application/json'
-//     ]);
-//
-//     return json_decode(executeCurlRequest($ch), true);
-// }
+function getOrder() {
+
+    global $apiUrl;
+
+    $ch = curl_init("$apiUrl/getOrders");
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json'
+    ]);
+
+    return json_decode(executeCurlRequest($ch), true);
+}
 
 function updateUser($userData) {
 

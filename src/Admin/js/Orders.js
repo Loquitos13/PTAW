@@ -28,7 +28,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function getOrders() {
     try {
-      const response = await fetch("orderEngine.php");
+      const response = await fetch("../../admin/orderEngine.php");
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

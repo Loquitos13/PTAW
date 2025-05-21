@@ -22,6 +22,10 @@ CREATE TABLE Clientes (
     pass_cliente VARCHAR(255) NOT NULL,
     contacto_cliente VARCHAR(15),
     morada_cliente VARCHAR(255),
+    cidade_cliente VARCHAR(255),
+    state_cliente VARCHAR(255),
+    cod_postal_cliente VARCHAR(255),
+    pais_cliente VARCHAR(255),
     nif_cliente VARCHAR(9),
     ip_cliente VARCHAR(45) NOT NULL UNIQUE,
     imagem_cliente VARCHAR(255),
@@ -80,8 +84,8 @@ CREATE TABLE ImagemProdutos (
     id_imagem_extra INT AUTO_INCREMENT PRIMARY KEY,
     id_produto INT NOT NULL,
     imagem_extra VARCHAR(255) NOT NULL,
-    imagem_extra_2 VARCHAR(255) NOT NULL,
-    imagem_extra_3 VARCHAR(255) NOT NULL,
+    imagem_extra_2 VARCHAR(255),
+    imagem_extra_3 VARCHAR(255),
     FOREIGN KEY (id_produto) 
         REFERENCES Produtos(id_produto)
         ON DELETE CASCADE

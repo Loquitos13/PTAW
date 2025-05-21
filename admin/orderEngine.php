@@ -3,7 +3,8 @@ session_start();
 require_once '../restapi/Database.php';
 $base_url = "/~ptaw-2025-gr4"; 
 
-$apiUrl = "http://estga-dev.ua.pt/~ptaw-2025-gr4/src/restapi";
+$apiUrl = "http://estga-dev.ua.pt/~ptaw-2025-gr4/restapi/PrintGoAPI.php";
+
 if (!function_exists('curl_init')) {
     error_log("CURL is not available on this server");
 }
@@ -52,10 +53,8 @@ function executeCurlRequest($ch) {
 
 function getOrders() {
     global $apiUrl;
-    $requestUrl = rtrim($apiUrl, '/') . '/getOrders';
-    error_log("Making request to: $requestUrl");
     
-    $ch = curl_init($requestUrl);
+    $ch = curl_init("$apiUrl/getOrders");
     curl_setopt($ch, CURLOPT_HTTPGET, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json'
@@ -85,4 +84,3 @@ try {
     ]);
     exit;
 }
-?>
