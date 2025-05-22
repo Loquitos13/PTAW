@@ -222,15 +222,11 @@
 
 <body style="background-color: #E5E7EB;">
   <div class="d-flex">
-    <!-- Menu lateral -->
     <?php include '../includes/header-desktop-admin.php'; ?>
-    <!-- Menu mobile -->
     <?php include '../includes/header-mobile-admin.php'; ?>
 
-    <!-- Conteúdo principal -->
     <div class="flex-grow-1 p-4" id="main-content">
       <div class="container-fluid">
-        <!-- Header da página -->
         <div class="row mb-4">
           <div class="col-12">
             <div class="d-flex justify-content-between align-items-center flex-wrap">
@@ -238,7 +234,6 @@
                 <h1 class="mb-1">Settings</h1>
                 <p class="text-muted">Manage your store preferences and security</p>
               </div>
-              <!-- Admin info -->
               <div class="d-flex align-items-center">
                 <div class="me-3 text-end d-none d-sm-block">
                   <i class="bi bi-bell fs-5"></i>
@@ -250,112 +245,228 @@
           </div>
         </div>
 
-        <!-- Tabs de navegação -->
         <div class="row mb-4">
           <div class="col-12">
             <ul class="nav nav-tabs settings-tabs">
               <li class="nav-item">
-                <a class="nav-link active" href="#">General</a>
+                <a class="nav-link active" href="#" data-tab="general">General</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Security</a>
+                <a class="nav-link" href="#" data-tab="security">Security</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Notifications</a>
+                <a class="nav-link" href="#" data-tab="notifications">Notifications</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Team</a>
+                <a class="nav-link" href="#" data-tab="team">Team</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Billing</a>
+                <a class="nav-link" href="#" data-tab="billing">Billing</a>
               </li>
             </ul>
           </div>
         </div>
 
-        <!-- Conteúdo principal das configurações -->
-        <div class="row gx-4">
-          <!-- Coluna principal (lado esquerdo) -->
-          <div class="col-lg-8">
-            <div class="card shadow-sm mb-4">
-              <div class="card-body">
-                <h5 class="card-title mb-4">Store Settings</h5>
+        <div id="general-content" class="tab-content">
+          <div class="row gx-4">
+            <div class="col-lg-8">
+              <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Store Settings</h5>
 
-                <div class="mb-3">
-                  <label for="storeName" class="form-label">Store Name</label>
-                  <input type="text" class="form-control" id="storeName" value="Print&Go">
+                  <div class="mb-3">
+                    <label for="storeName" class="form-label">Store Name</label>
+                    <input type="text" class="form-control" id="storeName" value="Print&Go">
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="contactEmail" class="form-label">Contact Email</label>
+                    <input type="email" class="form-control" id="contactEmail" value="contact@print&go.com">
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="currency" class="form-label">Currency</label>
+                    <div class="position-relative">
+                      <select class="form-select" id="currency">
+                        <option selected>EUR (€)</option>
+                        <option>USD ($)</option>
+                        <option>GBP (£)</option>
+                      </select>
+                      <i class="bi bi-chevron-down position-absolute end-0 top-50 translate-middle-y me-3"></i>
+                    </div>
+                  </div>
                 </div>
+              </div>
 
-                <div class="mb-3">
-                  <label for="contactEmail" class="form-label">Contact Email</label>
-                  <input type="email" class="form-control" id="contactEmail" value="contact@print&go.com">
-                </div>
-
-                <div class="mb-3">
-                  <label for="currency" class="form-label">Currency</label>
-                  <div class="position-relative">
-                    <select class="form-select" id="currency">
-                      <option selected>EUR (€)</option>
-                      <option>USD ($)</option>
-                      <option>GBP (£)</option>
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Business Hours</h5>
+                  
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="openTime" class="form-label">Opening Time</label>
+                      <input type="time" class="form-control" id="openTime" value="09:00">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="closeTime" class="form-label">Closing Time</label>
+                      <input type="time" class="form-control" id="closeTime" value="18:00">
+                    </div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="timezone" class="form-label">Timezone</label>
+                    <select class="form-select" id="timezone">
+                      <option selected>Europe/Lisbon</option>
+                      <option>Europe/London</option>
+                      <option>America/New_York</option>
                     </select>
-                    <i class="bi bi-chevron-down position-absolute end-0 top-50 translate-middle-y me-3"></i>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Security Settings -->
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title mb-4">Security Settings</h5>
+            <div class="col-lg-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Quick Actions</h5>
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <div>
-                    <p class="mb-0 fw-medium">Two-factor Authentication</p>
-                    <p class="text-muted small mb-0">Add an extra layer of security to your account</p>
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="twoFactorSwitch">
-                  </div>
+                  <button class="btn btn-primary w-100 mb-3" id="exportBtn">
+                    <i class="bi bi-download me-2"></i>
+                    Export Store Data
+                  </button>
+
+                  <button class="btn btn-light w-100 mb-3" id="clearCacheBtn">
+                    <i class="bi bi-trash me-2"></i>
+                    Clear Cache
+                  </button>
+
+                  <button class="btn btn-outline-secondary w-100 mb-3" id="supportBtn">
+                    <i class="bi bi-envelope me-2"></i>
+                    Contact Support
+                  </button>
+
+                  <button class="btn btn-primary w-100" id="saveChangesBtn">
+                    <i class="bi bi-floppy me-2"></i>
+                    Save Changes
+                  </button>
                 </div>
-
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <p class="mb-0 fw-medium">Login History</p>
-                    <p class="text-muted small mb-0">View and manage devices where you're logged in</p>
-                  </div>
-                  <a href="#" class="link-primary">View History</a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Coluna lateral (lado direito) -->
-          <div class="col-lg-4">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title mb-4">Quick Actions</h5>
-
-                <button class="btn btn-primary w-100 mb-3">
-                  <i class="bi bi-download me-2"></i>
-                  Export Store Data
-                </button>
-
-                <button class="btn btn-light w-100 mb-3">
-                  <i class="bi bi-trash me-2"></i>
-                  Clear Cache
-                </button>
-
-                <button class="btn btn-outline-secondary w-100">
-                  <i class="bi bi-envelope me-2"></i>
-                  Contact Support
-                </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
+
+        <div id="security-content" class="tab-content">
+          <div class="row gx-4">
+            <div class="col-lg-8">
+              <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Security Settings</h5>
+
+                  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <div>
+                      <p class="mb-0 fw-medium">Two-factor Authentication</p>
+                      <p class="text-muted small mb-0">Add an extra layer of security to your account</p>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" id="twoFactorSwitch">
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <div>
+                      <p class="mb-0 fw-medium">Login Notifications</p>
+                      <p class="text-muted small mb-0">Get notified when someone logs into your account</p>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" id="loginNotificationSwitch" checked>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <div>
+                      <p class="mb-0 fw-medium">Session Timeout</p>
+                      <p class="text-muted small mb-0">Automatically log out after inactivity</p>
+                    </div>
+                    <select class="form-select" style="width: auto;">
+                      <option>30 minutes</option>
+                      <option selected>1 hour</option>
+                      <option>4 hours</option>
+                      <option>Never</option>
+                    </select>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <p class="mb-0 fw-medium">Login History</p>
+                      <p class="text-muted small mb-0">View and manage devices where you're logged in</p>
+                    </div>
+                    <a href="#" class="link-primary">View History</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Password Settings</h5>
+                  
+                  <div class="mb-3">
+                    <label for="currentPassword" class="form-label">Current Password</label>
+                    <input type="password" class="form-control" id="currentPassword">
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="newPassword" class="form-label">New Password</label>
+                    <input type="password" class="form-control" id="newPassword">
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                    <input type="password" class="form-control" id="confirmPassword">
+                  </div>
+                  
+                  <button class="btn btn-primary">Update Password</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Security Status</h5>
+                  
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-shield-check text-success me-3 fs-4"></i>
+                    <div>
+                      <p class="mb-0 fw-medium">Account Secure</p>
+                      <p class="text-muted small mb-0">All security features enabled</p>
+                    </div>
+                  </div>
+                  
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-key-fill text-primary me-3 fs-4"></i>
+                    <div>
+                      <p class="mb-0 fw-medium">Strong Password</p>
+                      <p class="text-muted small mb-0">Last changed 30 days ago</p>
+                    </div>
+                  </div>
+                  
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-clock-history text-warning me-3 fs-4"></i>
+                    <div>
+                      <p class="mb-0 fw-medium">Last Login</p>
+                      <p class="text-muted small mb-0">Today at 2:30 PM</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="notifications-content" class="tab-content"></div>
+        <div id="team-content" class="tab-content"></div>
+        <div id="billing-content" class="tab-content"></div>
+        </div>
     </div>
   </div>
 
