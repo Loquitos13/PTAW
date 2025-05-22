@@ -1,3 +1,8 @@
+// função para adicionar o link ativado ao header
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelector("#link-produtos").innerHTML = `<li class="nav-item"><a href="<?= $base_url ?>/index.php" class="nav-link active" style="background-color: #4F46E5;">Products</a></li>`;
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     // Função para configurar um slider com base nos IDs fornecidos
     function setupSlider(rangeMinId, rangeMaxId, thumbMinId, thumbMaxId, trackHighlightId, valueMinId, valueMaxId) {
