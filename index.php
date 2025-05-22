@@ -93,6 +93,7 @@ echo "<!-- USER ID: $userId -->"; // debug
   }
 
 
+
   /* Ajustes para telas menores */
   @media (max-width: 1200px) {
     body {

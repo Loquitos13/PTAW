@@ -429,70 +429,121 @@ header {
   margin-bottom: 3vh;
 }
 
-
+/* Estilos do footer */
 footer {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  height: auto;
-  padding: 20px 0;
-  background-color: #111827;
-  position: static;
-  bottom: 0;
-  margin-bottom: 0;
+  padding: 3rem 0;
+  background-color: #121a2f;
+  color: #ccc;
   width: 100%;
+  box-sizing: border-box;
+  position: static;
+  margin-top: auto;
 }
 
 #containerFooter {
   display: flex;
-  justify-content: space-around;
-  width: 100%;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 90%;
+  max-width: 1100px;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 #containerFooter li {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-hr {
-  width: 100%;
-}
-
-.divFooter1 {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  color: white;
-}
-
+.divFooter1,
 .divFooter {
-  width: auto;
+  flex: 1;
+  min-width: 160px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  text-align: justify;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.divFooter1 h4,
+.divFooter h4 {
   color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.divFooter1 p {
+  color: #ccc;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.divFooter ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.divFooter ul li {
+  margin-bottom: 0.6rem;
 }
 
 .divFooter a {
   text-decoration: none;
-  color: gray;
+  color: #ccc;
+  font-size: 0.9rem;
 }
 
-footer p {
-  color: gray;
+.divFooter a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+footer hr {
+  width: 90%;
+  max-width: 1100px;
+  border: 0;
+  border-top: 1px solid #374151;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+footer p.direitos {
+  color: #ccc;
+  text-align: center;
+  font-size: 0.9rem;
+  margin: 0;
+  width: 100%;
+}
+
+footer p.direitos b {
+  color: white;
+  font-weight: bold;
 }
 
 .social {
   display: flex;
-  gap: 15px;
+  gap: 1rem;
+  padding: 0;
+  margin: 0.5rem 0 0 0;
+}
+
+.social li {
+  list-style: none;
+  margin-bottom: 0 !important;
 }
 
 .social img {
   width: 20px;
   height: 20px;
+  display: block;
 }
 
 #contactos {
@@ -511,13 +562,13 @@ footer p {
 
 /* Css carrinho */
 
-#carrinho{
+#carrinho {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   justify-content: center;
 }
 
-#compra{
+#compra {
   width: 20%;
 }
 
