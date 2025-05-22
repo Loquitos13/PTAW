@@ -182,3 +182,12 @@ h1 {
     color: #000;
     border-radius: 6px;
 }
+
+.security-status-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+}
