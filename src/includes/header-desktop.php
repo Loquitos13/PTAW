@@ -19,8 +19,6 @@ session_start();
                 <li class="nav-item"><a href="<?= $base_url ?>/index.php" class="nav-link active" style="background-color: #4F46E5;">Home</a>
                 </li>
                 <li class="nav-item"><a href="<?= $base_url ?>/src/produtos.php" class="nav-link" style="color: #4F46E5;">Products</a></li>
-                <li class="nav-item"><a href="<?= $base_url ?>/src/customdesign.php" class="nav-link" style="color: #4F46E5; ">Custom Design</a>
-                </li>
                 <li class="nav-item"><a href="<?= $base_url ?>/src/sobre.php" class="nav-link" style="color: #4F46E5;">About</a></li>
                 <li class="nav-item">
                     <?php if(isset($_SESSION['user_email'])): ?>
