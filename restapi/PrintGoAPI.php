@@ -13,6 +13,7 @@
 
     $router = new Router();
 
+    $router->add('GET', '/serverTimeStamp', fn() => $controller->getServerTimeStamp());
 
     $router->add('GET', '/users', fn() => $controller->getUsers());
 
@@ -25,6 +26,30 @@
     $router->add('GET', '/adminByEmail/$adminEmail', fn($adminEmail) => $controller->getAdminByEmail($adminEmail));
 
     $router->add('GET', '/encomendas', fn() => $controller->getEncomendas());
+
+    $router->add('GET', '/encomendasChart', fn() => $controller->getEncomendasChart());
+
+    $router->add('GET', '/revenuePerMonth', fn() => $controller->getRevenuePerMonth());
+
+    $router->add('GET', '/topProducts', fn() => $controller->getTopProducts());
+
+    $router->add('GET', '/numberOfOrdersByDay/$day', fn($day) => $controller->numberOfOrdersFilteredByDay($day));
+
+    $router->add('GET', '/numberOfOrdersByMonth/$month', fn($month) => $controller->numberOfOrdersFilteredByMonth($month));
+
+    $router->add('GET', '/numberOfOrdersByYear/$year', fn($year) => $controller->numberOfOrdersFilteredByYear($year));
+
+    $router->add('GET', '/revenueByDay/$day', fn($day) => $controller->revenueFilteredByDay($day));
+
+    $router->add('GET', '/revenueByMonth/$month', fn($month) => $controller->revenueFilteredByMonth($month));
+
+    $router->add('GET', '/revenueByYear/$year', fn($year) => $controller->revenueFilteredByYear($year));
+
+    $router->add('GET', '/numberOfClientsByDay/$day', fn($day) => $controller->getNumberOfClientsByDay($day));
+
+    $router->add('GET', '/numberOfClientsByMonth/$month', fn($month) => $controller->getNumberOfClientsByMonth($month));
+
+    $router->add('GET', '/numberOfClientsByYear/$year', fn($year) => $controller->getNumberOfClientsByYear($year));
 
     $router->add('GET', '/carrinhos', fn() => $controller->getCarrinhos());
 
@@ -43,6 +68,8 @@
     $router->add('POST', '/insertProduct', fn() => $controller->insertProduct());
 
     $router->add('GET', '/feedbacks', fn() => $controller->getFeedbacks());
+
+    $router->add('GET', '/classificationFeedback', fn() => $controller->getClassificationFeedback());
 
     $router->add('POST', '/insertFeedback', fn() => $controller->insertFeedback());
 

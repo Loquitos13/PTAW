@@ -8,6 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link rel="stylesheet" href="css/analytics.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="js/analytics.js"></script>
 </head>
 
@@ -280,68 +282,28 @@
                     <!-- Total de Pedidos -->
                     <div class="col-md-3">
                         <div class="metric-card">
-                            <div class="metric-title">Total Orders</div>
-                            <div class="metric-value">1,284</div>
-                            <div class="metric-change positive">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" class="me-1">
-                                    <path d="M12 4L12 20M12 4L5 11M12 4L19 11" stroke="#28a745" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                +24.5%
-                            </div>
-                            <div class="comparison">vs. 1,031 last month</div>
+                            <div id="total_orders" class="metric-title">Total Orders</div>
                         </div>
                     </div>
 
                     <!-- Receita -->
                     <div class="col-md-3">
                         <div class="metric-card">
-                            <div class="metric-title">Revenue</div>
-                            <div class="metric-value">$86,429</div>
-                            <div class="metric-change positive">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" class="me-1">
-                                    <path d="M12 4L12 20M12 4L5 11M12 4L19 11" stroke="#28a745" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                +18.2%
-                            </div>
-                            <div class="comparison">vs. $73,121 last month</div>
+                            <div id="revenue_metric_card" class="metric-title">Revenue</div>
                         </div>
                     </div>
 
                     <!-- Valor Médio do Pedido -->
                     <div class="col-md-3">
                         <div class="metric-card">
-                            <div class="metric-title">Avg. Order Value</div>
-                            <div class="metric-value">$67.31</div>
-                            <div class="metric-change negative">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" class="me-1">
-                                    <path d="M12 20L12 4M12 20L19 13M12 20L5 13" stroke="#dc3545" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                -2.3%
-                            </div>
-                            <div class="comparison">vs. $68.90 last month</div>
+                            <div id="avg_revenue" class="metric-title">Avg. Order Value</div>
                         </div>
                     </div>
 
-                    <!-- Clientes Ativos -->
+                    <!-- Contas Criadas -->
                     <div class="col-md-3">
                         <div class="metric-card">
-                            <div class="metric-title">Active Customers</div>
-                            <div class="metric-value">892</div>
-                            <div class="metric-change positive">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" class="me-1">
-                                    <path d="M12 4L12 20M12 4L5 11M12 4L19 11" stroke="#28a745" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                +12
-                            </div>
-                            <div class="comparison">vs. 796 last month</div>
+                            <div id="created_accounts" class="metric-title">Created Accounts</div>
                         </div>
                     </div>
                 </div>
@@ -354,17 +316,17 @@
                     <!-- Tendências -->
                     <div class="col-md-6">
                         <div class="metric-card-graph">
-                            <div class="metric-title">Revenue Trends</div>
+                            <div id="revenue_trends_div" class="metric-title">Revenue Trends</div>
                             <br>
-                            <div class="placeholder-graph">Revenue Trends Placeholder</div>
+                            <canvas id="revenue_trends_chart">Revenue Trends Placeholder</canvas>
                         </div>
                     </div>
                     <!-- Estatísticas -->
                     <div class="col-md-6">
                         <div class="metric-card-graph">
-                            <div class="metric-title">Order Statistics</div>
+                            <div id="order_statistics_div" class="metric-title">Order Statistics</div>
                             <br>
-                            <div class="placeholder-graph">Order Statistics Placeholder</div>
+                            <canvas id="order_statistics_chart">Order Statistics Placeholder</canvas>
                         </div>
                     </div>
                 </div>
@@ -376,61 +338,42 @@
                     <!-- Tendências -->
                     <div class="col-md-8">
                         <div class="metric-card">
-                            <div class="metric-title">Top Products</div>
+                            <div id="top_products_div" class="metric-title">Top Products</div>
                             <br>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Product</th>
-                                        <th scope="col">Orders</th>
-                                        <th scope="col">Revenue</th>
-                                        <th scope="col">Growth</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td scope="row">Custom T-Shirts</td>
-                                        <td>342</td>
-                                        <td>$15,480</td>
-                                        <td class="positive">+28%</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">Business Cards</td>
-                                        <td>256</td>
-                                        <td>$12,800</td>
-                                        <td class="positive">+15%</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">Posters</td>
-                                        <td>198</td>
-                                        <td>$9,900</td>
-                                        <td class="positive">+22%</td>
-                                    </tr>
-                                </tbody>
+                            <table id="top_products" class="table">
                             </table>
                         </div>
                     </div>
 
 
-                    <!-- Tipos de Consumidor -->
+                    <!-- Reviews -->
                     <div class="col-md-4">
-                        <div class="metric-card-graph">
-                            <div class="metric-title">Customer Segments</div>
+                        <div id="reviews_div" class="metric-card-graph">
+                            <div class="metric-title">Reviews</div>
                             <br>
-                            <div class="placeholder-graph">Customer Segments Placeholder</div>
-                            <table class="table">
+                            <canvas id="reviews_chart">Reviews Placeholder</canvas>
+                            <table id="reviews_table" class="table">
                                 <tbody>
                                     <tr>
-                                        <td scope="row">Business</td>
-                                        <td>45%</td>
+                                        <td scope="row">1 Star</td>
+                                        <td id="one_star_perc">0%</td>
                                     </tr>
                                     <tr>
-                                        <td scope="row">Individuals</td>
-                                        <td>35%</td>
+                                        <td scope="row">2 Star</td>
+                                        <td id="two_star_perc">0%</td>
                                     </tr>
                                     <tr>
-                                        <td scope="row">Reseller</td>
-                                        <td>20%</td>
+                                        <td scope="row">3 Star</td>
+                                        <td id="three_star_perc">0%</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row">4 Star</td>
+                                        <td id="four_star_perc">0%</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row">5 Star</td>
+                                        <td id="five_star_perc">0%</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

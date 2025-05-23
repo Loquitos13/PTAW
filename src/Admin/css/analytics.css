@@ -21,10 +21,24 @@ body {
     color: #6c757d;
     font-weight: 500;
 }
+
+.metric-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.metric-title-icon {
+    margin-left: 8px;
+    display: flex;
+    align-items: center;
+}
+
 .metric-value {
     font-size: 24px;
     font-weight: 600;
     margin: 8px 0;
+    color: black;
 }
 .metric-change {
     font-size: 13px;
@@ -71,4 +85,8 @@ tr {
     background-color: #EEF2FF;
     color: #000;
     border-radius: 6px; 
+}
+
+svg, svg * {
+  pointer-events: all;
 }

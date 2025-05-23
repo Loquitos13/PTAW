@@ -73,19 +73,45 @@ class QueryBuilder {
 
     public function order(string $column_name, string $direction = 'ASC'): static {
 
-        $this->query .= " ORDER BY $column_name $direction";
+        if (str_contains($this->query, 'ORDER BY')) {
+
+            $this->query .= ", $column_name $direction";
+
+        } else {
+
+            $this->query .= " ORDER BY $column_name $direction";
+
+        }
+        
+        return $this;
+    }
+
+
+    public function groupBy(string|array $columns): static {
+
+        if (is_array($columns)) {
+
+            $columns = implode(', ', $columns);
+
+        }
+
+        $this->query .= " GROUP BY $columns";
 
         return $this;
-
     }
 
-    public function groupBy(string $column): static {
-  
-      $this->query .= " GROUP BY $column";
+    public function getServerTimeStamp(): string {
+            
+        $pdo = Database::getConnection();
 
-      return $this;
+        $stmt = $pdo->query("SELECT CURRENT_TIMESTAMP() as server_time");
 
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $row['server_time'];
+    
     }
+
 
     public function insert(array $data): bool {
 

@@ -147,6 +147,21 @@ CREATE TABLE Encomendas (
         ON UPDATE CASCADE
 );
 
+CREATE TABLE EncomendaItens (
+    id_encomenda_item INT AUTO_INCREMENT PRIMARY KEY,
+    id_encomenda INT NOT NULL,
+    id_produto INT NOT NULL,
+    quantidade INT NOT NULL,
+    preco DECIMAL(10,2) NOT NULL,
+    id_cor INT,
+    id_dimensao INT,
+    personalizado BOOLEAN DEFAULT 0,
+    FOREIGN KEY (id_encomenda) REFERENCES Encomendas(id_encomenda) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_produto) REFERENCES Produtos(id_produto) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (id_cor) REFERENCES Cores(id_cor) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (id_dimensao) REFERENCES Dimensoes(id_dimensao) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
 CREATE TABLE PagamentoCartao (
     id_cartao INT AUTO_INCREMENT PRIMARY KEY,
     numero_cartao VARCHAR(255) NOT NULL,

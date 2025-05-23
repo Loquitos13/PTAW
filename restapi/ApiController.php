@@ -15,6 +15,12 @@ class ApiController
         $this->queryBuilder = new QueryBuilder();
     }
 
+    public function getServerTimeStamp(): string {
+
+        return $this->queryBuilder->getServerTimeStamp();
+
+    }
+
     public function getUsers(): array
     {
 
@@ -120,6 +126,119 @@ class ApiController
         return $this->queryBuilder->table('Encomendas')
             ->select(['id_encomenda', 'id_carrinho', 'preco_total_encomenda'])
             ->get();
+    }
+
+    public function getEncomendasChart(): array {
+
+        return $this->queryBuilder->table('Encomendas')
+        ->select(["DATE_FORMAT(data_criacao_encomenda, '%m') AS Month", "status_encomenda", "COUNT(*) AS total"])
+        ->groupBy("Month, status_encomenda")
+        ->order("Month", "ASC")
+        ->order("status_encomenda", "ASC")
+        ->get();
+    }
+
+    public function getRevenuePerMonth(): array {
+
+        return $this->queryBuilder->table('Encomendas')
+        ->select(["DATE_FORMAT(data_criacao_encomenda, '%m') AS Month", "SUM(preco_total_encomenda) AS total"])
+        ->groupBy("Month")
+        ->order("Month", "ASC")
+        ->get();
+
+    }
+
+    public function getTopProducts(): array {
+
+        return $this->queryBuilder->table('Produtos p')
+        ->select(["p.titulo_produto AS nome_produto", "COUNT(DISTINCT ei.id_encomenda) AS total_encomendas", "SUM(ei.quantidade * ei.preco) AS total_dinheiro"])
+        ->join('EncomendaItens ei', 'p.id_produto', '=', 'ei.id_produto')
+        ->groupBy("p.id_produto, p.titulo_produto")
+        ->order("total_dinheiro", "DESC")
+        ->limit(10)
+        ->get();
+
+    }
+
+    public function numberOfOrdersFilteredByDay($day): array {
+
+        return $this->queryBuilder->table('Encomendas')
+        ->select(["COUNT(id_encomenda) AS NumberOfOrders"])
+        ->where("DATE_FORMAT(data_criacao_encomenda, '%d')", "=", $day)
+        ->get();
+
+    }
+
+    public function numberOfOrdersFilteredByMonth($month): array {
+
+        return $this->queryBuilder->table('Encomendas')
+        ->select(["COUNT(id_encomenda) AS NumberOfOrders"])
+        ->where("DATE_FORMAT(data_criacao_encomenda, '%M')", "=", $month)
+        ->get();
+
+    }
+
+    public function numberOfOrdersFilteredByYear($year): array {
+
+        return $this->queryBuilder->table('Encomendas')
+        ->select(["COUNT(id_encomenda) AS NumberOfOrders"])
+        ->where("DATE_FORMAT(data_criacao_encomenda, '%Y')", "=", $year)
+        ->get();
+
+    }
+
+    public function revenueFilteredByDay($day): array {
+
+        return $this->queryBuilder->table('Encomendas')
+        ->select(["SUM(preco_total_encomenda) AS Revenue"])
+        ->where("DATE_FORMAT(data_criacao_encomenda, '%d')", "=", $day)
+        ->get();
+
+    }
+
+    public function revenueFilteredByMonth($month): array {
+
+        return $this->queryBuilder->table('Encomendas')
+        ->select(["SUM(preco_total_encomenda) AS Revenue"])
+        ->where("DATE_FORMAT(data_criacao_encomenda, '%M')", "=", $month)
+        ->get();
+        
+    }
+
+    public function revenueFilteredByYear($year): array {
+
+        return $this->queryBuilder->table('Encomendas')
+        ->select(["SUM(preco_total_encomenda) AS Revenue"])
+        ->where("DATE_FORMAT(data_criacao_encomenda, '%Y')", "=", $year)
+        ->get();
+        
+    }
+
+    public function getNumberOfClientsByDay($day): array {
+
+        return $this->queryBuilder->table('Clientes')
+        ->select(["COUNT(id_cliente) AS NumberOfClients"])
+        ->where("DATE_FORMAT(data_criacao_cliente, '%d')", "=", $day)
+        ->get();
+        
+    }
+
+    public function getNumberOfClientsByMonth($month): array {
+
+        return $this->queryBuilder->table('Clientes')
+        ->select(["COUNT(id_cliente) AS NumberOfClients"])
+        ->where("DATE_FORMAT(data_criacao_cliente, '%M')", "=", $month)
+        ->get();
+        
+    }
+
+    public function getNumberOfClientsByYear($year): array {
+
+        return $this->queryBuilder->table('Clientes')
+        ->select(["COUNT(id_cliente) AS NumberOfClients"])
+        ->where("DATE_FORMAT(data_criacao_cliente, '%Y')", "=", $year)
+        ->get();
+        
     }
 
     public function getCarrinhos(): array
@@ -368,6 +487,16 @@ class ApiController
             ->order('data_review', 'DESC')
             ->get();
     }
+
+    public function getClassificationFeedback(): ?array {
+
+        return $this->queryBuilder->table('Reviews')
+            ->select(['classificacao', 'COUNT(*) AS Sum'])
+            ->groupBy('classificacao')
+            ->get();
+
+    }
+
     public function getOrders(): array
     {
         try {
