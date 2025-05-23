@@ -463,10 +463,120 @@
           </div>
         </div>
 
-        <div id="notifications-content" class="tab-content"></div>
+        <div id="notifications-content" class="tab-content">
+          <div class="row gx-4">
+            <div class="col-lg-8">
+              <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Email Notifications</h5>
+
+                  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <div>
+                      <p class="mb-0 fw-medium">Order Notifications</p>
+                      <p class="text-muted small mb-0">Get notified when new orders are placed</p>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" id="orderNotifications" checked>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <div>
+                      <p class="mb-0 fw-medium">Low Stock Alerts</p>
+                      <p class="text-muted small mb-0">Alert when products are running low</p>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" id="stockAlerts" checked>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <div>
+                      <p class="mb-0 fw-medium">Weekly Reports</p>
+                      <p class="text-muted small mb-0">Receive weekly sales and analytics reports</p>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" id="weeklyReports">
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <p class="mb-0 fw-medium">Marketing Updates</p>
+                      <p class="text-muted small mb-0">News and updates about new features</p>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" id="marketingUpdates">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Push Notifications</h5>
+                  
+                  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <div>
+                      <p class="mb-0 fw-medium">Browser Notifications</p>
+                      <p class="text-muted small mb-0">Show notifications in your browser</p>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" id="browserNotifications">
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <p class="mb-0 fw-medium">Mobile Notifications</p>
+                      <p class="text-muted small mb-0">Receive notifications on mobile app</p>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" id="mobileNotifications" checked>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Notification Settings</h5>
+                  
+                  <div class="mb-3">
+                    <label for="notificationFrequency" class="form-label">Frequency</label>
+                    <select class="form-select" id="notificationFrequency">
+                      <option selected>Instant</option>
+                      <option>Every 15 minutes</option>
+                      <option>Hourly</option>
+                      <option>Daily digest</option>
+                    </select>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="quietHours" class="form-label">Quiet Hours</label>
+                    <div class="row">
+                      <div class="col-6">
+                        <input type="time" class="form-control" value="22:00">
+                      </div>
+                      <div class="col-6">
+                        <input type="time" class="form-control" value="08:00">
+                      </div>
+                    </div>
+                    <small class="text-muted">No notifications during these hours</small>
+                  </div>
+                  
+                  <button class="btn btn-primary w-100">Save Preferences</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div id="team-content" class="tab-content"></div>
         <div id="billing-content" class="tab-content"></div>
-        </div>
+
+      </div>
     </div>
   </div>
 
