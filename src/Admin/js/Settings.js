@@ -29,10 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    
     showTab('general'); 
 
-    // Funções para as Quick Actions 
+    
     const exportBtn = document.getElementById('exportBtn');
     const clearCacheBtn = document.getElementById('clearCacheBtn');
     const supportBtn = document.getElementById('supportBtn');
@@ -41,21 +40,21 @@ document.addEventListener('DOMContentLoaded', function() {
     if (exportBtn) {
         exportBtn.addEventListener('click', function() {
             alert('A exportar dados da loja...');
-           
+            
         });
     }
 
     if (clearCacheBtn) {
         clearCacheBtn.addEventListener('click', function() {
             alert('A limpar cache...');
-          
+            
         });
     }
 
     if (supportBtn) {
         supportBtn.addEventListener('click', function() {
             alert('A contactar suporte...');
-            
+          
         });
     }
 
@@ -68,12 +67,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.innerHTML = '<i class="bi bi-floppy me-2"></i> Save Changes';
                 this.disabled = false;
                 alert('Alterações guardadas com sucesso!');
-            }, 2000); 
+                // Lógica para guardar alterações
+            }, 2000); // Simula um atraso de 2 segundos para guardar
         });
     }
 
-
-
+    // Função para configurar os event listeners dos switches da aba de Segurança
     function setupSecuritySwitches() {
         const twoFactorSwitch = document.getElementById('twoFactorSwitch');
         const loginNotificationSwitch = document.getElementById('loginNotificationSwitch');
@@ -82,12 +81,10 @@ document.addEventListener('DOMContentLoaded', function() {
             twoFactorSwitch.addEventListener('change', function() {
                 if (this.checked) {
                     console.log('Two-factor Authentication ATIVADO');
-                    alert('Autenticação de dois fatores ATIVADA!'); 
-                    
+                    alert('Autenticação de dois fatores ATIVADA!');
                 } else {
                     console.log('Two-factor Authentication DESATIVADO');
-                    alert('Autenticação de dois fatores DESATIVADA!'); 
-                    
+                    alert('Autenticação de dois fatores DESATIVADA!');
                 }
             });
         }
@@ -96,17 +93,14 @@ document.addEventListener('DOMContentLoaded', function() {
             loginNotificationSwitch.addEventListener('change', function() {
                 if (this.checked) {
                     console.log('Login Notifications ATIVADAS');
-                    alert('Notificações de login ATIVADAS!'); 
-                    
+                    alert('Notificações de login ATIVADAS!');
                 } else {
                     console.log('Login Notifications DESATIVADAS');
-                    alert('Notificações de login DESATIVADAS!'); 
-                   
+                    alert('Notificações de login DESATIVADAS!');
                 }
             });
         }
 
-        // Você pode adicionar lógica para o botão "Update Password" aqui também, se quiser
         const updatePasswordBtn = document.querySelector('#security-content .btn-primary');
         if (updatePasswordBtn) {
             updatePasswordBtn.addEventListener('click', function() {
@@ -124,14 +118,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 alert('Password atualizada com sucesso!');
-                // Lógica para atualizar a password no backend
+            });
+        }
+    }
+    setupSecuritySwitches();
+
+
+    
+    // Função para configurar os event listeners dos switches da aba de Notificações
+    function setupNotificationSwitches() {
+        const orderNotifications = document.getElementById('orderNotifications');
+        const stockAlerts = document.getElementById('stockAlerts');
+        const weeklyReports = document.getElementById('weeklyReports');
+        const marketingUpdates = document.getElementById('marketingUpdates');
+        const browserNotifications = document.getElementById('browserNotifications');
+        const mobileNotifications = document.getElementById('mobileNotifications');
+        const saveNotificationBtn = document.querySelector('#notifications-content .btn-primary');
+
+        // Adiciona listeners para todos os switches
+        [orderNotifications, stockAlerts, weeklyReports, marketingUpdates, browserNotifications, mobileNotifications].forEach(sw => {
+            if (sw) {
+                sw.addEventListener('change', function() {
+                    console.log(`${this.id} is now ${this.checked ? 'ON' : 'OFF'}`);
+                    // Lógica para guardar a preferência no backend
+                });
+            }
+        });
+
+        // Listener para o botão "Save Preferences"
+        if (saveNotificationBtn) {
+            saveNotificationBtn.addEventListener('click', function() {
+                alert('Preferências de Notificações guardadas!');
+                // Lógica para guardar todas as preferências no backend
             });
         }
     }
 
-    // Chamar a função de setup dos switches de segurança quando o DOM estiver pronto
-    setupSecuritySwitches();
-    // FIM DA ALTERAÇÃO
+    // Chamar a função de setup dos switches de Notificações
+    setupNotificationSwitches();
 
-    // ... (futuras funções como addTeamMember ou outras)
 });
