@@ -792,8 +792,7 @@ document
 
     // enviar dados diretamente para a API
     try {
-      const response = await fetch(
-        `../restapi/PrintGoAPI.php/insertFeedback`,
+      const response = await fetch(`../restapi/PrintGoAPI.php/insertFeedback`,
         {
           method: "POST",
           headers: {
