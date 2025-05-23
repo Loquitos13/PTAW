@@ -573,7 +573,157 @@
             </div>
           </div>
         </div>
-        <div id="team-content" class="tab-content"></div>
+        
+        <div id="team-content" class="tab-content">
+          <div class="row gx-4">
+            <div class="col-lg-8">
+              <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Team Members</h5>
+                  
+                  <div id="teamMembersList">
+                    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                      <div class="d-flex align-items-center">
+                        <img src="../../imagens/admin.png" alt="John Doe" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                        <div>
+                          <p class="mb-0 fw-medium">John Doe</p>
+                          <p class="text-muted small mb-0">john@print&go.com</p>
+                        </div>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <span class="badge bg-primary me-2">Owner</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="this.parentElement.parentElement.remove()">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center p-3">
+                      <div class="d-flex align-items-center">
+                        <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center me-3" 
+                             style="width: 40px; height: 40px; color: white; font-weight: bold;">
+                          P
+                        </div>
+                        <div>
+                          <p class="mb-0 fw-medium">Pedro Santos</p>
+                          <p class="text-muted small mb-0">pedro@print&go.com</p>
+                        </div>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <span class="badge bg-light text-dark me-2">Member</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="this.parentElement.parentElement.remove()">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Team Permissions</h5>
+                  
+                  <div class="table-responsive">
+                    <table class="table table-borderless">
+                      <thead>
+                        <tr class="border-bottom">
+                          <th scope="col">Permission</th>
+                          <th scope="col" class="text-center">Owner</th>
+                          <th scope="col" class="text-center">Admin</th>
+                          <th scope="col" class="text-center">Member</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Manage Products</td>
+                          <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                          <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                          <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                        </tr>
+                        <tr>
+                          <td>View Orders</td>
+                          <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                          <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                          <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                        </tr>
+                        <tr>
+                          <td>Manage Team</td>
+                          <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                          <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                          <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                        </tr>
+                        <tr>
+                          <td>Access Analytics</td>
+                          <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                          <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                          <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                        </tr>
+                        <tr>
+                          <td>Settings Access</td>
+                          <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                          <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                          <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Add Team Member</h5>
+                  
+                  <div class="mb-3">
+                    <label for="memberName" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="memberName" placeholder="Enter full name">
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="memberEmail" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="memberEmail" placeholder="Enter email address">
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="memberRole" class="form-label">Role</label>
+                    <select class="form-select" id="memberRole">
+                      <option value="Member" selected>Member</option>
+                      <option value="Admin">Admin</option>
+                    </select>
+                  </div>
+                  
+                  <button class="btn btn-primary w-100" onclick="addTeamMember()">
+                    <i class="bi bi-person-plus me-2"></i>
+                    Send Invitation
+                  </button>
+                  
+                  <hr class="my-4">
+                  
+                  <div class="text-center">
+                    <h6 class="fw-medium mb-2">Team Statistics</h6>
+                    <div class="row text-center">
+                      <div class="col-4">
+                        <div class="text-primary fw-bold fs-4">3</div>
+                        <small class="text-muted">Total</small>
+                      </div>
+                      <div class="col-4">
+                        <div class="text-success fw-bold fs-4">3</div>
+                        <small class="text-muted">Active</small>
+                      </div>
+                      <div class="col-4">
+                        <div class="text-warning fw-bold fs-4">0</div>
+                        <small class="text-muted">Pending</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div id="billing-content" class="tab-content"></div>
 
       </div>
