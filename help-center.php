@@ -318,14 +318,6 @@
                             </div>
 
                             <div class="mb-3">
-                                <a class="nav-link" href="#cookies">Cookies Policy</a>
-                                <div class="sub-nav">
-                                    <a class="nav-link" href="#cookies-types">Types of Cookies</a>
-                                    <a class="nav-link" href="#cookies-manage">Managing Cookies</a>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
                                 <a class="nav-link" href="#shipping">Shipping Information</a>
                                 <div class="sub-nav">
                                     <a class="nav-link" href="#shipping-times">Delivery Times</a>
@@ -840,34 +832,6 @@
                             <p>We may update this Privacy Policy periodically. We will notify you of any significant
                                 changes by posting the new Privacy Policy on our website and, when appropriate, sending
                                 an email.</p>
-                        </div>
-                    </div>
-
-                    <!-- Cookies Policy -->
-                    <div id="cookies" class="section-content">
-                        <h2 class="category-title">Cookies Policy</h2>
-                        <p>We use cookies to improve your experience on our website. Cookies are small text files that
-                            are stored on your device when you visit our website. They help us remember your
-                            preferences, understand how you use our website, and personalize your experience.</p>
-
-                        <div id="cookies-types">
-                            <h3 class="subcategory-title">Types of Cookies We Use</h3>
-                            <ul>
-                                <li><strong>Essential Cookies:</strong> Necessary for the basic functionality of the
-                                    website.</li>
-                                <li><strong>Preference Cookies:</strong> Allow the website to remember your choices and
-                                    preferences.</li>
-                                <li><strong>Analytical Cookies:</strong> Help us understand how visitors interact with
-                                    the website.</li>
-                                <li><strong>Marketing Cookies:</strong> Used to track visitors across websites and
-                                    display relevant ads.</li>
-                            </ul>
-                        </div>
-
-                        <div id="cookies-manage">
-                            <h3 class="subcategory-title">Managing Cookies</h3>
-                            <p>You can control and manage cookies in your browser settings. However, disabling certain
-                                cookies may affect the functionality of our website.</p>
                         </div>
                     </div>
 

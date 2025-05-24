@@ -21,7 +21,6 @@ $base_url = "/~ptaw-2025-gr4";
                 <li><a href="<?= $base_url ?>/help-center.php#faq">FAQ</a></li>
                 <li><a href="<?= $base_url ?>/help-center.php#terms">Terms of Service</a></li>
                 <li><a href="<?= $base_url ?>/help-center.php#privacy">Privacy Policy</a></li>
-                <li><a href="<?= $base_url ?>/help-center.php#cookies">Cookies Policy</a></li>
                 <li><a href="<?= $base_url ?>/help-center.php#shipping">Shipping Information</a></li>
                 <li><a href="<?= $base_url ?>/help-center.php#returns">Returns</a></li>
                 <li><a href="<?= $base_url ?>/help-center.php#size-guide">Size Guide</a></li>

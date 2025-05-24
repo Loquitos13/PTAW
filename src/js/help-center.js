@@ -346,3 +346,24 @@ document.getElementById('searchHelp').addEventListener('search', function () {
 document.addEventListener('DOMContentLoaded', function () {
     window.dispatchEvent(new Event('scroll'));
 });
+
+// Back to Top Button
+const backToTopButton = document.getElementById('backToTop');
+
+if (backToTopButton) {
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) { // Mostra o botão após 300px de scroll
+            backToTopButton.classList.add('visible');
+        } else {
+            backToTopButton.classList.remove('visible');
+        }
+    });
+
+    backToTopButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
