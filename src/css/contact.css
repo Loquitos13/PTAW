@@ -1,11 +1,7 @@
-/* Styles from contact.php's <style> block, specific to contact.php */
 body {
-    /* Estas são as substituições específicas para a página de contacto */
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: #1f2937;
-    /* text-dark */
     background-color: #f8fafc;
-    /* bg-light */
 }
 
 /* Estilos do header */
