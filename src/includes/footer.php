@@ -44,11 +44,7 @@ $base_url = "/~ptaw-2025-gr4";
             </ul>
         </div>
         <div class="divFooter">
-            <h4>Contact Us</h4>
-            <ul>
-                <li><a href="mailto:info@printandgo.com">Email</a></li>
-                <li><a href="tel:+123456789">Phone</a></li>
-            </ul>
+            <a href="<?= $base_url ?>/contact.php"><h4>Contact Us</h4></a>
         </div>
     </div>
 

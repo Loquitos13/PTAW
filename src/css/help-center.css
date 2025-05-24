@@ -4,6 +4,37 @@ body {
     position: relative;
 }
 
+/* Estilos do header */
+header {
+    display: flex;
+    margin-left: auto;
+}
+
+.left {
+    width: 50%;
+    display: flex;
+    align-items: center;
+}
+
+.left a {
+    width: 20%;
+}
+
+.left form {
+    flex: 1;
+}
+
+.right {
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.header-desktop ul {
+    align-items: center;
+}
+
 /* Estilização para links de navegação */
 .nav-link {
     color: #333;
@@ -319,35 +350,44 @@ footer p.direitos b {
     list-style: none;
 }
 
-/* 
-        Estilos do header 
-*/
-header {
-    display: flex;
-    margin-left: auto;
-}
-
-.left {
-    width: 50%;
-    display: flex;
-    align-items: center;
-}
-
-.right {
-    width: 50%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-.header-desktop ul {
-    align-items: center;
-}
-
 /* Css carrinho */
 
-#carrinho {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    justify-content: center;
+.img-small {
+    width: 100px;
+    height: 100px;
+}
+
+.product-info {
+    line-height: 1.2;
+    margin-bottom: 0;
+}
+
+.product-info {
+    font-size: 1rem;
+    color: #333;
+}
+
+.price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.btn-outline-secondary {
+    width: 30px;
+    height: 30px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0;
+}
+
+/* Make trash icon consistent */
+.btn-link .bi-trash {
+    color: #6c757d;
+    transition: color 0.3s ease;
+}
+
+.btn-link:hover .bi-trash {
+    color: #4F46E5;
 }

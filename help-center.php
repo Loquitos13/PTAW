@@ -10,6 +10,9 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="src/css/help-center.css">
+    <?php
+    $base_url = "/~ptaw-2025-gr4";
+    include 'src/includes/carrinho.php'; ?>
 </head>
 
 <style>
@@ -141,14 +144,23 @@
             display: none;
         }
 
-        .left,
         .right {
             width: 100%;
             justify-content: center;
         }
 
+        .left {
+            width: 50%;
+            display: flex;
+            align-items: center;
+        }
+
         .left a {
-            width: auto;
+            width: 20%;
+        }
+
+        .left form {
+            flex: 1;
         }
 
         #containerHeroe {
@@ -1239,5 +1251,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="src/js/help-center.js"></script>
+    <script src="<?= $base_url ?>/src/js/carrinho.js"></script>
 </body>
+
 </html>
