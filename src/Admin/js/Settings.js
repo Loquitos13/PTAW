@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Função para mostrar uma tab específica
     function showTab(tabName) {
-        // Remove active de todas as tabs
         tabLinks.forEach(link => link.classList.remove('active'));
         tabContents.forEach(content => content.style.display = 'none'); // Esconde todos os conteúdos
 
@@ -29,9 +28,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    showTab('general'); 
+    showTab('general');
 
-    
+    // Funções para as Quick Actions
     const exportBtn = document.getElementById('exportBtn');
     const clearCacheBtn = document.getElementById('clearCacheBtn');
     const supportBtn = document.getElementById('supportBtn');
@@ -40,21 +39,21 @@ document.addEventListener('DOMContentLoaded', function() {
     if (exportBtn) {
         exportBtn.addEventListener('click', function() {
             alert('A exportar dados da loja...');
-            
+            // Lógica para exportar dados
         });
     }
 
     if (clearCacheBtn) {
         clearCacheBtn.addEventListener('click', function() {
             alert('A limpar cache...');
-            
+            // Lógica para limpar cache
         });
     }
 
     if (supportBtn) {
         supportBtn.addEventListener('click', function() {
             alert('A contactar suporte...');
-          
+            // Lógica para contactar suporte
         });
     }
 
@@ -123,8 +122,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     setupSecuritySwitches();
 
-
-    
     // Função para configurar os event listeners dos switches da aba de Notificações
     function setupNotificationSwitches() {
         const orderNotifications = document.getElementById('orderNotifications');
@@ -140,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (sw) {
                 sw.addEventListener('change', function() {
                     console.log(`${this.id} is now ${this.checked ? 'ON' : 'OFF'}`);
-                    // Lógica para guardar a preferência no backend
                 });
             }
         });
@@ -149,12 +145,55 @@ document.addEventListener('DOMContentLoaded', function() {
         if (saveNotificationBtn) {
             saveNotificationBtn.addEventListener('click', function() {
                 alert('Preferências de Notificações guardadas!');
-                // Lógica para guardar todas as preferências no backend
             });
         }
     }
-
-    // Chamar a função de setup dos switches de Notificações
     setupNotificationSwitches();
+
+
+    // Função para adicionar um novo membro da equipa 
+    window.addTeamMember = function() { // Tornar global para ser acessível via onclick
+        const nameInput = document.getElementById('memberName');
+        const emailInput = document.getElementById('memberEmail');
+        const roleInput = document.getElementById('memberRole');
+        const teamList = document.getElementById('teamMembersList');
+
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const role = roleInput.value;
+
+        if (name && email) {
+            const memberHtml = `
+                <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-${role === 'Owner' ? 'primary' : (role === 'Admin' ? 'success' : 'warning')} rounded-circle d-flex align-items-center justify-content-center me-3" 
+                             style="width: 40px; height: 40px; color: white; font-weight: bold;">
+                            ${name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <p class="mb-0 fw-medium">${name}</p>
+                            <p class="text-muted small mb-0">${email}</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-${role === 'Owner' ? 'primary' : (role === 'Admin' ? 'info' : 'light text-dark')} me-2">${role}</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="this.parentElement.parentElement.remove()">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            teamList.insertAdjacentHTML('beforeend', memberHtml);
+            
+            // Limpar formulário
+            nameInput.value = '';
+            emailInput.value = '';
+            roleInput.value = 'Member'; // Reset para o valor padrão
+            alert('Convite para novo membro da equipa enviado (frontend)!');
+        } else {
+            alert('Por favor, preencha o nome e o email do novo membro.');
+        }
+    };
 
 });
