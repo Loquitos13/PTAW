@@ -1,86 +1,76 @@
 <?php
 session_start();
 require_once '../restapi/Database.php';
-$base_url = "/~ptaw-2025-gr4"; 
+require_once '../restapi/QueryBuilder.php';
+require_once '../restapi/ApiController.php';
 
-$apiUrl = "http://estga-dev.ua.pt/~ptaw-2025-gr4/restapi/PrintGoAPI.php";
-
-if (!function_exists('curl_init')) {
-    error_log("CURL is not available on this server");
-}
-
-function executeCurlRequest($ch) {
-    $verbose = fopen('php://temp', 'w+');
-    curl_setopt($ch, CURLOPT_VERBOSE, true);
-    curl_setopt($ch, CURLOPT_STDERR, $verbose);
-    
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    $response = curl_exec($ch);
-    
-    if (curl_errno($ch)) {
-        $error = curl_error($ch);
-        $info = curl_getinfo($ch);
-        rewind($verbose);
-        $verboseLog = stream_get_contents($verbose);
-        error_log("CURL Verbose info: " . $verboseLog);
-        curl_close($ch);
-        throw new Exception("CURL Error: $error. Info: " . json_encode($info));
-    }
-    
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    if ($httpCode >= 400) {
-        rewind($verbose);
-        $verboseLog = stream_get_contents($verbose);
-        error_log("CURL Verbose info: " . $verboseLog);
-        curl_close($ch);
-        throw new Exception("API returned error code: $httpCode. Response: $response");
-    }
-    
-    curl_close($ch);
-
-    if (!empty($response)) {
-        $decoded = json_decode($response, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new Exception("Invalid JSON response: " . json_last_error_msg() . ". Raw: " . substr($response, 0, 200));
-        }
-        return $decoded;
-    }
-    
-    return [];
-}
-
-function getOrders() {
-    global $apiUrl;
-    
-    $ch = curl_init("$apiUrl/getOrders");
-    curl_setopt($ch, CURLOPT_HTTPGET, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json'
-    ]);
-
-    return executeCurlRequest($ch);
-}
-
-header('Content-Type: application/json');
-
+// Conectar à base de dados
 try {
-    $method = $_SERVER['REQUEST_METHOD'];
-
-    if ($method === 'GET') {
-        error_log("Processing GET request to orderEngine.php");
-        $result = getOrders();
-        echo json_encode($result); 
-        exit;
-    } 
-        
+    Database::connect();
 } catch (Exception $e) {
-    error_log("Error in orderEngine.php: " . $e->getMessage());
-    http_response_code(500); 
+    error_log("Erro de conexão à base de dados: " . $e->getMessage());
+    http_response_code(500);
     echo json_encode([
         'status' => 'error',
-        'message' => $e->getMessage()
+        'message' => 'Erro de conexão à base de dados'
     ]);
     exit;
 }
+
+function getOrders() {
+    try {
+        $controller = new ApiController();
+        return $controller->getOrders();
+    } catch (Exception $e) {
+        error_log("Erro ao obter encomendas: " . $e->getMessage());
+        throw $e;
+    }
+}
+
+// Definir cabeçalho de resposta
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+try {
+    $method = $_SERVER['REQUEST_METHOD'];
+    
+    error_log("orderEngine.php: Método recebido: $method");
+
+    if ($method === 'GET') {
+        error_log("Processando pedido GET para orderEngine.php");
+        
+        $result = getOrders();
+        
+        error_log("Número de encomendas obtidas: " . count($result));
+        
+        if (empty($result)) {
+            echo json_encode([]);
+        } else {
+            echo json_encode($result);
+        }
+        exit;
+        
+    } else {
+        http_response_code(405);
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Método não permitido'
+        ]);
+        exit;
+    }
+        
+} catch (Exception $e) {
+    error_log("Erro em orderEngine.php: " . $e->getMessage());
+    error_log("Stack trace: " . $e->getTraceAsString());
+    
+    http_response_code(500); 
+    echo json_encode([
+        'status' => 'error',
+        'message' => $e->getMessage(),
+        'details' => 'Verifique os logs do servidor para mais informações'
+    ]);
+    exit;
+}
+?>

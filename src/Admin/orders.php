@@ -273,51 +273,151 @@ $adminId = $_SESSION['admin_id'] ?? null;
       </div>
 
        <h2>Orders</h2>
-    <table class="table table-bordered bg-white">
-      <thead class="table-light">
-        <tr>
-          <th>Order ID</th>
-          <th>Customer</th>
-          <th>Date</th>
-          <th>Status</th>
-          <th>Payment</th>
-          <th>Amount</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody class="orders-table">
-        <tr>
-          <td><a href="order_info.php">#</a></td>
-          <td>Sarah Johnson</td>
-          <td>Jan 15, 2025</td>
-          <td><span class="badge bg-success">Completed</span></td>
-          <td><span class="badge bg-primary">Paid</span></td>
-          <td>$128.50</td>
-          <td><button class="btn btn-sm btn-outline-secondary">...</button></td>
-        </tr>
-        <tr>
-          <td><a href="order_info.php">#</a></td>
-          <td>Michael Chen</td>
-          <td>Jan 15, 2025</td>
-          <td><span class="badge bg-warning text-dark">Pending</span></td>
-          <td><span class="badge bg-danger">Unpaid</span></td>
-          <td>$85.20</td>
-          <td><button class="btn btn-sm btn-outline-secondary">...</button></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>ID Encomenda</th>
+        <th>Cliente</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th>Data</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="orders-table-body">
+      <!-- Os dados serão carregados via JavaScript -->
+    </tbody>
+  </table>
+</div>
 
-      
-      
-     
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadOrders();
+});
 
-      
+function loadOrders() {
+    fetch('../../admin/orderEngine.php')
+        .then(response => response.json())
+        .then(orders => {
+            const tbody = document.getElementById('orders-table-body');
+            tbody.innerHTML = '';
+            
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-order-id', order.id_encomenda);
+                row.style.cursor = 'pointer';
+                row.classList.add('order-row');
+                
+                row.innerHTML = `
+                    <td><strong>#PG-${order.id_encomenda}</strong></td>
+                    <td>${order.nome_cliente}</td>
+                    <td>€${parseFloat(order.preco_total_encomenda).toFixed(2)}</td>
+                    <td><span class="badge ${getStatusClass(order.status_encomenda)}">${order.status_encomenda}</span></td>
+                    <td>${formatDate(order.data_criacao_encomenda)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary view-order-btn" data-order-id="${order.id_encomenda}">
+                            <i class="bi bi-eye"></i> Ver
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Adicionar event listeners para as linhas clicáveis
+            addOrderClickListeners();
+        })
+        .catch(error => {
+            console.error('Erro ao carregar encomendas:', error);
+        });
+}
 
 
-    </div>
+function addOrderClickListeners() {
+    // Listener para linhas da tabela
+    const orderRows = document.querySelectorAll('.order-row');
+    orderRows.forEach(row => {
+        row.addEventListener('click', function(e) {
+            // Evitar clique duplo quando se clica no botão
+            if (e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
+                const orderId = this.getAttribute('data-order-id');
+                if (orderId) {
+                    console.log('Clique na linha - Order ID:', orderId);
+                    console.log('Caminho atual:', window.location.pathname);
+                    
+                    const targetUrl = `order_info.php?id=${orderId}`;
+                    console.log('Redirecionando para:', targetUrl);
+                    window.location.href = targetUrl;
+                }
+            }
+        });
 
-  </div>
+    });    
+    // Listener para botões específicos
+    const viewButtons = document.querySelectorAll('.view-order-btn');
+    viewButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation(); // Evitar propagação do evento
+            const orderId = this.getAttribute('data-order-id');
+            if (orderId) {
+                console.log('Clique no botão - Order ID:', orderId);
+                
+                const targetUrl = `order_info.php?id=${orderId}`;
+                console.log('Redirecionando para:', targetUrl);
+                
+                // Redirecionar diretamente
+                window.location.href = targetUrl;
+            }
+        });
+    });
+}
 
+function getStatusClass(status) {
+    switch(status.toLowerCase()) {
+        case 'pendente':
+            return 'bg-warning text-dark';
+        case 'processando':
+            return 'bg-info';
+        case 'enviado':
+            return 'bg-primary';
+        case 'entregue':
+            return 'bg-success';
+        case 'cancelado':
+            return 'bg-danger';
+        default:
+            return 'bg-secondary';
+    }
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-PT') + ' ' + date.toLocaleTimeString('pt-PT', {hour: '2-digit', minute: '2-digit'});
+}
+
+// Função de debug para verificar o caminho atual
+function debugPagePath() {
+    console.log('Caminho atual:', window.location.pathname);
+    console.log('URL completa:', window.location.href);
+}
+
+// Função alternativa com caminho absoluto (se necessário)
+function redirectToOrderInfo(orderId) {
+    // Opção 1: Caminho relativo (se ambos os ficheiros estão na mesma pasta)
+    const relativePath = `order_info.php?id=${orderId}`;
+    
+    // Opção 2: Caminho baseado na estrutura que mencionou
+    // const absolutePath = `/src/Admin/order_info.php?id=${orderId}`;
+    
+    // Opção 3: Caminho dinâmico baseado na localização atual
+    const currentPath = window.location.pathname;
+    const basePath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+    const dynamicPath = `${basePath}/order_info.php?id=${orderId}`;
+    
+    console.log('Redirecionando para:', relativePath);
+    window.location.href = relativePath;
+}
+</script>
 <script src="js/Orders.js"></script>
 </body>
 </html>

@@ -82,9 +82,17 @@
     $router->add('DELETE', '/deleteProductByID/$id', fn($id) => $controller->deleteProductByID($id));
 
     $router->add('GET', '/filterProducts/$categoria/$precoMinimo/$precoMaximo/$cor/$tamanho', fn($categoria, $precoMinimo, $precoMaximo, $cor, $tamanho) => $controller->getFiltersProducts($categoria, $precoMinimo, $precoMaximo, $cor, $tamanho));
-    
+
     $router->add('GET', '/getCarrinhoItens/$userID', fn($userID) => $controller->getCarrinhoItens($userID));
 
+    $router->add('GET', '/orderById/$id', fn($id) => $controller->getOrderById($id));
+
+    $router->add('GET', '/orderItems/$id', fn($id) => $controller->getOrderItems($id));
+
+    $router->add('GET', '/orderPaymentInfo/$id', fn($id) => $controller->getOrderPaymentInfo($id));
+
+    $router->add('GET', '/completeOrderInfo/$id', fn($id) => $controller->getCompleteOrderInfo($id));
+
+    $router->add('PUT', '/updateOrderStatus/$id/$status', fn($id, $status) => $controller->updateOrderStatus($id, $status));
+
     $router->dispatch();
-
-

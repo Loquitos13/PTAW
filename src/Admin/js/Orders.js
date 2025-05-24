@@ -28,11 +28,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function getOrders() {
     try {
-      const response = await fetch("../../admin/orderEngine.php");
+    console.log("Fetching orders from: ../../admin/orderEngine.php");
+    const response = await fetch("../../admin/orderEngine.php");
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Server response status:", response.status);
+      console.error("Server response headers:", Object.fromEntries([...response.headers]));
+      console.error("Server response body:", errorText);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
       const data = await response.json();
       const ordersTable = document.querySelector(".orders-table");
@@ -41,34 +46,40 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      ordersTable.innerHTML = ""; 
+      ordersTable.innerHTML = "";
 
-      if (data.status === 'error') {
+      if (data.status === "error") {
         ordersTable.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Error loading orders: ${data.message}</td></tr>`;
         return;
       }
 
       if (!Array.isArray(data) || data.length === 0) {
-        ordersTable.innerHTML = '<tr><td colspan="7" class="text-center">No orders found</td></tr>';
+        ordersTable.innerHTML =
+          '<tr><td colspan="7" class="text-center">No orders found</td></tr>';
         return;
       }
 
       data.forEach((order) => {
         const row = document.createElement("tr");
-        
+
         let statusBadgeClass = "bg-secondary";
         const status = order.status_encomenda || "Processing";
-        
-        if (status.toLowerCase() === "completed") statusBadgeClass = "bg-success";
-        if (status.toLowerCase() === "pending") statusBadgeClass = "bg-warning text-dark";
-        if (status.toLowerCase() === "cancelled") statusBadgeClass = "bg-danger";
-        
+
+        if (status.toLowerCase() === "completed")
+          statusBadgeClass = "bg-success";
+        if (status.toLowerCase() === "pending")
+          statusBadgeClass = "bg-warning text-dark";
+        if (status.toLowerCase() === "cancelled")
+          statusBadgeClass = "bg-danger";
+
         const isPaid = order.fatura && order.fatura.trim() !== "";
         const paymentBadgeClass = isPaid ? "bg-primary" : "bg-danger";
         const paymentStatus = isPaid ? "Paid" : "Unpaid";
-        
+
         row.innerHTML = `
-          <td><a href="order_info.php?id=${order.id_encomenda}">#${order.id_encomenda}</a></td>
+          <td><a href="order_info.php?id=${order.id_encomenda}">#${
+          order.id_encomenda
+        }</a></td>
           <td>${order.nome_cliente || "Unknown"}</td>
           <td>${order.data_criacao_encomenda || "N/A"}</td>
           <td><span class="badge ${statusBadgeClass}">${status}</span></td>
@@ -76,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <td>$${order.preco_total_encomenda || "0.00"}</td>
           <td><button class="btn btn-sm btn-outline-secondary">...</button></td>
         `;
-        
+
         ordersTable.appendChild(row);
       });
     } catch (error) {
@@ -86,4 +97,40 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   }
+
+    // Assumindo que você tem uma tabela ou lista de orders
+    // Adicione event listeners aos elementos clicáveis dos orders
+    
+    // Se você tem botões ou links específicos para cada order:
+    const orderButtons = document.querySelectorAll('.order-item, .order-row, [data-order-id]');
+    
+    orderButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            // Capturar o ID do order do atributo data ou do elemento
+            const orderId = this.getAttribute('data-order-id') || 
+                           this.querySelector('[data-order-id]')?.getAttribute('data-order-id') ||
+                           this.id?.replace('order-', '');
+            
+            if (orderId) {
+                // Redirecionar para order_info.php com o ID como parâmetro
+                window.location.href = `order_info.php?id=${orderId}`;
+            }
+        });
+    });
+    
+    // Se você está usando uma tabela, pode também adicionar listeners às linhas:
+    const orderRows = document.querySelectorAll('tr[data-order-id]');
+    orderRows.forEach(row => {
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', function() {
+            const orderId = this.getAttribute('data-order-id');
+            if (orderId) {
+                window.location.href = `order_info.php?id=${orderId}`;
+            }
+        });
+    });
+
+    
+
+
 });

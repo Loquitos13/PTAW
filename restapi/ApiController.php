@@ -535,7 +535,7 @@ class ApiController
                     'Encomendas.fatura',
                     'Encomendas.status_encomenda',
                     'Encomendas.data_criacao_encomenda',
-                    'Encomendas.data_rececao_encomenda',
+                    'Encomendas.data_atualizacao_encomenda',
                     'Clientes.id_cliente',
                     'Clientes.nome_cliente',
                     'Clientes.email_cliente'
@@ -709,4 +709,174 @@ class ApiController
             ->get();
     }
 
+public function getOrderById(int $orderId): ?array
+{
+    $result = $this->queryBuilder->table('Encomendas')
+        ->select([
+            'Encomendas.id_encomenda',
+            'Encomendas.preco_total_encomenda',
+            'Encomendas.fatura',
+            'Encomendas.status_encomenda',
+            'Encomendas.data_criacao_encomenda',
+            'Encomendas.data_atualizacao_encomenda',
+            'Encomendas.transportadora',
+            'Encomendas.numero_seguimento',
+            'Encomendas.notas_encomenda',
+            'Clientes.id_cliente',
+            'Clientes.nome_cliente',
+            'Clientes.email_cliente',
+            'Clientes.contacto_cliente',
+            'Clientes.morada_cliente',
+            'Clientes.nif_cliente',
+            'Clientes.data_criacao_cliente'
+        ])
+        ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
+        ->join('CarrinhoItens', 'Carrinhos.id_carrinho', '=', 'CarrinhoItens.id_carrinho')
+        ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
+        ->where('Encomendas.id_encomenda', '=', $orderId)
+        ->get();
+
+    return $result[0] ?? null;
 }
+
+/**
+ * Obter itens de uma encomenda específica
+ */
+public function getOrderItems(int $orderId): array
+{
+    try {
+        error_log("Getting order items for order ID: $orderId");
+        
+        // Debug the SQL query
+        $query = $this->queryBuilder->table('EncomendaItens')
+            ->select([
+                'EncomendaItens.id_encomenda_item',
+                'EncomendaItens.quantidade',
+                'EncomendaItens.preco',
+                'EncomendaItens.id_cor',
+                'EncomendaItens.id_dimensao',
+                'EncomendaItens.personalizado',
+                'Produtos.id_produto',
+                'Produtos.titulo_produto',
+                'Produtos.descricao_produto',
+                'Produtos.preco_produto'
+            ])
+            ->join('Produtos', 'EncomendaItens.id_produto', '=', 'Produtos.id_produto')
+            ->where('EncomendaItens.id_encomenda', '=', $orderId)
+            ->order('EncomendaItens.id_encomenda_item', 'DESC');
+        $result = $query->get();
+        error_log("Found " . count($result) . " items for order ID: $orderId");
+        return $result;
+    } catch (Exception $e) {
+        error_log("Error in getOrderItems: " . $e->getMessage());
+        error_log("Stack trace: " . $e->getTraceAsString());
+        // Return empty array instead of throwing exception to prevent complete failure
+        return [];
+    }
+}
+
+/**
+ * Obter informações de pagamento de uma encomenda
+ */
+public function getOrderPaymentInfo(int $orderId): ?array
+{
+    $result = $this->queryBuilder->table('Pagamento')
+        ->select([
+            'Pagamento.id_pagamento',
+            'Pagamento.id_metodo_pagamento',
+            'Pagamento.valor_pago',
+            'Pagamento.data_pagamento',
+        ])
+        ->where('Pagamento.id_encomenda', '=', $orderId)
+        ->get();
+
+    return $result[0] ?? null;
+}
+
+
+public function getCompleteOrderInfo(int $orderId): array
+{
+    try {
+        error_log("Getting complete order info for order ID: $orderId");
+        
+        $orderInfo = $this->getOrderById($orderId);
+        
+        if (!$orderInfo) {
+            error_log("Order not found for ID: $orderId");
+            return [
+                'success' => false,
+                'message' => 'Encomenda não encontrada'
+            ];
+        }
+
+        $orderItems = $this->getOrderItems($orderId);
+        $paymentInfo = $this->getOrderPaymentInfo($orderId);
+
+        // Calcular subtotal dos itens
+        $subtotal = 0;
+        foreach ($orderItems as $item) {
+            $subtotal += $item['quantidade'] * $item['preco'];
+        }
+
+        error_log("Successfully retrieved complete order info for ID: $orderId");
+        return [
+            'success' => true,
+            'order' => $orderInfo,
+            'items' => $orderItems,
+            'payment' => $paymentInfo,
+            'subtotal' => $subtotal,
+            'shipping_cost' => $orderInfo['preco_total_encomenda'] - $subtotal
+        ];
+
+    } catch (PDOException $e) {
+        error_log("Database error in getCompleteOrderInfo: " . $e->getMessage());
+        error_log("SQL State: " . $e->getCode());
+        error_log("Stack trace: " . $e->getTraceAsString());
+        return [
+            'success' => false,
+            'message' => 'Erro ao obter informações da encomenda',
+            'error' => $e->getMessage()
+        ];
+    } catch (Exception $e) {
+        error_log("General error in getCompleteOrderInfo: " . $e->getMessage());
+        error_log("Stack trace: " . $e->getTraceAsString());
+        return [
+            'success' => false,
+            'message' => 'Erro ao obter informações da encomenda',
+            'error' => $e->getMessage()
+        ];
+    }
+}
+
+/**
+ * Atualizar status de uma encomenda
+ */
+public function updateOrderStatus(int $orderId, string $status): array
+{
+    try {
+        $this->queryBuilder->table('Encomendas')
+            ->update([
+                'status_encomenda' => $status,
+                'data_atualizacao_encomenda' => date('Y-m-d H:i:s')
+            ])
+            ->where('id_encomenda', '=', $orderId)
+            ->execute();
+
+        return [
+            'success' => true,
+            'message' => 'Status da encomenda atualizado'
+        ];
+
+    } catch (PDOException $e) {
+        error_log("Database error in updateOrderStatus: " . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => 'Erro ao atualizar status da encomenda',
+            'error' => $e->getMessage()
+        ];
+    }
+}
+
+}
+
+?>
