@@ -94,5 +94,7 @@
     $router->add('GET', '/completeOrderInfo/$id', fn($id) => $controller->getCompleteOrderInfo($id));
 
     $router->add('PUT', '/updateOrderStatus/$id/$status', fn($id, $status) => $controller->updateOrderStatus($id, $status));
+    
+    $router->add('GET', '/getDadosClientePorCarrinho/$userID', fn($userID) => $controller->getDadosClientePorCarrinho($userID));
 
     $router->dispatch();

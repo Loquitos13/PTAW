@@ -396,6 +396,8 @@
     </footer>
     <script src="js/checkout.js"></script>
     <script src="js/checkoutA.js"></script>
+    <script src="js/ChechoutInfoCliente.js"></script>
+
 </body>
 
 </html>

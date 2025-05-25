@@ -43,6 +43,19 @@ function getUsers() {
 
     return json_decode(executeCurlRequest($ch), true);
 }
+function getDadosCliente($userID) {
+    global $apiUrl;
+
+    // Define o endpoint (ajusta conforme o nome real da rota no teu back-end)
+    $ch = curl_init("$apiUrl/getDadosClientePorCarrinho/$userID");
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json'
+    ]);
+
+    // Usa a função executeCurlRequest (supondo que já existe)
+    return json_decode(executeCurlRequest($ch), true);
+}
 
 function getUserByID($id) {
 

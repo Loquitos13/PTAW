@@ -876,7 +876,22 @@ public function updateOrderStatus(int $orderId, string $status): array
         ];
     }
 }
-
+public function getDadosClientePorCarrinho($userID): array {
+    return $this->queryBuilder->table('Carrinhos')
+        ->select([
+            'Clientes.email_cliente',
+            'Clientes.nome_cliente',
+            'Clientes.contacto_cliente',
+            'Clientes.morada_cliente',
+            'Clientes.cidade_cliente',
+            'Clientes.state_cliente',
+            'Clientes.cod_postal_cliente',
+            'Clientes.nif_cliente'
+        ])
+        ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
+        ->where('Carrinhos.id_cliente', '=', $userID)
+        ->get();
+}
 }
 
 ?>
