@@ -210,3 +210,11 @@ h1 {
 .table-borderless tbody tr:last-child {
     border-bottom: none;
 }
+
+.progress {
+    height: 6px;
+}
+
+.progress-bar {
+    border-radius: 3px;
+}

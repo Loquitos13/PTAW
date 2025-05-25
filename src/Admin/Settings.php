@@ -724,9 +724,210 @@
             </div>
           </div>
         </div>
-        <div id="billing-content" class="tab-content"></div>
+        
+        <div id="billing-content" class="tab-content">
+          <div class="row gx-4">
+            <div class="col-lg-8">
+              <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Current Plan</h5>
+                  
+                  <div class="d-flex justify-content-between align-items-center p-4 bg-light rounded">
+                    <div>
+                      <h6 class="fw-bold mb-1">Professional Plan</h6>
+                      <p class="text-muted mb-0">Perfect for growing businesses</p>
+                    </div>
+                    <div class="text-end">
+                      <div class="fs-4 fw-bold text-primary">€29.99</div>
+                      <small class="text-muted">per month</small>
+                    </div>
+                  </div>
+                  
+                  <div class="mt-4">
+                    <h6 class="fw-medium mb-3">Plan Features</h6>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <ul class="list-unstyled">
+                          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Unlimited Products</li>
+                          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Advanced Analytics</li>
+                          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Team Collaboration</li>
+                        </ul>
+                      </div>
+                      <div class="col-md-6">
+                        <ul class="list-unstyled">
+                          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Priority Support</li>
+                          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Custom Branding</li>
+                          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>API Access</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="d-flex gap-2 mt-4">
+                    <button class="btn btn-outline-secondary">Change Plan</button>
+                    <button class="btn btn-outline-danger">Cancel Subscription</button>
+                  </div>
+                </div>
+              </div>
 
-      </div>
+              <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Payment Method</h5>
+                  
+                  <div class="d-flex align-items-center p-3 border rounded mb-3">
+                    <i class="bi bi-credit-card fs-3 text-primary me-3"></i>
+                    <div class="flex-grow-1">
+                      <p class="mb-0 fw-medium">•••• •••• •••• 4242</p>
+                      <p class="text-muted small mb-0">Expires 12/2025</p>
+                    </div>
+                    <span class="badge bg-success">Primary</span>
+                  </div>
+                  
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary">
+                      <i class="bi bi-plus me-2"></i>Add Payment Method
+                    </button>
+                    <button class="btn btn-outline-secondary">
+                      <i class="bi bi-pencil me-2"></i>Edit
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Billing History</h5>
+                  
+                  <div class="table-responsive">
+                    <table class="table table-borderless">
+                      <thead>
+                        <tr class="border-bottom">
+                          <th scope="col">Date</th>
+                          <th scope="col">Description</th>
+                          <th scope="col">Amount</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>May 1, 2025</td>
+                          <td>Professional Plan - May</td>
+                          <td>€29.99</td>
+                          <td><span class="badge bg-success">Paid</span></td>
+                          <td><a href="#" class="link-primary">Download</a></td>
+                        </tr>
+                        <tr>
+                          <td>Apr 1, 2025</td>
+                          <td>Professional Plan - April</td>
+                          <td>€29.99</td>
+                          <td><span class="badge bg-success">Paid</span></td>
+                          <td><a href="#" class="link-primary">Download</a></td>
+                        </tr>
+                        <tr>
+                          <td>Mar 1, 2025</td>
+                          <td>Professional Plan - March</td>
+                          <td>€29.99</td>
+                          <td><span class="badge bg-success">Paid</span></td>
+                          <td><a href="#" class="link-primary">Download</a></td>
+                        </tr>
+                        <tr>
+                          <td>Feb 1, 2025</td>
+                          <td>Professional Plan - February</td>
+                          <td>€29.99</td>
+                          <td><span class="badge bg-success">Paid</span></td>
+                          <td><a href="#" class="link-primary">Download</a></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Billing Summary</h5>
+                  
+                  <div class="d-flex justify-content-between mb-3">
+                    <span>Current Period</span>
+                    <span class="fw-medium">May 1 - May 31</span>
+                  </div>
+                  
+                  <div class="d-flex justify-content-between mb-3">
+                    <span>Next Billing Date</span>
+                    <span class="fw-medium">June 1, 2025</span>
+                  </div>
+                  
+                  <div class="d-flex justify-content-between mb-3">
+                    <span>Amount Due</span>
+                    <span class="fw-bold text-primary">€29.99</span>
+                  </div>
+                  
+                  <hr>
+                  
+                  <div class="d-flex justify-content-between mb-3">
+                    <span>Year to Date</span>
+                    <span class="fw-medium">€149.95</span>
+                  </div>
+                  
+                  <button class="btn btn-outline-primary w-100">
+                    <i class="bi bi-receipt me-2"></i>
+                    View All Invoices
+                  </button>
+                </div>
+              </div>
+
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Usage Statistics</h5>
+                  
+                  <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="small">Products</span>
+                      <span class="small fw-medium">45 / Unlimited</span>
+                    </div>
+                    <div class="progress" style="height: 6px;">
+                      <div class="progress-bar bg-primary" style="width: 25%"></div>
+                    </div>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="small">Orders This Month</span>
+                      <span class="small fw-medium">127 / Unlimited</span>
+                    </div>
+                    <div class="progress" style="height: 6px;">
+                      <div class="progress-bar bg-success" style="width: 35%"></div>
+                    </div>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="small">Team Members</span>
+                      <span class="small fw-medium">3 / 10</span>
+                    </div>
+                    <div class="progress" style="height: 6px;">
+                      <div class="progress-bar bg-warning" style="width: 30%"></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="small">Storage Used</span>
+                      <span class="small fw-medium">2.3GB / 50GB</span>
+                    </div>
+                    <div class="progress" style="height: 6px;">
+                      <div class="progress-bar bg-info" style="width: 5%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
     </div>
   </div>
 
