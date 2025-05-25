@@ -196,4 +196,46 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    // Função para configurar os event listeners dos botões da aba de Faturação
+    function setupBillingButtons() {
+        const changePlanBtn = document.querySelector('#billing-content .card-body .btn-outline-secondary:nth-of-type(1)');
+        const cancelSubscriptionBtn = document.querySelector('#billing-content .card-body .btn-outline-danger');
+        const addPaymentMethodBtn = document.querySelector('#billing-content .card-body .btn-outline-secondary:nth-of-type(2)');
+        const editPaymentMethodBtn = document.querySelector('#billing-content .card-body .btn-outline-secondary:nth-of-type(3)');
+        const viewAllInvoicesBtn = document.querySelector('#billing-content .card-body .btn-outline-primary');
+
+        if (changePlanBtn) {
+            changePlanBtn.addEventListener('click', function() {
+                alert('A mudar de plano...');
+                // Lógica para mudar de plano
+            });
+        }
+        if (cancelSubscriptionBtn) {
+            cancelSubscriptionBtn.addEventListener('click', function() {
+                alert('A cancelar subscrição...');
+                // Lógica para cancelar subscrição
+            });
+        }
+        if (addPaymentMethodBtn) {
+            addPaymentMethodBtn.addEventListener('click', function() {
+                alert('A adicionar método de pagamento...');
+                // Lógica para adicionar método de pagamento
+            });
+        }
+        if (editPaymentMethodBtn) {
+            editPaymentMethodBtn.addEventListener('click', function() {
+                alert('A editar método de pagamento...');
+                // Lógica para editar método de pagamento
+            });
+        }
+        if (viewAllInvoicesBtn) {
+            viewAllInvoicesBtn.addEventListener('click', function() {
+                alert('A visualizar todas as faturas...');
+                // Lógica para ir para a página de faturas
+            });
+        }
+    }
+
+    // Chamar a função de setup dos botões de faturamento
+    setupBillingButtons();
 });
