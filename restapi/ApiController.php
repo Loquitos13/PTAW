@@ -80,16 +80,87 @@ class ApiController
 
     public function getProductByID(int $productID): array
     {
-        return $this->queryBuilder->table('Produtos')
+        $rows = $this->queryBuilder->table('Produtos')
             ->select([
-                'Produtos.*',
+                'Produtos.id_produto AS id_produto',
+                'Produtos.id_categoria',
+                'Produtos.data_criacao_produto',
+                'Produtos.titulo_produto',
+                'Produtos.modelo3d_produto',
+                'Produtos.descricao_produto',
+                'Produtos.imagem_principal',
+                'Produtos.preco_produto',
+                'Produtos.stock_produto',
+                'Produtos.keywords_produto',
+                'Produtos.status_produto',
                 'Cores.id_cor',
-                'Cores.nome_cor'
+                'Cores.hex_cor',
+                'Cores.nome_cor',
+                'Dimensoes.dimensao_tipo',
+                'Dimensoes.tamanho',
+                'ImagemProdutos.id_imagem_extra',
+                'ImagemProdutos.imagem_extra',
+                'ImagemProdutos.imagem_extra_2',
+                'ImagemProdutos.imagem_extra_3'
             ])
-            ->join('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
-            ->join('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
+            ->leftJoin('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
+            ->leftJoin('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
+            ->leftJoin('Dimensoes', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
+            ->leftJoin('ImagemProdutos', 'Produtos.id_produto', '=', 'ImagemProdutos.id_produto')
             ->where('Produtos.id_produto', '=', $productID)
             ->get();
+
+        if (empty($rows)) {
+            return [];
+        }
+
+        // Montar produto base
+        $produto = [
+            'id_produto' => $rows[0]['id_produto'],
+            'id_categoria' => $rows[0]['id_categoria'],
+            'data_criacao_produto' => $rows[0]['data_criacao_produto'],
+            'titulo_produto' => $rows[0]['titulo_produto'],
+            'modelo3d_produto' => $rows[0]['modelo3d_produto'],
+            'descricao_produto' => $rows[0]['descricao_produto'],
+            'imagem_principal' => $rows[0]['imagem_principal'],
+            'preco_produto' => $rows[0]['preco_produto'],
+            'stock_produto' => $rows[0]['stock_produto'],
+            'keywords_produto' => $rows[0]['keywords_produto'],
+            'status_produto' => $rows[0]['status_produto'],
+            'cores' => [],
+            'dimensoes' => [],
+            'imagens_extras' => []
+        ];
+
+        // Agrupar cores, dimensões e imagens extras
+        foreach ($rows as $row) {
+            // Cores
+            if ($row['id_cor'] && !in_array($row['id_cor'], array_column($produto['cores'], 'id_cor'))) {
+                $produto['cores'][] = [
+                    'id_cor' => $row['id_cor'],
+                    'hex_cor' => $row['hex_cor'],
+                    'nome_cor' => $row['nome_cor']
+                ];
+            }
+            // Dimensões
+            if ($row['tamanho'] && !in_array($row['tamanho'], array_column($produto['dimensoes'], 'tamanho'))) {
+                $produto['dimensoes'][] = [
+                    'dimensao_tipo' => $row['dimensao_tipo'],
+                    'tamanho' => $row['tamanho']
+                ];
+            }
+            // Imagens extras
+            if ($row['id_imagem_extra'] && !in_array($row['id_imagem_extra'], array_column($produto['imagens_extras'], 'id_imagem_extra'))) {
+                $produto['imagens_extras'][] = [
+                    'id_imagem_extra' => $row['id_imagem_extra'],
+                    'imagem_extra' => $row['imagem_extra'],
+                    'imagem_extra_2' => $row['imagem_extra_2'],
+                    'imagem_extra_3' => $row['imagem_extra_3']
+                ];
+            }
+        }
+
+        return $produto;
     }
 
     public function getProducts(): array
@@ -709,189 +780,190 @@ class ApiController
             ->get();
     }
 
-public function getOrderById(int $orderId): ?array
-{
-    $result = $this->queryBuilder->table('Encomendas')
-        ->select([
-            'Encomendas.id_encomenda',
-            'Encomendas.preco_total_encomenda',
-            'Encomendas.fatura',
-            'Encomendas.status_encomenda',
-            'Encomendas.data_criacao_encomenda',
-            'Encomendas.data_atualizacao_encomenda',
-            'Encomendas.transportadora',
-            'Encomendas.numero_seguimento',
-            'Encomendas.notas_encomenda',
-            'Clientes.id_cliente',
-            'Clientes.nome_cliente',
-            'Clientes.email_cliente',
-            'Clientes.contacto_cliente',
-            'Clientes.morada_cliente',
-            'Clientes.nif_cliente',
-            'Clientes.data_criacao_cliente'
-        ])
-        ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
-        ->join('CarrinhoItens', 'Carrinhos.id_carrinho', '=', 'CarrinhoItens.id_carrinho')
-        ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
-        ->where('Encomendas.id_encomenda', '=', $orderId)
-        ->get();
-
-    return $result[0] ?? null;
-}
-
-/**
- * Obter itens de uma encomenda específica
- */
-public function getOrderItems(int $orderId): array
-{
-    try {
-        error_log("Getting order items for order ID: $orderId");
-        
-        // Debug the SQL query
-        $query = $this->queryBuilder->table('EncomendaItens')
+    public function getOrderById(int $orderId): ?array
+    {
+        $result = $this->queryBuilder->table('Encomendas')
             ->select([
-                'EncomendaItens.id_encomenda_item',
-                'EncomendaItens.quantidade',
-                'EncomendaItens.preco',
-                'EncomendaItens.id_cor',
-                'EncomendaItens.id_dimensao',
-                'EncomendaItens.personalizado',
-                'Produtos.id_produto',
-                'Produtos.titulo_produto',
-                'Produtos.descricao_produto',
-                'Produtos.preco_produto'
+                'Encomendas.id_encomenda',
+                'Encomendas.preco_total_encomenda',
+                'Encomendas.fatura',
+                'Encomendas.status_encomenda',
+                'Encomendas.data_criacao_encomenda',
+                'Encomendas.data_atualizacao_encomenda',
+                'Encomendas.transportadora',
+                'Encomendas.numero_seguimento',
+                'Encomendas.notas_encomenda',
+                'Clientes.id_cliente',
+                'Clientes.nome_cliente',
+                'Clientes.email_cliente',
+                'Clientes.contacto_cliente',
+                'Clientes.morada_cliente',
+                'Clientes.nif_cliente',
+                'Clientes.data_criacao_cliente'
             ])
-            ->join('Produtos', 'EncomendaItens.id_produto', '=', 'Produtos.id_produto')
-            ->where('EncomendaItens.id_encomenda', '=', $orderId)
-            ->order('EncomendaItens.id_encomenda_item', 'DESC');
-        $result = $query->get();
-        error_log("Found " . count($result) . " items for order ID: $orderId");
-        return $result;
-    } catch (Exception $e) {
-        error_log("Error in getOrderItems: " . $e->getMessage());
-        error_log("Stack trace: " . $e->getTraceAsString());
-        // Return empty array instead of throwing exception to prevent complete failure
-        return [];
+            ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
+            ->join('CarrinhoItens', 'Carrinhos.id_carrinho', '=', 'CarrinhoItens.id_carrinho')
+            ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
+            ->where('Encomendas.id_encomenda', '=', $orderId)
+            ->get();
+
+        return $result[0] ?? null;
     }
-}
 
-/**
- * Obter informações de pagamento de uma encomenda
- */
-public function getOrderPaymentInfo(int $orderId): ?array
-{
-    $result = $this->queryBuilder->table('Pagamento')
-        ->select([
-            'Pagamento.id_pagamento',
-            'Pagamento.id_metodo_pagamento',
-            'Pagamento.valor_pago',
-            'Pagamento.data_pagamento',
-        ])
-        ->where('Pagamento.id_encomenda', '=', $orderId)
-        ->get();
+    /**
+     * Obter itens de uma encomenda específica
+     */
+    public function getOrderItems(int $orderId): array
+    {
+        try {
+            error_log("Getting order items for order ID: $orderId");
 
-    return $result[0] ?? null;
-}
+            // Debug the SQL query
+            $query = $this->queryBuilder->table('EncomendaItens')
+                ->select([
+                    'EncomendaItens.id_encomenda_item',
+                    'EncomendaItens.quantidade',
+                    'EncomendaItens.preco',
+                    'EncomendaItens.id_cor',
+                    'EncomendaItens.id_dimensao',
+                    'EncomendaItens.personalizado',
+                    'Produtos.id_produto',
+                    'Produtos.titulo_produto',
+                    'Produtos.descricao_produto',
+                    'Produtos.preco_produto'
+                ])
+                ->join('Produtos', 'EncomendaItens.id_produto', '=', 'Produtos.id_produto')
+                ->where('EncomendaItens.id_encomenda', '=', $orderId)
+                ->order('EncomendaItens.id_encomenda_item', 'DESC');
+            $result = $query->get();
+            error_log("Found " . count($result) . " items for order ID: $orderId");
+            return $result;
+        } catch (Exception $e) {
+            error_log("Error in getOrderItems: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
+            // Return empty array instead of throwing exception to prevent complete failure
+            return [];
+        }
+    }
+
+    /**
+     * Obter informações de pagamento de uma encomenda
+     */
+    public function getOrderPaymentInfo(int $orderId): ?array
+    {
+        $result = $this->queryBuilder->table('Pagamento')
+            ->select([
+                'Pagamento.id_pagamento',
+                'Pagamento.id_metodo_pagamento',
+                'Pagamento.valor_pago',
+                'Pagamento.data_pagamento',
+            ])
+            ->where('Pagamento.id_encomenda', '=', $orderId)
+            ->get();
+
+        return $result[0] ?? null;
+    }
 
 
-public function getCompleteOrderInfo(int $orderId): array
-{
-    try {
-        error_log("Getting complete order info for order ID: $orderId");
-        
-        $orderInfo = $this->getOrderById($orderId);
-        
-        if (!$orderInfo) {
-            error_log("Order not found for ID: $orderId");
+    public function getCompleteOrderInfo(int $orderId): array
+    {
+        try {
+            error_log("Getting complete order info for order ID: $orderId");
+
+            $orderInfo = $this->getOrderById($orderId);
+
+            if (!$orderInfo) {
+                error_log("Order not found for ID: $orderId");
+                return [
+                    'success' => false,
+                    'message' => 'Encomenda não encontrada'
+                ];
+            }
+
+            $orderItems = $this->getOrderItems($orderId);
+            $paymentInfo = $this->getOrderPaymentInfo($orderId);
+
+            // Calcular subtotal dos itens
+            $subtotal = 0;
+            foreach ($orderItems as $item) {
+                $subtotal += $item['quantidade'] * $item['preco'];
+            }
+
+            error_log("Successfully retrieved complete order info for ID: $orderId");
+            return [
+                'success' => true,
+                'order' => $orderInfo,
+                'items' => $orderItems,
+                'payment' => $paymentInfo,
+                'subtotal' => $subtotal,
+                'shipping_cost' => $orderInfo['preco_total_encomenda'] - $subtotal
+            ];
+
+        } catch (PDOException $e) {
+            error_log("Database error in getCompleteOrderInfo: " . $e->getMessage());
+            error_log("SQL State: " . $e->getCode());
+            error_log("Stack trace: " . $e->getTraceAsString());
             return [
                 'success' => false,
-                'message' => 'Encomenda não encontrada'
+                'message' => 'Erro ao obter informações da encomenda',
+                'error' => $e->getMessage()
+            ];
+        } catch (Exception $e) {
+            error_log("General error in getCompleteOrderInfo: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
+            return [
+                'success' => false,
+                'message' => 'Erro ao obter informações da encomenda',
+                'error' => $e->getMessage()
             ];
         }
+    }
 
-        $orderItems = $this->getOrderItems($orderId);
-        $paymentInfo = $this->getOrderPaymentInfo($orderId);
+    /**
+     * Atualizar status de uma encomenda
+     */
+    public function updateOrderStatus(int $orderId, string $status): array
+    {
+        try {
+            $this->queryBuilder->table('Encomendas')
+                ->update([
+                    'status_encomenda' => $status,
+                    'data_atualizacao_encomenda' => date('Y-m-d H:i:s')
+                ])
+                ->where('id_encomenda', '=', $orderId)
+                ->execute();
 
-        // Calcular subtotal dos itens
-        $subtotal = 0;
-        foreach ($orderItems as $item) {
-            $subtotal += $item['quantidade'] * $item['preco'];
+            return [
+                'success' => true,
+                'message' => 'Status da encomenda atualizado'
+            ];
+
+        } catch (PDOException $e) {
+            error_log("Database error in updateOrderStatus: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Erro ao atualizar status da encomenda',
+                'error' => $e->getMessage()
+            ];
         }
-
-        error_log("Successfully retrieved complete order info for ID: $orderId");
-        return [
-            'success' => true,
-            'order' => $orderInfo,
-            'items' => $orderItems,
-            'payment' => $paymentInfo,
-            'subtotal' => $subtotal,
-            'shipping_cost' => $orderInfo['preco_total_encomenda'] - $subtotal
-        ];
-
-    } catch (PDOException $e) {
-        error_log("Database error in getCompleteOrderInfo: " . $e->getMessage());
-        error_log("SQL State: " . $e->getCode());
-        error_log("Stack trace: " . $e->getTraceAsString());
-        return [
-            'success' => false,
-            'message' => 'Erro ao obter informações da encomenda',
-            'error' => $e->getMessage()
-        ];
-    } catch (Exception $e) {
-        error_log("General error in getCompleteOrderInfo: " . $e->getMessage());
-        error_log("Stack trace: " . $e->getTraceAsString());
-        return [
-            'success' => false,
-            'message' => 'Erro ao obter informações da encomenda',
-            'error' => $e->getMessage()
-        ];
     }
-}
-
-/**
- * Atualizar status de uma encomenda
- */
-public function updateOrderStatus(int $orderId, string $status): array
-{
-    try {
-        $this->queryBuilder->table('Encomendas')
-            ->update([
-                'status_encomenda' => $status,
-                'data_atualizacao_encomenda' => date('Y-m-d H:i:s')
+    public function getDadosClientePorCarrinho($userID): array
+    {
+        return $this->queryBuilder->table('Carrinhos')
+            ->select([
+                'Clientes.email_cliente',
+                'Clientes.nome_cliente',
+                'Clientes.contacto_cliente',
+                'Clientes.morada_cliente',
+                'Clientes.cidade_cliente',
+                'Clientes.state_cliente',
+                'Clientes.cod_postal_cliente',
+                'Clientes.nif_cliente'
             ])
-            ->where('id_encomenda', '=', $orderId)
-            ->execute();
-
-        return [
-            'success' => true,
-            'message' => 'Status da encomenda atualizado'
-        ];
-
-    } catch (PDOException $e) {
-        error_log("Database error in updateOrderStatus: " . $e->getMessage());
-        return [
-            'success' => false,
-            'message' => 'Erro ao atualizar status da encomenda',
-            'error' => $e->getMessage()
-        ];
+            ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
+            ->where('Carrinhos.id_cliente', '=', $userID)
+            ->get();
     }
-}
-public function getDadosClientePorCarrinho($userID): array {
-    return $this->queryBuilder->table('Carrinhos')
-        ->select([
-            'Clientes.email_cliente',
-            'Clientes.nome_cliente',
-            'Clientes.contacto_cliente',
-            'Clientes.morada_cliente',
-            'Clientes.cidade_cliente',
-            'Clientes.state_cliente',
-            'Clientes.cod_postal_cliente',
-            'Clientes.nif_cliente'
-        ])
-        ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
-        ->where('Carrinhos.id_cliente', '=', $userID)
-        ->get();
-}
 }
 
 ?>

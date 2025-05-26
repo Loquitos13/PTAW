@@ -62,6 +62,12 @@ class QueryBuilder
         return $this;
     }
 
+    public function leftJoin(string $table, string $column1, string $operator, string $column2): static
+    {
+        $this->query .= " LEFT JOIN $table ON $column1 $operator $column2";
+        return $this;
+    }
+
     public function limit(int $count): static
     {
 

@@ -43,9 +43,10 @@ document.querySelectorAll(".thumbnail").forEach((thumbnail) => {
 });
 
 // Define sizes dynamically
-const sizes = ["S", "M", "L", "XL", "2XL"];
+//const sizes = ["S", "M", "L", "XL", "2XL"];
 
 // Generate size buttons dynamically
+/*
 const sizeContainer = document.getElementById("idSizeOptions");
 sizes.forEach((size) => {
   const btn = document.createElement("button");
@@ -62,6 +63,7 @@ sizes.forEach((size) => {
 
   sizeContainer.appendChild(btn);
 });
+*/
 /*
 // Define colors dynamically
 const colors = ["white", "black", "blue", "red"];
@@ -822,84 +824,124 @@ document
     }
   });
 
-  const productID = window.location.search.split('=')[1];
-  console.log("Product ID:", productID);
-  
+// Obter o ID do produto da URL
+const productID = window.location.search.split('=')[1];
+console.log("Product ID:", productID);
 
-// Chamada para API para obter produtos
-// depois sera trocado por: http://~ptaw-grp4/PTAW/restapi/products
-fetch('http://localhost/PTAW/restapi/PrintGoAPI.php/productByID/' + productID)
-  .then(response => response.json())
-  .then(data => {
-    // Seleciona o container no HTML onde os produtos serão exibidos
-    const produtosLista = document.getElementById('produtos-container');
-
-    data.forEach(produto => {
+window.addEventListener('DOMContentLoaded', () => {
+  // Chamada para API para obter produtos
+  fetch('../restapi/PrintGoAPI.php/productByID/' + productID)
+    .then(response => response.json())
+    .then(data => {
+      const produto = Array.isArray(data) ? data[0] : data;
       console.log(produto);
 
-      /*
-      //cria o container principal para ficar responsivo
-      let Containner = document.createElement('div');
-      Containner.classList.add('col-lg-3', 'col-md-4', 'col-sm-6', 'mb-4');
-      // cria o card do produto
-      let card = document.createElement('div');
-      card.classList.add("card", "border-0", "shadow-sm");
-      // Cria a div que vai conter a imagem do produto
-      let divImg = document.createElement('div');
-      divImg.classList.add("position-relative");
-      // Imagem do produto
+      // pega a div onde a imagem principal do produto sera exibida
+      const bigImage = document.getElementById('bigImage');
       let img = document.createElement('img');
       img.src = produto.imagem_principal;
-      img.classList.add("card-img-top", "bg-light");
-      img.alt = produto.titulo_produto;
-      // cria uma div para conter as informações do produto
-      let divInfo = document.createElement("div");
-      divInfo.classList.add("card-body", "px-3", "pb-3");
-      // Titulo do produto
-      let tituloProduto = document.createElement("h5");
-      tituloProduto.classList.add("card-title", "fw-bold", "mb-1");
-      tituloProduto.textContent = produto.titulo_produto;
-      // Cria uma div para conter o preço e o botão
-      let divPrecoBtn = document.createElement("div");
-      divPrecoBtn.classList.add("d-flex", "justify-content-between", "align-items-center");
-      // Preço do produto
-      let precoProduto = document.createElement("span");
-      precoProduto.classList.add("fw-bold");
-      precoProduto.style.color = "#4F46E5";
-      precoProduto.textContent = produto.preco_produto + "€";
-      // Botão de comprar
-      let btnComprar = document.createElement("button");
-      btnComprar.type = "button";
-      btnComprar.classList.add("btn", "btn-primary");
-      btnComprar.style = "background-color: #4F46E5; border: 0;"
-      btnComprar.textContent = "Shop Now";
-      // Adiciona o evento de clique para redirecionar para a página do produto
-      btnComprar.addEventListener('click', function () {
-        window.location.href = "productscustom.php?id=" + produto.id_produto;
-      });
+      bigImage.appendChild(img);
 
-      card.appendChild(divImg);
-      card.appendChild(divInfo);
+      // pega a div onde as imagens extras do produto sera exibida
+      const thumbnailGallery = document.getElementById('thumbnailGallery');
 
-      divImg.appendChild(img);
+      // Novo formato: imagens_extras é um array de objetos
+      if (produto.imagens_extras && Array.isArray(produto.imagens_extras)) {
+        produto.imagens_extras.forEach((imgObj, idx) => {
+          // imagem_extra
+          if (imgObj.imagem_extra) {
+            let imgExtra = document.createElement('img');
+            imgExtra.src = imgObj.imagem_extra;
+            imgExtra.classList.add('thumbnail');
+            if (idx === 0) imgExtra.classList.add('Active');
+            imgExtra.alt = produto.titulo_produto;
+            thumbnailGallery.appendChild(imgExtra);
+          }
+          // imagem_extra_2
+          if (imgObj.imagem_extra_2) {
+            let imgExtra2 = document.createElement('img');
+            imgExtra2.src = imgObj.imagem_extra_2;
+            imgExtra2.classList.add('thumbnail');
+            imgExtra2.alt = produto.titulo_produto;
+            thumbnailGallery.appendChild(imgExtra2);
+          }
+          // imagem_extra_3
+          if (imgObj.imagem_extra_3) {
+            let imgExtra3 = document.createElement('img');
+            imgExtra3.src = imgObj.imagem_extra_3;
+            imgExtra3.classList.add('thumbnail');
+            imgExtra3.alt = produto.titulo_produto;
+            thumbnailGallery.appendChild(imgExtra3);
+          }
+        });
+      }
 
-      divInfo.appendChild(tituloProduto);
-      divInfo.appendChild(divPrecoBtn);
+      // pega o h1 onde o titulo do produto sera exibido e define o texto
+      const productTitle = document.getElementById('productName');
+      productTitle.textContent = produto.titulo_produto;
 
-      divPrecoBtn.appendChild(precoProduto);
-      divPrecoBtn.appendChild(btnComprar);
+      // pega o h3 onde a descricao do produto sera exibida e define o texto
+      const productPrice = document.getElementById('productPrice');
+      productPrice.textContent = produto.preco_produto + "€";
 
-      Containner.appendChild(card);
+      // se o produto tiver dimensão diferente de "unico", cria os botões de tamanhos
+      if (produto.dimensoes && produto.dimensoes.length > 0 && produto.dimensoes[0].tamanho != "unico") {
+        const sizeName = document.getElementById('productSize');
+        sizeName.textContent = "Size";
+        const producttSize = document.getElementById('idSizeOptions');
 
-      // Adiciona o card ao container principal
-      produtosLista.appendChild(Containner);
-      */
+        // Para cada dimensão, pode haver vários tamanhos separados por vírgula
+        produto.dimensoes.forEach((dim) => {
+          if (dim.tamanho && dim.tamanho !== "unico") {
+            const tamanhosArr = dim.tamanho.split(',').map(t => t.trim());
+            tamanhosArr.forEach((size) => {
+              const btn = document.createElement("button");
+              btn.classList.add("sizeBtn");
+              btn.textContent = size;
+              btn.onclick = function () {
+                document
+                  .querySelectorAll(".sizeBtn")
+                  .forEach((sizeBtn) => sizeBtn.classList.remove("activeSize"));
+                this.classList.add("activeSize");
+              };
+              producttSize.appendChild(btn);
+            });
+          }
+        });
+      }
+
+      const productColor = document.getElementById('idColorOptions');
+      if (produto.cores && Array.isArray(produto.cores) && produto.cores.length > 0) {
+        productColor.innerHTML = ""; // Limpa cores anteriores, se houver
+        produto.cores.forEach((cor, idx) => {
+          // Cria input radio
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.className = "btn-check";
+          input.name = "color";
+          input.id = `color-${cor.nome_cor}`;
+          input.value = cor.hex_cor;
+          input.autocomplete = "off";
+          if (idx === 0) input.checked = true; // Seleciona a primeira cor por padrão
+
+          // Cria label estilizado
+          const label = document.createElement("label");
+          label.className = "btnColor rounded-circle p-2";
+          label.setAttribute("for", `color-${cor.nome_cor}`);
+          label.style.backgroundColor = cor.hex_cor;
+          label.style.border = "2px solid #ccc";
+          label.title = cor.nome_cor;
+
+          // Adiciona ao container
+          productColor.appendChild(input);
+          productColor.appendChild(label);
+        });
+      }
+
+      const productDescription = document.getElementById('productDescriptionText');
+      productDescription.textContent = produto.descricao_produto || "No description available.";
+    })
+    .catch(error => {
+      console.error('Erro ao buscar produtos:', error);
     });
-  })
-  .catch(error => {
-    console.error('Erro ao buscar produtos:', error);
-  });
-
-
-
-
+});

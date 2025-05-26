@@ -13,7 +13,6 @@ $userId = $_SESSION['user_id'] ?? null;
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="css/productscustom.css">
-  <script src="js/productscustom.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
@@ -25,7 +24,7 @@ $userId = $_SESSION['user_id'] ?? null;
     }
     </script>
   <?php
-  $base_url = "/~ptaw-2025-gr4"; 
+  $base_url = "/~ptaw-2025-gr4";
   include 'includes/carrinho.php'; ?>
 </head>
 
@@ -261,20 +260,17 @@ $userId = $_SESSION['user_id'] ?? null;
       </button>
 
       <!-- Main Product Image -->
-      <div class="main-image">
-        <img id="bigImage" src="<?= $base_url ?>/imagens/TShirtfront.png" alt="Product Image">
+      <div class="main-image" id="bigImage">
       </div>
 
       <!-- Thumbnail Images -->
-      <div class="thumbnail-gallery">
-        <!-- It will differentiate based on Data Base -->
-        <img class="thumbnail active" src="<?= $base_url ?>/imagens/TShirtfront.png" alt="TShirt Front">
-        <img class="thumbnail" src="<?= $base_url ?>/imagens/TShirtback.png" alt="TShirt Back">
+      <div class="thumbnail-gallery" id="thumbnailGallery">
+
       </div>
     </div>
 
     <div id="productInfo" class="productInformation">
-      <h1 id="productName" class="nameOfProduct">Premium Cotton T-shirt</h1>
+      <h1 id="productName" class="nameOfProduct"></h1>
 
       <div class="starReviews">
         <svg width="150" height="30" viewBox="0 0 150 30">
@@ -300,39 +296,17 @@ $userId = $_SESSION['user_id'] ?? null;
       </div>
 
       <div id="idDivProductPrice" class="classDivProductPrice">
-        <h3 id="productPrice" class="priceOfProduct">29.99€</h3>
+        <h3 id="productPrice" class="priceOfProduct"></h3>
       </div>
 
-      <h5 id="productSize" class="sizeOfProduct">Size</h5>
-      <div id="idSizeOptions" class="sizeOptions">
+      <h5 id="productSize" class="sizeOfProduct"></h5>
+      <div id="idSizeOptions" class="sizeOptions d-flex flex-wrap">
       </div>
 
       <h5 id="productColor" class="colorOfProduct">Color</h5>
       <div class="color-selector">
         <div id="idColorOptions" class="colorOptions d-flex gap-2">
-          <input type="radio" class="btn-check" name="color" id="color-red" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-red"
-            style="background-color: red; border: 2px solid #ccc;"></label>
 
-          <input type="radio" class="btn-check" name="color" id="color-blue" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-blue"
-            style="background-color: blue; border: 2px solid #ccc;"></label>
-
-          <input type="radio" class="btn-check" name="color" id="color-green" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-green"
-            style="background-color: green; border: 2px solid #ccc;"></label>
-
-          <input type="radio" class="btn-check" name="color" id="color-orange" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-orange"
-            style="background-color: orange; border: 2px solid #ccc;"></label>
-
-          <input type="radio" class="btn-check" name="color" id="color-purple" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-purple"
-            style="background-color: purple; border: 2px solid #ccc;"></label>
-
-          <input type="radio" class="btn-check" name="color" id="color-black" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-black"
-            style="background-color: black; border: 2px solid #ccc;"></label>
         </div>
       </div>
 
@@ -347,11 +321,6 @@ $userId = $_SESSION['user_id'] ?? null;
 
       <p id="productDescription" class="descriptionTitle">Product Description</p>
       <p id="productDescriptionText" class="descriptionText">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua.
-        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
       </p>
     </div>
   </div>
@@ -535,5 +504,6 @@ $userId = $_SESSION['user_id'] ?? null;
 </body>
 
 <script type="module" src="js/productscustom.js"></script>
+
 
 </html>
