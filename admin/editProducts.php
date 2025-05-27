@@ -11,17 +11,16 @@ function executeCurlRequest($ch) {
     if (curl_errno($ch)) {
         $error = curl_error($ch);
         curl_close($ch);
-        throw new Exception("cURL Error: $error");
+        throw new Exception("CURL Error: $error");
     }
 
     curl_close($ch);
 
     json_decode($response);
-    if (json_last_error() !== JSON_ERROR_NONE) {
+    if(json_last_error() !== JSON_ERROR_NONE) {
         throw new Exception("Invalid JSON response: " . json_last_error_msg());
     }
 
-    http_response_code($httpCode);
     return $response;
 }
 
@@ -41,7 +40,7 @@ try {
     }
 
     $response = updateProductData($data);
-    echo $response;
+     echo json_encode($response);
 
 } catch (Exception $e) {
     http_response_code(400);
@@ -69,7 +68,7 @@ function updateProductData($data) {
     $response = executeCurlRequest($ch);
     $decoded = json_decode($response, true);
 
-    if (!is_array($decoded) || (isset($decoded['success']) && $decoded['success'] !== 'Product created')) {
+    if (!is_array($decoded) || (isset($decoded['success']) && $decoded['success'] !== 'Product updated')) {
         throw new Exception("Erro ao atualizar produto na API: " . ($decoded['message'] ?? 'Erro desconhecido'));
     }
 

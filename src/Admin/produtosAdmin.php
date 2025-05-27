@@ -81,54 +81,6 @@
                             </tr>
                         </thead>
                         <tbody id="productTableBody">
-                            <!--
-                            <tr>
-                                <th scope="row">Classic T-Shirt</th>
-                                <td>T-shirts</td>
-                                <td>24.99€</td>
-                                <td>234</td>
-                                <td>In Stock</td>
-                                <td>
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#editModal">
-                                        <img src="../imagens/editButton.png" alt="Edit">
-                                    </button>
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                        <img src="../imagens/deleteButton.png" alt="Delete">
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Classic Mug</th>
-                                <td>Mugs</td>
-                                <td>14.99€</td>
-                                <td>42</td>
-                                <td>Low Stock</td>
-                                <td>
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#editModal">
-                                        <img src="../imagens/editButton.png" alt="Edit">
-                                    </button>
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                        <img src="../imagens/deleteButton.png" alt="Delete">
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Hoodie</th>
-                                <td>Hoodies</td>
-                                <td>39.99€</td>
-                                <td>0</td>
-                                <td>Out of Stock</td>
-                                <td>
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#editModal">
-                                        <img src="../imagens/editButton.png" alt="Edit">
-                                    </button>
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                        <img src="../imagens/deleteButton.png" alt="Delete">
-                                    </button>
-                                </td>
-                            </tr>
-                            -->
-
                         </tbody>
                     </table>
                 </div>

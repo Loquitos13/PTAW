@@ -1,4 +1,9 @@
 <?php
+
+
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, POST");
+
 require_once '../restapi/Database.php';
 
 $apiUrl = "http://localhost/PTAW/restapi/PrintGoAPI.php";
@@ -11,17 +16,16 @@ function executeCurlRequest($ch) {
     if (curl_errno($ch)) {
         $error = curl_error($ch);
         curl_close($ch);
-        throw new Exception("cURL Error: $error");
+        throw new Exception("CURL Error: $error");
     }
 
     curl_close($ch);
 
     json_decode($response);
-    if (json_last_error() !== JSON_ERROR_NONE) {
+    if(json_last_error() !== JSON_ERROR_NONE) {
         throw new Exception("Invalid JSON response: " . json_last_error_msg());
     }
 
-    http_response_code($httpCode);
     return $response;
 }
 

@@ -11,20 +11,18 @@ function executeCurlRequest($ch) {
     if (curl_errno($ch)) {
         $error = curl_error($ch);
         curl_close($ch);
-        throw new Exception("cURL Error: $error");
+        throw new Exception("CURL Error: $error");
     }
 
     curl_close($ch);
 
     json_decode($response);
-    if (json_last_error() !== JSON_ERROR_NONE) {
+    if(json_last_error() !== JSON_ERROR_NONE) {
         throw new Exception("Invalid JSON response: " . json_last_error_msg());
     }
 
-    http_response_code($httpCode);
     return $response;
 }
-
 header('Content-Type: application/json');
 
 try {
@@ -41,7 +39,7 @@ try {
     }
 
     $response = deleteProductData($data);
-    echo $response;
+    echo json_encode($response);
 
 } catch (Exception $e) {
     http_response_code(400);
@@ -58,12 +56,12 @@ function deleteProductData($data) {
         throw new Exception("No data provided");
     }
 
-    $id = $data['id'] ?? null;
+    $id = $data['id_produto'] ?? null;
         if (!$id) {
-            throw new Exception("Missing 'id' in request data");
+            throw new Exception("Missing 'id_produto' in request data");
         }
 
-    $ch = curl_init("$apiUrl//deleteProductByID/$id");
+    $ch = curl_init("$apiUrl/deleteProductByID/$id");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
@@ -73,8 +71,8 @@ function deleteProductData($data) {
     $response = executeCurlRequest($ch);
     $decoded = json_decode($response, true);
 
-    if (!is_array($decoded) || (isset($decoded['success']) && $decoded['success'] !== 'Product created')) {
-        throw new Exception("Erro ao apagar produto na API: " . ($decoded['message'] ?? 'Erro desconhecido'));
+    if (!is_array($decoded) || (isset($decoded['success']) && $decoded['success'] !== 'Product deleted')) {
+    throw new Exception("Erro ao atualizar produto na API: " . ($decoded['message'] ?? 'Erro desconhecido'));
     }
 
     return $decoded;
