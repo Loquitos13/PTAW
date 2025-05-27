@@ -305,31 +305,31 @@
       <div class="color-selector">
         <h6>Colors</h6>
         <div id="idColorOptions" class="colorOptions d-flex gap-2">
-          <input type="radio" class="btn-check" name="color" id="color-red" value="Vermelho" autocomplete="off">
+          <input type="radio" class="btn-check" name="color" id="color-red" value="red" autocomplete="off">
           <label class="btnColor rounded-circle p-2" for="color-red"
             style="background-color: red; border: 2px solid #ccc;"></label>
 
-          <input type="radio" class="btn-check" name="color" id="color-blue" value="Azul" autocomplete="off">
+          <input type="radio" class="btn-check" name="color" id="color-blue" value="blue" autocomplete="off">
           <label class="btnColor rounded-circle p-2" for="color-blue"
             style="background-color: blue; border: 2px solid #ccc;"></label>
 
-          <input type="radio" class="btn-check" name="color" id="color-green" value="Verde" autocomplete="off">
+          <input type="radio" class="btn-check" name="color" id="color-green" value="green" autocomplete="off">
           <label class="btnColor rounded-circle p-2" for="color-green"
             style="background-color: green; border: 2px solid #ccc;"></label>
 
-          <input type="radio" class="btn-check" name="color" id="color-orange" value="Laranja" autocomplete="off">
+          <input type="radio" class="btn-check" name="color" id="color-orange" value="orange" autocomplete="off">
           <label class="btnColor rounded-circle p-2" for="color-orange"
             style="background-color: orange; border: 2px solid #ccc;"></label>
 
-          <input type="radio" class="btn-check" name="color" id="color-purple" value="Roxo" autocomplete="off">
+          <input type="radio" class="btn-check" name="color" id="color-purple" value="purple" autocomplete="off">
           <label class="btnColor rounded-circle p-2" for="color-purple"
             style="background-color: purple; border: 2px solid #ccc;"></label>
 
-          <input type="radio" class="btn-check" name="color" id="color-Preto" value="Preto" autocomplete="off">
+          <input type="radio" class="btn-check" name="color" id="color-Preto" value="black" autocomplete="off">
           <label class="btnColor rounded-circle p-2" for="color-Preto"
             style="background-color: black; border: 2px solid #ccc;"></label>
 
-          <input type="radio" class="btn-check" name="color" id="color-Branco" value="Branco" autocomplete="off">
+          <input type="radio" class="btn-check" name="color" id="color-Branco" value="white" autocomplete="off">
           <label class="btnColor rounded-circle p-2" for="color-Branco"
             style="background-color: white; border: 2px solid #ccc;"></label>
         </div>

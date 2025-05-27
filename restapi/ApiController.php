@@ -39,7 +39,11 @@ class ApiController
         $tamanho = ($tamanho === '_') ? [] : explode(',', $tamanho);
 
         $qb = $this->queryBuilder->table('Produtos')
-            ->select(['Produtos.*'])
+            ->select([
+                'Produtos.*',
+                'GROUP_CONCAT(DISTINCT Dimensoes.tamanho) AS tamanhos',
+                'GROUP_CONCAT(DISTINCT Cores.nome_cor) AS cores'
+            ])
             ->join('Categorias', 'Produtos.id_categoria', '=', 'Categorias.id_categoria')
             ->join('Dimensoes', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
             ->join('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
@@ -65,6 +69,7 @@ class ApiController
             $qb->where('Dimensoes.tamanho', 'IN', $tamanho);
         }
 
+        $qb->groupBy('Produtos.id_produto');
         $qb->order('Produtos.id_produto', 'DESC');
         return $qb->get();
     }
@@ -782,7 +787,8 @@ class ApiController
 
     //obter id da order
 
-    public function getOrderID($id): array{
+    public function getOrderID($id): array
+    {
         return $this->queryBuilder->table('Encomendas')
             ->select(['*'])
             ->where('id_encomenda', '=', $id)

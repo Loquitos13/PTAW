@@ -249,14 +249,14 @@ function buscarProdutos(filtros = {}) {
             return response.json();
         })
         .then(data => {
-            console.log("API Response Data:", data); // Log the data received from API
+            console.log("Produtos:", data); // Log the data received from API
             const produtosLista = document.getElementById('produtos-container');
             produtosLista.innerHTML = "";
             const produtos = Array.isArray(data) ? data : data.products || [];
             if (produtos.length === 0) {
                 produtosLista.innerHTML = "<p>Nenhum produto encontrado com os filtros selecionados.</p>";
             } else {
-                produtos.forEach(produto => {
+                produtos.forEach(produto => {                                        
 
                     //cria o container principal para ficar responsivo
                     let Containner = document.createElement('div');
@@ -356,9 +356,9 @@ if (applyFiltersDesktop) {
             precoMax: document.getElementById('range-max').value,
             cores: [...document.querySelectorAll('input[name="color"]:checked')].map(cb => cb.value), // Changed to cb.value
             tamanhos: [...document.querySelectorAll('input[name="size-desktop"]:checked')].map(cb => cb.value),
-        };
+        };        
         // visualizar se os filtros estão corretos
-        console.log(filtros);
+        console.log("Filtros:" + JSON.stringify(filtros));
         buscarProdutos(filtros);
     });
 }
