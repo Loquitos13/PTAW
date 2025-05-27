@@ -1,21 +1,8 @@
 <?php
 session_start();
 require_once '../restapi/Database.php';
-require_once '../restapi/QueryBuilder.php';
-require_once '../restapi/ApiController.php';
 
-// Conectar à base de dados
-try {
-    Database::connect();
-} catch (Exception $e) {
-    error_log("Erro de conexão à base de dados: " . $e->getMessage());
-    http_response_code(500);
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Erro de conexão à base de dados'
-    ]);
-    exit;
-}
+
 
 function getOrders() {
     try {

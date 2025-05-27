@@ -780,6 +780,15 @@ class ApiController
             ->get();
     }
 
+    //obter id da order
+
+    public function getOrderID($id): array{
+        return $this->queryBuilder->table('Encomendas')
+            ->select(['*'])
+            ->where('id_encomenda', '=', $id)
+            ->get();
+    }
+
     public function getOrderById(int $orderId): ?array
     {
         $result = $this->queryBuilder->table('Encomendas')
@@ -872,7 +881,7 @@ class ApiController
 
             $orderInfo = $this->getOrderById($orderId);
 
-            if (!$orderInfo) {
+            if ($orderInfo == null) {
                 error_log("Order not found for ID: $orderId");
                 return [
                     'success' => false,

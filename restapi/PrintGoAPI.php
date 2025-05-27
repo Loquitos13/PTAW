@@ -97,4 +97,6 @@
     
     $router->add('GET', '/getDadosClientePorCarrinho/$userID', fn($userID) => $controller->getDadosClientePorCarrinho($userID));
 
+    $router->add('GET' , '/getOrderID/$id' , fn($id) => $controller->getOrderID($id));
+
     $router->dispatch();

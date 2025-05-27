@@ -24,113 +24,142 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  getOrders();
+    loadOrders();
+});
 
-  async function getOrders() {
-    try {
-    console.log("Fetching orders from: ../../admin/orderEngine.php");
-    const response = await fetch("../../admin/orderEngine.php");
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Server response status:", response.status);
-      console.error("Server response headers:", Object.fromEntries([...response.headers]));
-      console.error("Server response body:", errorText);
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-      const data = await response.json();
-      const ordersTable = document.querySelector(".orders-table");
-
-      if (!ordersTable) {
-        return;
-      }
-
-      ordersTable.innerHTML = "";
-
-      if (data.status === "error") {
-        ordersTable.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Error loading orders: ${data.message}</td></tr>`;
-        return;
-      }
-
-      if (!Array.isArray(data) || data.length === 0) {
-        ordersTable.innerHTML =
-          '<tr><td colspan="7" class="text-center">No orders found</td></tr>';
-        return;
-      }
-
-      data.forEach((order) => {
-        const row = document.createElement("tr");
-
-        let statusBadgeClass = "bg-secondary";
-        const status = order.status_encomenda || "Processing";
-
-        if (status.toLowerCase() === "completed")
-          statusBadgeClass = "bg-success";
-        if (status.toLowerCase() === "pending")
-          statusBadgeClass = "bg-warning text-dark";
-        if (status.toLowerCase() === "cancelled")
-          statusBadgeClass = "bg-danger";
-
-        const isPaid = order.fatura && order.fatura.trim() !== "";
-        const paymentBadgeClass = isPaid ? "bg-primary" : "bg-danger";
-        const paymentStatus = isPaid ? "Paid" : "Unpaid";
-
-        row.innerHTML = `
-          <td><a href="order_info.php?id=${order.id_encomenda}">#${
-          order.id_encomenda
-        }</a></td>
-          <td>${order.nome_cliente || "Unknown"}</td>
-          <td>${order.data_criacao_encomenda || "N/A"}</td>
-          <td><span class="badge ${statusBadgeClass}">${status}</span></td>
-          <td><span class="badge ${paymentBadgeClass}">${paymentStatus}</span></td>
-          <td>$${order.preco_total_encomenda || "0.00"}</td>
-          <td><button class="btn btn-sm btn-outline-secondary">...</button></td>
-        `;
-
-        ordersTable.appendChild(row);
-      });
-    } catch (error) {
-      const ordersTable = document.querySelector(".orders-table");
-      if (ordersTable) {
-        ordersTable.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Failed to load orders: ${error.message}</td></tr>`;
-      }
-    }
-  }
-
-    // Assumindo que você tem uma tabela ou lista de orders
-    // Adicione event listeners aos elementos clicáveis dos orders
-    
-    // Se você tem botões ou links específicos para cada order:
-    const orderButtons = document.querySelectorAll('.order-item, .order-row, [data-order-id]');
-    
-    orderButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            // Capturar o ID do order do atributo data ou do elemento
-            const orderId = this.getAttribute('data-order-id') || 
-                           this.querySelector('[data-order-id]')?.getAttribute('data-order-id') ||
-                           this.id?.replace('order-', '');
+function loadOrders() {
+    fetch('../../admin/orderEngine.php')
+        .then(response => response.json())
+        .then(orders => {
+            const tbody = document.getElementById('orders-table-body');
+            tbody.innerHTML = '';
             
-            if (orderId) {
-                // Redirecionar para order_info.php com o ID como parâmetro
-                window.location.href = `order_info.php?id=${orderId}`;
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-order-id', order.id_encomenda);
+                row.style.cursor = 'pointer';
+                row.classList.add('order-row');
+                
+                row.innerHTML = `
+                    <td><strong>#PG-${order.id_encomenda}</strong></td>
+                    <td>${order.nome_cliente}</td>
+                    <td>€${parseFloat(order.preco_total_encomenda).toFixed(2)}</td>
+                    <td><span class="badge ${getStatusClass(order.status_encomenda)}">${order.status_encomenda}</span></td>
+                    <td>${formatDate(order.data_criacao_encomenda)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary view-order-btn" data-order-id="${order.id_encomenda}">
+                            <i class="bi bi-eye"></i> Ver
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Adicionar event listeners para as linhas clicáveis
+            addOrderClickListeners();
+        })
+        .catch(error => {
+            console.error('Erro ao carregar encomendas:', error);
+        });
+}
+
+
+function addOrderClickListeners() {
+    // Listener para linhas da tabela
+    const orderRows = document.querySelectorAll('.order-row');
+    orderRows.forEach(row => {
+        row.addEventListener('click', function(e) {
+            // Evitar clique duplo quando se clica no botão
+            if (e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
+                const orderId = this.getAttribute('data-order-id');
+                if (orderId) {
+                  getOrderId(orderId);
+                    console.log('Clique na linha - Order ID:', orderId);
+                    console.log('Caminho atual:', window.location.pathname);
+                    
+                    const targetUrl = `order_info.php?id=${orderId}`;
+                    console.log('Redirecionando para:', targetUrl);
+                    window.location.href = targetUrl;
+                }
             }
         });
-    });
+
+        function getOrderId(orderId){
+          fetch('../../admin/orderInfoEngine.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: orderId })
+          })
+          return orderId;
+        }
+
+    });   
     
-    // Se você está usando uma tabela, pode também adicionar listeners às linhas:
-    const orderRows = document.querySelectorAll('tr[data-order-id]');
-    orderRows.forEach(row => {
-        row.style.cursor = 'pointer';
-        row.addEventListener('click', function() {
+
+    // Listener para botões específicos
+    const viewButtons = document.querySelectorAll('.view-order-btn');
+    viewButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation(); // Evitar propagação do evento
             const orderId = this.getAttribute('data-order-id');
             if (orderId) {
-                window.location.href = `order_info.php?id=${orderId}`;
+                console.log('Clique no botão - Order ID:', orderId);
+                
+                const targetUrl = `order_info.php?id=${orderId}`;
+                console.log('Redirecionando para:', targetUrl);
+                
+                // Redirecionar diretamente
+                window.location.href = targetUrl;
             }
         });
     });
+}
 
+function getStatusClass(status) {
+    switch(status.toLowerCase()) {
+        case 'pendente':
+            return 'bg-warning text-dark';
+        case 'processando':
+            return 'bg-info';
+        case 'enviado':
+            return 'bg-primary';
+        case 'entregue':
+            return 'bg-success';
+        case 'cancelado':
+            return 'bg-danger';
+        default:
+            return 'bg-secondary';
+    }
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-PT') + ' ' + date.toLocaleTimeString('pt-PT', {hour: '2-digit', minute: '2-digit'});
+}
+
+// Função de debug para verificar o caminho atual
+function debugPagePath() {
+    console.log('Caminho atual:', window.location.pathname);
+    console.log('URL completa:', window.location.href);
+}
+
+// Função alternativa com caminho absoluto (se necessário)
+function redirectToOrderInfo(orderId) {
+    // Opção 1: Caminho relativo (se ambos os ficheiros estão na mesma pasta)
+    const relativePath = `order_info.php?id=${orderId}`;
     
-
-
-});
+    // Opção 2: Caminho baseado na estrutura que mencionou
+    // const absolutePath = `/src/Admin/order_info.php?id=${orderId}`;
+    
+    // Opção 3: Caminho dinâmico baseado na localização atual
+    const currentPath = window.location.pathname;
+    const basePath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+    const dynamicPath = `${basePath}/order_info.php?id=${orderId}`;
+    
+    console.log('Redirecionando para:', relativePath);
+    window.location.href = relativePath;
+}
