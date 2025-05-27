@@ -56,7 +56,7 @@ function getOrderID($id) {
 
     global $apiUrl;
 
-    $ch = curl_init("$apiUrl/getOrderID/$id");
+    $ch = curl_init("$apiUrl/orderById/$id");
 
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
 

@@ -24,7 +24,8 @@ function getStatusBadge($status)
 // Função para formatar data com melhor tratamento de timezone
 function formatDate($date)
 {
-  if (empty($date)) return 'N/A';
+  if (empty($date))
+    return 'N/A';
 
   try {
     $dateTime = new DateTime($date);
@@ -37,7 +38,7 @@ function formatDate($date)
 // Função para formatar moeda
 function formatCurrency($amount)
 {
-  return '€' . number_format((float)$amount, 2, ',', '.');
+  return '€' . number_format((float) $amount, 2, ',', '.');
 }
 
 // Função para obter ícone do método de pagamento
@@ -57,188 +58,295 @@ function getPaymentIcon($method)
 ?>
 
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Encomenda #PG-<?php echo $_GET['id']; ?> | Admin</title>
+  <title>Orders</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/Orders.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <style>
+  <script src="js/OrderInfo.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
+</head>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    align-items: center;
+    background-color: #f8f9fa;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    align-items: center;
+  }
+
+  #menu-mobile {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80%;
+    height: 100%;
+    background-color: white;
+    transform: translateX(-10%);
+    transition: transform 2000ms ease;
+    overflow: hidden;
+    z-index: 999;
+    flex-direction: column-reverse;
+    margin-top: 0;
+    justify-content: flex-end;
+    gap: 20px;
+    align-items: center;
+    padding-top: 100px;
+  }
+
+  .fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  #menu-mobile.open {
+    display: flex;
+    transform: translateX(0);
+  }
+
+  #menu-mobile a {
+    color: #4F46E5;
+    text-decoration: none;
+    font-size: 1.5rem;
+    margin: 15px 0;
+  }
+
+  #menu-toggle {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: black;
+    cursor: pointer;
+  }
+
+  #logo-header-mobile {
+    display: none;
+    background: none;
+    border: none;
+  }
+
+  .order-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+  }
+
+  .card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: box-shadow 0.15s ease-in-out;
+  }
+
+  .card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 800px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .close-button {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .close-button:hover {
+    color: #000;
+  }
+
+  .fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .status-timeline {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
+  }
+
+  .timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
+  }
+
+  .timeline-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background-color: #e9ecef;
+    z-index: -1;
+  }
+
+  .timeline-step.active::after {
+    background-color: #28a745;
+  }
+
+  .timeline-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-step.active .timeline-icon {
+    background-color: #28a745;
+    color: white;
+  }
+
+  @media (max-width: 1200px) {
     body {
-      margin: 0;
-      padding: 0;
-      overflow: auto;
-      align-items: center;
-      background-color: #f8f9fa;
-    }
-
-    .order-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 2rem 0;
-      margin-bottom: 2rem;
-    }
-
-    .card {
-      border: none;
-      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-      transition: box-shadow 0.15s ease-in-out;
-    }
-
-    .card:hover {
-      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      padding-top: 60px;
-      left: 0;
-      top: 0;
       width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
+      padding-top: 70px;
     }
-
-    .modal-content {
-      background-color: #fff;
-      margin: auto;
-      padding: 20px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 800px;
-      position: relative;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .close-button {
-      color: #aaa;
-      position: absolute;
-      top: 15px;
-      right: 25px;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-
-    .close-button:hover {
-      color: #000;
-    }
-
-    .fixed-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background-color: white;
-      z-index: 999;
+    .fixed-header{
       display: flex;
       align-items: center;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .product-image {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 8px;
+    .header-desktop {
+      display: none;
+    }
+
+    #a-logo-header-mobile {
+      display: flex;
+      width: max-content;
+      justify-content: center;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      width: 100%;
+
+    }
+
+    #logo-header-mobile {
+      display: block;
+      width: 100px;
+      height: auto;
+      margin: 0 auto;
+    }
+
+    #menu-toggle {
+      display: block;
+      align-self: center;
+    }
+
+    
+  }
+
+  @media (max-width: 768px) {
+    .order-header {
+      padding: 1rem 0;
     }
 
     .status-timeline {
-      display: flex;
-      justify-content: space-between;
-      margin: 1rem 0;
+      flex-wrap: wrap;
     }
 
     .timeline-step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      flex: 1;
+      flex-basis: 50%;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
     }
 
-    .timeline-step:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      top: 15px;
-      left: 50%;
-      width: 100%;
-      height: 2px;
-      background-color: #e9ecef;
-      z-index: -1;
+    100% {
+      transform: rotate(360deg);
     }
-
-    .timeline-step.active::after {
-      background-color: #28a745;
-    }
-
-    .timeline-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background-color: #e9ecef;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 0.5rem;
-    }
-
-    .timeline-step.active .timeline-icon {
-      background-color: #28a745;
-      color: white;
-    }
-
-    @media (max-width: 1200px) {
-      body {
-        width: 100%;
-        padding-top: 70px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .order-header {
-        padding: 1rem 0;
-      }
-
-      .status-timeline {
-        flex-wrap: wrap;
-      }
-
-      .timeline-step {
-        flex-basis: 50%;
-        margin-bottom: 1rem;
-      }
-    }
-
-    .loading-spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #3498db;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-  </style>
-</head>
+  }
+</style>
 
 <body>
   <div class="d-flex">
@@ -254,13 +362,12 @@ function getPaymentIcon($method)
         <div class="container">
           <div class="d-flex justify-content-between align-items-center">
             <div>
-              <h2 class="mb-1">Encomenda #PG-<?php echo htmlspecialchars($order['id_encomenda']); ?></h2>
-              <p class="mb-0 opacity-75">
-                Criada em <?php echo formatDate($order['data_criacao_encomenda']); ?>
+              <h2 class="mb-1">Encomenda #PG-<?php echo $_GET['id']; ?></h2>
+              <p class="mb-0 opacity-75" data-creation-date>
+
               </p>
             </div>
-            <div class="text-end">
-              <?php echo getStatusBadge($order['status_encomenda']); ?>
+            <div class="text-end" data-order-status>
               <div class="mt-2">
                 <a href="orders.php" class="btn btn-light">
                   <i class="bi bi-arrow-left"></i> Voltar às Encomendas
@@ -281,15 +388,18 @@ function getPaymentIcon($method)
                 <div class="timeline-icon"><i class="bi bi-clock"></i></div>
                 <small>Pendente</small>
               </div>
-              <div class="timeline-step <?php echo in_array(strtolower($order['status_encomenda']), ['processando', 'enviado', 'entregue']) ? 'active' : ''; ?>">
+              <div
+                class="timeline-step <?php echo in_array(strtolower($order['status_encomenda']), ['processando', 'enviado', 'entregue']) ? 'active' : ''; ?>">
                 <div class="timeline-icon"><i class="bi bi-gear"></i></div>
                 <small>Processando</small>
               </div>
-              <div class="timeline-step <?php echo in_array(strtolower($order['status_encomenda']), ['enviado', 'entregue']) ? 'active' : ''; ?>">
+              <div
+                class="timeline-step <?php echo in_array(strtolower($order['status_encomenda']), ['enviado', 'entregue']) ? 'active' : ''; ?>">
                 <div class="timeline-icon"><i class="bi bi-truck"></i></div>
                 <small>Enviado</small>
               </div>
-              <div class="timeline-step <?php echo strtolower($order['status_encomenda']) === 'entregue' ? 'active' : ''; ?>">
+              <div
+                class="timeline-step <?php echo strtolower($order['status_encomenda']) === 'entregue' ? 'active' : ''; ?>">
                 <div class="timeline-icon"><i class="bi bi-check2"></i></div>
                 <small>Entregue</small>
               </div>
@@ -315,18 +425,18 @@ function getPaymentIcon($method)
               <div class="card-body">
                 <div class="row">
                   <div class="col-md-6">
-                    <p><strong>Status:</strong> <?php echo getStatusBadge($order['status_encomenda']); ?></p>
-                    <p><strong>Data de Criação:</strong> <?php echo formatDate($order['data_criacao_encomenda']); ?></p>
-                    <?php if ($order['data_atualizacao_encomenda']): ?>
-                      <p><strong>Última Atualização:</strong> <?php echo formatDate($order['data_atualizacao_encomenda']); ?></p>
-                    <?php endif; ?>
+                    <p data-order-status></p>
+                    <p data-creation-date-card></p>
+                    <p data-update-date></p>
                   </div>
                   <div class="col-md-6">
                     <p><strong>Origem da Compra:</strong> <span class="badge bg-info">Loja Online</span></p>
                     <?php if (!empty($order['transportadora'])): ?>
                       <p><strong>Transportadora:</strong> <?php echo htmlspecialchars($order['transportadora']); ?></p>
                     <?php endif; ?>
-                    <p><strong>Total:</strong> <span class="h5 text-success"><?php echo formatCurrency($order['preco_total_encomenda']); ?></span></p>
+                    <p><strong>Total:</strong> <span
+                        class="h5 text-success" data-order-total></span>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -352,46 +462,8 @@ function getPaymentIcon($method)
                         <th class="text-end">Preço</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <?php foreach ($items as $item): ?>
-                        <tr>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <?php if (!empty($item['imagem_principal'])): ?>
-                                <img src="<?php echo htmlspecialchars($item['imagem_principal']); ?>"
-                                  alt="<?php echo htmlspecialchars($item['titulo_produto']); ?>"
-                                  class="product-image me-3">
-                              <?php else: ?>
-                                <div class="product-image me-3 bg-light d-flex align-items-center justify-content-center">
-                                  <i class="bi bi-image text-muted"></i>
-                                </div>
-                              <?php endif; ?>
-                              <div>
-                                <strong><?php echo htmlspecialchars($item['titulo_produto']); ?></strong>
-                                <?php if (!empty($item['personalizacao'])): ?>
-                                  <br><small class="text-primary"><i class="bi bi-star"></i> <?php echo htmlspecialchars($item['personalizacao']); ?></small>
-                                <?php endif; ?>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <?php if (!empty($item['tamanho'])): ?>
-                              <span class="badge bg-secondary"><?php echo htmlspecialchars($item['tamanho']); ?></span>
-                            <?php else: ?>
-                              <span class="text-muted">N/A</span>
-                            <?php endif; ?>
-                          </td>
-                          <td>
-                            <?php if (!empty($item['cor'])): ?>
-                              <span class="badge bg-secondary"><?php echo htmlspecialchars($item['cor']); ?></span>
-                            <?php else: ?>
-                              <span class="text-muted">N/A</span>
-                            <?php endif; ?>
-                          </td>
-                          <td><span class="badge bg-light text-dark"><?php echo (int)$item['quantidade']; ?></span></td>
-                          <td class="text-end"><?php echo formatCurrency($item['preco']); ?></td>
-                        </tr>
-                      <?php endforeach; ?>
+                    <tbody class="table-tbody">
+                      
                     </tbody>
                   </table>
                 </div>
@@ -409,7 +481,7 @@ function getPaymentIcon($method)
                     <table class="table table-sm">
                       <tr>
                         <td><strong>Subtotal:</strong></td>
-                        <td class="text-end"><?php echo formatCurrency($subtotal); ?></td>
+                        <td class="text-end" data-subtotal></td>
                       </tr>
                       <tr>
                         <td><strong>Envio:</strong></td>
@@ -419,7 +491,8 @@ function getPaymentIcon($method)
                       </tr>
                       <tr class="table-active">
                         <td><strong>Total:</strong></td>
-                        <td class="text-end"><strong><?php echo formatCurrency($order['preco_total_encomenda']); ?></strong></td>
+                        <td class="text-end">
+                          <strong data-financial-total></strong></td>
                       </tr>
                     </table>
                   </div>
@@ -432,12 +505,14 @@ function getPaymentIcon($method)
                         <strong><?php echo htmlspecialchars($payment['metodo_pagamento']); ?></strong>
                       </p>
                       <p><strong>Status:</strong>
-                        <span class="badge <?php echo strtolower($payment['status_pagamento']) === 'pago' ? 'bg-success' : 'bg-warning'; ?>">
+                        <span
+                          class="badge <?php echo strtolower($payment['status_pagamento']) === 'pago' ? 'bg-success' : 'bg-warning'; ?>">
                           <?php echo ucfirst($payment['status_pagamento']); ?>
                         </span>
                       </p>
                       <?php if (!empty($payment['referencia_pagamento'])): ?>
-                        <p><strong>Referência:</strong> <code><?php echo htmlspecialchars($payment['referencia_pagamento']); ?></code></p>
+                        <p><strong>Referência:</strong>
+                          <code><?php echo htmlspecialchars($payment['referencia_pagamento']); ?></code></p>
                       <?php endif; ?>
                     </div>
                   <?php endif; ?>
@@ -454,12 +529,14 @@ function getPaymentIcon($method)
               </div>
               <div class="card-body">
                 <div class="d-flex align-items-center mb-3">
-                  <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                  <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3"
+                    style="width: 50px; height: 50px;">
                     <i class="bi bi-person text-white"></i>
                   </div>
                   <div>
-                    <h6 class="mb-1"><?php echo htmlspecialchars($order['nome_cliente']); ?></h6>
-                    <small class="text-muted">Cliente desde <?php echo date('M Y', strtotime($order['data_criacao_cliente'])); ?></small>
+                    <h6 class="mb-1" data-customer-name></h6>
+                    <small class="text-muted" data-member-since>
+                      </small>
                   </div>
                 </div>
               </div>
@@ -473,15 +550,17 @@ function getPaymentIcon($method)
                 </button>
               </div>
               <div class="card-body">
-                <p><strong>Email:</strong><br>
-                  <a href="mailto:<?php echo htmlspecialchars($order['email_cliente']); ?>" class="text-decoration-none">
-                    <?php echo htmlspecialchars($order['email_cliente']); ?>
+                <p data-customer-email><strong>Email:</strong><br>
+                  <a href="mailto: data-customer-email"
+                    class="text-decoration-none" >
+                    
                   </a>
                 </p>
 
                 <?php if (!empty($order['contacto_cliente'])): ?>
                   <p><strong>Telefone:</strong><br>
-                    <a href="tel:<?php echo htmlspecialchars($order['contacto_cliente']); ?>" class="text-decoration-none">
+                    <a href="tel:<?php echo htmlspecialchars($order['contacto_cliente']); ?>"
+                      class="text-decoration-none">
                       <?php echo htmlspecialchars($order['contacto_cliente']); ?>
                     </a>
                   </p>
@@ -499,7 +578,8 @@ function getPaymentIcon($method)
                   <p><strong>NIF:</strong> <?php echo htmlspecialchars($order['nif_cliente']); ?></p>
                 <?php endif; ?>
 
-                <p><small class="text-muted"><i class="bi bi-info-circle"></i> Faturação igual à morada de envio</small></p>
+                <p><small class="text-muted"><i class="bi bi-info-circle"></i> Faturação igual à morada de envio</small>
+                </p>
               </div>
             </div>
 
@@ -508,14 +588,10 @@ function getPaymentIcon($method)
                 <h6 class="mb-0"><i class="bi bi-chat-text"></i> Notas</h6>
               </div>
               <div class="card-body">
-                <?php if (!empty($order['notas_encomenda'])): ?>
-                  <div class="alert alert-info">
+                  <div class="alert alert-info" data-order-notes>
                     <i class="bi bi-info-circle me-2"></i>
-                    <?php echo nl2br(htmlspecialchars($order['notas_encomenda'])); ?>
+                    <p class="text-muted mb-0" data-order-notes></p>
                   </div>
-                <?php else: ?>
-                  <p class="text-muted mb-0"><i class="bi bi-chat-text me-2"></i>Sem notas do cliente</p>
-                <?php endif; ?>
               </div>
             </div>
           </div>
@@ -538,12 +614,12 @@ function getPaymentIcon($method)
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const modal = document.getElementById('processModal');
       const closeBtn = document.querySelector('.close-button');
       const modalContent = document.getElementById('modal-body-content');
 
-      document.getElementById('button-process').addEventListener('click', function() {
+      document.getElementById('button-process').addEventListener('click', function () {
         modal.style.display = 'block';
 
         // Reset modal content
@@ -575,18 +651,18 @@ function getPaymentIcon($method)
           });
       });
 
-      closeBtn.addEventListener('click', function() {
+      closeBtn.addEventListener('click', function () {
         modal.style.display = 'none';
       });
 
-      window.addEventListener('click', function(event) {
+      window.addEventListener('click', function (event) {
         if (event.target === modal) {
           modal.style.display = 'none';
         }
       });
 
       // Close modal with Escape key
-      document.addEventListener('keydown', function(event) {
+      document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape' && modal.style.display === 'block') {
           modal.style.display = 'none';
         }
@@ -609,7 +685,7 @@ function getPaymentIcon($method)
     }
 
     // Auto-refresh order status every 30 seconds
-    setInterval(function() {
+    setInterval(function () {
       // You can implement auto-refresh logic here if needed
     }, 30000);
 

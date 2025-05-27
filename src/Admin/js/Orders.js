@@ -24,102 +24,132 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-    loadOrders();
+  loadOrders();
 });
 
-
 function loadOrders() {
-    fetch('../../admin/orderEngine.php')
-        .then(response => response.json())
-        .then(orders => {
-            const tbody = document.getElementById('orders-table-body');
-            tbody.innerHTML = '';
+    // Fetch all orders using the API
+    fetch('../../admin/orderEngine.php', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Handle the response based on your API structure
+        let orders;
+        if (data.status === 'success' && data.data) {
+            orders = data.data;
+        } else if (Array.isArray(data)) {
+            orders = data;
+        } else {
+            throw new Error('Invalid response format');
+        }
+
+        const tbody = document.getElementById('orders-table-body');
+        if (!tbody) {
+            console.error('Table body element not found');
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        
+        if (!Array.isArray(orders) || orders.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        <i class="bi bi-inbox"></i> Nenhuma encomenda encontrada
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        orders.forEach(order => {
+            const row = document.createElement('tr');
+            row.setAttribute('data-order-id', order.id_encomenda || order.id);
+            row.style.cursor = 'pointer';
+            row.classList.add('order-row');
             
-            orders.forEach(order => {
-                const row = document.createElement('tr');
-                row.setAttribute('data-order-id', order.id_encomenda);
-                row.style.cursor = 'pointer';
-                row.classList.add('order-row');
-                
-                row.innerHTML = `
-                    <td><strong>#PG-${order.id_encomenda}</strong></td>
-                    <td>${order.nome_cliente}</td>
-                    <td>€${parseFloat(order.preco_total_encomenda).toFixed(2)}</td>
-                    <td><span class="badge ${getStatusClass(order.status_encomenda)}">${order.status_encomenda}</span></td>
-                    <td>${formatDate(order.data_criacao_encomenda)}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary view-order-btn" data-order-id="${order.id_encomenda}">
-                            <i class="bi bi-eye"></i> Ver
+            row.innerHTML = `
+                <td><strong>#PG-${order.id_encomenda || order.id}</strong></td>
+                <td>${order.nome_cliente || order.customer_name || 'N/A'}</td>
+                <td>€${parseFloat(order.preco_total_encomenda || order.total_price || 0).toFixed(2)}</td>
+                <td><span class="badge ${getStatusClass(order.status_encomenda || order.status)}">${order.status_encomenda || order.status}</span></td>
+                <td>${formatDate(order.data_criacao_encomenda || order.created_at)}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary view-order-btn" data-order-id="${order.id_encomenda || order.id}">
+                        <i class="bi bi-eye"></i> Ver
+                    </button>
+                </td>
+            `;
+            
+            tbody.appendChild(row);
+        });
+        
+        // Add event listeners for clickable rows
+        addOrderClickListeners();
+    })
+    .catch(error => {
+        console.error('Erro ao carregar encomendas:', error);
+        
+        const tbody = document.getElementById('orders-table-body');
+        if (tbody) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center text-danger py-4">
+                        <i class="bi bi-exclamation-triangle"></i> 
+                        Erro ao carregar encomendas: ${error.message}
+                        <br>
+                        <button class="btn btn-sm btn-outline-primary mt-2" onclick="loadOrders()">
+                            <i class="bi bi-arrow-clockwise"></i> Tentar novamente
                         </button>
                     </td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-            
-            // Adicionar event listeners para as linhas clicáveis
-            addOrderClickListeners();
-        })
-        .catch(error => {
-            console.error('Erro ao carregar encomendas:', error);
-        });
+                </tr>
+            `;
+        }
+    });
 }
 
-
 function addOrderClickListeners() {
-    // Listener para linhas da tabela
+    // Listener for table rows
     const orderRows = document.querySelectorAll('.order-row');
     orderRows.forEach(row => {
         row.addEventListener('click', function(e) {
-            // Evitar clique duplo quando se clica no botão
+            // Avoid double click when clicking on button
             if (e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
                 const orderId = this.getAttribute('data-order-id');
                 if (orderId) {
-                  getOrderId(orderId);
-                    console.log('Clique na linha - Order ID:', orderId);
-                    console.log('Caminho atual:', window.location.pathname);
-                    
-                    const targetUrl = `order_info.php?id=${orderId}`;
-                    console.log('Redirecionando para:', targetUrl);
-                    window.location.href = targetUrl;
+                    console.log('Row click - Order ID:', orderId);
+                    redirectToOrderInfo(orderId);
                 }
             }
         });
-
-        function getOrderId(orderId){
-          fetch('../../admin/orderInfoEngine.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: orderId })
-          })
-          return orderId;
-        }
-
     });   
     
-
-    // Listener para botões específicos
+    // Listener for specific buttons
     const viewButtons = document.querySelectorAll('.view-order-btn');
     viewButtons.forEach(button => {
         button.addEventListener('click', function(e) {
-            e.stopPropagation(); // Evitar propagação do evento
+            e.stopPropagation(); // Prevent event propagation
             const orderId = this.getAttribute('data-order-id');
             if (orderId) {
-                console.log('Clique no botão - Order ID:', orderId);
-                
-                const targetUrl = `order_info.php?id=${orderId}`;
-                console.log('Redirecionando para:', targetUrl);
-                
-                // Redirecionar diretamente
-                window.location.href = targetUrl;
+                console.log('Button click - Order ID:', orderId);
+                redirectToOrderInfo(orderId);
             }
         });
     });
 }
 
 function getStatusClass(status) {
+    if (!status) return 'bg-secondary';
+    
     switch(status.toLowerCase()) {
         case 'pendente':
             return 'bg-warning text-dark';
@@ -137,29 +167,66 @@ function getStatusClass(status) {
 }
 
 function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-PT') + ' ' + date.toLocaleTimeString('pt-PT', {hour: '2-digit', minute: '2-digit'});
+    if (!dateString) return 'N/A';
+    
+    try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) {
+            return 'Data inválida';
+        }
+        return date.toLocaleDateString('pt-PT') + ' ' + date.toLocaleTimeString('pt-PT', {hour: '2-digit', minute: '2-digit'});
+    } catch (error) {
+        console.error('Error formatting date:', error);
+        return 'Data inválida';
+    }
 }
 
-// Função de debug para verificar o caminho atual
-function debugPagePath() {
-    console.log('Caminho atual:', window.location.pathname);
-    console.log('URL completa:', window.location.href);
-}
-
-// Função alternativa com caminho absoluto (se necessário)
 function redirectToOrderInfo(orderId) {
-    // Opção 1: Caminho relativo (se ambos os ficheiros estão na mesma pasta)
-    const relativePath = `order_info.php?id=${orderId}`;
+    if (!orderId) {
+        console.error('Order ID is required');
+        return;
+    }
     
-    // Opção 2: Caminho baseado na estrutura que mencionou
-    // const absolutePath = `/src/Admin/order_info.php?id=${orderId}`;
+    // Store the order ID for the next page if needed
+    sessionStorage.setItem('selectedOrderId', orderId);
     
-    // Opção 3: Caminho dinâmico baseado na localização atual
-    const currentPath = window.location.pathname;
-    const basePath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-    const dynamicPath = `${basePath}/order_info.php?id=${orderId}`;
+    const targetUrl = `order_info.php?id=${orderId}`;
+    console.log('Redirecting to:', targetUrl);
+    window.location.href = targetUrl;
+}
+
+// Function to get order details (called when row is clicked)
+function getOrderId(orderId) {
+    if (!orderId) return null;
     
-    console.log('Redirecionando para:', relativePath);
-    window.location.href = relativePath;
+    // This function can be used to fetch additional order details if needed
+    // For now, we'll just return the orderId
+    fetch('../../admin/orderInfoEngine.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: orderId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Order details fetched:', data);
+    })
+    .catch(error => {
+        console.error('Error fetching order details:', error);
+    });
+    
+    return orderId;
+}
+
+// Debug function to check current page path
+function debugPagePath() {
+    console.log('Current path:', window.location.pathname);
+    console.log('Full URL:', window.location.href);
+}
+
+// Utility function to refresh orders list
+function refreshOrders() {
+    console.log('Refreshing orders list...');
+    loadOrders();
 }

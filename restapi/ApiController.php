@@ -818,6 +818,7 @@ class ApiController
             ])
             ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
             ->join('CarrinhoItens', 'Carrinhos.id_carrinho', '=', 'CarrinhoItens.id_carrinho')
+            ->join('Produtos', 'CarrinhoItens.id_produto', '=', 'Produtos.id_produto')
             ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
             ->where('Encomendas.id_encomenda', '=', $orderId)
             ->get();
