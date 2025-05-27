@@ -21,7 +21,9 @@ document.addEventListener("DOMContentLoaded", function() {
     
     if (orderId) {
         getOrderInfo(orderId);
+        getOrderItems(orderId);
     }
+
 });
 
 function getOrderInfo(orderId) {
@@ -51,6 +53,35 @@ function getOrderInfo(orderId) {
     .catch(error => {
         console.error('Error fetching order info:', error);
         showErrorMessage('Erro ao carregar informações da encomenda: ' + error.message);
+    });
+}
+
+function getOrderItems(orderId) {
+    fetch('../../admin/orderItemsEngine.php', {
+        method: 'POST',  // Changed from GET to POST
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            id: orderId
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.status === 'success') {
+            updateOrderItems(data.message.items || []);
+        } else {
+            throw new Error(data.message || 'Failed to fetch order items');
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching order items:', error);
+        showErrorMessage('Erro ao carregar itens da encomenda: ' + error.message);
     });
 }
 
@@ -195,8 +226,8 @@ function updatePaymentInfo(orderData) {
         const paymentMethodEl = document.querySelector('[data-payment-method]');
         if (paymentMethodEl) {
             paymentMethodEl.innerHTML = `
-                <i class="${getPaymentIcon(orderData.payment.metodo_pagamento)} me-2"></i>
-                <strong>${orderData.payment.metodo_pagamento}</strong>
+                <i class="${getPaymentIcon(orderData.payment.id_metodo_pagamento)} me-2"></i>
+                <strong>${orderData.payment.id_metodo_pagamento}</strong>
             `;
         }
 
@@ -211,8 +242,8 @@ function updatePaymentInfo(orderData) {
         }
 
         const paymentRefEl = document.querySelector('[data-payment-reference]');
-        if (paymentRefEl && orderData.payment.referencia_pagamento) {
-            paymentRefEl.innerHTML = `<code>${orderData.payment.referencia_pagamento}</code>`;
+        if (paymentRefEl && orderData.payment.id_pagamento) {
+            paymentRefEl.innerHTML = `<code>${orderData.payment.id_pagamento}</code>`;
         }
     }
 }
@@ -224,7 +255,7 @@ function updateOrderItems(items) {
     };
 
     itemsTableBody.innerHTML = '';
-
+    console.log('Order Items:', items);
     items.forEach(item => {
         const row = document.createElement('tr');
         row.innerHTML = `

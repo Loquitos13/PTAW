@@ -848,7 +848,10 @@ class ApiController
                     'Produtos.descricao_produto',
                     'Produtos.preco_produto'
                 ])
+                ->join('Encomendas', 'EncomendaItens.id_encomenda', '=', 'Encomendas.id_encomenda')
                 ->join('Produtos', 'EncomendaItens.id_produto', '=', 'Produtos.id_produto')
+                ->join('Dimensoes', 'EncomendaItens.id_dimensao', '=', 'Dimensoes.id_dimensao')
+                ->join('Cores', 'EncomendaItens.id_cor', '=', 'Cores.id_cor')
                 ->where('EncomendaItens.id_encomenda', '=', $orderId)
                 ->order('EncomendaItens.id_encomenda_item', 'DESC');
             $result = $query->get();
@@ -881,63 +884,7 @@ class ApiController
     }
 
 
-    public function getCompleteOrderInfo(int $orderId): array
-    {
-        try {
-            error_log("Getting complete order info for order ID: $orderId");
-
-            $orderInfo = $this->getOrderById($orderId);
-
-            if ($orderInfo == null) {
-                error_log("Order not found for ID: $orderId");
-                return [
-                    'success' => false,
-                    'message' => 'Encomenda não encontrada'
-                ];
-            }
-
-            $orderItems = $this->getOrderItems($orderId);
-            $paymentInfo = $this->getOrderPaymentInfo($orderId);
-
-            // Calcular subtotal dos itens
-            $subtotal = 0;
-            foreach ($orderItems as $item) {
-                $subtotal += $item['quantidade'] * $item['preco'];
-            }
-
-            error_log("Successfully retrieved complete order info for ID: $orderId");
-            return [
-                'success' => true,
-                'order' => $orderInfo,
-                'items' => $orderItems,
-                'payment' => $paymentInfo,
-                'subtotal' => $subtotal,
-                'shipping_cost' => $orderInfo['preco_total_encomenda'] - $subtotal
-            ];
-
-        } catch (PDOException $e) {
-            error_log("Database error in getCompleteOrderInfo: " . $e->getMessage());
-            error_log("SQL State: " . $e->getCode());
-            error_log("Stack trace: " . $e->getTraceAsString());
-            return [
-                'success' => false,
-                'message' => 'Erro ao obter informações da encomenda',
-                'error' => $e->getMessage()
-            ];
-        } catch (Exception $e) {
-            error_log("General error in getCompleteOrderInfo: " . $e->getMessage());
-            error_log("Stack trace: " . $e->getTraceAsString());
-            return [
-                'success' => false,
-                'message' => 'Erro ao obter informações da encomenda',
-                'error' => $e->getMessage()
-            ];
-        }
-    }
-
-    /**
-     * Atualizar status de uma encomenda
-     */
+    
     public function updateOrderStatus(int $orderId, string $status): array
     {
         try {

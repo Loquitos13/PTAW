@@ -497,25 +497,21 @@ function getPaymentIcon($method)
                     </table>
                   </div>
 
-                  <?php if ($payment): ?>
                     <div class="col-md-6">
                       <h6>Informações de Pagamento</h6>
-                      <p>
-                        <i class="<?php echo getPaymentIcon($payment['metodo_pagamento']); ?> me-2"></i>
-                        <strong><?php echo htmlspecialchars($payment['metodo_pagamento']); ?></strong>
-                      </p>
+                      <div data-payment-method>
+                        <i class="me-2"></i>
+                        <p ></p>
+                      </div>
                       <p><strong>Status:</strong>
                         <span
                           class="badge <?php echo strtolower($payment['status_pagamento']) === 'pago' ? 'bg-success' : 'bg-warning'; ?>">
                           <?php echo ucfirst($payment['status_pagamento']); ?>
                         </span>
                       </p>
-                      <?php if (!empty($payment['referencia_pagamento'])): ?>
-                        <p><strong>Referência:</strong>
-                          <code><?php echo htmlspecialchars($payment['referencia_pagamento']); ?></code></p>
-                      <?php endif; ?>
+                        <p data-payment-reference>
+                          </p>
                     </div>
-                  <?php endif; ?>
                 </div>
               </div>
             </div>

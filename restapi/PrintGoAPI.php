@@ -91,7 +91,7 @@
 
     $router->add('GET', '/orderPaymentInfo/$id', fn($id) => $controller->getOrderPaymentInfo($id));
 
-    $router->add('GET', '/completeOrderInfo/$id', fn($id) => $controller->getCompleteOrderInfo($id));
+    
 
     $router->add('PUT', '/updateOrderStatus/$id/$status', fn($id, $status) => $controller->updateOrderStatus($id, $status));
     
