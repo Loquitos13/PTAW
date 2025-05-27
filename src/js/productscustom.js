@@ -28,20 +28,6 @@ let canvas, scene, camera, renderer, controls, light;
 let loader, model, box, center, size;
 let mouse, raycaster, helper, customDecal, decal, decalTexture, decalMaterial;
 
-document.querySelectorAll(".thumbnail").forEach((thumbnail) => {
-  thumbnail.addEventListener("click", function () {
-    document.getElementById("bigImage").src = this.src;
-
-    // Remove 'active' class from all thumbnails
-    document
-      .querySelectorAll(".thumbnail")
-      .forEach((img) => img.classList.remove("active"));
-
-    // Add 'active' class to the clicked thumbnail
-    this.classList.add("active");
-  });
-});
-
 // Define sizes dynamically
 //const sizes = ["S", "M", "L", "XL", "2XL"];
 
@@ -853,8 +839,17 @@ window.addEventListener('DOMContentLoaded', () => {
             let imgExtra = document.createElement('img');
             imgExtra.src = imgObj.imagem_extra;
             imgExtra.classList.add('thumbnail');
-            if (idx === 0) imgExtra.classList.add('Active');
+            if (idx === 0) imgExtra.classList.add('active');
             imgExtra.alt = produto.titulo_produto;
+            imgExtra.addEventListener("click", function () {
+              // Troca a imagem principal
+              const bigImage = document.getElementById("bigImage");
+              const img = bigImage.querySelector("img");
+              if (img) img.src = this.src;
+              // Remove 'active' de todos
+              document.querySelectorAll(".thumbnail").forEach(img => img.classList.remove("active"));
+              this.classList.add("active");
+            });
             thumbnailGallery.appendChild(imgExtra);
           }
           // imagem_extra_2
@@ -863,6 +858,13 @@ window.addEventListener('DOMContentLoaded', () => {
             imgExtra2.src = imgObj.imagem_extra_2;
             imgExtra2.classList.add('thumbnail');
             imgExtra2.alt = produto.titulo_produto;
+            imgExtra2.addEventListener("click", function () {
+              const bigImage = document.getElementById("bigImage");
+              const img = bigImage.querySelector("img");
+              if (img) img.src = this.src;
+              document.querySelectorAll(".thumbnail").forEach(img => img.classList.remove("active"));
+              this.classList.add("active");
+            });
             thumbnailGallery.appendChild(imgExtra2);
           }
           // imagem_extra_3
@@ -871,6 +873,13 @@ window.addEventListener('DOMContentLoaded', () => {
             imgExtra3.src = imgObj.imagem_extra_3;
             imgExtra3.classList.add('thumbnail');
             imgExtra3.alt = produto.titulo_produto;
+            imgExtra3.addEventListener("click", function () {
+              const bigImage = document.getElementById("bigImage");
+              const img = bigImage.querySelector("img");
+              if (img) img.src = this.src;
+              document.querySelectorAll(".thumbnail").forEach(img => img.classList.remove("active"));
+              this.classList.add("active");
+            });
             thumbnailGallery.appendChild(imgExtra3);
           }
         });
