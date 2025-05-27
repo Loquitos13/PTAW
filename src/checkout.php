@@ -79,6 +79,31 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Linha 1: Email -->
+    <div class="container-format-column">
+        Email
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" aria-label="Email" aria-describedby="email-addon">
+        </div>
+    </div>
+
+    <!-- Linha 2: Country Code + Phone Number lado a lado -->
+    <div style="display: flex; gap: 1rem;">
+        <div class="container-format-column" style="flex: 1;">
+            Country Code
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" aria-label="Country Code" aria-describedby="country-addon">
+            </div>
+        </div>
+        <div class="container-format-column" style="flex: 2;">
+            Phone Number
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" aria-label="Phone Number" aria-describedby="phone-addon">
+            </div>
+        </div>
+    </div>
+</div>
+
                     <div class="container-format-row">
                         <div class="container-format-column">
                             Adress
@@ -98,22 +123,6 @@
                         </div>
                         <div class="container-format-column">
                             Postal Code
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" aria-label="Username"
-                                    aria-describedby="basic-addon1">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="container-format-row">
-                        <div class="container-format-column">
-                            Country Code
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="+55" aria-label="Username"
-                                    aria-describedby="basic-addon1">
-                            </div>
-                        </div>
-                        <div class="container-format-column">
-                            Mobile Phone
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" aria-label="Username"
                                     aria-describedby="basic-addon1">
