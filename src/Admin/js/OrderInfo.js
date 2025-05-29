@@ -106,7 +106,7 @@ function displayOrderInfo(orderData) {
         updatePaymentInfo(orderData);
 
         // Update order items
-        updateOrderItems(orderData.items);
+        //updateOrderItems(orderData.items);
 
         // Update financial summary
         updateFinancialSummary(orderData);
