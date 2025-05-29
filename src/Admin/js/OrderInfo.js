@@ -106,7 +106,7 @@ function displayOrderInfo(orderData) {
         updatePaymentInfo(orderData);
 
         // Update order items
-        updateOrderItems(orderData.items || []);
+        updateOrderItems(orderData.items);
 
         // Update financial summary
         updateFinancialSummary(orderData);
@@ -252,47 +252,97 @@ function updateOrderItems(items) {
     const itemsTableBody = document.querySelector('.table-tbody');
     if (!itemsTableBody) {
         console.error('Table body element not found for order items');
-    };
+        return;
+    }
+
+    // Add styles to the parent table if it exists
+    const parentTable = itemsTableBody.closest('table');
+    if (parentTable) {
+        parentTable.classList.add('table-responsive-sm');
+        parentTable.style.tableLayout = 'fixed';
+        parentTable.style.width = '100%';
+    }
 
     itemsTableBody.innerHTML = '';
-    console.log('Order Items:', items);
+    console.log('Processing Order Items:', items);
+    
+    if (!items.length) {
+        const emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = `
+            <td colspan="5" class="text-center py-4">
+                <i class="bi bi-inbox text-muted" style="font-size: 2rem;"></i>
+                <p class="text-muted mt-2">Nenhum item encontrado para esta encomenda</p>
+            </td>
+        `;
+        itemsTableBody.appendChild(emptyRow);
+        return;
+    }
+
     items.forEach(item => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>
-                <div class="d-flex align-items-center">
+            <td style="min-width: 180px; max-width: 40%;">
+                <div class="d-flex align-items-start flex-wrap">
                     ${item.imagem_principal ? 
-                        `<img src="${item.imagem_principal}" alt="${item.titulo_produto}" class="product-image me-3">` :
-                        `<div class="product-image me-3 bg-light d-flex align-items-center justify-content-center">
+                        `<img src="${item.imagem_principal}" alt="${item.titulo_produto}" class="product-image me-2" style="max-width: 60px; min-width: 60px;">` :
+                        `<div class="product-image me-2 bg-light d-flex align-items-center justify-content-center" style="max-width: 60px; min-width: 60px;">
                             <i class="bi bi-image text-muted"></i>
                         </div>`
                     }
-                    <div>
-                        <strong>${item.titulo_produto}</strong>
+                    <div style="word-wrap: break-word; overflow-wrap: break-word; width: calc(100% - 70px);">
+                        <strong class="text-break">${item.titulo_produto || 'Produto sem título'}</strong>
                         ${item.personalizacao ? 
-                            `<br><small class="text-primary"><i class="bi bi-star"></i> ${item.personalizacao}</small>` : 
+                            `<br><small class="text-primary text-break"><i class="bi bi-star"></i> ${item.personalizacao}</small>` : 
                             ''
                         }
                     </div>
                 </div>
             </td>
-            <td>
+            <td style="width: 15%;" class="text-wrap">
                 ${item.tamanho ? 
-                    `<span class="badge bg-secondary">${item.tamanho}</span>` : 
+                    `<span class="badge bg-secondary text-wrap">${item.tamanho}</span>` : 
                     `<span class="text-muted">N/A</span>`
                 }
             </td>
-            <td>
-                ${item.cor ? 
-                    `<span class="badge bg-secondary">${item.cor}</span>` : 
+            <td style="width: 15%;" class="text-wrap">
+                ${item.nome_cor ? 
+                    `<span class="badge bg-secondary text-wrap">${item.nome_cor}</span>` : 
                     `<span class="text-muted">N/A</span>`
                 }
             </td>
-            <td><span class="badge bg-light text-dark">${item.quantidade}</span></td>
-            <td class="text-end">${formatCurrency(item.preco)}</td>
+            <td style="width: 10%;" class="text-center"><span class="badge bg-light text-dark">${item.quantidade || 1}</span></td>
+            <td style="width: 20%;" class="text-end">${formatCurrency(item.preco || 0)}</td>
         `;
         itemsTableBody.appendChild(row);
     });
+    
+    // Add CSS to the document if it doesn't exist yet
+    if (!document.getElementById('order-items-styles')) {
+        const styleEl = document.createElement('style');
+        styleEl.id = 'order-items-styles';
+        styleEl.textContent = `
+            .table-tbody td {
+                vertical-align: top;
+                padding: 0.75rem;
+                word-break: break-word;
+                hyphens: auto;
+            }
+            .text-break {
+                word-break: break-word !important;
+                overflow-wrap: break-word !important;
+            }
+            .text-wrap {
+                white-space: normal !important;
+            }
+            .product-image {
+                height: 60px;
+                width: 60px;
+                object-fit: cover;
+                border-radius: 4px;
+            }
+        `;
+        document.head.appendChild(styleEl);
+    }
 }
 
 function updateFinancialSummary(orderData) {

@@ -584,7 +584,7 @@ function getPaymentIcon($method)
                 <h6 class="mb-0"><i class="bi bi-chat-text"></i> Notas</h6>
               </div>
               <div class="card-body">
-                  <div class="alert alert-info" data-order-notes>
+                  <div class="alert alert-info">
                     <i class="bi bi-info-circle me-2"></i>
                     <p class="text-muted mb-0" data-order-notes></p>
                   </div>

@@ -886,21 +886,23 @@ class ApiController
             // Debug the SQL query
             $query = $this->queryBuilder->table('EncomendaItens')
                 ->select([
-                    'EncomendaItens.id_encomenda_item',
-                    'EncomendaItens.quantidade',
-                    'EncomendaItens.preco',
-                    'EncomendaItens.id_cor',
-                    'EncomendaItens.id_dimensao',
-                    'EncomendaItens.personalizado',
-                    'Produtos.id_produto',
-                    'Produtos.titulo_produto',
-                    'Produtos.descricao_produto',
-                    'Produtos.preco_produto'
+                    'EncomendaItens.id_encomenda_item', 
+                    'EncomendaItens.quantidade', 
+                    'EncomendaItens.preco', 
+                    'EncomendaItens.id_cor', 
+                    'EncomendaItens.id_dimensao', 
+                    'EncomendaItens.personalizado', 
+                    'Produtos.id_produto', 
+                    'Produtos.titulo_produto', 
+                    'Produtos.descricao_produto', 
+                    'Produtos.preco_produto', 
+                    'Dimensoes.tamanho', 
+                    'Cores.nome_cor', 
                 ])
                 ->join('Encomendas', 'EncomendaItens.id_encomenda', '=', 'Encomendas.id_encomenda')
                 ->join('Produtos', 'EncomendaItens.id_produto', '=', 'Produtos.id_produto')
-                ->join('Dimensoes', 'EncomendaItens.id_dimensao', '=', 'Dimensoes.id_dimensao')
                 ->join('Cores', 'EncomendaItens.id_cor', '=', 'Cores.id_cor')
+                ->join('Dimensoes', 'EncomendaItens.id_dimensao', '=', 'Dimensoes.id_dimensao')
                 ->where('EncomendaItens.id_encomenda', '=', $orderId)
                 ->order('EncomendaItens.id_encomenda_item', 'DESC');
             $result = $query->get();
