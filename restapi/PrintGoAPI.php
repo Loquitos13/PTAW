@@ -75,6 +75,10 @@
 
     $router->add('GET', '/products', fn() => $controller->getProducts());
 
+    $router->add('GET', '/filters', fn() => $controller->getFilters());
+
+    $router->add('GET', '/getColorsByCategories/$categorias', fn($categorias) => $controller->getColorsByCategories($categorias));
+
     $router->add('GET', '/productByID/$id', fn($id) => $controller->getProductByID($id));
 
     $router->add('PUT', '/updateProduct', fn() => $controller->updateProduct());

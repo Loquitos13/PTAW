@@ -248,32 +248,8 @@
 
       <!-- Categorias -->
 
-      <div>
+      <div id="categorias-container">
         <h6>Categories</h6>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="Apparel" id="defaultCategory1">
-          <label class="form-check-label" for="labelCategory1">
-            Apparel
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="Accessories" id="defaultCategory2">
-          <label class="form-check-label" for="labelCategory2">
-            Accessories
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="Home & Living" id="defaultCategory3">
-          <label class="form-check-label" for="labelCategory3">
-            Home & Living
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="Stationery" id="defaultCategory4">
-          <label class="form-check-label" for="labelCategory4">
-            Stationery
-          </label>
-        </div>
       </div>
       <hr>
 
@@ -302,36 +278,9 @@
 
       <!-- Cores da aba filtros -->
 
-      <div class="color-selector">
+      <div class="color-selector" id="color-selector-desktop">
         <h6>Colors</h6>
         <div id="idColorOptions" class="colorOptions d-flex gap-2">
-          <input type="radio" class="btn-check" name="color" id="color-red" value="red" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-red"
-            style="background-color: red; border: 2px solid #ccc;"></label>
-
-          <input type="radio" class="btn-check" name="color" id="color-blue" value="blue" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-blue"
-            style="background-color: blue; border: 2px solid #ccc;"></label>
-
-          <input type="radio" class="btn-check" name="color" id="color-green" value="green" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-green"
-            style="background-color: green; border: 2px solid #ccc;"></label>
-
-          <input type="radio" class="btn-check" name="color" id="color-orange" value="orange" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-orange"
-            style="background-color: orange; border: 2px solid #ccc;"></label>
-
-          <input type="radio" class="btn-check" name="color" id="color-purple" value="purple" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-purple"
-            style="background-color: purple; border: 2px solid #ccc;"></label>
-
-          <input type="radio" class="btn-check" name="color" id="color-Preto" value="black" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-Preto"
-            style="background-color: black; border: 2px solid #ccc;"></label>
-
-          <input type="radio" class="btn-check" name="color" id="color-Branco" value="white" autocomplete="off">
-          <label class="btnColor rounded-circle p-2" for="color-Branco"
-            style="background-color: white; border: 2px solid #ccc;"></label>
         </div>
       </div>
       <hr>
@@ -374,6 +323,9 @@
       <hr>
       <!-- Botão de Aplicar -->
       <button id="apply-filters-desktop" class="btn btn-primary">Apply Filters</button>
+      &nbsp;
+      <!-- Botão de Limpar Filtros -->
+      <button type="button" id="clear-filters-desktop" class="btn btn-outline-danger">Clear Filters</button>
     </div>
 
     <!-- Produtos -->

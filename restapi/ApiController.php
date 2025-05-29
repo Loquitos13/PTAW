@@ -50,7 +50,7 @@ class ApiController
             ->join('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor');
 
         if (!empty($categoria)) {
-            $qb->where('Categorias.titulo_categoria', 'IN', $categoria);
+            $qb->where('Produtos.id_categoria', 'IN', $categoria); // Changed from Categorias.titulo_categoria to Produtos.id_categoria
         }
 
         if (!empty($precoMinimo)) {
@@ -177,6 +177,55 @@ class ApiController
             ->get();
 
     }
+
+    public function getFilters(): array
+    {
+
+        // Obtém todas as categorias ordenadas pelo ID da categoria em ordem ascendente.
+        $categorias = $this->queryBuilder->table('Categorias')
+            ->select(['*'])
+            ->order('id_categoria', 'ASC')
+            ->get();
+
+        // Obtém todas as cores ordenadas pelo ID da cor em ordem ascendente.
+        $cores = $this->queryBuilder->table('Cores')
+            ->select(['*'])
+            ->order('id_cor', 'ASC')
+            ->get();
+
+        // Obtém todas as dimensões ordenadas pelo ID da dimensão em ordem ascendente.
+        $dimensoes = $this->queryBuilder->table('Dimensoes')
+            ->select(['*'])
+            ->order('id_dimensao', 'ASC')
+            ->get();
+
+        // Retorna um array com todas as categorias, cores e dimensões.
+        return [
+            'categorias' => $categorias,
+            'cores' => $cores,
+            'dimensoes' => $dimensoes
+        ];
+
+    }
+
+    public function getColorsByCategories($categorias): array
+    {
+        // Converte a string de categorias (separada por vírgulas) para um array, se necessário.
+        if (is_string($categorias)) {
+            $categorias = explode(',', $categorias);
+        }
+
+        // Constrói e executa a query para obter cores distintas
+        // junta Produtos com ProdutosVariantes e Cores
+        // e filtra por ID de categoria.
+        return $this->queryBuilder->table('Produtos')
+            ->select(['DISTINCT Cores.id_cor', 'Cores.nome_cor', 'Cores.hex_cor'])
+            ->join('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
+            ->join('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
+            ->where('Produtos.id_categoria', 'IN', $categorias) // Filtra produtos que pertencem às categorias fornecidas.
+            ->get();
+    }
+
 
     public function getUserByID(int $userID): ?array
     {
@@ -884,7 +933,7 @@ class ApiController
     }
 
 
-    
+
     public function updateOrderStatus(int $orderId, string $status): array
     {
         try {

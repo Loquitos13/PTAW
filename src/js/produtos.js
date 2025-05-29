@@ -232,15 +232,157 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });*/
 
+async function atualizarCoresPorCategoria() {
+    try {
+        // Obtém os valores (IDs) das categorias que estão selecionadas.
+        const categoriasSelecionadas = [...document.querySelectorAll('input[type=checkbox][id^="defaultCategory"]:checked')].map(cb => cb.value);
+        console.log("Categorias selecionadas:", categoriasSelecionadas);
+
+        if (categoriasSelecionadas.length === 0) {
+            console.log("Nenhuma categoria selecionada");
+            return;
+        }
+
+        // Converte o array de categorias selecionadas em uma string separada por vírgulas para a URL da API.
+        const categoriasStr = categoriasSelecionadas.join(',');
+        console.log("Buscando cores para categorias:", categoriasStr);
+
+        // Faz uma requisição à API para obter as cores baseadas nas categorias selecionadas.
+        const response = await fetch(`../restapi/PrintGoAPI.php/getColorsByCategories/${categoriasStr}`);
+        const data = await response.json();
+        console.log("Resposta da API de cores:", data);
+
+        // Verifica se a resposta da API tem o formato esperado (com a propriedade 'cores' ou é um array diretamente).
+        if (!data || (!data.cores && !Array.isArray(data))) {
+            console.error("Formato de resposta inesperado:", data);
+            return;
+        }
+
+        // Extrai as cores da resposta da API, tratando os dois formatos possíveis (objeto com 'cores' ou array direto).
+        const cores = data.cores || (Array.isArray(data) ? data : []);
+        console.log("Cores encontradas:", cores);
+
+        const colorContainer = document.getElementById("idColorOptions");
+        if (!colorContainer) {
+            console.error("Container de cores não encontrado");
+            return;
+        }
+
+        colorContainer.innerHTML = "";
+
+        if (cores.length === 0) {
+            colorContainer.innerHTML = "<p>Nenhuma cor disponível para esta categoria</p>";
+            return;
+        }
+
+        // Itera sobre cada cor recebida e cria um input de rádio e um label correspondente.
+        cores.forEach(cor => {
+            console.log("Cor recebida:", cor);
+            const input = document.createElement("input");
+            input.type = "radio";
+            input.className = "btn-check"; // Classe para estilização (provavelmente Bootstrap).
+            input.name = "color";
+            input.id = `color-${cor.nome_cor}`; // ID único para o input.
+            input.value = cor.hex_cor; // O valor do input será o código hexadecimal da cor.
+            input.setAttribute('data-color-name', cor.nome_cor); // Atributo de dados para o nome da cor.
+            input.autocomplete = "off";
+
+            const label = document.createElement("label");
+            label.className = "btnColor rounded-circle p-2"; // Classes para estilização do botão de cor.
+            label.setAttribute("for", `color-${cor.nome_cor}`); // Associa o label ao input de rádio.
+            label.style.backgroundColor = cor.hex_cor; // Define a cor de fundo do label.
+            label.style.border = "2px solid #ccc";
+            label.title = cor.nome_cor;
+
+            colorContainer.appendChild(input);
+            colorContainer.appendChild(label);
+        });
+    } catch (error) {
+        console.error("Erro ao atualizar cores:", error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const categoriasContainer = document.getElementById('categorias-container');
+    // Adiciona um listener de evento 'change' ao container de categorias.
+    // Isso permite detectar quando um checkbox de categoria é marcado ou desmarcado.
+    categoriasContainer.addEventListener('change', function (e) {
+        // Verifica se o evento foi disparado por um checkbox de categoria específico.
+        if (e.target && e.target.matches('input[type=checkbox][id^="defaultCategory"]')) {
+            atualizarCoresPorCategoria(); // Chama a função para atualizar as cores.
+        }
+    });
+});
+
+
+// Faz uma requisição inicial para obter os filtros (categorias) disponíveis.
+fetch('../restapi/PrintGoAPI.php/filters')
+    .then(response => response.json())
+    .then(data => {
+        console.log("Filtros disponíveis:", data);
+
+        const categoriasContainer = document.getElementById('categorias-container');
+
+        // Itera sobre as categorias recebidas e cria os checkboxes dinamicamente.
+        data.categorias.forEach(categoria => {
+            let i = 0; // Nota: 'i' será sempre 0 aqui, resultando em IDs duplicados como 'defaultCategory0'.
+            // Se a intenção é ter IDs únicos, 'i' deveria ser um contador global ou parte do loop externo.
+
+            const divCategoria = document.createElement('div');
+            divCategoria.classList.add('form-check');
+
+            const inputCategoria = document.createElement('input');
+            inputCategoria.classList.add('form-check-input');
+            inputCategoria.type = 'checkbox';
+            inputCategoria.value = categoria.id_categoria;
+            inputCategoria.id = `defaultCategory${i}`; // ID do checkbox.
+
+            const labelCategoria = document.createElement('label');
+            labelCategoria.classList.add('form-check-label');
+            labelCategoria.setAttribute('for', `defaultCategory${i}`); // Associa o label ao checkbox.
+            labelCategoria.textContent = categoria.titulo_categoria;
+            i++; // Incrementa 'i', mas como está dentro do forEach, ele é resetado a cada iteração.
+            divCategoria.appendChild(inputCategoria);
+            divCategoria.appendChild(labelCategoria);
+            categoriasContainer.appendChild(divCategoria);
+        });
+
+
+    })
+    .catch(error => {
+        console.error('Erro ao buscar produtos:', error);
+    });
+
 
 
 // Função para buscar produtos (com ou sem filtros)
 function buscarProdutos(filtros = {}) {
-    const params = new URLSearchParams(filtros).toString();
-    fetch('../client/produtos.php' + (params ? '?' + params : ''), {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-    })
+    // Check if filters are empty
+    const isEmptyFilters = Object.keys(filtros).length === 0 ||
+        ((!filtros.categorias || filtros.categorias.length === 0) &&
+            (!filtros.cores || filtros.cores.length === 0) &&
+            (!filtros.tamanhos || filtros.tamanhos.length === 0));
+
+    let url = '';
+
+    if (isEmptyFilters) {
+        // If no filters, get all products
+        url = '../restapi/PrintGoAPI.php/products';
+    } else {
+        // Format parameters for the API endpoint
+        const categoria = filtros.categorias && filtros.categorias.length > 0 ? filtros.categorias.join(',') : '_';
+        const precoMinimo = filtros.precoMin || '0';
+        const precoMaximo = filtros.precoMax || '100';
+        const cor = filtros.cores && filtros.cores.length > 0 ? filtros.cores.join(',') : '_';
+        const tamanho = filtros.tamanhos && filtros.tamanhos.length > 0 ? filtros.tamanhos.join(',') : '_';
+
+        // Call the API endpoint with path parameters
+        url = `../restapi/PrintGoAPI.php/filterProducts/${categoria}/${precoMinimo}/${precoMaximo}/${cor}/${tamanho}`;
+    }
+
+    console.log("API URL:", url);
+
+    fetch(url)
         .then(response => {
             if (!response.ok) {
                 console.error("API Error Response Status:", response.status);
@@ -249,15 +391,14 @@ function buscarProdutos(filtros = {}) {
             return response.json();
         })
         .then(data => {
-            console.log("Produtos:", data); // Log the data received from API
+            console.log("Produtos:", data);
             const produtosLista = document.getElementById('produtos-container');
             produtosLista.innerHTML = "";
             const produtos = Array.isArray(data) ? data : data.products || [];
             if (produtos.length === 0) {
                 produtosLista.innerHTML = "<p>Nenhum produto encontrado com os filtros selecionados.</p>";
             } else {
-                produtos.forEach(produto => {                                        
-
+                produtos.forEach(produto => {
                     //cria o container principal para ficar responsivo
                     let Containner = document.createElement('div');
                     Containner.classList.add('col-lg-3', 'col-md-4', 'col-sm-6', 'mb-4');
@@ -354,10 +495,9 @@ if (applyFiltersDesktop) {
             categorias: [...document.querySelectorAll('input[type=checkbox][id^="defaultCategory"]:checked')].map(cb => cb.value),
             precoMin: document.getElementById('range-min').value,
             precoMax: document.getElementById('range-max').value,
-            cores: [...document.querySelectorAll('input[name="color"]:checked')].map(cb => cb.value), // Changed to cb.value
+            cores: [...document.querySelectorAll('input[name="color"]:checked')].map(cb => cb.getAttribute('data-color-name')), // Use color name instead of hex value
             tamanhos: [...document.querySelectorAll('input[name="size-desktop"]:checked')].map(cb => cb.value),
-        };        
-        // visualizar se os filtros estão corretos
+        };
         console.log("Filtros:" + JSON.stringify(filtros));
         buscarProdutos(filtros);
     });
