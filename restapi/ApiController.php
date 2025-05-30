@@ -178,34 +178,13 @@ class ApiController
 
     }
 
-    public function getFilters(): array
+    public function getCategoriesByID(): array
     {
-
         // Obtém todas as categorias ordenadas pelo ID da categoria em ordem ascendente.
-        $categorias = $this->queryBuilder->table('Categorias')
+        return $this->queryBuilder->table('Categorias')
             ->select(['*'])
             ->order('id_categoria', 'ASC')
             ->get();
-
-        // Obtém todas as cores ordenadas pelo ID da cor em ordem ascendente.
-        $cores = $this->queryBuilder->table('Cores')
-            ->select(['*'])
-            ->order('id_cor', 'ASC')
-            ->get();
-
-        // Obtém todas as dimensões ordenadas pelo ID da dimensão em ordem ascendente.
-        $dimensoes = $this->queryBuilder->table('Dimensoes')
-            ->select(['*'])
-            ->order('id_dimensao', 'ASC')
-            ->get();
-
-        // Retorna um array com todas as categorias, cores e dimensões.
-        return [
-            'categorias' => $categorias,
-            'cores' => $cores,
-            'dimensoes' => $dimensoes
-        ];
-
     }
 
     public function getColorsByCategories($categorias): array
@@ -223,6 +202,22 @@ class ApiController
             ->join('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
             ->join('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
             ->where('Produtos.id_categoria', 'IN', $categorias) // Filtra produtos que pertencem às categorias fornecidas.
+            ->get();
+    }
+
+    public function getSizesByCategories($categorias): array
+    {
+        // Converte a string de categorias (separada por vírgulas) para um array, se necessário.
+        if (is_string($categorias)) {
+            $categorias = explode(',', $categorias);
+        }
+
+        // Constrói e executa a query para obter os tamanhos distintas
+        return $this->queryBuilder->table('Dimensoes')
+            ->select(['tamanho'])
+            ->join('Produtos', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
+            ->join('Categorias', 'Categorias.id_categoria', '=', 'Produtos.id_categoria')
+            ->where('Categorias.id_categoria', 'IN', $categorias) // In pois pode haver mais de uma categoria
             ->get();
     }
 
@@ -886,18 +881,18 @@ class ApiController
             // Debug the SQL query
             $query = $this->queryBuilder->table('EncomendaItens')
                 ->select([
-                    'EncomendaItens.id_encomenda_item', 
-                    'EncomendaItens.quantidade', 
-                    'EncomendaItens.preco', 
-                    'EncomendaItens.id_cor', 
-                    'EncomendaItens.id_dimensao', 
-                    'EncomendaItens.personalizado', 
-                    'Produtos.id_produto', 
-                    'Produtos.titulo_produto', 
-                    'Produtos.descricao_produto', 
-                    'Produtos.preco_produto', 
-                    'Dimensoes.tamanho', 
-                    'Cores.nome_cor', 
+                    'EncomendaItens.id_encomenda_item',
+                    'EncomendaItens.quantidade',
+                    'EncomendaItens.preco',
+                    'EncomendaItens.id_cor',
+                    'EncomendaItens.id_dimensao',
+                    'EncomendaItens.personalizado',
+                    'Produtos.id_produto',
+                    'Produtos.titulo_produto',
+                    'Produtos.descricao_produto',
+                    'Produtos.preco_produto',
+                    'Dimensoes.tamanho',
+                    'Cores.nome_cor',
                 ])
                 ->join('Encomendas', 'EncomendaItens.id_encomenda', '=', 'Encomendas.id_encomenda')
                 ->join('Produtos', 'EncomendaItens.id_produto', '=', 'Produtos.id_produto')

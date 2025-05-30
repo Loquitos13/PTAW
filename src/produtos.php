@@ -292,32 +292,8 @@
       <div>
         <h6>Size</h6>
 
-        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-          <div class="btn-group me-2" role="group" aria-label="First group">
-            <input type="radio" class="btn-check" name="size-desktop" value="S" id="btnradio1-desktop"
-              autocomplete="off">
-            <label class="btn btn-outline-primary" for="btnradio1-desktop">S</label>
-          </div>
-          <div class="btn-group me-2" role="group" aria-label="Second group">
-            <input type="radio" class="btn-check" name="size-desktop" value="M" id="btnradio2-desktop"
-              autocomplete="off">
-            <label class="btn btn-outline-primary" for="btnradio2-desktop">M</label>
-          </div>
-          <div class="btn-group me-2" role="group" aria-label="Third group">
-            <input type="radio" class="btn-check" name="size-desktop" value="L" id="btnradio3-desktop"
-              autocomplete="off">
-            <label class="btn btn-outline-primary" for="btnradio3-desktop">L</label>
-          </div>
-          <div class="btn-group me-2" role="group" aria-label="Fourth group">
-            <input type="radio" class="btn-check" name="size-desktop" value="XL" id="btnradio4-desktop"
-              autocomplete="off">
-            <label class="btn btn-outline-primary" for="btnradio4-desktop">XL</label>
-          </div>
-          <div class="btn-group me-2" role="group" aria-label="Fifth group">
-            <input type="radio" class="btn-check" name="size-desktop" value="2XL" id="btnradio5-desktop"
-              autocomplete="off">
-            <label class="btn btn-outline-primary" for="btnradio5-desktop">2XL</label>
-          </div>
+        <!-- Botões de tamanho -->
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups" id="size-selector-desktop">
         </div>
       </div>
       <hr>

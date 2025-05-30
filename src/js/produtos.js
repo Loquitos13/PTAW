@@ -250,7 +250,7 @@ async function atualizarCoresPorCategoria() {
         // Faz uma requisição à API para obter as cores baseadas nas categorias selecionadas.
         const response = await fetch(`../restapi/PrintGoAPI.php/getColorsByCategories/${categoriasStr}`);
         const data = await response.json();
-        console.log("Resposta da API de cores:", data);
+        //console.log("Resposta da API de cores:", data);
 
         // Verifica se a resposta da API tem o formato esperado (com a propriedade 'cores' ou é um array diretamente).
         if (!data || (!data.cores && !Array.isArray(data))) {
@@ -260,7 +260,7 @@ async function atualizarCoresPorCategoria() {
 
         // Extrai as cores da resposta da API, tratando os dois formatos possíveis (objeto com 'cores' ou array direto).
         const cores = data.cores || (Array.isArray(data) ? data : []);
-        console.log("Cores encontradas:", cores);
+        //console.log("Cores encontradas:", cores);
 
         const colorContainer = document.getElementById("idColorOptions");
         if (!colorContainer) {
@@ -277,7 +277,7 @@ async function atualizarCoresPorCategoria() {
 
         // Itera sobre cada cor recebida e cria um input de rádio e um label correspondente.
         cores.forEach(cor => {
-            console.log("Cor recebida:", cor);
+            //console.log("Cor recebida:", cor);
             const input = document.createElement("input");
             input.type = "radio";
             input.className = "btn-check"; // Classe para estilização (provavelmente Bootstrap).
@@ -314,19 +314,109 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Mostrar Tamanhos consoante a categoria selecionada
+async function atualizarSizePorCategoria() {
+    try {
+        // Obtém os valores (IDs) das categorias que estão selecionadas.
+        const categoriasSelecionadas = [...document.querySelectorAll('input[type=checkbox][id^="defaultCategory"]:checked')].map(cb => cb.value);
+        console.log("Categorias selecionadas:", categoriasSelecionadas);
+
+        if (categoriasSelecionadas.length === 0) {
+            console.log("Nenhuma categoria selecionada");
+            return;
+        }
+
+        // Converte o array de categorias selecionadas em uma string separada por vírgulas para a URL da API.
+        const categoriasStr = categoriasSelecionadas.join(',');
+        console.log("Buscando cores para categorias:", categoriasStr);
+
+        // Faz uma requisição à API para obter os tamanhos baseadas nas categorias selecionadas.
+        const response = await fetch(`../restapi/PrintGoAPI.php/getSizesByCategories/${categoriasStr}`);
+        const data = await response.json();
+        console.log("Resposta da API de tamanhos:", data);
+
+
+        const sizeContainer = document.getElementById("size-selector-desktop");
+
+        sizeContainer.innerHTML = "";
+
+        if (data.length === 0) {
+            sizeContainer.innerHTML = "<p>No sizes available for this category</p>"; // Corrigido de colorContainer para sizeContainer
+            return;
+        }
+
+        const todosTamanhos = data.flatMap(item => {
+            // Verifica se item.tamanho é uma string que contém múltiplos valores
+            if (typeof item.tamanho === 'string' && item.tamanho.includes(',')) {
+                // Divide a string em um array pelos separadores de vírgula e remove espaços
+                return item.tamanho.split(',').map(t => t.trim());
+            }
+            // Se não for uma string com vírgulas ou for outro tipo de valor, retorna como está
+            return item.tamanho;
+        });
+
+        console.log("Todos os tamanhos combinados:", todosTamanhos);
+
+        // Remiver tamanhos duplicados usando Set
+        const tamanhosSemDuplicatas = [...new Set(todosTamanhos)];
+        console.log("Tamanhos únicos:", tamanhosSemDuplicatas);
+
+
+        // Itera sobre cada cor recebida e cria um input de rádio e um label correspondente.
+        tamanhosSemDuplicatas.forEach(tamanho => {
+
+            // Criar div para o grupo de botões
+            const btnGroup = document.createElement('div');
+            btnGroup.classList.add('btn-group', 'me-2');
+            btnGroup.setAttribute('role', 'group');
+            btnGroup.setAttribute('aria-label', 'Size option');
+
+            // Criar input radio
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.classList.add('btn-check');
+            input.name = 'size-desktop';
+            input.value = tamanho;
+            input.id = `btnradio-${tamanho}-desktop`;
+            input.autocomplete = 'off';
+
+            // Criar label para o input
+            const label = document.createElement('label');
+            label.classList.add('btn', 'btn-outline-primary');
+            label.setAttribute('for', `btnradio-${tamanho}-desktop`);
+            label.textContent = tamanho;
+
+            // Adicionar elementos ao DOM
+            btnGroup.appendChild(input);
+            btnGroup.appendChild(label);
+            sizeContainer.appendChild(btnGroup);
+        });
+    } catch (error) {
+        console.error("Erro ao atualizar cores:", error);
+    }
+}
+document.addEventListener('DOMContentLoaded', function () {
+    const categoriasContainer = document.getElementById('categorias-container');
+    // Adiciona um listener de evento 'change' ao container de categorias.
+    // Isso permite detectar quando um checkbox de categoria é marcado ou desmarcado.
+    categoriasContainer.addEventListener('change', function (e) {
+        // Verifica se o evento foi disparado por um checkbox de categoria específico.
+        if (e.target && e.target.matches('input[type=checkbox][id^="defaultCategory"]')) {
+            atualizarSizePorCategoria(); // Chama a função para atualizar as cores.
+        }
+    });
+});
+
 
 // Faz uma requisição inicial para obter os filtros (categorias) disponíveis.
-fetch('../restapi/PrintGoAPI.php/filters')
+fetch('../restapi/PrintGoAPI.php/getCategoriesByID')
     .then(response => response.json())
     .then(data => {
-        console.log("Filtros disponíveis:", data);
 
         const categoriasContainer = document.getElementById('categorias-container');
 
-        // Itera sobre as categorias recebidas e cria os checkboxes dinamicamente.
-        data.categorias.forEach(categoria => {
-            let i = 0; // Nota: 'i' será sempre 0 aqui, resultando em IDs duplicados como 'defaultCategory0'.
-            // Se a intenção é ter IDs únicos, 'i' deveria ser um contador global ou parte do loop externo.
+        // Agora data é um array de categorias
+        data.forEach((categoria, i) => {
 
             const divCategoria = document.createElement('div');
             divCategoria.classList.add('form-check');
@@ -335,19 +425,17 @@ fetch('../restapi/PrintGoAPI.php/filters')
             inputCategoria.classList.add('form-check-input');
             inputCategoria.type = 'checkbox';
             inputCategoria.value = categoria.id_categoria;
-            inputCategoria.id = `defaultCategory${i}`; // ID do checkbox.
+            inputCategoria.id = `defaultCategory${i}`; // ID único agora
 
             const labelCategoria = document.createElement('label');
             labelCategoria.classList.add('form-check-label');
-            labelCategoria.setAttribute('for', `defaultCategory${i}`); // Associa o label ao checkbox.
+            labelCategoria.setAttribute('for', `defaultCategory${i}`);
             labelCategoria.textContent = categoria.titulo_categoria;
-            i++; // Incrementa 'i', mas como está dentro do forEach, ele é resetado a cada iteração.
+
             divCategoria.appendChild(inputCategoria);
             divCategoria.appendChild(labelCategoria);
             categoriasContainer.appendChild(divCategoria);
         });
-
-
     })
     .catch(error => {
         console.error('Erro ao buscar produtos:', error);
@@ -380,7 +468,7 @@ function buscarProdutos(filtros = {}) {
         url = `../restapi/PrintGoAPI.php/filterProducts/${categoria}/${precoMinimo}/${precoMaximo}/${cor}/${tamanho}`;
     }
 
-    console.log("API URL:", url);
+    console.log('URL final para fetch:', url);
 
     fetch(url)
         .then(response => {
@@ -391,7 +479,7 @@ function buscarProdutos(filtros = {}) {
             return response.json();
         })
         .then(data => {
-            console.log("Produtos:", data);
+            //console.log("Produtos:", data);
             const produtosLista = document.getElementById('produtos-container');
             produtosLista.innerHTML = "";
             const produtos = Array.isArray(data) ? data : data.products || [];
