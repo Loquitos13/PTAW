@@ -384,7 +384,7 @@ async function atualizarSizePorCategoria() {
             const label = document.createElement('label');
             label.classList.add('btn', 'btn-outline-primary');
             label.setAttribute('for', `btnradio-${tamanho}-desktop`);
-            label.textContent = tamanho;
+            label.textContent = tamanho.replace(/%20/g, " ");
 
             // Adicionar elementos ao DOM
             btnGroup.appendChild(input);

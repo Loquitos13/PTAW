@@ -66,7 +66,15 @@ class ApiController
         }
 
         if (!empty($tamanho)) {
-            $qb->where('Dimensoes.tamanho', 'IN', $tamanho);
+            $primeiro = true;
+            foreach ($tamanho as $t) {
+                if ($primeiro) {
+                    $qb->where('Dimensoes.tamanho', 'LIKE', "%$t%");
+                    $primeiro = false;
+                } else {
+                    $qb->orWhere('Dimensoes.tamanho', 'LIKE', "%$t%");
+                }
+            }
         }
 
         $qb->groupBy('Produtos.id_produto');
