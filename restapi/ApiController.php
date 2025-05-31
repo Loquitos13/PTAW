@@ -185,7 +185,41 @@ class ApiController
             ->get();
 
     }
-
+public function searchProductsByTitle($searchTerm): array
+{
+    try {
+        
+        $searchTerm = urldecode($searchTerm);
+        $searchTerm = trim($searchTerm);
+        
+        if (empty($searchTerm)) {
+            return [];
+        }
+        
+        
+        return $this->queryBuilder->table('Produtos')
+            ->select([
+                'Produtos.*',
+                'GROUP_CONCAT(DISTINCT Dimensoes.tamanho) AS tamanhos',
+                'GROUP_CONCAT(DISTINCT Cores.nome_cor) AS cores'
+            ])
+            ->leftJoin('Dimensoes', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
+            ->leftJoin('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
+            ->leftJoin('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
+            ->where('Produtos.titulo_produto', 'LIKE', "%$searchTerm%")
+            ->where('Produtos.status_produto', '=', 1)
+            ->groupBy('Produtos.id_produto')
+            ->order('Produtos.id_produto', 'DESC')
+            ->get();
+            
+    } catch (PDOException $e) {
+        error_log("Database error in searchProductsByTitle: " . $e->getMessage());
+        return [];
+    } catch (Exception $e) {
+        error_log("General error in searchProductsByTitle: " . $e->getMessage());
+        return [];
+    }
+}
     public function getCategoriesByID(): array
     {
         // Obtém todas as categorias ordenadas pelo ID da categoria em ordem ascendente.

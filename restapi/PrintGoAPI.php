@@ -97,12 +97,12 @@
 
     $router->add('GET', '/orderPaymentInfo/$id', fn($id) => $controller->getOrderPaymentInfo($id));
 
-    
-
     $router->add('PUT', '/updateOrderStatus/$id/$status', fn($id, $status) => $controller->updateOrderStatus($id, $status));
     
     $router->add('GET', '/getDadosClientePorCarrinho/$userID', fn($userID) => $controller->getDadosClientePorCarrinho($userID));
 
     $router->add('GET' , '/getOrderID/$id' , fn($id) => $controller->getOrderID($id));
+
+    $router->add('GET', '/searchProductsByTitle/$searchTerm', fn($searchTerm) => $controller->searchProductsByTitle($searchTerm));
 
     $router->dispatch();
