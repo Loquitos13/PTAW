@@ -2,9 +2,7 @@
 
 session_start();
 
-$orderId = isset($_GET['id']) ? $_GET['id'] : null;
-
-
+$orderId = isset($_GET['id']);
 
 // Função para formatar moeda
 function formatCurrency($amount)
@@ -569,80 +567,393 @@ function formatCurrency($amount)
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const modal = document.getElementById('processModal');
-      const closeBtn = document.querySelector('.close-button');
-      const modalContent = document.getElementById('modal-body-content');
+ // Fixed JavaScript code for order processing - replace the existing script section
 
-      document.getElementById('button-process').addEventListener('click', function() {
-        modal.style.display = 'block';
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = document.getElementById('processModal');
+  const closeBtn = document.querySelector('.close-button');
+  const modalContent = document.getElementById('modal-body-content');
 
-        // Reset modal content
-        modalContent.innerHTML = `
-        <div class="text-center">
-          <div class="loading-spinner"></div>
-          <p class="mt-2">A carregar...</p>
+  document.getElementById('button-process').addEventListener('click', function() {
+    modal.style.display = 'block';
+
+    // Get the order ID from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('id');
+
+    if (!orderId) {
+      modalContent.innerHTML = `
+        <div class="alert alert-danger">
+          <h4>Erro</h4>
+          <p>ID da encomenda não encontrado.</p>
         </div>
       `;
+      return;
+    }
 
-        // Carregar formulário de ProcessItems.php - CORREÇÃO AQUI
-        fetch('ProcessItems.php?id=<?php echo $_GET['id']; ?>')
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return response.text();
-          })
-          .then(data => {
-            modalContent.innerHTML = data;
-          })
-          .catch(error => {
-            modalContent.innerHTML = `
-            <div class="alert alert-danger">
-              <i class="bi bi-exclamation-triangle me-2"></i>
-              Erro ao carregar conteúdo. Tente novamente.
+    // Create the process form directly in the modal
+    modalContent.innerHTML = createProcessForm(orderId);
+
+    // Attach event listeners for the form
+    attachFormEventListeners(orderId);
+  });
+
+  closeBtn.addEventListener('click', function() {
+    modal.style.display = 'none';
+  });
+
+  window.addEventListener('click', function(event) {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && modal.style.display === 'block') {
+      modal.style.display = 'none';
+    }
+  });
+});
+
+function createProcessForm(orderId) {
+  return `
+    <div style="max-height: 70vh; overflow-y: auto;">
+      <div class="header mb-4">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h3>Processar Encomenda</h3>
+            <span class="text-muted">Número da Encomenda: #PG-${orderId}</span>
+          </div>
+          <div class="text-end">
+            <span class="badge bg-warning">Processando</span>
+            <p class="small text-muted mb-0">Origem: Print & Go</p>
+          </div>
+        </div>
+      </div>
+      
+      <hr>
+
+      <form id="process-order-form">
+        <input type="hidden" name="order_id" value="${orderId}">
+
+        <div class="mb-4">
+          <h5>Informações de Rastreio</h5>
+          <p class="text-muted">Adicionar um número de rastreio ajudará a melhorar a satisfação do cliente e reduzir consultas de suporte.</p>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="tracking_number" class="form-label">Número de Rastreio <span class="text-danger">*</span></label>
+              <input type="text" name="tracking_number" id="tracking_number" class="form-control" 
+                     placeholder="Digite o número de rastreio" required>
+              <small class="form-text text-muted">Ex: AB123456789PT</small>
             </div>
-          `;
-            console.error('Error:', error);
-          });
-      });
-      closeBtn.addEventListener('click', function() {
-        modal.style.display = 'none';
-      });
+            <div class="col-md-6 mb-3">
+              <label for="carrier" class="form-label">Transportadora <span class="text-danger">*</span></label>
+              <select name="carrier" id="carrier" class="form-control" required>
+                <option value="">Selecione uma transportadora</option>
+                <option value="CTT">CTT Correios</option>
+                <option value="DPD">DPD</option>
+                <option value="UPS">UPS</option>
+                <option value="FedEx">FedEx</option>
+                <option value="DHL">DHL</option>
+                <option value="GLS">GLS</option>
+                <option value="Chronopost">Chronopost</option>
+                <option value="Outra">Outra</option>
+              </select>
+              <input type="text" id="carrier_custom" class="form-control mt-2" 
+                     placeholder="Digite o nome da transportadora" style="display: none;">
+            </div>
+          </div>
+        </div>
 
-      window.addEventListener('click', function(event) {
-        if (event.target === modal) {
-          modal.style.display = 'none';
-        }
-      });
+        <div class="mb-4">
+          <h5>Opções de Notificação</h5>
+          <div class="form-check">
+            <input type="checkbox" name="notify_customer" id="notify_customer" class="form-check-input" value="1" checked>
+            <label for="notify_customer" class="form-check-label">
+              Notificar Cliente por Email
+            </label>
+          </div>
+        </div>
 
-      // Close modal with Escape key
-      document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && modal.style.display === 'block') {
-          modal.style.display = 'none';
-        }
-      });
+        <hr>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <p class="mb-0">Processar a partir de: <strong>Print & Go</strong></p>
+            <small class="text-muted">Esta ação marcará a encomenda como "Enviada"</small>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 justify-content-end">
+          <button type="button" class="btn btn-secondary" onclick="document.getElementById('processModal').style.display='none'">
+            Cancelar
+          </button>
+          <button type="button" id="process-order-btn" class="btn btn-primary">
+            <i class="bi bi-gear"></i> Processar Encomenda
+          </button>
+          <button type="button" class="btn btn-outline-secondary print-label-btn">
+            <i class="bi bi-printer"></i> Imprimir Etiqueta
+          </button>
+        </div>
+      </form>
+      
+      <div class="mt-3">
+        <div class="alert alert-info">
+          <small><strong>Debug Info:</strong> Order ID = ${orderId}</small>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function attachFormEventListeners(orderId) {
+  const processButton = document.getElementById('process-order-btn');
+  const carrierSelect = document.getElementById('carrier');
+  const carrierCustom = document.getElementById('carrier_custom');
+
+  // Handle custom carrier input
+  if (carrierSelect && carrierCustom) {
+    carrierSelect.addEventListener('change', function() {
+      if (this.value === 'Outra') {
+        carrierCustom.style.display = 'block';
+        carrierCustom.required = true;
+      } else {
+        carrierCustom.style.display = 'none';
+        carrierCustom.required = false;
+        carrierCustom.value = '';
+      }
     });
+  }
 
-    // Additional functions
-    function updateOrderStatus() {
-      // Implementation for updating order status
-      alert('Funcionalidade de atualização de status em desenvolvimento');
-    }
+  if (processButton) {
+    processButton.addEventListener('click', function() {
+      // Show loading state
+      const originalText = processButton.innerHTML;
+      processButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processando...';
+      processButton.disabled = true;
 
-    function printOrder() {
+      // Validação básica do formulário
+      const trackingNumber = document.getElementById('tracking_number').value.trim();
+      let carrier = document.getElementById('carrier').value.trim();
+
+      // Check if custom carrier is being used
+      if (carrier === 'Outra') {
+        carrier = document.getElementById('carrier_custom').value.trim();
+      }
+
+      if (!trackingNumber || !carrier) {
+        showAlert('Por favor, preencha todos os campos obrigatórios.', 'warning');
+        // Reset button
+        processButton.innerHTML = originalText;
+        processButton.disabled = false;
+        return;
+      }
+
+      // Validate tracking number format (basic validation)
+      if (trackingNumber.length < 6) {
+        showAlert('O número de rastreio deve ter pelo menos 6 caracteres.', 'warning');
+        processButton.innerHTML = originalText;
+        processButton.disabled = false;
+        return;
+      }
+
+      // FIXED: Using correct field names that match your PHP backend
+      const requestData = {
+        order_id: parseInt(orderId),
+        numero_seguimento: trackingNumber, // Changed from tracking_number
+        transportadora: carrier,           // Changed from carrier
+        notify_customer: document.getElementById('notify_customer').checked ? 1 : 0
+      };
+
+      console.log('Sending data to processItemsEngine.php:', requestData);
+
+      // Show progress in modal
+      showProcessingStatus('Enviando dados para o processador...');
+
+      // FIXED: Send to your processItemsEngine.php instead of the API directly
+      const processorUrl = '../../admin/processItemsEngine.php';
+
+      fetch(processorUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        })
+        .then(response => {
+          console.log('Response status:', response.status);
+          console.log('Response ok:', response.ok);
+
+          // Always try to get the response as text first
+          return response.text().then(text => {
+            console.log('Raw response:', text);
+
+            try {
+              const jsonData = JSON.parse(text);
+              return {
+                json: jsonData,
+                status: response.status,
+                ok: response.ok
+              };
+            } catch (e) {
+              console.error('Failed to parse JSON:', e);
+              return {
+                text: text,
+                status: response.status,
+                ok: response.ok
+              };
+            }
+          });
+        })
+        .then(result => {
+          if (result.json) {
+            console.log('Parsed JSON response:', result.json);
+
+            if (result.json.success) {
+              showSuccessMessage(orderId, result.json);
+            } else {
+              showErrorMessage(result.json.message || 'Erro desconhecido do processador');
+              // Reset button
+              processButton.innerHTML = originalText;
+              processButton.disabled = false;
+            }
+          } else {
+            console.error('Non-JSON response:', result.text);
+            
+            if (result.status === 403) {
+              showErrorMessage('Erro 403: Sem permissão para acessar o processador. Verifique as configurações do servidor.');
+            } else if (result.status === 404) {
+              showErrorMessage('Erro 404: Processador não encontrado. Verifique se processItemsEngine.php existe.');
+            } else {
+              showErrorMessage(`Erro do processador (HTTP ${result.status}): ${result.text.substring(0, 200)}`);
+            }
+            
+            // Reset button
+            processButton.innerHTML = originalText;
+            processButton.disabled = false;
+          }
+        })
+        .catch(error => {
+          console.error('Network or other error:', error);
+          showErrorMessage('Erro de rede: ' + error.message);
+          // Reset button
+          processButton.innerHTML = originalText;
+          processButton.disabled = false;
+        });
+    });
+  }
+
+  // Botão para imprimir etiqueta
+  const printButton = document.querySelector('.print-label-btn');
+  if (printButton) {
+    printButton.addEventListener('click', function() {
       window.print();
-    }
+    });
+  }
+}
 
-    function editCustomerInfo() {
-      // Implementation for editing customer information
-      alert('Funcionalidade de edição de informações do cliente em desenvolvimento');
-    }
+function showAlert(message, type = 'info') {
+  const alertClass = type === 'warning' ? 'alert-warning' :
+    type === 'danger' ? 'alert-danger' : 'alert-info';
 
-    // Auto-refresh order status every 30 seconds
-    setInterval(function() {
-      // You can implement auto-refresh logic here if needed
-    }, 30000);
+  // Create temporary alert
+  const alertDiv = document.createElement('div');
+  alertDiv.className = `alert ${alertClass} alert-dismissible fade show`;
+  alertDiv.innerHTML = `
+    ${message}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  `;
+
+  // Insert at top of modal content
+  const modalContent = document.getElementById('modal-body-content');
+  modalContent.insertBefore(alertDiv, modalContent.firstChild);
+}
+
+function showProcessingStatus(message) {
+  const statusDiv = document.createElement('div');
+  statusDiv.id = 'processing-status';
+  statusDiv.className = 'alert alert-info';
+  statusDiv.innerHTML = `
+    <div class="d-flex align-items-center">
+      <div class="spinner-border spinner-border-sm me-2"></div>
+      <span>${message}</span>
+    </div>
+  `;
+
+  // Remove any existing status
+  const existing = document.getElementById('processing-status');
+  if (existing) existing.remove();
+
+  // Add new status
+  const modalContent = document.getElementById('modal-body-content');
+  modalContent.insertBefore(statusDiv, modalContent.firstChild);
+}
+
+function showSuccessMessage(orderId, responseData) {
+  const modalContent = document.getElementById('modal-body-content');
+  modalContent.innerHTML = `
+    <div class="text-center">
+      <div class="alert alert-success">
+        <i class="bi bi-check-circle-fill fs-1 text-success"></i>
+        <h4 class="mt-3">Encomenda Processada com Sucesso!</h4>
+        <p>A encomenda #PG-${orderId} foi processada e marcada como enviada.</p>
+        ${responseData.data ? `
+          <div class="mt-3">
+            <small class="text-muted">
+              <strong>Número de Rastreio:</strong> ${responseData.data.numero_seguimento}<br>
+              <strong>Transportadora:</strong> ${responseData.data.transportadora}<br>
+              <strong>Método:</strong> ${responseData.data.method || responseData.data.method_used || 'Processamento automático'}
+            </small>
+          </div>
+        ` : ''}
+        <div class="mt-4">
+          <button class="btn btn-primary me-2" onclick="location.reload()">
+            <i class="bi bi-arrow-clockwise"></i> Recarregar Página
+          </button>
+          <button class="btn btn-secondary" onclick="document.getElementById('processModal').style.display='none'">
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function showErrorMessage(message) {
+  const modalContent = document.getElementById('modal-body-content');
+  const errorDiv = document.createElement('div');
+  errorDiv.className = 'alert alert-danger';
+  errorDiv.innerHTML = `
+    <h5><i class="bi bi-exclamation-triangle"></i> Erro ao Processar</h5>
+    <p>${message}</p>
+    <div class="mt-3">
+      <button class="btn btn-outline-danger" onclick="console.log('Debug info logged')">
+        Ver Detalhes no Console
+      </button>
+    </div>
+  `;
+
+  // Remove processing status if exists
+  const statusDiv = document.getElementById('processing-status');
+  if (statusDiv) statusDiv.remove();
+
+  // Add error message at top
+  modalContent.insertBefore(errorDiv, modalContent.firstChild);
+}
+
+function updateOrderStatus() {
+  alert('Funcionalidade de atualização de status em desenvolvimento');
+}
+
+function printOrder() {
+  window.print();
+}
+
+function editCustomerInfo() {
+  alert('Funcionalidade de edição de informações do cliente em desenvolvimento');
+}
   </script>
 </body>
 

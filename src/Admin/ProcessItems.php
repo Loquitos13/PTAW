@@ -1,41 +1,4 @@
-<?php
-// Verificar se ID da encomenda foi fornecido
-if (!isset($_GET['id']) || empty($_GET['id'])) {
-  echo '<div class="alert alert-danger">ID da encomenda não fornecido</div>';
-  exit;
-}
 
-$orderId = $_GET['id'];
-require_once '../includes/db_connection.php';
-
-// Função para formatar moeda
-function formatCurrency($amount)
-{
-  return '€' . number_format((float) $amount, 2, ',', '.');
-}
-
-// Carregar informações da encomenda via API
-$orderData = null;
-$orderItems = [];
-
-// Obter dados da encomenda
-$orderApiUrl = "../..//restapi/PrintGoAPI.php/orderById/{$orderId}";
-$orderResponse = @file_get_contents($orderApiUrl);
-
-if ($orderResponse) {
-  $orderData = json_decode($orderResponse, true);
-} else {
-  echo '<div class="alert alert-danger">Erro ao carregar dados da encomenda</div>';
-}
-
-// Obter itens da encomenda
-    $itemsApiUrl = "../..//restapi/PrintGoAPI.php/orderItems/{$orderId}";
-    $itemsResponse = @file_get_contents($itemsApiUrl);
-
-if ($itemsResponse) {
-  $orderItems = json_decode($itemsResponse, true);
-}
-?>
 
 <!DOCTYPE html>
 <html lang="pt">
@@ -47,6 +10,7 @@ if ($itemsResponse) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="css/processItems.css">
+  <script src="js/processItem.js"></script>
 </head>
 
 <body>

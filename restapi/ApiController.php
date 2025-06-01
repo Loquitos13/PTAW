@@ -1044,32 +1044,73 @@ public function searchProductsByTitle($searchTerm): array
     }
 
 
-
-    public function updateOrderStatus(int $orderId, string $status): array
-    {
-        try {
-            $this->queryBuilder->table('Encomendas')
-                ->update([
-                    'status_encomenda' => $status,
-                    'data_atualizacao_encomenda' => date('Y-m-d H:i:s')
-                ])
-                ->where('id_encomenda', '=', $orderId)
-                ->execute();
-
-            return [
-                'success' => true,
-                'message' => 'Status da encomenda atualizado'
-            ];
-
-        } catch (PDOException $e) {
-            error_log("Database error in updateOrderStatus: " . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'Erro ao atualizar status da encomenda',
-                'error' => $e->getMessage()
-            ];
+    public function updateOrderStatus(int $orderId, string $status): array 
+{
+    try {
+        // Verificar se existem dados adicionais no corpo da requisição
+        $json = file_get_contents('php://input');
+        $data = null;
+        
+        if (!empty($json)) {
+            $data = json_decode($json, true);
         }
+        
+        $updateData = [
+            'status_encomenda' => $status,
+            'data_atualizacao' => date('Y-m-d H:i:s') // Note: changed from data_atualizacao_encomenda
+        ];
+        
+        // Adicionar informações de rastreio se fornecidas
+        if ($data && isset($data['tracking_number'])) {
+            $updateData['numero_seguimento'] = $data['tracking_number'];
+        }
+        
+        if ($data && isset($data['carrier'])) {
+            $updateData['transportadora'] = $data['carrier'];
+        }
+        
+        // Log the update for debugging
+        error_log("Updating order $orderId with data: " . json_encode($updateData));
+        
+        // Atualizar os dados da encomenda - using correct table and column names
+        $this->queryBuilder->table('Encomendas') // Note: lowercase table name
+            ->update($updateData)
+            ->where('id', '=', $orderId) // Note: using 'id' instead of 'id_encomenda'
+            ->execute();
+            
+        // Verificar se notificação foi solicitada
+        $notificationSent = false;
+        if ($data && isset($data['notify_customer']) && $data['notify_customer'] == 1) {
+            // Aqui viria o código para enviar email ao cliente
+            // Por enquanto apenas simulamos o envio
+            $notificationSent = true;
+            error_log("Email notification would be sent for order $orderId");
+        }
+        
+        return [
+            'success' => true,
+            'message' => 'Status da encomenda atualizado para ' . $status,
+            'notification_sent' => $notificationSent,
+            'tracking_number' => $data['numero_seguimento'] ?? null,
+            'carrier' => $data['transportadora'] ?? null
+        ];
+        
+    } catch (PDOException $e) {
+        error_log("Database error in updateOrderStatus: " . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => 'Erro ao atualizar status da encomenda',
+            'error' => $e->getMessage()
+        ];
+    } catch (Exception $e) {
+        error_log("General error in updateOrderStatus: " . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => 'Erro inesperado ao processar solicitação',
+            'error' => $e->getMessage()
+        ];
     }
+}
     public function getDadosClientePorCarrinho($userID): array
     {
         return $this->queryBuilder->table('Carrinhos')
