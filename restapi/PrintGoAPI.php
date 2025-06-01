@@ -51,6 +51,12 @@
 
     $router->add('GET', '/numberOfClientsByYear/$year', fn($year) => $controller->getNumberOfClientsByYear($year));
 
+    $router->add('GET', '/recentOrdersByClient/$id', fn($id) => $controller->getRecentOrdersByClient($id));
+
+    $router->add('GET', '/getAllOrdersByClient/$id', fn($id) => $controller->getNumberOfOrdersByClient($id));
+
+    $router->add('GET', '/getUserProfile/$id', fn($id) => $controller->getClientProfile($id));
+
     $router->add('GET', '/carrinhos', fn() => $controller->getCarrinhos());
 
     $router->add('GET', '/encomendasByUserID/$id', fn($id) => $controller->getEncomendasByUserID($id));

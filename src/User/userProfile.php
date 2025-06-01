@@ -1,3 +1,17 @@
+<?php
+$base_url="/~ptaw-2025-gr4";
+session_start();
+if (!isset($_SESSION['user_id'])) {
+
+  header("location: /~ptaw-2025-gr4/src/SignIn.html");
+
+} else {
+  $id_cliente = $_SESSION['user_id'];
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -223,7 +237,7 @@
     }
 </style>
 
-<body>
+<body data-client-id="<?php echo htmlspecialchars($id_cliente); ?>">
 
     <!-- Menu Mobile -->
     <?php include '../includes/header-mobile.php'; ?>
@@ -236,7 +250,7 @@
         <div class="row">
             <!-- User Profile Card -->
             <div class="col-lg-4 mb-4">
-                <div class="text-center mb-4">
+                <div class="text-center mb-4" id="user-profile-card">
                     <img src="../../imagens/camisola.png" alt="Sarah Anderson" width="30%" height="30%" class="rounded-circle img-thumbnail mb-3">
                     <h4 class="mb-0">Sarah Anderson</h4>
                     <p class="text-muted">Member since January 2025</p>
@@ -258,22 +272,6 @@
                                     12 Orders
                                 </span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save text-primary me-2" viewBox="0 0 16 16">
-                                        <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
-                                    </svg>
-                                    8 Saved Designs
-                                </span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill text-primary me-2" viewBox="0 0 16 16">
-                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                    </svg>
-                                    4.8 Rating
-                                </span>
-                            </li>
                         </ul>
                     </div>
                 </div>
@@ -289,7 +287,7 @@
                             <a href="./my_orders.php" class="text-decoration-none text-primary">View all</a>
                         </div>
 
-                        <div class="list-group">
+                        <div class="list-group" id="recent-orders-list">
                             <div class="list-group-item border rounded mb-2">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -311,47 +309,13 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Saved Designs Section -->
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="card-title">Saved Designs</h5>
-                            <a href="./SavedDesigns.php" class="text-decoration-none text-primary">View all</a>
-                        </div>
-
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-body p-2">
-                                        <div class=" d-flex align-items-center justify-content-center">
-                                            <img src="../../imagens/camisola.png" alt="Descrição da imagem" class="img-fluid" fill="currentColor">
-                                        </div>
-                                        <h6 class="card-title">Summer Collection T-shirt</h6>
-                                        <small class="text-muted">Last edited: March 16, 2025</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-body p-2">
-                                        <div class=" d-flex align-items-center justify-content-center">
-                                            <img src="../../imagens/camisola.png" alt="Descrição da imagem" class="img-fluid" fill="currentColor">
-                                        </div>
-                                        <h6 class="card-title">Birthday Mug Design</h6>
-                                        <small class="text-muted">Last edited: March 16, 2025</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </main>
 
     <!-- Footer -->
     <?php include '../includes/footer.php'; ?>
+    <script src="js/UserProfile.js"></script>
 </body>
 
 </html>
