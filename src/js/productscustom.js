@@ -911,6 +911,7 @@ window.addEventListener('DOMContentLoaded', () => {
           if (dim.tamanho && dim.tamanho !== "unico") {
             const tamanhosArr = dim.tamanho.split(',').map(t => t.trim());
             tamanhosArr.forEach((size) => {
+              size = size.replaceAll('%20', ' ');
               const btn = document.createElement("button");
               btn.classList.add("sizeBtn");
               btn.textContent = size;
@@ -960,4 +961,38 @@ window.addEventListener('DOMContentLoaded', () => {
     .catch(error => {
       console.error('Erro ao buscar produtos:', error);
     });
+
+
+  fetch('../restapi/PrintGoAPI.php/feedbackAVGProduct/' + productID)
+    .then(response => response.json())
+    .then(data => {
+
+      const productReviewData = Array.isArray(data) ? data[0] : data;
+
+      const avg = Number(productReviewData.AverageClassification) || 0;
+
+      const fullStars = Math.floor(avg);
+
+      const hasHalfStar = avg % 1 >= 0.25 && avg % 1 < 0.75;
+
+      const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+      let starsHTML = '';
+
+      for (let i = 0; i < fullStars; i++) {
+        starsHTML += `<svg width="30" height="30" viewBox="0 0 32 32"><use href="#star" fill="orange"/></svg>`;
+      }
+
+      if (hasHalfStar) {
+        starsHTML += `<svg width="30" height="30" viewBox="0 0 32 32"><use href="#star" fill="url(#half-star)"/></svg>`;
+      }
+
+      for (let i = 0; i < emptyStars; i++) {
+        starsHTML += `<svg width="30" height="30" viewBox="0 0 32 32"><use href="#star" fill="lightgray"/></svg>`;
+      }
+
+      document.getElementById('productReviews').innerHTML = starsHTML + ` (${fullStars || 0} reviews)`;
+    });
+
+
 });

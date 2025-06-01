@@ -510,8 +510,13 @@ public function searchProductsByTitle($searchTerm): array
                     'pass_cliente' => password_hash($data['pass_cliente'], PASSWORD_DEFAULT),
                     'contacto_cliente' => $data['contacto_cliente'] ?? null,
                     'morada_cliente' => $data['morada_cliente'] ?? null,
+                    'cidade_cliente' => $data['cidade_cliente'] ?? null,
+                    'state_cliente' => $data['state_cliente'] ?? null,
+                    'cod_postal_cliente' => $data['cod_postal_cliente'] ?? null,
+                    'pais_cliente' => $data['pais_cliente'] ?? null,
                     'nif_cliente' => $data['nif_cliente'] ?? null,
-                    'ip_cliente' => $this->getClientIP(),
+                    //'ip_cliente' => $this->getClientIP(),
+                    'ip_cliente' => $data['ip_cliente'] ?? null,
                     'imagem_cliente' => $data['imagem_cliente'] ?? null,
                     'id_gift' => $data['id_gift'] ?? null,
                     'id_favoritos' => $data['id_favoritos'] ?? null,
@@ -683,6 +688,15 @@ public function searchProductsByTitle($searchTerm): array
         return $this->queryBuilder->table('Reviews')
             ->select(['classificacao', 'COUNT(*) AS Sum'])
             ->groupBy('classificacao')
+            ->get();
+
+    }
+
+    public function getFeedbackAVGProduct($id_product): array
+    {
+        return $this->queryBuilder->table('Reviews')
+            ->select(["AVG(classificacao) AS AverageClassification"])
+            ->where("id_produto", "=", $id_product)
             ->get();
 
     }

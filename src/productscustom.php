@@ -269,30 +269,24 @@ $userId = $_SESSION['user_id'] ?? null;
       </div>
     </div>
 
+    <svg style="display: none;">
+      <defs>
+        <symbol id="star" viewBox="0 0 32 32">
+          <polygon points="16,2 20,12 31,12 22,18 25,28 16,22 7,28 10,18 1,12 12,12"/>
+        </symbol>
+        <linearGradient id="half-star" x1="0" y1="0" x2="100%" y2="0">
+          <stop offset="50%" stop-color="orange"/>
+          <stop offset="50%" stop-color="lightgray"/>
+        </linearGradient>
+      </defs>
+    </svg>
+
     <div id="productInfo" class="productInformation">
       <h1 id="productName" class="nameOfProduct"></h1>
 
-      <div class="starReviews">
-        <svg width="150" height="30" viewBox="0 0 150 30">
-          <!-- Define a gradient for the half-star -->
-          <defs>
-            <linearGradient id="half-star" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="50%" stop-color="orange" /> <!-- Left half is orange -->
-              <stop offset="50%" stop-color="lightgray" /> <!-- Right half is gray -->
-            </linearGradient>
-          </defs>
+      <div id="productReviews" class="starReviews">
 
-          <!-- Full stars -->
-          <polygon points="15,1 19,11 30,11 21,17 24,27 15,21 6,27 9,17 0,11 11,11" fill="orange" />
-          <polygon points="45,1 49,11 60,11 51,17 54,27 45,21 36,27 39,17 30,11 41,11" fill="orange" />
-          <polygon points="75,1 79,11 90,11 81,17 84,27 75,21 66,27 69,17 60,11 71,11" fill="orange" />
-          <polygon points="105,1 109,11 120,11 111,17 114,27 105,21 96,27 99,17 90,11 101,11" fill="orange" />
 
-          <!-- Half-star -->
-          <polygon points="135,1 139,11 150,11 141,17 144,27 135,21 126,27 129,17 120,11 131,11"
-            fill="url(#half-star)" />
-        </svg>
-        (128 reviews)
       </div>
 
       <div id="idDivProductPrice" class="classDivProductPrice">
@@ -460,17 +454,6 @@ $userId = $_SESSION['user_id'] ?? null;
           <label for="rating5" class="ratingLabel">5</label>
         </div>
       </div>
-
-      <!-- Dropdown -->
-      <!--<div class="formGroup">
-        <label for="purchase" class="formLabel">What did you purchase?</label>
-        <select id="purchase" name="purchase" class="selectBox">
-          <option value="">Select an option...</option>
-          <option value="1">T-Shirt</option>
-          <option value="2">Pants</option>
-          <option value="3">Shoes</option>
-        </select>
-      </div>-->
 
       <!-- Comments -->
       <div class="formGroup">
