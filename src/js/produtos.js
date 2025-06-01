@@ -233,64 +233,59 @@ document.addEventListener('DOMContentLoaded', function () {
 });*/
 
 async function atualizarCoresPorCategoria() {
+    const colorContainer = document.getElementById("idColorOptions");
+    if (!colorContainer) {
+        console.error("Container de cores não encontrado");
+        return;
+    }
+    colorContainer.innerHTML = ""; // Clear previous content immediately
+
     try {
         // Obtém os valores (IDs) das categorias que estão selecionadas.
         const categoriasSelecionadas = [...document.querySelectorAll('input[type=checkbox][id^="defaultCategory"]:checked')].map(cb => cb.value);
-        console.log("Categorias selecionadas:", categoriasSelecionadas);
+        // console.log("Categorias selecionadas:", categoriasSelecionadas);
 
         if (categoriasSelecionadas.length === 0) {
-            console.log("Nenhuma categoria selecionada");
+            // console.log("Nenhuma categoria selecionada para buscar cores.");
+            colorContainer.innerHTML = "<p>Selecione uma categoria para ver as cores disponíveis.</p>";
             return;
         }
 
         // Converte o array de categorias selecionadas em uma string separada por vírgulas para a URL da API.
         const categoriasStr = categoriasSelecionadas.join(',');
-        console.log("Buscando cores para categorias:", categoriasStr);
+        // console.log("Buscando cores para categorias:", categoriasStr);
 
-        // Faz uma requisição à API para obter as cores baseadas nas categorias selecionadas.
         const response = await fetch(`../restapi/PrintGoAPI.php/getColorsByCategories/${categoriasStr}`);
         const data = await response.json();
-        //console.log("Resposta da API de cores:", data);
 
-        // Verifica se a resposta da API tem o formato esperado (com a propriedade 'cores' ou é um array diretamente).
         if (!data || (!data.cores && !Array.isArray(data))) {
-            console.error("Formato de resposta inesperado:", data);
+            console.error("Formato de resposta inesperado ao buscar cores:", data);
+            colorContainer.innerHTML = "<p>Erro ao carregar cores (formato inválido).</p>";
             return;
         }
 
-        // Extrai as cores da resposta da API, tratando os dois formatos possíveis (objeto com 'cores' ou array direto).
         const cores = data.cores || (Array.isArray(data) ? data : []);
-        //console.log("Cores encontradas:", cores);
-
-        const colorContainer = document.getElementById("idColorOptions");
-        if (!colorContainer) {
-            console.error("Container de cores não encontrado");
-            return;
-        }
-
-        colorContainer.innerHTML = "";
 
         if (cores.length === 0) {
-            colorContainer.innerHTML = "<p>Nenhuma cor disponível para esta categoria</p>";
+            colorContainer.innerHTML = "<p>Nenhuma cor disponível para esta categoria.</p>";
             return;
         }
 
-        // Itera sobre cada cor recebida e cria um input de rádio e um label correspondente.
         cores.forEach(cor => {
             //console.log("Cor recebida:", cor);
             const input = document.createElement("input");
             input.type = "radio";
-            input.className = "btn-check"; // Classe para estilização (provavelmente Bootstrap).
+            input.className = "btn-check";
             input.name = "color";
-            input.id = `color-${cor.nome_cor}`; // ID único para o input.
-            input.value = cor.hex_cor; // O valor do input será o código hexadecimal da cor.
-            input.setAttribute('data-color-name', cor.nome_cor); // Atributo de dados para o nome da cor.
+            input.id = `color-${cor.nome_cor}`;
+            input.value = cor.hex_cor;
+            input.setAttribute('data-color-name', cor.nome_cor);
             input.autocomplete = "off";
 
             const label = document.createElement("label");
-            label.className = "btnColor rounded-circle p-2"; // Classes para estilização do botão de cor.
-            label.setAttribute("for", `color-${cor.nome_cor}`); // Associa o label ao input de rádio.
-            label.style.backgroundColor = cor.hex_cor; // Define a cor de fundo do label.
+            label.className = "btnColor rounded-circle p-2";
+            label.setAttribute("for", `color-${cor.nome_cor}`);
+            label.style.backgroundColor = cor.hex_cor;
             label.style.border = "2px solid #ccc";
             label.title = cor.nome_cor;
 
@@ -299,6 +294,7 @@ async function atualizarCoresPorCategoria() {
         });
     } catch (error) {
         console.error("Erro ao atualizar cores:", error);
+        colorContainer.innerHTML = "<p>Ocorreu um erro ao carregar as cores.</p>";
     }
 }
 
@@ -316,62 +312,67 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Mostrar Tamanhos consoante a categoria selecionada
 async function atualizarSizePorCategoria() {
+    const sizeContainer = document.getElementById("size-selector-desktop");
+    if (!sizeContainer) {
+        console.error("Container de tamanhos (desktop) não encontrado.");
+        return;
+    }
+    sizeContainer.innerHTML = ""; // Clear previous content immediately
+
     try {
         // Obtém os valores (IDs) das categorias que estão selecionadas.
         const categoriasSelecionadas = [...document.querySelectorAll('input[type=checkbox][id^="defaultCategory"]:checked')].map(cb => cb.value);
-        console.log("Categorias selecionadas:", categoriasSelecionadas);
+        // console.log("Categorias selecionadas para tamanhos:", categoriasSelecionadas);
 
         if (categoriasSelecionadas.length === 0) {
-            console.log("Nenhuma categoria selecionada");
+            // console.log("Nenhuma categoria selecionada para buscar tamanhos.");
+            sizeContainer.innerHTML = "<p>Selecione uma categoria para ver os tamanhos disponíveis.</p>";
             return;
         }
 
-        // Converte o array de categorias selecionadas em uma string separada por vírgulas para a URL da API.
         const categoriasStr = categoriasSelecionadas.join(',');
-        console.log("Buscando cores para categorias:", categoriasStr);
+        // console.log("Buscando tamanhos para categorias:", categoriasStr);
 
-        // Faz uma requisição à API para obter os tamanhos baseadas nas categorias selecionadas.
         const response = await fetch(`../restapi/PrintGoAPI.php/getSizesByCategories/${categoriasStr}`);
         const data = await response.json();
-        console.log("Resposta da API de tamanhos:", data);
+        // console.log("Resposta da API de tamanhos:", data);
 
-
-        const sizeContainer = document.getElementById("size-selector-desktop");
-
-        sizeContainer.innerHTML = "";
+        if (!Array.isArray(data)) {
+            console.error("Resposta da API de tamanhos não é um array:", data);
+            sizeContainer.innerHTML = "<p>Erro ao carregar tamanhos (formato inválido).</p>";
+            return;
+        }
 
         if (data.length === 0) {
-            sizeContainer.innerHTML = "<p>No sizes available for this category</p>"; // Corrigido de colorContainer para sizeContainer
+            sizeContainer.innerHTML = "<p>Nenhum tamanho disponível para esta categoria.</p>";
             return;
         }
 
         const todosTamanhos = data.flatMap(item => {
-            // Verifica se item.tamanho é uma string que contém múltiplos valores
             if (typeof item.tamanho === 'string' && item.tamanho.includes(',')) {
-                // Divide a string em um array pelos separadores de vírgula e remove espaços
                 return item.tamanho.split(',').map(t => t.trim());
             }
-            // Se não for uma string com vírgulas ou for outro tipo de valor, retorna como está
             return item.tamanho;
         });
 
-        console.log("Todos os tamanhos combinados:", todosTamanhos);
+        // console.log("Todos os tamanhos combinados:", todosTamanhos);
+        const tamanhosSemDuplicatas = [...new Set(todosTamanhos)].filter(t => t); // Filter out empty/null if any
 
-        // Remiver tamanhos duplicados usando Set
-        const tamanhosSemDuplicatas = [...new Set(todosTamanhos)];
-        console.log("Tamanhos únicos:", tamanhosSemDuplicatas);
+        // console.log("Tamanhos únicos:", tamanhosSemDuplicatas);
 
+        if (tamanhosSemDuplicatas.length === 0) {
+            sizeContainer.innerHTML = "<p>Nenhum tamanho disponível para esta categoria após processamento.</p>";
+            return;
+        }
 
-        // Itera sobre cada cor recebida e cria um input de rádio e um label correspondente.
+        // Itera sobre cada tamanho recebido e cria um input de rádio e um label correspondente.
         tamanhosSemDuplicatas.forEach(tamanho => {
 
-            // Criar div para o grupo de botões
             const btnGroup = document.createElement('div');
             btnGroup.classList.add('btn-group', 'me-2');
             btnGroup.setAttribute('role', 'group');
             btnGroup.setAttribute('aria-label', 'Size option');
 
-            // Criar input radio
             const input = document.createElement('input');
             input.type = 'radio';
             input.classList.add('btn-check');
@@ -380,19 +381,18 @@ async function atualizarSizePorCategoria() {
             input.id = `btnradio-${tamanho}-desktop`;
             input.autocomplete = 'off';
 
-            // Criar label para o input
             const label = document.createElement('label');
             label.classList.add('btn', 'btn-outline-primary');
             label.setAttribute('for', `btnradio-${tamanho}-desktop`);
             label.textContent = tamanho.replace(/%20/g, " ");
 
-            // Adicionar elementos ao DOM
             btnGroup.appendChild(input);
             btnGroup.appendChild(label);
             sizeContainer.appendChild(btnGroup);
         });
     } catch (error) {
-        console.error("Erro ao atualizar cores:", error);
+        console.error("Erro ao atualizar tamanhos:", error); // Corrected error message
+        sizeContainer.innerHTML = "<p>Ocorreu um erro ao carregar os tamanhos.</p>";
     }
 }
 document.addEventListener('DOMContentLoaded', function () {
@@ -586,7 +586,49 @@ if (applyFiltersDesktop) {
             cores: [...document.querySelectorAll('input[name="color"]:checked')].map(cb => cb.getAttribute('data-color-name')), // Use color name instead of hex value
             tamanhos: [...document.querySelectorAll('input[name="size-desktop"]:checked')].map(cb => cb.value),
         };
-        console.log("Filtros:" + JSON.stringify(filtros));
+        // console.log("Filtros:" + JSON.stringify(filtros));
         buscarProdutos(filtros);
+    });
+}
+
+const clearFiltersDesktop = document.getElementById('clear-filters-desktop');
+if (clearFiltersDesktop) {
+    clearFiltersDesktop.addEventListener('click', function () {
+        // 1. Deselect all category checkboxes
+        document.querySelectorAll('input[type=checkbox][id^="defaultCategory"]').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+
+        // 2. Deselect any checked color radio button
+        const checkedColor = document.querySelector('input[name="color"]:checked');
+        if (checkedColor) {
+            checkedColor.checked = false;
+        }
+
+        // 3. Deselect any checked size radio button (desktop)
+        const checkedSizeDesktop = document.querySelector('input[name="size-desktop"]:checked');
+        if (checkedSizeDesktop) {
+            checkedSizeDesktop.checked = false;
+        }
+
+        // 4. Reset the price range slider (desktop)
+        const rangeMinDesktop = document.getElementById('range-min');
+        const rangeMaxDesktop = document.getElementById('range-max');
+        if (rangeMinDesktop && rangeMaxDesktop) {
+            rangeMinDesktop.value = rangeMinDesktop.min; // Or "0"
+            rangeMaxDesktop.value = rangeMaxDesktop.max; // Or "100"
+
+            // Trigger input events to update slider UI
+            rangeMinDesktop.dispatchEvent(new Event('input'));
+            rangeMaxDesktop.dispatchEvent(new Event('input'));
+        }
+
+        // 5. Update color and size sections to reflect no categories selected
+        // These functions will now clear their respective containers and show a placeholder message
+        atualizarCoresPorCategoria();
+        atualizarSizePorCategoria();
+
+        // 6. Fetch and display all products (no filters)
+        buscarProdutos();
     });
 }
