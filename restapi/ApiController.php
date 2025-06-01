@@ -631,7 +631,7 @@ public function searchProductsByTitle($searchTerm): array
 
         $requiredFields = [
             'id_cliente',
-            'id_categoria',
+            'id_produto',
             'comentario',
             'classificacao',
             'data_review',
@@ -650,7 +650,7 @@ public function searchProductsByTitle($searchTerm): array
             $this->queryBuilder->table('Reviews')
                 ->insert([
                     'id_cliente' => $data['id_cliente'],
-                    'id_categoria' => $data['id_categoria'],
+                    'id_produto' => $data['id_produto'],
                     'comentario' => $data['comentario'],
                     'classificacao' => $data['classificacao'],
                     'data_review' => $data['data_review'],

@@ -740,10 +740,17 @@ document
 
     // armazenar dados do formulario
     const comentario = document.querySelector('textarea[name="comments"]').value;
-    const recommend =
-      document.querySelector('input[name="recommend"]:checked')?.value === "yes" ? "2" : "1";
+    const recommend =document.querySelector('input[name="recommend"]:checked')?.value === "yes" ? "2" : "1";
     const classificacao = document.querySelector('input[name="rating"]:checked')?.value || "5";
-    const id_categoria = document.querySelector('select[name="purchase"]').value;
+    //const id_categoria = document.querySelector('select[name="purchase"]').value;
+
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const product = urlParams.get('id');
+
+    console.log("asdadsd: " + product);
+
+    const id_produto = product;
 
 
     const id_cliente = document.getElementById("userId").value;
@@ -756,7 +763,7 @@ document
     }
 
     // validar campos "obrigatorios"
-    if (!comentario || !id_categoria || !classificacao) {
+    if (!comentario || !classificacao) {
       alert("Preencha todos os campos.");
       return;
     }
@@ -765,7 +772,7 @@ document
     // construcao de array dos dados
     const data = {
       id_cliente: id_cliente,
-      id_categoria: id_categoria,
+      id_produto: id_produto,
       comentario: comentario,
       classificacao: classificacao,
       data_review: new Date().toISOString().split("T")[0],

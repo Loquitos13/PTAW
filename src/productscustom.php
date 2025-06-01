@@ -462,7 +462,7 @@ $userId = $_SESSION['user_id'] ?? null;
       </div>
 
       <!-- Dropdown -->
-      <div class="formGroup">
+      <!--<div class="formGroup">
         <label for="purchase" class="formLabel">What did you purchase?</label>
         <select id="purchase" name="purchase" class="selectBox">
           <option value="">Select an option...</option>
@@ -470,7 +470,7 @@ $userId = $_SESSION['user_id'] ?? null;
           <option value="2">Pants</option>
           <option value="3">Shoes</option>
         </select>
-      </div>
+      </div>-->
 
       <!-- Comments -->
       <div class="formGroup">
