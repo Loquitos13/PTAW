@@ -730,6 +730,64 @@ public function searchProductsByTitle($searchTerm): array
 
     }
 
+    public function getRecentOrdersByClient($id_cliente): array 
+    {
+        try {
+            return $this->queryBuilder->table('Encomendas')
+                ->select([
+                    'Encomendas.id_encomenda',
+                    'Encomendas.data_criacao_encomenda',
+                    'Encomendas.status_encomenda'
+                ])
+                ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
+                ->where('Carrinhos.id_cliente', '=', $id_cliente)
+                ->order('Encomendas.data_criacao_encomenda', 'DESC')
+                ->limit(5)
+                ->get();
+        } catch (PDOException $e) {
+            error_log("Database error in getRecentOrdersByClient: " . $e->getMessage());
+            throw $e;
+        } catch (Exception $e) {
+            error_log("General error in getRecentOrdersByClient: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function getNumberOfOrdersByClient($id_cliente): int
+    {
+        try {
+            $result = $this->queryBuilder->table('Encomendas')
+                ->select(['COUNT(*) AS total'])
+                ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
+                ->where('Carrinhos.id_cliente', '=', $id_cliente)
+                ->get();
+
+            return $result[0]['total'] ?? 0;
+        } catch (PDOException $e) {
+            error_log("Database error in getNumberOfOrdersByClient: " . $e->getMessage());
+            throw $e;
+        } catch (Exception $e) {
+            error_log("General error in getNumberOfOrdersByClient: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function getClientProfile($id_cliente): ?array
+    {
+        $result = $this->queryBuilder->table('Clientes')
+            ->select([
+                'id_cliente',
+                'nome_cliente',
+                'data_criacao_cliente',
+                'imagem_cliente'
+            ])
+            ->where('id_cliente', '=', $id_cliente)
+            ->get();
+
+        return $result[0] ?? null;
+    }
+
+
     public function insertProduct(): array
     {
 
