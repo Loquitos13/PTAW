@@ -59,6 +59,8 @@
 
     $router->add('POST', '/insertUser', fn() => $controller->insertUser());
 
+    $router->add('GET', '/feedbackAVGProduct/$id_product', fn($id_product) => $controller->getFeedbackAVGProduct($id_product));
+
     $router->add('PUT', '/updateUser', fn() => $controller->updateUser());
 
     $router->add('DELETE', '/deleteUserByID/$id', fn($id) => $controller->deleteUserByID($id));
