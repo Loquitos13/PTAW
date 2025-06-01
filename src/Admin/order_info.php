@@ -2,38 +2,9 @@
 
 session_start();
 
+$orderId = isset($_GET['id']) ? $_GET['id'] : null;
 
-// Função para formatar status com cores melhoradas
-function getStatusBadge($status)
-{
-  $statusMap = [
-    'pendente' => ['class' => 'bg-warning text-dark', 'text' => 'Pendente'],
-    'processando' => ['class' => 'bg-info text-white', 'text' => 'A ser processada'],
-    'enviado' => ['class' => 'bg-primary', 'text' => 'Enviado'],
-    'entregue' => ['class' => 'bg-success', 'text' => 'Entregue'],
-    'cancelado' => ['class' => 'bg-danger', 'text' => 'Cancelado'],
-    'reembolsado' => ['class' => 'bg-secondary', 'text' => 'Reembolsado']
-  ];
 
-  $statusLower = strtolower(trim($status));
-  $statusInfo = $statusMap[$statusLower] ?? ['class' => 'bg-secondary', 'text' => ucfirst($status)];
-
-  return '<span class="badge ' . $statusInfo['class'] . '">' . htmlspecialchars($statusInfo['text']) . '</span>';
-}
-
-// Função para formatar data com melhor tratamento de timezone
-function formatDate($date)
-{
-  if (empty($date))
-    return 'N/A';
-
-  try {
-    $dateTime = new DateTime($date);
-    return $dateTime->format('d/m/Y H:i');
-  } catch (Exception $e) {
-    return 'Data inválida';
-  }
-}
 
 // Função para formatar moeda
 function formatCurrency($amount)
@@ -41,20 +12,6 @@ function formatCurrency($amount)
   return '€' . number_format((float) $amount, 2, ',', '.');
 }
 
-// Função para obter ícone do método de pagamento
-function getPaymentIcon($method)
-{
-  $icons = [
-    'cartao' => 'bi-credit-card',
-    'paypal' => 'bi-paypal',
-    'mbway' => 'bi-phone',
-    'transferencia' => 'bi-bank',
-    'multibanco' => 'bi-credit-card-2-front'
-  ];
-
-  $methodLower = strtolower(trim($method));
-  return $icons[$methodLower] ?? 'bi-cash';
-}
 ?>
 
 <!DOCTYPE html>
@@ -71,7 +28,7 @@ function getPaymentIcon($method)
   <script src="js/OrderInfo.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
+  </script>
 </head>
 <style>
   body {
@@ -278,7 +235,8 @@ function getPaymentIcon($method)
       width: 100%;
       padding-top: 70px;
     }
-    .fixed-header{
+
+    .fixed-header {
       display: flex;
       align-items: center;
     }
@@ -309,7 +267,7 @@ function getPaymentIcon($method)
       align-self: center;
     }
 
-    
+
   }
 
   @media (max-width: 768px) {
@@ -463,7 +421,7 @@ function getPaymentIcon($method)
                       </tr>
                     </thead>
                     <tbody class="table-tbody">
-                      
+
                     </tbody>
                   </table>
                 </div>
@@ -492,26 +450,27 @@ function getPaymentIcon($method)
                       <tr class="table-active">
                         <td><strong>Total:</strong></td>
                         <td class="text-end">
-                          <strong data-financial-total></strong></td>
+                          <strong data-financial-total></strong>
+                        </td>
                       </tr>
                     </table>
                   </div>
 
-                    <div class="col-md-6">
-                      <h6>Informações de Pagamento</h6>
-                      <div data-payment-method>
-                        <i class="me-2"></i>
-                        <p ></p>
-                      </div>
-                      <p><strong>Status:</strong>
-                        <span
-                          class="badge <?php echo strtolower($payment['status_pagamento']) === 'pago' ? 'bg-success' : 'bg-warning'; ?>">
-                          <?php echo ucfirst($payment['status_pagamento']); ?>
-                        </span>
-                      </p>
-                        <p data-payment-reference>
-                          </p>
+                  <div class="col-md-6">
+                    <h6>Informações de Pagamento</h6>
+                    <div data-payment-method>
+                      <i class="me-2"></i>
+                      <p></p>
                     </div>
+                    <p><strong>Status:</strong>
+                      <span
+                        class="badge <?php echo strtolower($payment['status_pagamento']) === 'pago' ? 'bg-success' : 'bg-warning'; ?>">
+                        <?php echo ucfirst($payment['status_pagamento']); ?>
+                      </span>
+                    </p>
+                    <p data-payment-reference>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -532,7 +491,7 @@ function getPaymentIcon($method)
                   <div>
                     <h6 class="mb-1" data-customer-name></h6>
                     <small class="text-muted" data-member-since>
-                      </small>
+                    </small>
                   </div>
                 </div>
               </div>
@@ -548,8 +507,8 @@ function getPaymentIcon($method)
               <div class="card-body">
                 <p data-customer-email><strong>Email:</strong><br>
                   <a href="mailto: data-customer-email"
-                    class="text-decoration-none" >
-                    
+                    class="text-decoration-none">
+
                   </a>
                 </p>
 
@@ -584,10 +543,10 @@ function getPaymentIcon($method)
                 <h6 class="mb-0"><i class="bi bi-chat-text"></i> Notas</h6>
               </div>
               <div class="card-body">
-                  <div class="alert alert-info">
-                    <i class="bi bi-info-circle me-2"></i>
-                    <p class="text-muted mb-0" data-order-notes></p>
-                  </div>
+                <div class="alert alert-info">
+                  <i class="bi bi-info-circle me-2"></i>
+                  <p class="text-muted mb-0" data-order-notes></p>
+                </div>
               </div>
             </div>
           </div>
@@ -610,23 +569,24 @@ function getPaymentIcon($method)
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
       const modal = document.getElementById('processModal');
       const closeBtn = document.querySelector('.close-button');
       const modalContent = document.getElementById('modal-body-content');
 
-      document.getElementById('button-process').addEventListener('click', function () {
+      document.getElementById('button-process').addEventListener('click', function() {
         modal.style.display = 'block';
 
         // Reset modal content
         modalContent.innerHTML = `
-          <div class="text-center">
-            <div class="loading-spinner"></div>
-            <p class="mt-2">A carregar...</p>
-          </div>
-        `;
+        <div class="text-center">
+          <div class="loading-spinner"></div>
+          <p class="mt-2">A carregar...</p>
+        </div>
+      `;
 
-        fetch('ProcessItems.php?order_id=<?php echo $orderId; ?>')
+        // Carregar formulário de ProcessItems.php - CORREÇÃO AQUI
+        fetch('ProcessItems.php?id=<?php echo $_GET['id']; ?>')
           .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok');
@@ -638,27 +598,26 @@ function getPaymentIcon($method)
           })
           .catch(error => {
             modalContent.innerHTML = `
-              <div class="alert alert-danger">
-                <i class="bi bi-exclamation-triangle me-2"></i>
-                Erro ao carregar conteúdo. Tente novamente.
-              </div>
-            `;
+            <div class="alert alert-danger">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              Erro ao carregar conteúdo. Tente novamente.
+            </div>
+          `;
             console.error('Error:', error);
           });
       });
-
-      closeBtn.addEventListener('click', function () {
+      closeBtn.addEventListener('click', function() {
         modal.style.display = 'none';
       });
 
-      window.addEventListener('click', function (event) {
+      window.addEventListener('click', function(event) {
         if (event.target === modal) {
           modal.style.display = 'none';
         }
       });
 
       // Close modal with Escape key
-      document.addEventListener('keydown', function (event) {
+      document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape' && modal.style.display === 'block') {
           modal.style.display = 'none';
         }
@@ -681,10 +640,9 @@ function getPaymentIcon($method)
     }
 
     // Auto-refresh order status every 30 seconds
-    setInterval(function () {
+    setInterval(function() {
       // You can implement auto-refresh logic here if needed
     }, 30000);
-
   </script>
 </body>
 

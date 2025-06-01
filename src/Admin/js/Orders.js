@@ -13,16 +13,6 @@ document.addEventListener("DOMContentLoaded", function () {
         </li>`;
   }
 
-  const processButton = document.getElementById("button-process");
-  if (processButton) {
-    processButton.addEventListener("click", function () {
-      window.open(
-        "ProcessItems.php",
-        "ProcessPopup",
-        "width=600,height=600,resizable=yes,scrollbars=yes"
-      );
-    });
-  }
 
   loadOrders();
 });

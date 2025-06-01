@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
         getOrderInfo(orderId);
         getOrderItems(orderId);
     }
+    
 
 });
 
