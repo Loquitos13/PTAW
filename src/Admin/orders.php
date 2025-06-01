@@ -97,8 +97,8 @@ $adminId = $_SESSION['admin_id'] ?? null;
       padding-top: 70px;
     }
 
-    .header-desktop {
-      display: none;
+    #div-menu.container.header-desktop {
+      display: none !important;
     }
 
     #a-logo-header-mobile {

@@ -29,7 +29,7 @@ $base_url = "/~ptaw-2025-gr4";
         </svg>
         Dashboard
       </a>
-      <a href="Products.php" class="nav-link py-2">
+      <a href="produtosAdmin.php" class="nav-link py-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi me-2 bi-box2-fill"
           viewBox="0 0 16 16">
           <path
@@ -37,7 +37,7 @@ $base_url = "/~ptaw-2025-gr4";
         </svg>
         Products
       </a>
-      <a href="<?= $base_url ?>/src/customdesign.php" class="nav-link py-2">
+      <a href="orders.php" class="nav-link py-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi me-2 bi-cart-fill"
           viewBox="0 0 16 16">
           <path

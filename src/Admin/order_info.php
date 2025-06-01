@@ -283,8 +283,8 @@ function getPaymentIcon($method)
       align-items: center;
     }
 
-    .header-desktop {
-      display: none;
+    #div-menu.container.header-desktop {
+      display: none !important;
     }
 
     #a-logo-header-mobile {
