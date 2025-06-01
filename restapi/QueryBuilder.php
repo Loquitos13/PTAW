@@ -53,6 +53,16 @@ class QueryBuilder
         return $this;
     }
 
+    public function orWhere(string $column, string $operator, mixed $value): self
+    {
+        $placeholder = ':' . preg_replace('/[^a-zA-Z0-9_]/', '_', $column) . uniqid('_');
+
+        $this->query .= (str_contains($this->query, 'WHERE') ? " OR" : " WHERE") . " $column $operator $placeholder";
+        $this->bindings[$placeholder] = $value;
+
+        return $this;
+    }
+
 
     public function join(string $table, string $column1, string $operator, string $column2): static
     {
