@@ -65,6 +65,8 @@
 
     $router->add('POST', '/insertUser', fn() => $controller->insertUser());
 
+    $router->add('POST', '/insertShoppingCart', fn() => $controller->insertShoppingCart());
+
     $router->add('GET', '/feedbackAVGProduct/$id_product', fn($id_product) => $controller->getFeedbackAVGProduct($id_product));
 
     $router->add('PUT', '/updateUser', fn() => $controller->updateUser());

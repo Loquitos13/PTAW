@@ -42,6 +42,32 @@ async function getEmailAvailability(email) {
   }
 }
 
+async function createShoppingCart(id_cliente) {
+
+  try {
+    const response = await fetch('../client/createShoppingCart.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({id_cliente: id_cliente})
+    })
+
+    const data = await response.json();
+
+    console.log(data);
+    console.log(JSON.stringify(data));
+    console.log(JSON.stringify(data.data.status));
+    
+    return data.data;
+  
+  } catch (error) {
+    
+    return null;
+  
+  }
+}
+
 document.getElementById('createAccForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
@@ -77,7 +103,18 @@ document.getElementById('createAccForm').addEventListener('submit', async functi
 
         if (result.status === 'success') {
 
-          window.location.href = "../index.php";
+          const createCart = await createShoppingCart(result.data.id_Cliente);
+
+          if (createCart.status === 'success') {
+
+            window.location.href = "../index.php";
+
+          } else {
+
+            infoMessage.textContent = result.message || "Error creating shopping cart!";
+
+          }
+
 
         } else {
 

@@ -40,7 +40,7 @@ try {
         throw new Exception("Invalid JSON: " . json_last_error_msg());
     }
     
-    $result = addUser($data);
+    $result = addShoppingCart($data);
     echo json_encode([
         'status' => 'success',
         'data' => $result
@@ -54,33 +54,30 @@ try {
     ]);
 }
 
-function addUser($data) {
+function addShoppingCart($id_cliente) {
     global $apiUrl;
 
-    if(empty($data)) {
+    if(empty($id_cliente)) {
         throw new Exception("No user data provided");
     }
 
-    $ch = curl_init("$apiUrl/insertUser");
+    $ch = curl_init("$apiUrl/insertShoppingCart");
 
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($id_cliente));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json'
     ]);
 
     $response = executeCurlRequest($ch);
 
-    $userData = json_decode($response, true);
-
-    $_SESSION['user_email'] = $data['email_cliente'];
-    $_SESSION['user_id'] = $userData['id_cliente'];
+    $cartData = json_decode($response, true);
 
      return [
          'status' => 'success',
-         'message' => 'Register successful',
-         'id_Cliente' => $userData['id_cliente']
+         'message' => 'Shopping Cart created',
+         'id_cart' => $cartData['id_cart']
      ];
 
 }

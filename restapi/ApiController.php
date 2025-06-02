@@ -1128,6 +1128,64 @@ public function searchProductsByTitle($searchTerm): array
             ->where('Carrinhos.id_cliente', '=', $userID)
             ->get();
     }
+
+    public function insertShoppingCart(): array {
+
+         $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = ['id_cliente'];
+
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+
+            if (empty($data[$field])) {
+
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+
+            $this->queryBuilder->table('Carrinhos')
+                ->insert([
+                    'id_cliente' => $data['id_cliente'],
+                    'ip_cliente' => $data['ip_cliente'] ?? null,
+                ]);
+
+            $lastId = $this->queryBuilder->getLastInsertId();
+
+            return [
+                'success' => true,
+                'message' => 'Shopping cart created',
+                'id_cart' => $lastId
+            ];
+
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error creating the user',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
 }
 
 ?>

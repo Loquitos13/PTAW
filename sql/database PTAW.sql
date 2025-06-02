@@ -111,7 +111,7 @@ CREATE TABLE ProdutosVariantes (
 CREATE TABLE Carrinhos (
     id_carrinho INT AUTO_INCREMENT PRIMARY KEY,
     id_cliente INT NOT NULL,
-    ip_cliente VARCHAR(45) NOT NULL,
+    ip_cliente VARCHAR(45),
     FOREIGN KEY (id_cliente) 
         REFERENCES Clientes(id_cliente)
         ON DELETE CASCADE
