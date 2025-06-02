@@ -89,11 +89,22 @@
 
     <!-- Linha 2: Country Code + Phone Number lado a lado -->
     <div style="display: flex; gap: 1rem;">
-        <div class="container-format-column" style="flex: 1;">
-            Country Code
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" aria-label="Country Code" aria-describedby="country-addon">
-            </div>
+         <div class="container-format-column" style="flex: 1;">
+          <label for="country-code">Country Code</label>
+        <div class="input-group mb-3">
+            <select class="form-control" id="country-code" aria-label="Country Code" aria-describedby="country-addon">
+                <option value="+351">🇵🇹 Portugal (+351)</option>
+                <option value="+34">🇪🇸 Spain (+34)</option>
+                <option value="+33">🇫🇷 France (+33)</option>
+                <option value="+39">🇮🇹 Italy (+39)</option>
+                <option value="+49">🇩🇪 Germany (+49)</option>
+                <option value="+44">🇬🇧 United Kingdom (+44)</option>
+                <option value="+31">🇳🇱 Netherlands (+31)</option>
+                <option value="+32">🇧🇪 Belgium (+32)</option>
+                <option value="+43">🇦🇹 Austria (+43)</option>
+                <option value="+45">🇩🇰 Denmark (+45)</option>
+            </select>
+        </div>
         </div>
         <div class="container-format-column" style="flex: 2;">
             Phone Number
@@ -148,6 +159,14 @@
                     Continue to Payment <i class="bi bi-arrow-right"></i>
                 </button>
             </div>
+            <script>
+    document.getElementById("payment-button").addEventListener("click", function () {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth" // efeito suave
+        });
+    });
+</script>
             <div class="space"></div>
             <div class="Insignia" id="payment-insignia">
                 <span class="badge rounded-pill text-bg-primary bg-blueviolet First">1</span>

@@ -22,6 +22,24 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 });
 
+function PreencherDadosCliente(cliente) {
+  const nomePartes = cliente.nome_cliente.trim().split(" ");
+
+    const primeiroNome = nomePartes[0];
+  const apelido = nomePartes.slice(1).join(" ");
+  
+  document.getElementById("firstName").value = primeiroNome;
+  document.getElementById("lastName").value = apelido;
+  document.getElementById("email").value = cliente.email_cliente || '';
+  document.getElementById("countryCode").value = cliente.codigo_pais || '';
+  document.getElementById("phoneNumber").value = cliente.telefone_cliente || '';
+  document.getElementById("address").value = cliente.morada_cliente || '';
+  document.getElementById("city").value = cliente.cidade_cliente || '';
+  document.getElementById("postalCode").value = cliente.cod_postal_cliente || '';
+  document.getElementById("taxId").value = cliente.nif_cliente || '';
+}
+
+
 function renderDadosCliente(cliente) {
   const container = document.querySelector('.container-cliente');
   container.innerHTML = ''; // limpa conteúdo anterior
