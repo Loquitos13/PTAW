@@ -17,10 +17,6 @@ document.getElementById('signInForm').addEventListener('submit', async function(
 
     if (userResult.status === 'success') {
 
-      console.log(userResult);
-
-      console.log(userResult.id_cliente);
-
       const getCart = await getShoppingCart(userResult.id_cliente);
 
       if (getCart.status === 'success') {

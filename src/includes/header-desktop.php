@@ -1,7 +1,12 @@
 <?php
 $base_url = "/~ptaw-2025-gr4";
 session_start();
+
+include 'carrinho.php';
 ?>
+
+  <input type="hidden" id="userId" value="<?php echo htmlspecialchars($userId); ?>">
+  <input type="hidden" id="cartId" value="<?php echo htmlspecialchars($cartId); ?>">
 
 <style>
     .search-results-container {

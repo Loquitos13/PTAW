@@ -1,5 +1,66 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
   console.log("Carrinho.js carregado");
+
+  const cartIdInput = document.getElementById("cartId");
+
+    if (cartIdInput) {
+
+        if (cartIdInput.value) {
+
+        const cartItens = await getShoppingCartItens(cartIdInput.value);
+
+        const container = document.querySelector('#cartProducts');
+
+        container.innerHTML = '';
+
+        console.log(cartItens);
+
+        const cartItensArray = Array.isArray(cartItens) ? cartItens : cartItens.message || [];
+
+        let html = '';
+        cartItensArray.forEach(element => {
+            console.log(element);
+
+            html += `
+                <div class="row align-items-start">
+                    <div class="col-4">
+                        <img src="${element.Image}" class="img-small" alt="produtos">
+                    </div>
+                    <div class="col-8 d-flex justify-content-between align-items-start cart-item">
+                        <div>
+                            <p class="product-info mb-1">${element.Name}</p>
+                            <span class="product-info">Size: ${element.Size}</span>
+                            <span class="product-info"> | </span>
+                            <span class="product-info">Color: ${element.Color}</span>
+                            <div class="d-flex align-items-center mt-2">
+                                <button type="button" class="btn btn-outline-secondary me-2">-</button>
+                                <span class="me-2">${element.Quantity}</span>
+                                <button type="button" class="btn btn-outline-secondary me-3">+</button>
+                                <span class="price">${Number(element.Price).toFixed(2)}€</span>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-link p-0 delete-cart-btn">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            `;
+        });
+
+        // Assign all at once for better performance
+        container.innerHTML = html;
+
+
+        }
+
+    } else {
+
+        console.log("Elemento #cartId não encontrado.");
+
+    }
   
   // garantir que o bootstrap esta carregado
   if (typeof bootstrap === 'undefined') {
@@ -96,3 +157,26 @@ document.addEventListener("DOMContentLoaded", function() {
   console.log("Botao continuar compra:", document.getElementById("continuar-compra") ? "encontrado" : "nao encontrado");
   console.log("Botoes de exclusao:", document.querySelectorAll(".delete-cart-btn").length);
 });
+
+
+async function getShoppingCartItens(id_carrinho) {
+
+  try {
+    const response = await fetch('/~ptaw-2025-gr4/client/getCarrinhoItens.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({id_carrinho: id_carrinho})
+    });
+
+    const data = await response.json();
+    
+    return data;
+  
+  } catch (error) {
+    
+    return null;
+  
+  }
+}

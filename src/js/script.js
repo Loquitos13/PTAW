@@ -33,6 +33,13 @@ document.addEventListener("DOMContentLoaded", function () {
   } else {
     console.log("Elemento #userId não encontrado.");
   }
+
+  /*const cartIdInput = document.getElementById("cartId");
+  if (cartIdInput) {
+    console.log("Cart ID:", cartIdInput.value);
+  } else {
+    console.log("Elemento #cartId não encontrado.");
+  }*/
 });
 
 // estrutura de dados para feedbacks

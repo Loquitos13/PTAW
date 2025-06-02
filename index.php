@@ -3,6 +3,10 @@ session_start();
 
 /*echo "USER ID: " . $_SESSION['user_id'] . "<br>";
 echo "CART ID: " . $_SESSION["user_cart_id"];*/
+
+$userId = $_SESSION['user_id'];
+$cartId = $_SESSION['user_cart_id'];
+
 ?>
 
 
@@ -20,7 +24,8 @@ echo "CART ID: " . $_SESSION["user_cart_id"];*/
   <!--<script src="src/js/script.js"></script>-->
   <?php
   $base_url = "/~ptaw-2025-gr4";
-  include 'src/includes/carrinho.php'; ?>
+  //include 'src/includes/carrinho.php'; 
+  ?>
 </head>
 <style>
   body {
@@ -241,7 +246,6 @@ echo "CART ID: " . $_SESSION["user_cart_id"];*/
 </style>
 
 <body>
-  <input type="hidden" id="userId" value="<?php echo htmlspecialchars($userId); ?>">
   <!-- Menu Mobile -->
   <?php include 'src/includes/header-mobile.php'; ?>
 
@@ -402,7 +406,7 @@ echo "CART ID: " . $_SESSION["user_cart_id"];*/
 
   <script src="src/js/script.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="<?= $base_url ?>/src/js/carrinho.js"></script>
+  <!--<script src="<?= $base_url ?>/src/js/carrinho.js"></script>-->
 </body>
 
 </html>

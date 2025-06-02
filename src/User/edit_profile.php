@@ -11,7 +11,6 @@ session_start();
     <title>Print&Go - Edit Profile</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/userProfile.css">
-    <?php include '../includes/carrinho.php'; ?>
 </head>
 
 <style>

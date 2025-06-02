@@ -34,11 +34,8 @@ $base_url = "/~ptaw-2025-gr4";
 
 //fazer todo no JS menos o canva
 
-$cart_items= [];
-
-
-?>
-
+/*
+<!--
 <div class="offcanvas offcanvas-end" tabindex="-1" id="carrinho" aria-labelledby="offcanvasRightLabel" style="display:flex; flex-direction:column; height: fit-content; padding-bottom: 2vh;">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasRightLabel">Shopping Cart (<?php echo count($cart_items); ?>)</h5>
@@ -57,7 +54,7 @@ $cart_items= [];
                             <span class="product-info">Size: <?php echo $item['size']; ?></span>
                             <span class="product-info"> | </span>
                             <span class="product-info">Color: <?php echo $item['color']; ?></span>
-                            <!-- Quantidade e Preço -->
+                            Quantidade e Preço
                             <div class="d-flex align-items-center mt-2">
                                 <button type="button" class="btn btn-outline-secondary me-2">-</button>
                                 <span class="me-2">1</span>
@@ -80,7 +77,40 @@ $cart_items= [];
 
     <div style="align-self: center;  height:100%;  display: flex; flex-direction: column; justify-items: space-between; gap: 5%;">
         <button type="button" class="btn btn-primary" style="margin-bottom:5%;" id="concluir-compra">Concluir Compra</button>
-        <!-- Modifique o botão para: -->
+        Modifique o botão para:
         <button type="button" class="btn btn-outline-success" style="" id="continuar-compra" data-bs-dismiss="offcanvas">Continuar a Comprar</button>
     </div>
 </div>
+        -->
+*/
+
+?>
+
+
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="carrinho" aria-labelledby="offcanvasRightLabel" style="display:flex; flex-direction:column; height: fit-content; padding-bottom: 2vh;">
+    
+    <div class="offcanvas-header">
+
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">Shopping Cart (0)</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+
+    </div>
+
+    <div class="offcanvas-body">
+
+        <div class="container" id="cartProducts">
+        </div>
+
+    </div>
+
+    <div style="align-self: center;  height:100%;  display: flex; flex-direction: column; justify-items: space-between; gap: 5%;">
+
+        <button type="button" class="btn btn-primary" style="margin-bottom:5%;" id="concluir-compra">Concluir Compra</button>
+        <button type="button" class="btn btn-outline-success" style="" id="continuar-compra" data-bs-dismiss="offcanvas">Continuar a Comprar</button>
+
+    </div>
+
+</div>
+
+<script src="<?= $base_url ?>/src/js/carrinho.js"></script>

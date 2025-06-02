@@ -16,7 +16,7 @@ session_start();
 
   <link rel="stylesheet" href="css/produtos.css">
 
-  <?php include 'includes/carrinho.php'; ?>
+  <?php //include 'includes/carrinho.php'; ?>
   <?php include 'includes/filtros.php'; ?>
 </head>
 
