@@ -54,10 +54,6 @@ async function createShoppingCart(id_cliente) {
     })
 
     const data = await response.json();
-
-    console.log(data);
-    console.log(JSON.stringify(data));
-    console.log(JSON.stringify(data.data.status));
     
     return data.data;
   
@@ -114,7 +110,6 @@ document.getElementById('createAccForm').addEventListener('submit', async functi
             infoMessage.textContent = result.message || "Error creating shopping cart!";
 
           }
-
 
         } else {
 

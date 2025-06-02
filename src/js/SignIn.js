@@ -16,8 +16,22 @@ document.getElementById('signInForm').addEventListener('submit', async function(
     const userResult = await userLogin(formData);
 
     if (userResult.status === 'success') {
-      
-      window.location.href = "../index.php";
+
+      console.log(userResult);
+
+      console.log(userResult.id_cliente);
+
+      const getCart = await getShoppingCart(userResult.id_cliente);
+
+      if (getCart.status === 'success') {
+
+        window.location.href = "../index.php";
+
+      } else {
+
+        infoMessage.textContent = result.message || "Error getting shopping cart!";
+
+      }
 
     } else if (userResult.message === 'User not found') {
       
@@ -68,4 +82,26 @@ async function adminLogin(formData) {
   });
 
   return await response.json();
+}
+
+async function getShoppingCart(id_cliente) {
+
+  try {
+    const response = await fetch('../client/getShoppingCart.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({id_cliente: id_cliente})
+    });
+
+    const data = await response.json();
+    
+    return data;
+  
+  } catch (error) {
+    
+    return null;
+  
+  }
 }

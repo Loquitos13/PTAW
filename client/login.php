@@ -88,6 +88,7 @@ function loginUser($userEmail, $userPassword) {
      return [
          'status' => 'success',
          'message' => 'Login successful',
+         'id_cliente' => $userData['id_cliente'],
     ];
   }
 

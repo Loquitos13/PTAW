@@ -1,4 +1,5 @@
 <?php
+session_start();
 $base_url = "/~ptaw-2025-gr4";
 ?>
 <footer>

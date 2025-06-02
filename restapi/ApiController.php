@@ -1186,6 +1186,26 @@ public function searchProductsByTitle($searchTerm): array
         }
     }
 
+    public function getCarrinhoByUserId($id_cliente): array
+    {
+
+        return $this->queryBuilder->table('Carrinhos')
+            ->select(['id_carrinho'])
+            ->where('id_cliente', '=', $id_cliente)
+            ->get();
+
+    }
+
+    public function getCarrinhoItensByCarrinhoId($id_carrinho): array
+    {
+
+        return $this->queryBuilder->table('CarrinhoItens')
+            ->select(['*'])
+            ->where('id_carrinho', '=', $id_carrinho)
+            ->get();
+
+    }
+
 }
 
 ?>

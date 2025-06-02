@@ -1,7 +1,8 @@
 <?php
 session_start();
-$userId = $_SESSION['user_id'] ?? null;
-echo "<!-- USER ID: $userId -->"; // debug
+
+/*echo "USER ID: " . $_SESSION['user_id'] . "<br>";
+echo "CART ID: " . $_SESSION["user_cart_id"];*/
 ?>
 
 

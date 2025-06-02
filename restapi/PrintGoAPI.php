@@ -115,4 +115,8 @@
 
     $router->add('GET', '/searchProductsByTitle/$searchTerm', fn($searchTerm) => $controller->searchProductsByTitle($searchTerm));
 
+    $router->add('GET', '/carrinhoByUserId/$id_cliente', fn($id_cliente) => $controller->getCarrinhoByUserId($id_cliente));
+    
+    $router->add('GET', '/carrinhoItensByCarrinhoId/$id_carrinho', fn($id_carrinho) => $controller->getCarrinhoItensByCarrinhoId($id_carrinho));
+
     $router->dispatch();

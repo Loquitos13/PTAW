@@ -1,5 +1,6 @@
 <?php
 $base_url = "/~ptaw-2025-gr4";
+session_start();
 ?>
 
 

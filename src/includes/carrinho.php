@@ -1,8 +1,10 @@
 <?php
+session_start();
+
 $base_url = "/~ptaw-2025-gr4";
 
 // Array simulando itens do carrinho
-$cart_items = [
+/*$cart_items = [
     [
         'name' => 'Premium Cotton T-shirt',
         'size' => 'L',
@@ -27,7 +29,12 @@ $cart_items = [
         'quantity' => 1,
         'image' => "{$base_url}/imagens/produtos varios hero.png"
     ]
-];
+];*/
+
+
+//fazer todo no JS menos o canva
+
+$cart_items= [];
 
 
 ?>
