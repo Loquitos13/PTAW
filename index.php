@@ -1,12 +1,6 @@
 <?php
 session_start();
 
-/*echo "USER ID: " . $_SESSION['user_id'] . "<br>";
-echo "CART ID: " . $_SESSION["user_cart_id"];*/
-
-$userId = $_SESSION['user_id'];
-$cartId = $_SESSION['user_cart_id'];
-
 ?>
 
 

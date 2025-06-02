@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         cartItensArray.forEach(element => {
             console.log(element);
 
+            element.Size = element.Size.replaceAll('%20', ' ');
+
             html += `
                 <div class="row align-items-start">
                     <div class="col-4">
@@ -50,7 +52,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             `;
         });
 
-        // Assign all at once for better performance
         container.innerHTML = html;
 
 

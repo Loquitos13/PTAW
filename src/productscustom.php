@@ -24,8 +24,8 @@ $userId = $_SESSION['user_id'] ?? null;
     }
     </script>
   <?php
-  $base_url = "/~ptaw-2025-gr4";
-  include 'includes/carrinho.php'; ?>
+    $base_url = "/~ptaw-2025-gr4";
+  ?>
 </head>
 
 <style>
@@ -297,7 +297,7 @@ $userId = $_SESSION['user_id'] ?? null;
       <div id="idSizeOptions" class="sizeOptions d-flex flex-wrap">
       </div>
 
-      <h5 id="productColor" class="colorOfProduct">Color</h5>
+      <h5 id="productColor" class="colorOfProduct"></h5>
       <div class="color-selector">
         <div id="idColorOptions" class="colorOptions d-flex gap-2">
 

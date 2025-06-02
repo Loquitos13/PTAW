@@ -1131,7 +1131,7 @@ public function searchProductsByTitle($searchTerm): array
 
     public function insertShoppingCart(): array {
 
-         $json = file_get_contents('php://input');
+        $json = file_get_contents('php://input');
         $data = json_decode($json, true);
 
         if (!is_array($data)) {
@@ -1205,6 +1205,102 @@ public function searchProductsByTitle($searchTerm): array
             ->where('CarrinhoItens.id_carrinho', '=', $id_carrinho)
             ->get();
 
+    }
+
+    public function checkCarrinhoItem($id_carrinho, $id_product, $tamanho, $cor): array
+    {
+
+        return $this->queryBuilder->table('CarrinhoItens')
+            ->select(['id_carrinho_item'])
+            ->where('id_carrinho', '=', $id_carrinho)
+            ->where('id_produto', '=', $id_product)
+            ->where('tamanho', '=', $tamanho)
+            ->where('cor', '=', $cor)
+            ->get();
+
+    }
+
+    public function insertCarrinhoItem(): array {
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = ['id_produto', 'id_carrinho', 'quantidade', 'preco', 'tamanho', 'cor'];
+
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+
+            if (empty($data[$field])) {
+
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+
+            $this->queryBuilder->table('CarrinhoItens')
+                ->insert([
+                    'id_carrinho' => $data['id_carrinho'],
+                    'id_produto' => $data['id_produto'],
+                    'quantidade' => $data['quantidade'],
+                    'preco' => $data['preco'],
+                    'tamanho' => $data['tamanho'],
+                    'cor' => $data['cor'],
+                ]);
+
+            return [
+                'success' => true,
+                'message' => 'Added to Cart',
+            ];
+
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error creating the user',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function updateItemFromCarrinhoItens(int $carrinho_item_id, int $quantity, int $price): array {
+
+        try {
+
+            $this->queryBuilder->table('CarrinhoItens')
+                ->update([
+                    'quantidade' => $quantity,
+                    'preco' => $price
+                 ])
+                ->where('id_carrinho_item', '=', $carrinho_item_id)
+                ->execute();
+
+            return ['success' => 'Cart item updated'];
+
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error updating the user',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
     }
 
 }

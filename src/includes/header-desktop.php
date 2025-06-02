@@ -2,6 +2,9 @@
 $base_url = "/~ptaw-2025-gr4";
 session_start();
 
+$userId = $_SESSION['user_id'];
+$cartId = $_SESSION['user_cart_id'];
+
 include 'carrinho.php';
 ?>
 

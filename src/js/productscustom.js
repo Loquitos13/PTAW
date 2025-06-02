@@ -21,55 +21,234 @@ import { DecalGeometry } from "https://unpkg.com/three@0.174.0/examples/jsm/geom
 
 import { GLTFExporter } from "https://unpkg.com/three@0.174.0/examples/jsm/exporters/GLTFExporter.js"; // import to export the scene
 
-let loadingText,
-  logo,
-  decalPlaced = false;
+let loadingText, logo, decalPlaced = false;
 let canvas, scene, camera, renderer, controls, light;
 let loader, model, box, center, size;
 let mouse, raycaster, helper, customDecal, decal, decalTexture, decalMaterial;
 
-// Define sizes dynamically
-//const sizes = ["S", "M", "L", "XL", "2XL"];
+let product3DModel;
 
-// Generate size buttons dynamically
-/*
-const sizeContainer = document.getElementById("idSizeOptions");
-sizes.forEach((size) => {
-  const btn = document.createElement("button");
-  btn.classList.add("sizeBtn");
-  btn.textContent = size;
+let tamanhoValue, corValue, productPriceValue;
 
-  // Set click event immediately
-  btn.onclick = function () {
-    document
-      .querySelectorAll(".sizeBtn")
-      .forEach((sizeBtn) => sizeBtn.classList.remove("activeSize"));
-    this.classList.add("activeSize");
-  };
+// Obter o ID do produto da URL
+const productID = window.location.search.split('=')[1];
+console.log("Product ID:", productID);
 
-  sizeContainer.appendChild(btn);
+window.addEventListener('DOMContentLoaded', () => {
+  // Chamada para API para obter produtos
+  fetch('../restapi/PrintGoAPI.php/productByID/' + productID)
+    .then(response => response.json())
+    .then(data => {
+      const produto = Array.isArray(data) ? data[0] : data;
+      console.log(produto);
+
+      // pega a div onde a imagem principal do produto sera exibida
+      const bigImage = document.getElementById('bigImage');
+      let img = document.createElement('img');
+      img.src = produto.imagem_principal;
+      bigImage.appendChild(img);
+
+      // pega a div onde as imagens extras do produto sera exibida
+      const thumbnailGallery = document.getElementById('thumbnailGallery');
+
+      // Novo formato: imagens_extras é um array de objetos
+      if (produto.imagens_extras && Array.isArray(produto.imagens_extras)) {
+        produto.imagens_extras.forEach((imgObj, idx) => {
+
+          if (produto.imagem_principal) {
+            let img = document.createElement('img');
+            img.src = produto.imagem_principal;
+            img.classList.add('thumbnail');
+            if (idx === 0) img.classList.add('active');
+            img.alt = produto.titulo_produto;
+            img.addEventListener("click", function () {
+              const bigImage = document.getElementById("bigImage");
+              const img = bigImage.querySelector("img");
+              if (img) img.src = this.src;
+              document.querySelectorAll(".thumbnail").forEach(img => img.classList.remove("active"));
+              this.classList.add("active");
+            });
+            thumbnailGallery.appendChild(img);
+          }
+
+          // imagem_extra
+          if (imgObj.imagem_extra) {
+            let imgExtra = document.createElement('img');
+            imgExtra.src = imgObj.imagem_extra;
+            imgExtra.classList.add('thumbnail');
+            imgExtra.alt = produto.titulo_produto;
+            imgExtra.addEventListener("click", function () {
+              // Troca a imagem principal
+              const bigImage = document.getElementById("bigImage");
+              const img = bigImage.querySelector("img");
+              if (img) img.src = this.src;
+              // Remove 'active' de todos
+              document.querySelectorAll(".thumbnail").forEach(img => img.classList.remove("active"));
+              this.classList.add("active");
+            });
+            thumbnailGallery.appendChild(imgExtra);
+          }
+          // imagem_extra_2
+          if (imgObj.imagem_extra_2) {
+            let imgExtra2 = document.createElement('img');
+            imgExtra2.src = imgObj.imagem_extra_2;
+            imgExtra2.classList.add('thumbnail');
+            imgExtra2.alt = produto.titulo_produto;
+            imgExtra2.addEventListener("click", function () {
+              const bigImage = document.getElementById("bigImage");
+              const img = bigImage.querySelector("img");
+              if (img) img.src = this.src;
+              document.querySelectorAll(".thumbnail").forEach(img => img.classList.remove("active"));
+              this.classList.add("active");
+            });
+            thumbnailGallery.appendChild(imgExtra2);
+          }
+          // imagem_extra_3
+          if (imgObj.imagem_extra_3) {
+            let imgExtra3 = document.createElement('img');
+            imgExtra3.src = imgObj.imagem_extra_3;
+            imgExtra3.classList.add('thumbnail');
+            imgExtra3.alt = produto.titulo_produto;
+            imgExtra3.addEventListener("click", function () {
+              const bigImage = document.getElementById("bigImage");
+              const img = bigImage.querySelector("img");
+              if (img) img.src = this.src;
+              document.querySelectorAll(".thumbnail").forEach(img => img.classList.remove("active"));
+              this.classList.add("active");
+            });
+            thumbnailGallery.appendChild(imgExtra3);
+          }
+        });
+      }
+
+      product3DModel = produto.modelo3d_produto;
+
+      // pega o h1 onde o titulo do produto sera exibido e define o texto
+      const productTitle = document.getElementById('productName');
+      productTitle.textContent = produto.titulo_produto;
+
+      // pega o h3 onde a descricao do produto sera exibida e define o texto
+      const productPrice = document.getElementById('productPrice');
+      productPriceValue = produto.preco_produto;
+      productPrice.textContent = produto.preco_produto + "€";
+
+      // se o produto tiver dimensão diferente de "unico", cria os botões de tamanhos
+      if (produto.dimensoes && produto.dimensoes.length > 0 && produto.dimensoes[0].tamanho != "unico") {
+        const sizeName = document.getElementById('productSize');
+        sizeName.textContent = "Size";
+        const producttSize = document.getElementById('idSizeOptions');
+
+        let firstBtn = null;
+
+        // Para cada dimensão, pode haver vários tamanhos separados por vírgula
+        produto.dimensoes.forEach((dim) => {
+          if (dim.tamanho && dim.tamanho !== "unico") {
+            const tamanhosArr = dim.tamanho.split(',').map(t => t.trim());
+            tamanhosArr.forEach((size) => {
+              size = size.replaceAll('%20', ' ');
+              const btn = document.createElement("button");
+              btn.classList.add("sizeBtn");
+              btn.textContent = size;
+              btn.onclick = function () {
+                document
+                  .querySelectorAll(".sizeBtn")
+                  .forEach((sizeBtn) => sizeBtn.classList.remove("activeSize"));
+                this.classList.add("activeSize");
+                tamanhoValue = this.innerText;
+              };
+              producttSize.appendChild(btn);
+              if (!firstBtn) {
+                firstBtn = btn;
+              }
+            });
+          }
+        });
+        if (firstBtn) {
+          firstBtn.classList.add("activeSize");
+          tamanhoValue = firstBtn.innerText;
+        }
+      }
+      
+      const productColor = document.getElementById('idColorOptions');
+      if (produto.cores && Array.isArray(produto.cores) && produto.cores.length > 0) {
+
+        const colorName = document.getElementById('productColor');
+        colorName.textContent = "Color";
+
+        productColor.innerHTML = ""; // Limpa cores anteriores, se houver
+        produto.cores.forEach((cor, idx) => {
+          // Cria input radio
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.className = "btn-check";
+          input.name = "color";
+          input.id = `color-${cor.nome_cor}`;
+          input.value = cor.hex_cor;
+          input.autocomplete = "off";
+          if (idx === 0) input.checked = true; // Seleciona a primeira cor por padrão
+
+          // Cria label estilizado
+          const label = document.createElement("label");
+          label.className = "btnColor rounded-circle p-2";
+          label.setAttribute("for", `color-${cor.nome_cor}`);
+          label.style.backgroundColor = cor.hex_cor;
+          label.style.border = "2px solid #ccc";
+          label.title = cor.nome_cor;
+
+          // Adiciona ao container
+          productColor.appendChild(input);
+          productColor.appendChild(label);
+
+          input.addEventListener('change', function () {
+            corValue = label.title;
+          });
+
+          if (idx === 0) {
+            corValue = label.title;
+          }
+
+        });
+      }
+
+      const productDescription = document.getElementById('productDescriptionText');
+      productDescription.textContent = produto.descricao_produto || "No description available.";
+    })
+    .catch(error => {
+      console.error('Erro ao buscar produtos:', error);
+    });
+
+
+  fetch('../restapi/PrintGoAPI.php/feedbackAVGProduct/' + productID)
+    .then(response => response.json())
+    .then(data => {
+
+      const productReviewData = Array.isArray(data) ? data[0] : data;
+
+      const avg = Number(productReviewData.AverageClassification) || 0;
+
+      const fullStars = Math.floor(avg);
+
+      const hasHalfStar = avg % 1 >= 0.25 && avg % 1 < 0.75;
+
+      const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+      let starsHTML = '';
+
+      for (let i = 0; i < fullStars; i++) {
+        starsHTML += `<svg width="30" height="30" viewBox="0 0 32 32"><use href="#star" fill="orange"/></svg>`;
+      }
+
+      if (hasHalfStar) {
+        starsHTML += `<svg width="30" height="30" viewBox="0 0 32 32"><use href="#star" fill="url(#half-star)"/></svg>`;
+      }
+
+      for (let i = 0; i < emptyStars; i++) {
+        starsHTML += `<svg width="30" height="30" viewBox="0 0 32 32"><use href="#star" fill="lightgray"/></svg>`;
+      }
+
+      document.getElementById('productReviews').innerHTML = starsHTML + ` (${fullStars || 0} reviews)`;
+    });
 });
-*/
-/*
-// Define colors dynamically
-const colors = ["white", "black", "blue", "red"];
-
-// Generate color buttons dynamically
-const colorContainer = document.getElementById("idColorOptions");
-colors.forEach(color => {
-    const btn = document.createElement("button");
-    btn.classList.add("colorBtn");
-    btn.style.backgroundColor = color;
-    btn.setAttribute("data-color", color);
-    
-    // Set click event immediately (slow for whatever reason and not working as intended)
-    btn.onclick = function () {
-        document.querySelectorAll(".colorBtn").forEach(colorBtn => colorBtn.classList.remove("activeColor"));
-        this.classList.add("activeColor");
-    };
-
-    colorContainer.appendChild(btn);
-});*/
 
 document.getElementById("openModal").addEventListener("click", function () {
   document.getElementById("modal3D").style.display = "flex";
@@ -191,7 +370,7 @@ function initThreeJS() {
   loader = new GLTFLoader();
 
   loader.load(
-    "../public/modelos3D/3D_Shirt.glb",
+    product3DModel,
     function (gltf) {
       model = gltf.scene;
 
@@ -363,6 +542,112 @@ function saveString(text, filename) {
 function saveArrayBuffer(buffer, filename) {
   save(new Blob([buffer], { type: "application/octet-stream" }), filename);
 }
+
+
+document.querySelectorAll("#btnAddToCart").forEach((button) => {
+    button.addEventListener("click", async function () {
+
+    console.log("Pressed");
+
+    /*
+    if (product_id && size && color already) {
+        cartItem.cartItemID.quantity ++ and cartItem.cartItemID.price * quantity;
+    }else {
+      new cartItem
+    }  
+    */
+
+    const cartIdInput = document.getElementById("cartId");
+
+    console.log(cartIdInput.value);
+    console.log(productID);
+    console.log(tamanhoValue);
+    console.log(corValue);
+
+    const formData = {
+      id_carrinho: cartIdInput.value,
+      id_produto: productID,
+      tamanho: tamanhoValue,
+      cor: corValue,
+    };
+
+    const carrinhoItemId = await checkCarrinhoItem(formData);
+
+    console.log(carrinhoItemId);
+
+    if (carrinhoItemId.data.length === 0) {
+
+      const valuesToAdd = {
+        id_carrinho: cartIdInput.value,
+        id_produto: productID,
+        tamanho: tamanhoValue,
+        cor: corValue,
+        quantidade: 1,
+        preco: productPriceValue,
+      };
+
+      const addToCart = await addCarrinhoItem(valuesToAdd);
+
+      console.log(addToCart);
+
+    } else {
+
+      console.log(carrinhoItemId.data[0].id_carrinho_item);
+
+      //update not working
+
+      console.log("Not Null");
+
+    }
+
+
+  });
+});
+
+async function checkCarrinhoItem(formData) {
+
+  try {
+    const response = await fetch('/~ptaw-2025-gr4/client/checkCarrinhoItem.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const data = await response.json();
+    
+    return data;
+  
+  } catch (error) {
+    
+    return null;
+  
+  }
+}
+
+async function addCarrinhoItem(valuesToAdd) {
+
+  try {
+    const response = await fetch('../client/addToCart.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(valuesToAdd)
+    })
+
+    const data = await response.json();
+    
+    return data.data;
+  
+  } catch (error) {
+    
+    return null;
+  
+  }
+}
+
 
 function getUserByEmail(userEmail) {
   return fetch(`$baseUrl/user/getUserByEmail.php?email=${userEmail}`)
@@ -816,183 +1101,3 @@ document
       alert("Erro ao enviar feedback. Por favor, tente novamente.");
     }
   });
-
-// Obter o ID do produto da URL
-const productID = window.location.search.split('=')[1];
-console.log("Product ID:", productID);
-
-window.addEventListener('DOMContentLoaded', () => {
-  // Chamada para API para obter produtos
-  fetch('../restapi/PrintGoAPI.php/productByID/' + productID)
-    .then(response => response.json())
-    .then(data => {
-      const produto = Array.isArray(data) ? data[0] : data;
-      console.log(produto);
-
-      // pega a div onde a imagem principal do produto sera exibida
-      const bigImage = document.getElementById('bigImage');
-      let img = document.createElement('img');
-      img.src = produto.imagem_principal;
-      bigImage.appendChild(img);
-
-      // pega a div onde as imagens extras do produto sera exibida
-      const thumbnailGallery = document.getElementById('thumbnailGallery');
-
-      // Novo formato: imagens_extras é um array de objetos
-      if (produto.imagens_extras && Array.isArray(produto.imagens_extras)) {
-        produto.imagens_extras.forEach((imgObj, idx) => {
-          // imagem_extra
-          if (imgObj.imagem_extra) {
-            let imgExtra = document.createElement('img');
-            imgExtra.src = imgObj.imagem_extra;
-            imgExtra.classList.add('thumbnail');
-            if (idx === 0) imgExtra.classList.add('active');
-            imgExtra.alt = produto.titulo_produto;
-            imgExtra.addEventListener("click", function () {
-              // Troca a imagem principal
-              const bigImage = document.getElementById("bigImage");
-              const img = bigImage.querySelector("img");
-              if (img) img.src = this.src;
-              // Remove 'active' de todos
-              document.querySelectorAll(".thumbnail").forEach(img => img.classList.remove("active"));
-              this.classList.add("active");
-            });
-            thumbnailGallery.appendChild(imgExtra);
-          }
-          // imagem_extra_2
-          if (imgObj.imagem_extra_2) {
-            let imgExtra2 = document.createElement('img');
-            imgExtra2.src = imgObj.imagem_extra_2;
-            imgExtra2.classList.add('thumbnail');
-            imgExtra2.alt = produto.titulo_produto;
-            imgExtra2.addEventListener("click", function () {
-              const bigImage = document.getElementById("bigImage");
-              const img = bigImage.querySelector("img");
-              if (img) img.src = this.src;
-              document.querySelectorAll(".thumbnail").forEach(img => img.classList.remove("active"));
-              this.classList.add("active");
-            });
-            thumbnailGallery.appendChild(imgExtra2);
-          }
-          // imagem_extra_3
-          if (imgObj.imagem_extra_3) {
-            let imgExtra3 = document.createElement('img');
-            imgExtra3.src = imgObj.imagem_extra_3;
-            imgExtra3.classList.add('thumbnail');
-            imgExtra3.alt = produto.titulo_produto;
-            imgExtra3.addEventListener("click", function () {
-              const bigImage = document.getElementById("bigImage");
-              const img = bigImage.querySelector("img");
-              if (img) img.src = this.src;
-              document.querySelectorAll(".thumbnail").forEach(img => img.classList.remove("active"));
-              this.classList.add("active");
-            });
-            thumbnailGallery.appendChild(imgExtra3);
-          }
-        });
-      }
-
-      // pega o h1 onde o titulo do produto sera exibido e define o texto
-      const productTitle = document.getElementById('productName');
-      productTitle.textContent = produto.titulo_produto;
-
-      // pega o h3 onde a descricao do produto sera exibida e define o texto
-      const productPrice = document.getElementById('productPrice');
-      productPrice.textContent = produto.preco_produto + "€";
-
-      // se o produto tiver dimensão diferente de "unico", cria os botões de tamanhos
-      if (produto.dimensoes && produto.dimensoes.length > 0 && produto.dimensoes[0].tamanho != "unico") {
-        const sizeName = document.getElementById('productSize');
-        sizeName.textContent = "Size";
-        const producttSize = document.getElementById('idSizeOptions');
-
-        // Para cada dimensão, pode haver vários tamanhos separados por vírgula
-        produto.dimensoes.forEach((dim) => {
-          if (dim.tamanho && dim.tamanho !== "unico") {
-            const tamanhosArr = dim.tamanho.split(',').map(t => t.trim());
-            tamanhosArr.forEach((size) => {
-              size = size.replaceAll('%20', ' ');
-              const btn = document.createElement("button");
-              btn.classList.add("sizeBtn");
-              btn.textContent = size;
-              btn.onclick = function () {
-                document
-                  .querySelectorAll(".sizeBtn")
-                  .forEach((sizeBtn) => sizeBtn.classList.remove("activeSize"));
-                this.classList.add("activeSize");
-              };
-              producttSize.appendChild(btn);
-            });
-          }
-        });
-      }
-
-      const productColor = document.getElementById('idColorOptions');
-      if (produto.cores && Array.isArray(produto.cores) && produto.cores.length > 0) {
-        productColor.innerHTML = ""; // Limpa cores anteriores, se houver
-        produto.cores.forEach((cor, idx) => {
-          // Cria input radio
-          const input = document.createElement("input");
-          input.type = "radio";
-          input.className = "btn-check";
-          input.name = "color";
-          input.id = `color-${cor.nome_cor}`;
-          input.value = cor.hex_cor;
-          input.autocomplete = "off";
-          if (idx === 0) input.checked = true; // Seleciona a primeira cor por padrão
-
-          // Cria label estilizado
-          const label = document.createElement("label");
-          label.className = "btnColor rounded-circle p-2";
-          label.setAttribute("for", `color-${cor.nome_cor}`);
-          label.style.backgroundColor = cor.hex_cor;
-          label.style.border = "2px solid #ccc";
-          label.title = cor.nome_cor;
-
-          // Adiciona ao container
-          productColor.appendChild(input);
-          productColor.appendChild(label);
-        });
-      }
-
-      const productDescription = document.getElementById('productDescriptionText');
-      productDescription.textContent = produto.descricao_produto || "No description available.";
-    })
-    .catch(error => {
-      console.error('Erro ao buscar produtos:', error);
-    });
-
-
-  fetch('../restapi/PrintGoAPI.php/feedbackAVGProduct/' + productID)
-    .then(response => response.json())
-    .then(data => {
-
-      const productReviewData = Array.isArray(data) ? data[0] : data;
-
-      const avg = Number(productReviewData.AverageClassification) || 0;
-
-      const fullStars = Math.floor(avg);
-
-      const hasHalfStar = avg % 1 >= 0.25 && avg % 1 < 0.75;
-
-      const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-
-      let starsHTML = '';
-
-      for (let i = 0; i < fullStars; i++) {
-        starsHTML += `<svg width="30" height="30" viewBox="0 0 32 32"><use href="#star" fill="orange"/></svg>`;
-      }
-
-      if (hasHalfStar) {
-        starsHTML += `<svg width="30" height="30" viewBox="0 0 32 32"><use href="#star" fill="url(#half-star)"/></svg>`;
-      }
-
-      for (let i = 0; i < emptyStars; i++) {
-        starsHTML += `<svg width="30" height="30" viewBox="0 0 32 32"><use href="#star" fill="lightgray"/></svg>`;
-      }
-
-      document.getElementById('productReviews').innerHTML = starsHTML + ` (${fullStars || 0} reviews)`;
-    });
-
-
-});
