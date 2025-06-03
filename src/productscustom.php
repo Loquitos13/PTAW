@@ -12,6 +12,7 @@ $userId = $_SESSION['user_id'] ?? null;
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="css/productscustom.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
@@ -24,7 +25,7 @@ $userId = $_SESSION['user_id'] ?? null;
     }
     </script>
   <?php
-    $base_url = "/~ptaw-2025-gr4";
+  $base_url = "/~ptaw-2025-gr4";
   ?>
 </head>
 
@@ -272,11 +273,11 @@ $userId = $_SESSION['user_id'] ?? null;
     <svg style="display: none;">
       <defs>
         <symbol id="star" viewBox="0 0 32 32">
-          <polygon points="16,2 20,12 31,12 22,18 25,28 16,22 7,28 10,18 1,12 12,12"/>
+          <polygon points="16,2 20,12 31,12 22,18 25,28 16,22 7,28 10,18 1,12 12,12" />
         </symbol>
         <linearGradient id="half-star" x1="0" y1="0" x2="100%" y2="0">
-          <stop offset="50%" stop-color="orange"/>
-          <stop offset="50%" stop-color="lightgray"/>
+          <stop offset="50%" stop-color="orange" />
+          <stop offset="50%" stop-color="lightgray" />
         </linearGradient>
       </defs>
     </svg>

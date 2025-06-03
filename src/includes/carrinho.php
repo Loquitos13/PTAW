@@ -88,7 +88,7 @@ $base_url = "/~ptaw-2025-gr4";
 
 
 
-<div class="offcanvas offcanvas-end" tabindex="-1" id="carrinho" aria-labelledby="offcanvasRightLabel" style="display:flex; flex-direction:column; height: fit-content; padding-bottom: 2vh;">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="carrinho" aria-labelledby="offcanvasRightLabel" style="display:flex; flex-direction:column; padding-bottom: 2vh;">
     
     <div class="offcanvas-header">
 
@@ -104,7 +104,7 @@ $base_url = "/~ptaw-2025-gr4";
 
     </div>
 
-    <div style="align-self: center;  height:100%;  display: flex; flex-direction: column; justify-items: space-between; gap: 5%;">
+    <div style="align-self: center; display: flex; flex-direction: column; gap: 5%;">
 
         <button type="button" class="btn btn-primary" style="margin-bottom:5%;" id="concluir-compra">Concluir Compra</button>
         <button type="button" class="btn btn-outline-success" style="" id="continuar-compra" data-bs-dismiss="offcanvas">Continuar a Comprar</button>

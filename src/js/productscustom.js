@@ -590,7 +590,7 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
 
       console.log(addToCart);
 
-    } else {
+    } /*else {
 
       console.log(carrinhoItemId.data[0].id_carrinho_item);
 
@@ -598,7 +598,7 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
 
       console.log("Not Null");
 
-    }
+    }*/
 
 
   });
