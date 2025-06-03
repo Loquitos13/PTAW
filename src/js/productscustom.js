@@ -549,60 +549,67 @@ function saveArrayBuffer(buffer, filename) {
 document.querySelectorAll("#btnAddToCart").forEach((button) => {
     button.addEventListener("click", async function () {
 
-    console.log("Pressed");
-
-    /*
-    if (product_id && size && color already) {
-        cartItem.cartItemID.quantity ++ and cartItem.cartItemID.price * quantity;
-    }else {
-      new cartItem
-    }  
-    */
-
     const cartIdInput = document.getElementById("cartId");
 
-    console.log(cartIdInput.value);
-    console.log(productID);
-    console.log(tamanhoValue);
-    console.log(corValue);
+    if (!cartIdInput.value) {
 
-    tamanhoValue = tamanhoValue.replaceAll(' ', '%20');
+      let alertMsg = 
+      `
+      You need to be sign in to add products to the cart.
+      Do you wish to proceed?
+      `;
 
-    const formData = {
-      id_carrinho: cartIdInput.value,
-      id_produto: productID,
-      tamanho: tamanhoValue,
-      cor: corValue,
-    };
+      if (confirm(alertMsg)) {
 
-    const carrinhoItemId = await checkCarrinhoItem(formData);
+        window.location.href = "SignIn.html";
+      
+      }
 
-    console.log(carrinhoItemId);
+    } else {
 
-    if (carrinhoItemId.data.length === 0) {
+      tamanhoValue = tamanhoValue.replaceAll(' ', '%20');
 
-      const valuesToAdd = {
+      const formData = {
         id_carrinho: cartIdInput.value,
         id_produto: productID,
         tamanho: tamanhoValue,
         cor: corValue,
-        quantidade: 1,
-        preco: productPriceValue,
       };
 
-      const addToCart = await addCarrinhoItem(valuesToAdd);
+      const carrinhoItemId = await checkCarrinhoItem(formData);
 
-      console.log(addToCart);
+      if (carrinhoItemId.data.length === 0) {
 
-    } /*else {
+        const valuesToAdd = {
+          id_carrinho: cartIdInput.value,
+          id_produto: productID,
+          tamanho: tamanhoValue,
+          cor: corValue,
+          quantidade: 1,
+          preco: productPriceValue,
+        };
 
-      console.log(carrinhoItemId.data[0].id_carrinho_item);
+        //const addToCart = await addCarrinhoItem(valuesToAdd);
+        await addCarrinhoItem(valuesToAdd);
 
-      //update not working
+      } else {
 
-      console.log("Not Null");
+        let quantity = carrinhoItemId.data[0].quantidade + 1;
+        let priceInCart = Number(carrinhoItemId.data[0].preco);
+        let priceOfProduct = Number(productPriceValue);
+        let price = (priceInCart + priceOfProduct).toFixed(2);
 
-    }*/
+        const updateCart = {
+          id_carrinho_item: carrinhoItemId.data[0].id_carrinho_item,
+          quantidade: quantity,
+          preco: price, 
+        }
+
+        //const updateCarrinho = await updateCarrinhoItem(updateCart);
+        await updateCarrinhoItem(updateCart);
+      
+      }
+    }
 
 
   });
@@ -611,7 +618,7 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
 async function checkCarrinhoItem(formData) {
 
   try {
-    const response = await fetch('/~ptaw-2025-gr4/client/checkCarrinhoItem.php', {
+    const response = await fetch('../client/checkCarrinhoItem.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -639,6 +646,28 @@ async function addCarrinhoItem(valuesToAdd) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(valuesToAdd)
+    })
+
+    const data = await response.json();
+    
+    return data.data;
+  
+  } catch (error) {
+    
+    return null;
+  
+  }
+}
+
+async function updateCarrinhoItem(updateCart) {
+
+  try {
+    const response = await fetch('../client/updateItemFromCarrinho.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updateCart)
     })
 
     const data = await response.json();

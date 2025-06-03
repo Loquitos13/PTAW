@@ -1211,7 +1211,7 @@ public function searchProductsByTitle($searchTerm): array
     {
 
         return $this->queryBuilder->table('CarrinhoItens')
-            ->select(['id_carrinho_item'])
+            ->select(['id_carrinho_item', 'quantidade', 'preco'])
             ->where('id_carrinho', '=', $id_carrinho)
             ->where('id_produto', '=', $id_product)
             ->where('tamanho', '=', $tamanho)
@@ -1278,19 +1278,53 @@ public function searchProductsByTitle($searchTerm): array
         }
     }
 
-    public function updateItemFromCarrinhoItens(int $carrinho_item_id, int $quantity, int $price): array {
+    public function updateItemFromCarrinhoItens(): array {
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = [
+            'id_carrinho_item',
+            'quantidade',
+            'preco'
+        ];
+
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+
+            if (!isset($data[$field])) {
+                
+                return [
+                    'error' => 'Invalid data',
+                    'message' => "Missing required field: $field"
+                ];
+            }
+        }
+        
+        if (!empty($missingFields)) {
+
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
 
         try {
 
-            $this->queryBuilder->table('CarrinhoItens')
-                ->update([
-                    'quantidade' => $quantity,
-                    'preco' => $price
-                 ])
-                ->where('id_carrinho_item', '=', $carrinho_item_id)
-                ->execute();
+        $this->queryBuilder->table('CarrinhoItens')
+            ->update([
+                'quantidade' => $data['quantidade'],
+                'preco' => $data['preco']
+                ])
+            ->where('id_carrinho_item', '=', $data['id_carrinho_item'])
+            ->execute();
 
-            return ['success' => 'Cart item updated'];
+        return ['success' => 'Cart item updated'];
 
         } catch (PDOException $e) {
 
