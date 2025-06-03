@@ -28,7 +28,9 @@ let mouse, raycaster, helper, customDecal, decal, decalTexture, decalMaterial;
 
 let product3DModel;
 
-let tamanhoValue, corValue, productPriceValue;
+let tamanhoValue = "NoSize"
+let corValue = "NoColor"
+let productPriceValue;
 
 // Obter o ID do produto da URL
 const productID = window.location.search.split('=')[1];
@@ -563,6 +565,8 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
     console.log(productID);
     console.log(tamanhoValue);
     console.log(corValue);
+
+    tamanhoValue = tamanhoValue.replaceAll(' ', '%20');
 
     const formData = {
       id_carrinho: cartIdInput.value,
