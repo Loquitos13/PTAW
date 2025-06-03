@@ -329,6 +329,8 @@ session_start();
         </div>
 
       </div>
+      <!-- Paginação -->
+      <div id="pagination-container"></div>
     </div>
 
   </div>

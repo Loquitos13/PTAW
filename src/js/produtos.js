@@ -178,9 +178,6 @@ function checkResponsiveness() {
     }
 }
 
-// Variável para controlar o índice atual
-let currentIndex = 0;
-
 
 document.addEventListener("DOMContentLoaded", () => {
     checkResponsiveness();
@@ -407,6 +404,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Variável para controlar o índice atual
+let currentIndex = 0;
+
+// --- START PAGINATION ---
+let todosOsProdutos = []; // Store all fetched products
+let paginaAtual = 1;
+const produtosPorPagina = 12;
+
 
 // Faz uma requisição inicial para obter os filtros (categorias) disponíveis.
 fetch('../restapi/PrintGoAPI.php/getCategoriesByID')
@@ -449,7 +454,10 @@ function buscarProdutos(filtros = {}) {
     const isEmptyFilters = Object.keys(filtros).length === 0 ||
         ((!filtros.categorias || filtros.categorias.length === 0) &&
             (!filtros.cores || filtros.cores.length === 0) &&
-            (!filtros.tamanhos || filtros.tamanhos.length === 0));
+            (!filtros.tamanhos || filtros.tamanhos.length === 0) &&
+            (!filtros.precoMin || filtros.precoMin === '0') && // Added price check
+            (!filtros.precoMax || filtros.precoMax === '100')); // Added price check
+
 
     let url = '';
 
@@ -479,100 +487,197 @@ function buscarProdutos(filtros = {}) {
             return response.json();
         })
         .then(data => {
-            //console.log("Produtos:", data);
-            const produtosLista = document.getElementById('produtos-container');
-            produtosLista.innerHTML = "";
-            const produtos = Array.isArray(data) ? data : data.products || [];
-            if (produtos.length === 0) {
-                produtosLista.innerHTML = "<p>Nenhum produto encontrado com os filtros selecionados.</p>";
-            } else {
-                produtos.forEach(produto => {
-                    //cria o container principal para ficar responsivo
-                    let Containner = document.createElement('div');
-                    Containner.classList.add('col-lg-3', 'col-md-4', 'col-sm-6', 'mb-4');
-                    // cria o card do produto
-                    let card = document.createElement('div');
-                    card.classList.add("card", "border-0", "shadow-sm");
-                    // Cria a div que vai conter a imagem do produto
-                    let divImg = document.createElement('div');
-                    divImg.classList.add("position-relative");
-                    divImg.style.width = "100%";
-                    divImg.style.height = "240px";
-                    divImg.style.display = "flex";
-                    divImg.style.alignItems = "center";
-                    divImg.style.justifyContent = "center";
-                    divImg.style.overflow = "hidden";
-
-                    // Imagem do produto
-                    let img = document.createElement('img');
-                    img.src = produto.imagem_principal;
-                    img.classList.add("card-img-top", "bg-light");
-                    img.alt = produto.titulo_produto;
-                    // Ajustes para centralização perfeita
-                    img.style.maxWidth = "80%";
-                    img.style.maxHeight = "80%";
-                    img.style.width = "auto";
-                    img.style.height = "auto";
-                    img.style.objectFit = "contain";
-                    img.style.position = "absolute";
-                    img.style.top = "50%";
-                    img.style.left = "50%";
-                    img.style.transform = "translate(-50%, -50%)";
-
-                    // cria uma div para conter as informações do produto
-                    let divInfo = document.createElement("div");
-                    divInfo.classList.add("card-body", "px-3", "pb-3");
-                    // Titulo do produto
-                    let tituloProduto = document.createElement("h5");
-                    tituloProduto.classList.add("card-title", "fw-bold", "mb-1");
-                    tituloProduto.textContent = produto.titulo_produto;
-                    // Cria uma div para conter o preço e o botão
-                    let divPrecoBtn = document.createElement("div");
-                    divPrecoBtn.classList.add("d-flex", "justify-content-between", "align-items-center");
-                    // Preço do produto
-                    let precoProduto = document.createElement("span");
-                    precoProduto.classList.add("fw-bold");
-                    precoProduto.style.color = "#4F46E5";
-                    precoProduto.textContent = produto.preco_produto + "€";
-                    // Botão de comprar
-                    let btnComprar = document.createElement("button");
-                    btnComprar.type = "button";
-                    btnComprar.classList.add("btn", "btn-primary");
-                    btnComprar.style = "background-color: #4F46E5; border: 0;"
-                    btnComprar.textContent = "Shop Now";
-                    // Adiciona o evento de clique para redirecionar para a página do produto
-                    btnComprar.addEventListener('click', function () {
-                        window.location.href = "productscustom.php?id=" + produto.id_produto;
-                    });
-
-                    card.appendChild(divImg);
-                    card.appendChild(divInfo);
-
-                    divImg.appendChild(img);
-
-                    divInfo.appendChild(tituloProduto);
-                    divInfo.appendChild(divPrecoBtn);
-
-                    divPrecoBtn.appendChild(precoProduto);
-                    divPrecoBtn.appendChild(btnComprar);
-
-                    Containner.appendChild(card);
-
-                    // Adiciona o card ao container principal
-                    produtosLista.appendChild(Containner);
-                });
-            }
+            todosOsProdutos = Array.isArray(data) ? data : data.products || [];
+            paginaAtual = 1; // Reset to first page on new search/filter
+            exibirProdutosDaPagina(paginaAtual);
+            renderizarPaginacao();
         })
         .catch(error => {
             console.error('Erro ao buscar produtos ou processar resposta:', error);
             const produtosLista = document.getElementById('produtos-container');
             produtosLista.innerHTML = "<p>Ocorreu um erro ao carregar os produtos.</p>";
+            todosOsProdutos = []; // Clear products on error
+            renderizarPaginacao(); // Clear pagination as well
         });
 }
 
+function exibirProdutosDaPagina(pagina) {
+    const produtosLista = document.getElementById('produtos-container');
+    produtosLista.innerHTML = ""; // Limpa produtos existentes
+
+    if (todosOsProdutos.length === 0) {
+        produtosLista.innerHTML = "<p>Nenhum produto encontrado com os filtros selecionados.</p>";
+        return;
+    }
+
+    const inicio = (pagina - 1) * produtosPorPagina;
+    const fim = inicio + produtosPorPagina;
+    const produtosDaPagina = todosOsProdutos.slice(inicio, fim);
+
+    produtosDaPagina.forEach(produto => {
+        //cria o container principal para ficar responsivo
+        let Containner = document.createElement('div');
+        Containner.classList.add('col-lg-3', 'col-md-4', 'col-sm-6', 'mb-4');
+        // cria o card do produto
+        let card = document.createElement('div');
+        card.classList.add("card", "border-0", "shadow-sm");
+        // Cria a div que vai conter a imagem do produto
+        let divImg = document.createElement('div');
+        divImg.classList.add("position-relative");
+        divImg.style.width = "100%";
+        divImg.style.height = "240px"; // Altura fixa para a imagem
+        divImg.style.display = "flex";
+        divImg.style.alignItems = "center";
+        divImg.style.justifyContent = "center";
+        divImg.style.overflow = "hidden"; // Garante que a imagem não ultrapasse os limites
+
+        // Imagem do produto
+        let img = document.createElement('img');
+        img.src = produto.imagem_principal; // Use a imagem principal do produto
+        img.classList.add("card-img-top", "bg-light"); // Mantém classes Bootstrap
+        img.alt = produto.titulo_produto;
+        // Ajustes para centralização perfeita e para não distorcer
+        img.style.maxWidth = "80%"; // Limita a largura máxima da imagem
+        img.style.maxHeight = "80%"; // Limita a altura máxima da imagem
+        img.style.width = "auto"; // Permite que a largura se ajuste automaticamente
+        img.style.height = "auto"; // Permite que a altura se ajuste automaticamente
+        img.style.objectFit = "contain"; // Garante que a imagem inteira seja visível sem cortar ou esticar
+        img.style.position = "absolute"; // Necessário para centralização com transform
+        img.style.top = "50%";
+        img.style.left = "50%";
+        img.style.transform = "translate(-50%, -50%)"; // Centraliza a imagem
+
+        // cria uma div para conter as informações do produto
+        let divInfo = document.createElement("div");
+        divInfo.classList.add("card-body", "px-3", "pb-3");
+        // Titulo do produto
+        let tituloProduto = document.createElement("h5");
+        tituloProduto.classList.add("card-title", "fw-bold", "mb-1");
+        tituloProduto.textContent = produto.titulo_produto;
+        // Cria uma div para conter o preço e o botão
+        let divPrecoBtn = document.createElement("div");
+        divPrecoBtn.classList.add("d-flex", "justify-content-between", "align-items-center");
+        // Preço do produto
+        let precoProduto = document.createElement("span");
+        precoProduto.classList.add("fw-bold");
+        precoProduto.style.color = "#4F46E5";
+        precoProduto.textContent = produto.preco_produto + "€";
+        // Botão de comprar
+        let btnComprar = document.createElement("button");
+        btnComprar.type = "button";
+        btnComprar.classList.add("btn", "btn-primary");
+        btnComprar.style = "background-color: #4F46E5; border: 0;"
+        btnComprar.textContent = "Shop Now";
+        // Adiciona o evento de clique para redirecionar para a página do produto
+        btnComprar.addEventListener('click', function () {
+            window.location.href = "productscustom.php?id=" + produto.id_produto;
+        });
+
+        card.appendChild(divImg);
+        card.appendChild(divInfo);
+
+        divImg.appendChild(img);
+
+        divInfo.appendChild(tituloProduto);
+        divInfo.appendChild(divPrecoBtn);
+
+        divPrecoBtn.appendChild(precoProduto);
+        divPrecoBtn.appendChild(btnComprar);
+
+        Containner.appendChild(card);
+
+        // Adiciona o card ao container principal
+        produtosLista.appendChild(Containner);
+    });
+}
+
+function renderizarPaginacao() {
+    const paginationContainer = document.getElementById('pagination-container');
+    paginationContainer.innerHTML = ""; // Limpa paginação existente
+
+    const totalPaginas = Math.ceil(todosOsProdutos.length / produtosPorPagina);
+
+    if (totalPaginas <= 1) {
+        return; // Não renderiza paginação se houver apenas uma página ou nenhuma
+    }
+
+    const nav = document.createElement('nav');
+    nav.setAttribute('aria-label', 'Page navigation');
+
+    const ul = document.createElement('ul');
+    ul.classList.add('pagination', 'justify-content-center'); // Adicionado justify-content-center para centralizar
+
+    // Botão "Previous"
+    const liPrevious = document.createElement('li');
+    liPrevious.classList.add('page-item');
+    if (paginaAtual === 1) {
+        liPrevious.classList.add('disabled');
+    }
+    const aPrevious = document.createElement('a');
+    aPrevious.classList.add('page-link');
+    aPrevious.href = '#';
+    aPrevious.textContent = 'Previous';
+    aPrevious.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (paginaAtual > 1) {
+            paginaAtual--;
+            exibirProdutosDaPagina(paginaAtual);
+            renderizarPaginacao(); // Re-renderiza para atualizar o estado dos botões
+        }
+    });
+    liPrevious.appendChild(aPrevious);
+    ul.appendChild(liPrevious);
+
+    // Botões de página
+    for (let i = 1; i <= totalPaginas; i++) {
+        const li = document.createElement('li');
+        li.classList.add('page-item');
+        if (i === paginaAtual) {
+            li.classList.add('active');
+        }
+        const a = document.createElement('a');
+        a.classList.add('page-link');
+        a.href = '#';
+        a.textContent = i;
+        a.addEventListener('click', (e) => {
+            e.preventDefault();
+            paginaAtual = i;
+            exibirProdutosDaPagina(paginaAtual);
+            renderizarPaginacao(); // Re-renderiza para atualizar o estado dos botões
+        });
+        li.appendChild(a);
+        ul.appendChild(li);
+    }
+
+    // Botão "Next"
+    const liNext = document.createElement('li');
+    liNext.classList.add('page-item');
+    if (paginaAtual === totalPaginas) {
+        liNext.classList.add('disabled');
+    }
+    const aNext = document.createElement('a');
+    aNext.classList.add('page-link');
+    aNext.href = '#';
+    aNext.textContent = 'Next';
+    aNext.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (paginaAtual < totalPaginas) {
+            paginaAtual++;
+            exibirProdutosDaPagina(paginaAtual);
+            renderizarPaginacao(); // Re-renderiza para atualizar o estado dos botões
+        }
+    });
+    liNext.appendChild(aNext);
+    ul.appendChild(liNext);
+
+    nav.appendChild(ul);
+    paginationContainer.appendChild(nav);
+}
+
+
 // Ao carregar a página, buscar todos os produtos (sem filtros)
 document.addEventListener('DOMContentLoaded', function () {
-    buscarProdutos();
+    buscarProdutos(); // Isso agora vai buscar, exibir a primeira página e renderizar a paginação
 });
 
 const applyFiltersDesktop = document.getElementById('apply-filters-desktop');
@@ -587,7 +692,7 @@ if (applyFiltersDesktop) {
             tamanhos: [...document.querySelectorAll('input[name="size-desktop"]:checked')].map(cb => cb.value),
         };
         // console.log("Filtros:" + JSON.stringify(filtros));
-        buscarProdutos(filtros);
+        buscarProdutos(filtros); // Isso vai resetar para pagina 1 e re-renderizar tudo
     });
 }
 
@@ -629,6 +734,6 @@ if (clearFiltersDesktop) {
         atualizarSizePorCategoria();
 
         // 6. Fetch and display all products (no filters)
-        buscarProdutos();
+        buscarProdutos(); // Isso vai resetar para pagina 1 e re-renderizar tudo
     });
 }
