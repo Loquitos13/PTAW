@@ -113,4 +113,4 @@ $base_url = "/~ptaw-2025-gr4";
 
 </div>
 
-<script src="<?= $base_url ?>/src/js/carrinho.js"></script>
+<script src="<?= $base_url ?>/src/js/carrinho.js" type="module"></script>

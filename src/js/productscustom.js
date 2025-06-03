@@ -21,6 +21,8 @@ import { DecalGeometry } from "https://unpkg.com/three@0.174.0/examples/jsm/geom
 
 import { GLTFExporter } from "https://unpkg.com/three@0.174.0/examples/jsm/exporters/GLTFExporter.js"; // import to export the scene
 
+import { renderCart } from './carrinho.js';
+
 let loadingText, logo, decalPlaced = false;
 let canvas, scene, camera, renderer, controls, light;
 let loader, model, box, center, size;
@@ -602,7 +604,7 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
         const updateCart = {
           id_carrinho_item: carrinhoItemId.data[0].id_carrinho_item,
           quantidade: quantity,
-          preco: price, 
+          preco: price,
         }
 
         //const updateCarrinho = await updateCarrinhoItem(updateCart);
@@ -611,6 +613,11 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
       }
     }
 
+    await renderCart();
+
+    const cartOffcanvas = document.getElementById('carrinho');
+    const bsOffcanvas = new bootstrap.Offcanvas(cartOffcanvas);
+    bsOffcanvas.show();
 
   });
 });

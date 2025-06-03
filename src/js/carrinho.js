@@ -1,16 +1,13 @@
-document.addEventListener("DOMContentLoaded", async function() {
-  console.log("Carrinho.js carregado");
+export async function renderCart() {
 
-  const cartIdInput = document.getElementById("cartId");
+    const cartIdInput = document.getElementById("cartId");
 
-    if (cartIdInput) {
-
-        if (cartIdInput.value) {
+    if (cartIdInput && cartIdInput.value) {
 
         const cartItens = await getShoppingCartItens(cartIdInput.value);
 
         const container = document.querySelector('#cartProducts');
-
+        
         container.innerHTML = '';
 
         const cartItensArray = Array.isArray(cartItens) ? cartItens : cartItens.message || [];
@@ -18,9 +15,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         let html = '';
         cartItensArray.forEach(element => {
             console.log(element);
-
             element.Size = element.Size.replaceAll('%20', ' ');
-
             html += `
                 <div class="row align-items-start">
                     <div class="col-4">
@@ -51,11 +46,14 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
 
         container.innerHTML = html;
-
-
-        }
-
     }
+}
+
+document.addEventListener("DOMContentLoaded", async function() {
+  console.log("Carrinho.js carregado");
+
+  await renderCart();
+
   
   // garantir que o bootstrap esta carregado
   if (typeof bootstrap === 'undefined') {
