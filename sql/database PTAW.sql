@@ -156,13 +156,12 @@ CREATE TABLE EncomendaItens (
     id_produto INT NOT NULL,
     quantidade INT NOT NULL,
     preco DECIMAL(10,2) NOT NULL,
-    id_cor INT,
-    id_dimensao INT,
-    personalizado BOOLEAN DEFAULT 0,
+    nome_cor VARCHAR(50) NOT NULL,
+    tamanho VARCHAR(255) NOT NULL,
+    id_personalizacao INT,
     FOREIGN KEY (id_encomenda) REFERENCES Encomendas(id_encomenda) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_produto) REFERENCES Produtos(id_produto) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (id_cor) REFERENCES Cores(id_cor) ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY (id_dimensao) REFERENCES Dimensoes(id_dimensao) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (id_personalizacao) REFERENCES Personalizacao(id_personalizacao) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE PagamentoCartao (

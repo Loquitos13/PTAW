@@ -57,10 +57,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         }
 
-    } else {
-
-        console.log("Elemento #cartId não encontrado.");
-
     }
   
   // garantir que o bootstrap esta carregado

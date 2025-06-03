@@ -123,6 +123,6 @@
 
     $router->add('POST', '/insertCarrinhoItem', fn() => $controller->insertCarrinhoItem());
     
-    $router->add('PUT', '/updateItemFromCarrinhoItens', fn() => $controller->updateItemFromCarrinhoItens($carrinho_item_id, $quantidade, $preco));
+    $router->add('POST', '/updateItemFromCarrinhoItens', fn() => $controller->updateItemFromCarrinhoItens());
 
     $router->dispatch();
