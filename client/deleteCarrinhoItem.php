@@ -40,7 +40,7 @@ try {
         throw new Exception("Invalid JSON: " . json_last_error_msg());
     }
     
-    $result = updateCartItem($data);
+    $result = deleteCartItem($data);
     echo json_encode([
         'status' => 'success',
         'data' => $result
@@ -54,7 +54,7 @@ try {
     ]);
 }
 
-function updateCartItem($data) {
+function deleteCartItem($data) {
 
     global $apiUrl;
 
@@ -62,7 +62,7 @@ function updateCartItem($data) {
         throw new Exception("No data provided");
     }
 
-    $ch = curl_init("$apiUrl/updateItemFromCarrinhoItens");
+    $ch = curl_init("$apiUrl/deleteCartItem");
 
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
@@ -81,4 +81,3 @@ function updateCartItem($data) {
      ];
 
 }
-

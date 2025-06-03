@@ -677,7 +677,9 @@ public function searchProductsByTitle($searchTerm): array
     public function getFeedbacks(): array
     {
         return $this->queryBuilder->table('Reviews')
-            ->select(['id_cliente', 'id_categoria', 'comentario', 'classificacao', 'data_review', 'recommend'])
+            ->select(['Clientes.nome_cliente', 'Produtos.titulo_produto', 'Reviews.comentario', 'Reviews.classificacao', 'Reviews.data_review', 'Reviews.recommend'])
+            ->join('Produtos', 'Reviews.id_produto', '=', 'Produtos.id_produto')
+            ->join('Clientes', 'Reviews.id_cliente', '=', 'Clientes.id_cliente')
             ->order('data_review', 'DESC')
             ->get();
     }
@@ -1200,7 +1202,7 @@ public function searchProductsByTitle($searchTerm): array
     {
 
         return $this->queryBuilder->table('CarrinhoItens')
-            ->select(['titulo_produto as Name', 'imagem_principal as Image', 'preco_produto as Price', 'quantidade as Quantity', 'tamanho as Size', 'cor as Color'])
+            ->select(['id_carrinho_item as ID', 'titulo_produto as Name', 'imagem_principal as Image', 'preco_produto as Price', 'quantidade as Quantity', 'tamanho as Size', 'cor as Color'])
             ->join('Produtos', 'CarrinhoItens.id_produto', '=', 'Produtos.id_produto')
             ->where('CarrinhoItens.id_carrinho', '=', $id_carrinho)
             ->get();
@@ -1332,6 +1334,62 @@ public function searchProductsByTitle($searchTerm): array
 
             return [
                 'error' => 'Error updating the user',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function deleteCartItem(): array
+    {
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = ['id_carrinho_item'];
+
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+
+            if (!isset($data[$field])) {
+                
+                return [
+                    'error' => 'Invalid data',
+                    'message' => "Missing required field: $field"
+                ];
+            }
+        }
+        
+        if (!empty($missingFields)) {
+
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+
+            $this->queryBuilder->table('CarrinhoItens')
+                ->delete()
+                ->where('id_carrinho_item', '=', $data['id_carrinho_item'])
+                ->execute();
+
+            return [
+                'success' => true,
+                'message' => 'Cart item deleted'
+            ];
+
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error deleting the user',
                 'message' => 'Database error: ' . $e->getMessage()
             ];
         }

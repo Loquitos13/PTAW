@@ -60,8 +60,8 @@ try {
         if (empty($data['id_cliente'])) {
             throw new Exception("ID do cliente não fornecido");
         }
-        if (empty($data['id_categoria'])) {
-            throw new Exception("ID da categoria não fornecido");
+        if (empty($data['id_produto'])) {
+            throw new Exception("ID do produto não fornecido");
         }
         if (empty($data['comentario'])) {
             throw new Exception("Comentário não fornecido");

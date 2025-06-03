@@ -127,9 +127,9 @@ async function convertFeedbacks() {
 
     feedbacks.forEach((feedback, i) => {
       const feedbackAdaptado = {
-        id: feedback.id_cliente,
-        name: normalizarTexto(`cliente ${feedback.id_cliente}`),
-        role: normalizarTexto(`produto ${feedback.id_categoria}`),
+        id: feedback.nome_cliente,
+        name: normalizarTexto(`cliente ${feedback.nome_cliente}`),
+        role: normalizarTexto(`produto ${feedback.titulo_produto}`),
         content: normalizarTexto(feedback.comentario),
         rating: parseInt(feedback.classificacao) || 0,
         date: normalizarTexto(feedback.data_review),

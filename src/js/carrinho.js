@@ -13,8 +13,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         container.innerHTML = '';
 
-        console.log(cartItens);
-
         const cartItensArray = Array.isArray(cartItens) ? cartItens : cartItens.message || [];
 
         let html = '';
@@ -42,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                             </div>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-link p-0 delete-cart-btn">
+                            <button type="button" value="${element.ID}" class="btn btn-link p-0 delete-cart-btn">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
@@ -66,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async function() {
   }
   
   // usando delegacao de eventos para o botao "continuar a comprar"
-  document.body.addEventListener("click", function(event) {
+  document.body.addEventListener("click", async function(event) {
       if (event.target && event.target.id === "continuar-compra") {
           console.log("Botao continuar compra clicado");
           const carrinhoElement = document.getElementById("carrinho");
@@ -94,31 +92,38 @@ document.addEventListener("DOMContentLoaded", async function() {
       }
       
       // usando delegacao para os botoes de exclusao tambem
-      if (event.target && (event.target.classList.contains("delete-cart-btn") || 
-          (event.target.parentElement && event.target.parentElement.classList.contains("delete-cart-btn")))) {
+      if (event.target && (event.target.classList.contains("delete-cart-btn") || (event.target.parentElement && event.target.parentElement.classList.contains("delete-cart-btn")))) {
           
           console.log("Botao de exclusao clicado");
           
           // garantir que temos o botao mesmo se o clique foi no icone dentro dele
-          const deleteBtn = event.target.classList.contains("delete-cart-btn") ? 
-                            event.target : event.target.parentElement;
-              
-          const row = deleteBtn.closest(".row");
-          if (row) {
-              // remover o hr apos o item
-              const nextElement = row.nextElementSibling;
-              if (nextElement && nextElement.tagName.toLowerCase() === "hr") {
-                  nextElement.remove();
-              }
-              
-              // remover o proprio item
-              row.remove();
-              
-              // atualizar o contador no titulo
-              updateCartCount();
-              
-              // verificar se o carrinho esta vazio
-              checkEmptyCart();
+          const deleteBtn = event.target.classList.contains("delete-cart-btn") ? event.target : event.target.parentElement;
+
+          const itemId = deleteBtn.value;
+          console.log("ID do item a excluir:", itemId);
+
+          const deleteCartItem = await deleteCartItens(itemId);
+
+          if (deleteCartItem.status === "success") {
+
+            const row = deleteBtn.closest(".row");
+            if (row) {
+                // remover o hr apos o item
+                const nextElement = row.nextElementSibling;
+                if (nextElement && nextElement.tagName.toLowerCase() === "hr") {
+                    nextElement.remove();
+                }
+                
+                // remover o proprio item
+                row.remove();
+                
+                // atualizar o contador no titulo
+                updateCartCount();
+                
+                // verificar se o carrinho esta vazio
+                checkEmptyCart();
+            }
+
           }
       }
   });
@@ -165,6 +170,28 @@ async function getShoppingCartItens(id_carrinho) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({id_carrinho: id_carrinho})
+    });
+
+    const data = await response.json();
+    
+    return data;
+  
+  } catch (error) {
+    
+    return null;
+  
+  }
+}
+
+async function deleteCartItens(id_carrinho_item) {
+
+  try {
+    const response = await fetch('/~ptaw-2025-gr4/client/deleteCarrinhoItem.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({id_carrinho_item: id_carrinho_item})
     });
 
     const data = await response.json();

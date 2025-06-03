@@ -124,5 +124,7 @@
     $router->add('POST', '/insertCarrinhoItem', fn() => $controller->insertCarrinhoItem());
     
     $router->add('POST', '/updateItemFromCarrinhoItens', fn() => $controller->updateItemFromCarrinhoItens());
+    
+    $router->add('POST', '/deleteCartItem', fn() => $controller->deleteCartItem());
 
     $router->dispatch();
