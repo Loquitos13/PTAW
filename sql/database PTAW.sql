@@ -125,6 +125,7 @@ CREATE TABLE CarrinhoItens (
     quantidade INT NOT NULL,
     tamanho VARCHAR(255) NOT NULL,
     cor VARCHAR(50) NOT NULL,
+    personalizado BOOLEAN DEFAULT 0 NOT NULL,
     preco DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (id_carrinho) 
         REFERENCES Carrinhos(id_carrinho)
