@@ -37,7 +37,7 @@ try {
     if (json_last_error() !== JSON_ERROR_NONE) throw new Exception("Invalid JSON: " . json_last_error_msg());
 
     // Altera para chamar os dados do cliente
-    $result = getDadosCliente($data['userId']);
+    $result = getDadosClientePorcarrinho($data['userId']);
     echo json_encode($result);
 
 } catch(Exception $e) {
@@ -46,4 +46,22 @@ try {
         'status' => 'error',
         'message' => $e->getMessage()
     ]);
+}
+ function getDadosCliente($userId) {
+
+    global $apiUrl;
+
+    $ch = curl_init("$apiUrl/getDadosCliente/$userId");
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json'
+    ]);
+
+    $response = executeCurlRequest($ch);
+    $itens = json_decode($response, true);
+
+    return [
+        'status' => 'success',
+        'data' => $itens
+    ];
 }
