@@ -370,9 +370,6 @@ function formatCurrency($amount)
               <div class="card-header d-flex justify-content-between align-items-center">
                 <h6 class="mb-0">Informações da Encomenda</h6>
                 <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-sm btn-outline-primary" onclick="updateOrderStatus()">
-                    <i class="bi bi-pencil"></i> Atualizar Status
-                  </button>
                   <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printOrder()">
                     <i class="bi bi-printer"></i> Imprimir
                   </button>
@@ -712,7 +709,6 @@ function attachFormEventListeners(orderId) {
   const carrierSelect = document.getElementById('carrier');
   const carrierCustom = document.getElementById('carrier_custom');
 
-  // Handle custom carrier input
   if (carrierSelect && carrierCustom) {
     carrierSelect.addEventListener('change', function() {
       if (this.value === 'Outra') {
@@ -728,29 +724,29 @@ function attachFormEventListeners(orderId) {
 
   if (processButton) {
     processButton.addEventListener('click', function() {
-      // Show loading state
+
       const originalText = processButton.innerHTML;
       processButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processando...';
       processButton.disabled = true;
 
-      // Validação básica do formulário
+
       const trackingNumber = document.getElementById('tracking_number').value.trim();
       let carrier = document.getElementById('carrier').value.trim();
 
-      // Check if custom carrier is being used
+
       if (carrier === 'Outra') {
         carrier = document.getElementById('carrier_custom').value.trim();
       }
 
       if (!trackingNumber || !carrier) {
         showAlert('Por favor, preencha todos os campos obrigatórios.', 'warning');
-        // Reset button
+
         processButton.innerHTML = originalText;
         processButton.disabled = false;
         return;
       }
 
-      // Validate tracking number format (basic validation)
+     
       if (trackingNumber.length < 6) {
         showAlert('O número de rastreio deve ter pelo menos 6 caracteres.', 'warning');
         processButton.innerHTML = originalText;
@@ -758,20 +754,19 @@ function attachFormEventListeners(orderId) {
         return;
       }
 
-      // FIXED: Using correct field names that match your PHP backend
       const requestData = {
         order_id: parseInt(orderId),
-        numero_seguimento: trackingNumber, // Changed from tracking_number
-        transportadora: carrier,           // Changed from carrier
+        numero_seguimento: trackingNumber, 
+        transportadora: carrier,           
         notify_customer: document.getElementById('notify_customer').checked ? 1 : 0
       };
 
       console.log('Sending data to processItemsEngine.php:', requestData);
 
-      // Show progress in modal
+
       showProcessingStatus('Enviando dados para o processador...');
 
-      // FIXED: Send to your processItemsEngine.php instead of the API directly
+
       const processorUrl = '../../admin/processItemsEngine.php';
 
       fetch(processorUrl, {
@@ -786,7 +781,7 @@ function attachFormEventListeners(orderId) {
           console.log('Response status:', response.status);
           console.log('Response ok:', response.ok);
 
-          // Always try to get the response as text first
+  
           return response.text().then(text => {
             console.log('Raw response:', text);
 
@@ -830,7 +825,6 @@ function attachFormEventListeners(orderId) {
               showErrorMessage(`Erro do processador (HTTP ${result.status}): ${result.text.substring(0, 200)}`);
             }
             
-            // Reset button
             processButton.innerHTML = originalText;
             processButton.disabled = false;
           }
@@ -838,14 +832,14 @@ function attachFormEventListeners(orderId) {
         .catch(error => {
           console.error('Network or other error:', error);
           showErrorMessage('Erro de rede: ' + error.message);
-          // Reset button
+
           processButton.innerHTML = originalText;
           processButton.disabled = false;
         });
     });
   }
 
-  // Botão para imprimir etiqueta
+
   const printButton = document.querySelector('.print-label-btn');
   if (printButton) {
     printButton.addEventListener('click', function() {
@@ -858,7 +852,7 @@ function showAlert(message, type = 'info') {
   const alertClass = type === 'warning' ? 'alert-warning' :
     type === 'danger' ? 'alert-danger' : 'alert-info';
 
-  // Create temporary alert
+
   const alertDiv = document.createElement('div');
   alertDiv.className = `alert ${alertClass} alert-dismissible fade show`;
   alertDiv.innerHTML = `
@@ -866,7 +860,7 @@ function showAlert(message, type = 'info') {
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   `;
 
-  // Insert at top of modal content
+
   const modalContent = document.getElementById('modal-body-content');
   modalContent.insertBefore(alertDiv, modalContent.firstChild);
 }
@@ -882,7 +876,6 @@ function showProcessingStatus(message) {
     </div>
   `;
 
-  // Remove any existing status
   const existing = document.getElementById('processing-status');
   if (existing) existing.remove();
 

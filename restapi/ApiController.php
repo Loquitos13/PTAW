@@ -1000,20 +1000,17 @@ public function searchProductsByTitle($searchTerm): array
                     'EncomendaItens.id_encomenda_item',
                     'EncomendaItens.quantidade',
                     'EncomendaItens.preco',
-                    'EncomendaItens.id_cor',
-                    'EncomendaItens.id_dimensao',
-                    'EncomendaItens.personalizado',
+                    'EncomendaItens.nome_cor',
+                    'EncomendaItens.tamanho',
+                    'EncomendaItens.id_personalizacao',
                     'Produtos.id_produto',
                     'Produtos.titulo_produto',
+                    'Produtos.imagem_principal',
                     'Produtos.descricao_produto',
                     'Produtos.preco_produto',
-                    'Dimensoes.tamanho',
-                    'Cores.nome_cor',
                 ])
                 ->join('Encomendas', 'EncomendaItens.id_encomenda', '=', 'Encomendas.id_encomenda')
                 ->join('Produtos', 'EncomendaItens.id_produto', '=', 'Produtos.id_produto')
-                ->join('Cores', 'EncomendaItens.id_cor', '=', 'Cores.id_cor')
-                ->join('Dimensoes', 'EncomendaItens.id_dimensao', '=', 'Dimensoes.id_dimensao')
                 ->where('EncomendaItens.id_encomenda', '=', $orderId)
                 ->order('EncomendaItens.id_encomenda_item', 'DESC');
             $result = $query->get();
@@ -1049,7 +1046,6 @@ public function searchProductsByTitle($searchTerm): array
     public function updateOrderStatus(int $orderId, string $status): array 
 {
     try {
-        // Verificar se existem dados adicionais no corpo da requisição
         $json = file_get_contents('php://input');
         $data = null;
         
@@ -1059,7 +1055,7 @@ public function searchProductsByTitle($searchTerm): array
         
         $updateData = [
             'status_encomenda' => $status,
-            'data_atualizacao' => date('Y-m-d H:i:s') // Note: changed from data_atualizacao_encomenda
+            'data_atualizacao_encomenda' => date('Y-m-d H:i:s')
         ];
         
         // Adicionar informações de rastreio se fornecidas
@@ -1074,17 +1070,14 @@ public function searchProductsByTitle($searchTerm): array
         // Log the update for debugging
         error_log("Updating order $orderId with data: " . json_encode($updateData));
         
-        // Atualizar os dados da encomenda - using correct table and column names
-        $this->queryBuilder->table('Encomendas') // Note: lowercase table name
+        $this->queryBuilder->table('Encomendas') 
             ->update($updateData)
-            ->where('id', '=', $orderId) // Note: using 'id' instead of 'id_encomenda'
+            ->where('id_encomenda', '=', $orderId) 
             ->execute();
             
         // Verificar se notificação foi solicitada
         $notificationSent = false;
         if ($data && isset($data['notify_customer']) && $data['notify_customer'] == 1) {
-            // Aqui viria o código para enviar email ao cliente
-            // Por enquanto apenas simulamos o envio
             $notificationSent = true;
             error_log("Email notification would be sent for order $orderId");
         }

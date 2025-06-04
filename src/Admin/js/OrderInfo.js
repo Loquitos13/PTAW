@@ -277,35 +277,41 @@ function updateOrderItems(items) {
 
     items.forEach(item => {
         const row = document.createElement('tr');
+        // Substitui '%' por espaço em branco nos campos relevantes
+        const tituloProduto = (item.titulo_produto || 'Produto sem título').replace(/%/g, ' ');
+        const personalizacao = item.personalizacao ? item.personalizacao.replace(/%/g, ' ') : '';
+        const tamanho = item.tamanho ? item.tamanho.replace(/%/g, ' ') : '';
+        const nomeCor = item.nome_cor ? item.nome_cor.replace(/%/g, ' ') : '';
+
         row.innerHTML = `
             <td style="min-width: 180px; max-width: 40%;">
-                <div class="d-flex align-items-start flex-wrap">
-                    ${item.imagem_principal ? 
-                        `<img src="${item.imagem_principal}" alt="${item.titulo_produto}" class="product-image me-2" style="max-width: 60px; min-width: 60px;">` :
-                        `<div class="product-image me-2 bg-light d-flex align-items-center justify-content-center" style="max-width: 60px; min-width: 60px;">
-                            <i class="bi bi-image text-muted"></i>
-                        </div>`
-                    }
-                    <div style="word-wrap: break-word; overflow-wrap: break-word; width: calc(100% - 70px);">
-                        <strong class="text-break">${item.titulo_produto || 'Produto sem título'}</strong>
-                        ${item.personalizacao ? 
-                            `<br><small class="text-primary text-break"><i class="bi bi-star"></i> ${item.personalizacao}</small>` : 
-                            ''
-                        }
-                    </div>
+            <div class="d-flex align-items-start flex-wrap">
+                ${item.imagem_principal ? 
+                `<img src="${item.imagem_principal}" alt="${tituloProduto}" class="product-image me-2" style="max-width: 60px; min-width: 60px;">` :
+                `<div class="product-image me-2 bg-light d-flex align-items-center justify-content-center" style="max-width: 60px; min-width: 60px;">
+                    <i class="bi bi-image text-muted"></i>
+                </div>`
+                }
+                <div style="word-wrap: break-word; overflow-wrap: break-word; width: calc(100% - 70px);">
+                <strong class="text-break">${tituloProduto}</strong>
+                ${personalizacao ? 
+                    `<br><small class="text-primary text-break"><i class="bi bi-star"></i> ${personalizacao}</small>` : 
+                    ''
+                }
                 </div>
+            </div>
             </td>
             <td style="width: 15%;" class="text-wrap">
-                ${item.tamanho ? 
-                    `<span class="badge bg-secondary text-wrap">${item.tamanho}</span>` : 
-                    `<span class="text-muted">N/A</span>`
-                }
+            ${tamanho ? 
+                `<span class="badge bg-secondary text-wrap">${tamanho}</span>` : 
+                `<span class="text-muted">N/A</span>`
+            }
             </td>
             <td style="width: 15%;" class="text-wrap">
-                ${item.nome_cor ? 
-                    `<span class="badge bg-secondary text-wrap">${item.nome_cor}</span>` : 
-                    `<span class="text-muted">N/A</span>`
-                }
+            ${nomeCor ? 
+                `<span class="badge bg-secondary text-wrap">${nomeCor}</span>` : 
+                `<span class="text-muted">N/A</span>`
+            }
             </td>
             <td style="width: 10%;" class="text-center"><span class="badge bg-light text-dark">${item.quantidade || 1}</span></td>
             <td style="width: 20%;" class="text-end">${formatCurrency(item.preco || 0)}</td>

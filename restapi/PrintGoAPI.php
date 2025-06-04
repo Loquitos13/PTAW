@@ -107,7 +107,7 @@
 
     $router->add('GET', '/orderPaymentInfo/$id', fn($id) => $controller->getOrderPaymentInfo($id));
 
-    $router->add('PUT', '/updateOrderStatus/$id/$status', fn($id, $status) => $controller->updateOrderStatus($id, $status));
+    $router->add('POST', '/updateOrderStatus/$id/$status', fn($id, $status) => $controller->updateOrderStatus($id, $status));
     
     $router->add('GET', '/getDadosClientePorCarrinho/$userID', fn($userID) => $controller->getDadosClientePorCarrinho($userID));
 
