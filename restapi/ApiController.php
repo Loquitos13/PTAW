@@ -185,41 +185,41 @@ class ApiController
             ->get();
 
     }
-public function searchProductsByTitle($searchTerm): array
-{
-    try {
-        
-        $searchTerm = urldecode($searchTerm);
-        $searchTerm = trim($searchTerm);
-        
-        if (empty($searchTerm)) {
+    public function searchProductsByTitle($searchTerm): array
+    {
+        try {
+
+            $searchTerm = urldecode($searchTerm);
+            $searchTerm = trim($searchTerm);
+
+            if (empty($searchTerm)) {
+                return [];
+            }
+
+
+            return $this->queryBuilder->table('Produtos')
+                ->select([
+                    'Produtos.*',
+                    'GROUP_CONCAT(DISTINCT Dimensoes.tamanho) AS tamanhos',
+                    'GROUP_CONCAT(DISTINCT Cores.nome_cor) AS cores'
+                ])
+                ->leftJoin('Dimensoes', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
+                ->leftJoin('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
+                ->leftJoin('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
+                ->where('Produtos.titulo_produto', 'LIKE', "%$searchTerm%")
+                ->where('Produtos.status_produto', '=', 1)
+                ->groupBy('Produtos.id_produto')
+                ->order('Produtos.id_produto', 'DESC')
+                ->get();
+
+        } catch (PDOException $e) {
+            error_log("Database error in searchProductsByTitle: " . $e->getMessage());
+            return [];
+        } catch (Exception $e) {
+            error_log("General error in searchProductsByTitle: " . $e->getMessage());
             return [];
         }
-        
-        
-        return $this->queryBuilder->table('Produtos')
-            ->select([
-                'Produtos.*',
-                'GROUP_CONCAT(DISTINCT Dimensoes.tamanho) AS tamanhos',
-                'GROUP_CONCAT(DISTINCT Cores.nome_cor) AS cores'
-            ])
-            ->leftJoin('Dimensoes', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
-            ->leftJoin('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
-            ->leftJoin('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
-            ->where('Produtos.titulo_produto', 'LIKE', "%$searchTerm%")
-            ->where('Produtos.status_produto', '=', 1)
-            ->groupBy('Produtos.id_produto')
-            ->order('Produtos.id_produto', 'DESC')
-            ->get();
-            
-    } catch (PDOException $e) {
-        error_log("Database error in searchProductsByTitle: " . $e->getMessage());
-        return [];
-    } catch (Exception $e) {
-        error_log("General error in searchProductsByTitle: " . $e->getMessage());
-        return [];
     }
-}
     public function getCategoriesByID(): array
     {
         // Obtém todas as categorias ordenadas pelo ID da categoria em ordem ascendente.
@@ -742,7 +742,7 @@ public function searchProductsByTitle($searchTerm): array
 
     }
 
-    public function getRecentOrdersByClient($id_cliente): array 
+    public function getRecentOrdersByClient($id_cliente): array
     {
         try {
             return $this->queryBuilder->table('Encomendas')
@@ -1056,69 +1056,69 @@ public function searchProductsByTitle($searchTerm): array
     }
 
 
-    public function updateOrderStatus(int $orderId, string $status): array 
-{
-    try {
-        $json = file_get_contents('php://input');
-        $data = null;
-        
-        if (!empty($json)) {
-            $data = json_decode($json, true);
+    public function updateOrderStatus(int $orderId, string $status): array
+    {
+        try {
+            $json = file_get_contents('php://input');
+            $data = null;
+
+            if (!empty($json)) {
+                $data = json_decode($json, true);
+            }
+
+            $updateData = [
+                'status_encomenda' => $status,
+                'data_atualizacao_encomenda' => date('Y-m-d H:i:s')
+            ];
+
+            // Adicionar informações de rastreio se fornecidas
+            if ($data && isset($data['tracking_number'])) {
+                $updateData['numero_seguimento'] = $data['tracking_number'];
+            }
+
+            if ($data && isset($data['carrier'])) {
+                $updateData['transportadora'] = $data['carrier'];
+            }
+
+            // Log the update for debugging
+            error_log("Updating order $orderId with data: " . json_encode($updateData));
+
+            $this->queryBuilder->table('Encomendas')
+                ->update($updateData)
+                ->where('id_encomenda', '=', $orderId)
+                ->execute();
+
+            // Verificar se notificação foi solicitada
+            $notificationSent = false;
+            if ($data && isset($data['notify_customer']) && $data['notify_customer'] == 1) {
+                $notificationSent = true;
+                error_log("Email notification would be sent for order $orderId");
+            }
+
+            return [
+                'success' => true,
+                'message' => 'Status da encomenda atualizado para ' . $status,
+                'notification_sent' => $notificationSent,
+                'tracking_number' => $data['numero_seguimento'] ?? null,
+                'carrier' => $data['transportadora'] ?? null
+            ];
+
+        } catch (PDOException $e) {
+            error_log("Database error in updateOrderStatus: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Erro ao atualizar status da encomenda',
+                'error' => $e->getMessage()
+            ];
+        } catch (Exception $e) {
+            error_log("General error in updateOrderStatus: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Erro inesperado ao processar solicitação',
+                'error' => $e->getMessage()
+            ];
         }
-        
-        $updateData = [
-            'status_encomenda' => $status,
-            'data_atualizacao_encomenda' => date('Y-m-d H:i:s')
-        ];
-        
-        // Adicionar informações de rastreio se fornecidas
-        if ($data && isset($data['tracking_number'])) {
-            $updateData['numero_seguimento'] = $data['tracking_number'];
-        }
-        
-        if ($data && isset($data['carrier'])) {
-            $updateData['transportadora'] = $data['carrier'];
-        }
-        
-        // Log the update for debugging
-        error_log("Updating order $orderId with data: " . json_encode($updateData));
-        
-        $this->queryBuilder->table('Encomendas') 
-            ->update($updateData)
-            ->where('id_encomenda', '=', $orderId) 
-            ->execute();
-            
-        // Verificar se notificação foi solicitada
-        $notificationSent = false;
-        if ($data && isset($data['notify_customer']) && $data['notify_customer'] == 1) {
-            $notificationSent = true;
-            error_log("Email notification would be sent for order $orderId");
-        }
-        
-        return [
-            'success' => true,
-            'message' => 'Status da encomenda atualizado para ' . $status,
-            'notification_sent' => $notificationSent,
-            'tracking_number' => $data['numero_seguimento'] ?? null,
-            'carrier' => $data['transportadora'] ?? null
-        ];
-        
-    } catch (PDOException $e) {
-        error_log("Database error in updateOrderStatus: " . $e->getMessage());
-        return [
-            'success' => false,
-            'message' => 'Erro ao atualizar status da encomenda',
-            'error' => $e->getMessage()
-        ];
-    } catch (Exception $e) {
-        error_log("General error in updateOrderStatus: " . $e->getMessage());
-        return [
-            'success' => false,
-            'message' => 'Erro inesperado ao processar solicitação',
-            'error' => $e->getMessage()
-        ];
     }
-}
     public function getDadosClientePorCarrinho($userID): array
     {
         return $this->queryBuilder->table('Carrinhos')
@@ -1137,7 +1137,8 @@ public function searchProductsByTitle($searchTerm): array
             ->get();
     }
 
-    public function insertShoppingCart(): array {
+    public function insertShoppingCart(): array
+    {
 
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
@@ -1228,7 +1229,8 @@ public function searchProductsByTitle($searchTerm): array
 
     }
 
-    public function insertCarrinhoItem(): array {
+    public function insertCarrinhoItem(): array
+    {
 
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
@@ -1290,7 +1292,8 @@ public function searchProductsByTitle($searchTerm): array
         }
     }
 
-    public function updateItemFromCarrinhoItens(): array {
+    public function updateItemFromCarrinhoItens(): array
+    {
 
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
@@ -1310,14 +1313,14 @@ public function searchProductsByTitle($searchTerm): array
         foreach ($requiredFields as $field) {
 
             if (!isset($data[$field])) {
-                
+
                 return [
                     'error' => 'Invalid data',
                     'message' => "Missing required field: $field"
                 ];
             }
         }
-        
+
         if (!empty($missingFields)) {
 
             return [
@@ -1328,15 +1331,15 @@ public function searchProductsByTitle($searchTerm): array
 
         try {
 
-        $this->queryBuilder->table('CarrinhoItens')
-            ->update([
-                'quantidade' => $data['quantidade'],
-                'preco' => $data['preco']
+            $this->queryBuilder->table('CarrinhoItens')
+                ->update([
+                    'quantidade' => $data['quantidade'],
+                    'preco' => $data['preco']
                 ])
-            ->where('id_carrinho_item', '=', $data['id_carrinho_item'])
-            ->execute();
+                ->where('id_carrinho_item', '=', $data['id_carrinho_item'])
+                ->execute();
 
-        return ['success' => 'Cart item updated'];
+            return ['success' => 'Cart item updated'];
 
         } catch (PDOException $e) {
 
@@ -1366,14 +1369,14 @@ public function searchProductsByTitle($searchTerm): array
         foreach ($requiredFields as $field) {
 
             if (!isset($data[$field])) {
-                
+
                 return [
                     'error' => 'Invalid data',
                     'message' => "Missing required field: $field"
                 ];
             }
         }
-        
+
         if (!empty($missingFields)) {
 
             return [
@@ -1405,7 +1408,8 @@ public function searchProductsByTitle($searchTerm): array
         }
     }
 
-    public function insertPersonalizacao(): array {
+    public function insertPersonalizacao(): array
+    {
 
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
@@ -1467,6 +1471,233 @@ public function searchProductsByTitle($searchTerm): array
         }
     }
 
+public function updateCustomerInfo(): array
+{
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    if (!is_array($data)) {
+        return ['success' => false, 'message' => 'Invalid JSON data received'];
+    }
+
+    // Validar campos obrigatórios
+    $requiredFields = ['order_id', 'customer_info'];
+    foreach ($requiredFields as $field) {
+        if (!isset($data[$field])) {
+            return ['success' => false, 'message' => "Missing required field: $field"];
+        }
+    }
+
+    $orderId = (int) $data['order_id'];
+    $customerInfo = $data['customer_info'];
+
+    try {
+        // Debug: Log dados recebidos
+        error_log("=== UPDATE CUSTOMER INFO DEBUG ===");
+        error_log("Order ID: " . $orderId);
+        error_log("Customer Info: " . json_encode($customerInfo));
+
+        // Obter o id_cliente da encomenda
+        $order = $this->queryBuilder->table('Encomendas')
+            ->select(['Carrinhos.id_cliente'])
+            ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
+            ->where('id_encomenda', '=', $orderId)
+            ->get();
+
+        if (empty($order)) {
+            return ['success' => false, 'message' => 'Order not found'];
+        }
+
+        $clienteId = $order[0]['id_cliente'];
+        error_log("Cliente ID found: " . $clienteId);
+
+        // Verificar dados atuais do cliente ANTES da atualização
+        $clienteBefore = $this->queryBuilder->table('Clientes')
+            ->select(['*'])
+            ->where('id_cliente', '=', $clienteId)
+            ->get();
+        
+        error_log("Cliente BEFORE update: " . json_encode($clienteBefore));
+
+        if (empty($clienteBefore)) {
+            return ['success' => false, 'message' => 'Customer not found in database'];
+        }
+
+        $totalUpdates = 0;
+        $updatedFields = [];
+
+        // MÉTODO ALTERNATIVO: Usar WHERE com valor atual para forçar update
+        if (!empty($customerInfo['nome'])) {
+            try {
+                // Primeiro, verificar valor atual
+                $currentNome = $clienteBefore[0]['nome_cliente'] ?? '';
+                error_log("Current nome_cliente: '$currentNome', New value: '{$customerInfo['nome']}'");
+                
+                if ($currentNome !== $customerInfo['nome']) {
+                    $result = $this->queryBuilder->table('Clientes')
+                        ->update(['nome_cliente' => $customerInfo['nome']])
+                        ->where('id_cliente', '=', $clienteId)
+                        ->execute();
+                    
+                    error_log("Nome update result: " . ($result ? 'SUCCESS' : 'FAILED'));
+                    
+                    if ($result) {
+                        $updatedFields[] = 'nome_cliente';
+                        $totalUpdates++;
+                    }
+                } else {
+                    error_log("Nome unchanged, skipping update");
+                }
+            } catch (Exception $e) {
+                error_log("Error updating nome_cliente: " . $e->getMessage());
+            }
+        }
+
+        if (!empty($customerInfo['email'])) {
+            try {
+                $currentEmail = $clienteBefore[0]['email_cliente'] ?? '';
+                error_log("Current email_cliente: '$currentEmail', New value: '{$customerInfo['email']}'");
+                
+                if ($currentEmail !== $customerInfo['email']) {
+                    $result = $this->queryBuilder->table('Clientes')
+                        ->update(['email_cliente' => $customerInfo['email']])
+                        ->where('id_cliente', '=', $clienteId)
+                        ->execute();
+                    
+                    error_log("Email update result: " . ($result ? 'SUCCESS' : 'FAILED'));
+                    
+                    if ($result) {
+                        $updatedFields[] = 'email_cliente';
+                        $totalUpdates++;
+                    }
+                } else {
+                    error_log("Email unchanged, skipping update");
+                }
+            } catch (Exception $e) {
+                error_log("Error updating email_cliente: " . $e->getMessage());
+            }
+        }
+
+        if (isset($customerInfo['telefone']) && $customerInfo['telefone'] !== '') {
+            try {
+                $currentTelefone = $clienteBefore[0]['contacto_cliente'] ?? '';
+                error_log("Current contacto_cliente: '$currentTelefone', New value: '{$customerInfo['telefone']}'");
+                
+                if ($currentTelefone !== $customerInfo['telefone']) {
+                    $result = $this->queryBuilder->table('Clientes')
+                        ->update(['contacto_cliente' => $customerInfo['telefone']])
+                        ->where('id_cliente', '=', $clienteId)
+                        ->execute();
+                    
+                    error_log("Telefone update result: " . ($result ? 'SUCCESS' : 'FAILED'));
+                    
+                    if ($result) {
+                        $updatedFields[] = 'contacto_cliente';
+                        $totalUpdates++;
+                    }
+                } else {
+                    error_log("Telefone unchanged, skipping update");
+                }
+            } catch (Exception $e) {
+                error_log("Error updating contacto_cliente: " . $e->getMessage());
+            }
+        }
+
+        if (isset($customerInfo['nif']) && $customerInfo['nif'] !== '') {
+            try {
+                $currentNif = $clienteBefore[0]['nif_cliente'] ?? '';
+                error_log("Current nif_cliente: '$currentNif', New value: '{$customerInfo['nif']}'");
+                
+                if ($currentNif !== $customerInfo['nif']) {
+                    $result = $this->queryBuilder->table('Clientes')
+                        ->update(['nif_cliente' => $customerInfo['nif']])
+                        ->where('id_cliente', '=', $clienteId)
+                        ->execute();
+                    
+                    error_log("NIF update result: " . ($result ? 'SUCCESS' : 'FAILED'));
+                    
+                    if ($result) {
+                        $updatedFields[] = 'nif_cliente';
+                        $totalUpdates++;
+                    }
+                } else {
+                    error_log("NIF unchanged, skipping update");
+                }
+            } catch (Exception $e) {
+                error_log("Error updating nif_cliente: " . $e->getMessage());
+            }
+        }
+
+        if (!empty($customerInfo['morada'])) {
+            try {
+                $currentMorada = $clienteBefore[0]['morada_cliente'] ?? '';
+                error_log("Current morada_cliente: '$currentMorada', New value: '{$customerInfo['morada']}'");
+                
+                if ($currentMorada !== $customerInfo['morada']) {
+                    $result = $this->queryBuilder->table('Clientes')
+                        ->update(['morada_cliente' => $customerInfo['morada']])
+                        ->where('id_cliente', '=', $clienteId)
+                        ->execute();
+                    
+                    error_log("Morada update result: " . ($result ? 'SUCCESS' : 'FAILED'));
+                    
+                    if ($result) {
+                        $updatedFields[] = 'morada_cliente';
+                        $totalUpdates++;
+                    }
+                } else {
+                    error_log("Morada unchanged, skipping update");
+                }
+            } catch (Exception $e) {
+                error_log("Error updating morada_cliente: " . $e->getMessage());
+            }
+        }
+
+        // Verificar dados APÓS a atualização
+        $clienteAfter = $this->queryBuilder->table('Clientes')
+            ->select(['*'])
+            ->where('id_cliente', '=', $clienteId)
+            ->get();
+        
+        error_log("Cliente AFTER update: " . json_encode($clienteAfter));
+        error_log("Total updates performed: " . $totalUpdates);
+        error_log("=== END DEBUG ===");
+
+        if ($totalUpdates === 0) {
+            return [
+                'success' => false,
+                'message' => 'No fields were actually updated - either all values were the same or updates failed',
+                'debug' => [
+                    'cliente_before' => $clienteBefore[0] ?? null,
+                    'cliente_after' => $clienteAfter[0] ?? null,
+                    'attempted_updates' => $customerInfo
+                ]
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Customer information updated successfully',
+            'data' => [
+                'order_id' => $orderId,
+                'client_id' => $clienteId,
+                'updated_fields' => $updatedFields,
+                'total_updates' => $totalUpdates,
+                'before' => $clienteBefore[0] ?? null,
+                'after' => $clienteAfter[0] ?? null
+            ]
+        ];
+
+    } catch (PDOException $e) {
+        error_log("Database error in updateCustomerInfo: " . $e->getMessage());
+        return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+    } catch (Exception $e) {
+        error_log("General error in updateCustomerInfo: " . $e->getMessage());
+        return ['success' => false, 'message' => 'Error updating customer information: ' . $e->getMessage()];
+    }
 }
+}
+
+
 
 ?>

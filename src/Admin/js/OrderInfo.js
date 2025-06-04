@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
     getOrderItems(orderId);
   }
 
-  console.log("Dados completos recebidos:", orderData);
 });
 
 function getOrderInfo(orderId) {
@@ -506,3 +505,4 @@ function showErrorMessage(message) {
     }
   }, 5000);
 }
+

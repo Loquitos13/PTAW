@@ -131,4 +131,6 @@
     
     $router->add('POST', '/insertPersonalizacao', fn() => $controller->insertPersonalizacao());
 
+    $router->add('POST', '/updateCustomerInfo', fn() => $controller->updateCustomerInfo());
+
     $router->dispatch();
