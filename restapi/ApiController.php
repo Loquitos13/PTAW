@@ -697,7 +697,7 @@ public function searchProductsByTitle($searchTerm): array
     public function getFeedbackAVGProduct($id_product): array
     {
         return $this->queryBuilder->table('Reviews')
-            ->select(["AVG(classificacao) AS AverageClassification"])
+            ->select(["AVG(classificacao) AS AverageClassification, COUNT(*) AS TotalCount"])
             ->where("id_produto", "=", $id_product)
             ->get();
 

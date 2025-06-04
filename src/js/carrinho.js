@@ -7,10 +7,16 @@ export async function renderCart() {
         const cartItens = await getShoppingCartItens(cartIdInput.value);
 
         const container = document.querySelector('#cartProducts');
-        
+
         container.innerHTML = '';
 
         const cartItensArray = Array.isArray(cartItens) ? cartItens : cartItens.message || [];
+
+        const size = cartItensArray.length;
+
+        const cartTitle = document.getElementById('offcanvasRightLabel');
+
+        cartTitle.textContent = `Shopping Cart (${size})`;
 
         let html = '';
         cartItensArray.forEach(element => {
@@ -28,10 +34,10 @@ export async function renderCart() {
                             <span class="product-info"> | </span>
                             <span class="product-info">Color: ${element.Color}</span>
                             <div class="d-flex align-items-center mt-2">
-                                <button type="button" class="btn btn-outline-secondary me-2">-</button>
-                                <span class="me-2">${element.Quantity}</span>
-                                <button type="button" class="btn btn-outline-secondary me-3">+</button>
-                                <span class="price">${Number(element.Price).toFixed(2)}€</span>
+                                <button type="button" value="${element.ID}" class="btn btn-outline-secondary me-2 decrease-cartItem-btn">-</button>
+                                <span class="me-2 productQuantity">${element.Quantity}</span>
+                                <button type="button" value="${element.ID}" class="btn btn-outline-secondary me-3 increase-cartItem-btn">+</button>
+                                <span class="price productPrice">${Number(element.Price).toFixed(2)}€</span>
                             </div>
                         </div>
                         <div>
@@ -124,6 +130,95 @@ document.addEventListener("DOMContentLoaded", async function() {
 
           }
       }
+
+        if (event.target && (event.target.classList.contains("decrease-cartItem-btn") || (event.target.parentElement && event.target.parentElement.classList.contains("decrease-cartItem-btn")))) {
+          
+          // garantir que temos o botao mesmo se o clique foi no icone dentro dele
+          const decreaseBtn = event.target.classList.contains("decrease-cartItem-btn") ? event.target : event.target.parentElement;
+
+          let quantitySpan = decreaseBtn.nextElementSibling;
+          let priceSpan = decreaseBtn.nextElementSibling.nextElementSibling;
+
+          if (!quantitySpan.classList.contains("productQuantity")) {
+
+              quantitySpan = decreaseBtn.parentElement.querySelector('.productQuantity');
+
+          }
+
+          if (!priceSpan.classList.contains("productPrice")) {
+
+                priceSpan = decreaseBtn.parentElement.querySelector('.productPrice');
+
+          }
+
+          const quantityValue = parseInt(quantitySpan.textContent, 10);
+          const priceValue = parseInt(priceSpan.textContent, 10);
+
+          const itemId = decreaseBtn.value;
+          const quantity = quantityValue - 1;
+          const priceInCart = Number(priceValue);
+          const priceOfProduct = priceInCart / quantityValue;
+          const price = (priceInCart + priceOfProduct);
+
+          const updateCart = {
+            id_carrinho_item: itemId,
+            quantidade: quantity,
+            preco: price.toFixed(2),
+          }
+
+          const updateCarrinho = await updateCarrinhoItem(updateCart);
+
+          if (updateCarrinho.status == "success") {
+
+            await renderCart();
+
+          }
+      }
+
+        if (event.target && (event.target.classList.contains("increase-cartItem-btn") || (event.target.parentElement && event.target.parentElement.classList.contains("increase-cartItem-btn")))) {
+          
+          // garantir que temos o botao mesmo se o clique foi no icone dentro dele
+          const increaseBtn = event.target.classList.contains("increase-cartItem-btn") ? event.target : event.target.parentElement;
+
+          let quantitySpan = increaseBtn.previousElementSibling;
+          let priceSpan = increaseBtn.nextElementSibling;
+
+          if (!quantitySpan.classList.contains("productQuantity")) {
+
+              quantitySpan = increaseBtn.parentElement.querySelector('.productQuantity');
+
+          }
+
+          if (!priceSpan.classList.contains("productPrice")) {
+
+                priceSpan = increaseBtn.parentElement.querySelector('.productPrice');
+
+          }
+
+          const quantityValue = parseInt(quantitySpan.textContent);
+          const priceValue = parseFloat(priceSpan.textContent);
+
+          const itemId = increaseBtn.value;
+          const quantity = quantityValue + 1;
+          const priceInCart = Number(priceValue);
+          const priceOfProduct = priceInCart / quantityValue;
+          const price = (priceInCart + priceOfProduct);
+
+          const updateCart = {
+            id_carrinho_item: itemId,
+            quantidade: quantity,
+            preco: price.toFixed(2),
+          }
+
+          const updateCarrinho = await updateCarrinhoItem(updateCart);
+
+          if (updateCarrinho.status == "success") {
+
+            await renderCart();
+
+          }
+
+      }
   });
   
   // funcao para atualizar o contador de itens
@@ -195,6 +290,28 @@ async function deleteCartItens(id_carrinho_item) {
     const data = await response.json();
     
     return data;
+  
+  } catch (error) {
+    
+    return null;
+  
+  }
+}
+
+async function updateCarrinhoItem(updateCart) {
+
+  try {
+    const response = await fetch('../client/updateItemFromCarrinho.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updateCart)
+    })
+
+    const data = await response.json();
+    
+    return data.data;
   
   } catch (error) {
     

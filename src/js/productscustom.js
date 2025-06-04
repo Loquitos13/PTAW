@@ -250,7 +250,7 @@ window.addEventListener('DOMContentLoaded', () => {
         starsHTML += `<svg width="30" height="30" viewBox="0 0 32 32"><use href="#star" fill="lightgray"/></svg>`;
       }
 
-      document.getElementById('productReviews').innerHTML = starsHTML + ` (${fullStars || 0} reviews)`;
+      document.getElementById('productReviews').innerHTML = starsHTML + ` (${Number(productReviewData.TotalCount) || 0} reviews)`;
     });
 });
 
@@ -599,12 +599,12 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
         let quantity = carrinhoItemId.data[0].quantidade + 1;
         let priceInCart = Number(carrinhoItemId.data[0].preco);
         let priceOfProduct = Number(productPriceValue);
-        let price = (priceInCart + priceOfProduct).toFixed(2);
+        let price = (priceInCart + priceOfProduct);
 
         const updateCart = {
           id_carrinho_item: carrinhoItemId.data[0].id_carrinho_item,
           quantidade: quantity,
-          preco: price,
+          preco: price.toFixed(2),
         }
 
         //const updateCarrinho = await updateCarrinhoItem(updateCart);
