@@ -984,12 +984,16 @@ public function searchProductsByTitle($searchTerm): array
                 'Clientes.contacto_cliente',
                 'Clientes.morada_cliente',
                 'Clientes.nif_cliente',
-                'Clientes.data_criacao_cliente'
+                'Clientes.data_criacao_cliente',
+                'Pagamento.id_pagamento',
+                'MetodoPagamento.nome_metodo_pagamento',
             ])
             ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
             ->join('CarrinhoItens', 'Carrinhos.id_carrinho', '=', 'CarrinhoItens.id_carrinho')
             ->join('Produtos', 'CarrinhoItens.id_produto', '=', 'Produtos.id_produto')
             ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
+            ->join('Pagamento', 'Encomendas.id_encomenda', '=', 'Pagamento.id_encomenda')
+            ->join('MetodoPagamento', 'Pagamento.id_metodo_pagamento', '=', 'MetodoPagamento.id_metodo_pagamento')
             ->where('Encomendas.id_encomenda', '=', $orderId)
             ->get();
 
@@ -1004,7 +1008,6 @@ public function searchProductsByTitle($searchTerm): array
         try {
             error_log("Getting order items for order ID: $orderId");
 
-            // Debug the SQL query
             $query = $this->queryBuilder->table('EncomendaItens')
                 ->select([
                     'EncomendaItens.id_encomenda_item',

@@ -1,10 +1,9 @@
-<?php
+<span?php
 
 session_start();
 
 $orderId = isset($_GET['id']);
 
-// Função para formatar moeda
 function formatCurrency($amount)
 {
   return '€' . number_format((float) $amount, 2, ',', '.');
@@ -26,7 +25,10 @@ function formatCurrency($amount)
   <script src="js/OrderInfo.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-  </script>
+    </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 </head>
 <style>
   body {
@@ -306,14 +308,10 @@ function formatCurrency($amount)
 
 <body>
   <div class="d-flex">
-    <!-- Menu lateral -->
     <?php include '../includes/header-desktop-admin.php'; ?>
-    <!-- Menu mobile -->
     <?php include '../includes/header-mobile-admin.php'; ?>
 
-    <!-- Conteudo principal -->
     <div class="flex-grow-1" id="main-content">
-      <!-- Header da encomenda -->
       <div class="order-header">
         <div class="container">
           <div class="d-flex justify-content-between align-items-center">
@@ -335,7 +333,6 @@ function formatCurrency($amount)
       </div>
 
       <div class="container mb-5">
-        <!-- Timeline de Status -->
         <div class="card mb-4">
           <div class="card-body">
             <h6 class="card-title">Estado da Encomenda</h6>
@@ -364,7 +361,6 @@ function formatCurrency($amount)
         </div>
 
         <div class="row">
-          <!-- Informação da encomenda -->
           <div class="col-lg-8">
             <div class="card mb-4">
               <div class="card-header d-flex justify-content-between align-items-center">
@@ -384,18 +380,18 @@ function formatCurrency($amount)
                   </div>
                   <div class="col-md-6">
                     <p><strong>Origem da Compra:</strong> <span class="badge bg-info">Loja Online</span></p>
-                    <?php if (!empty($order['transportadora'])): ?>
-                      <p><strong>Transportadora:</strong> <?php echo htmlspecialchars($order['transportadora']); ?></p>
-                    <?php endif; ?>
-                    <p><strong>Total:</strong> <span
-                        class="h5 text-success" data-order-total></span>
+                    <div>
+                      <strong>Transportadora: </strong><span data-carrier></span><br>
+                      <strong>Rastreio: </strong><span class="mt-2" data-tracking></span>
+                    </div>
+
+                    <p><strong>Total: </strong> <span class="h5 text-success" data-order-total></span>
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Detalhes do produto -->
             <div class="card mb-4">
               <div class="card-header d-flex justify-content-between align-items-center">
                 <h6 class="mb-0">Itens da Encomenda</h6>
@@ -423,7 +419,6 @@ function formatCurrency($amount)
               </div>
             </div>
 
-            <!-- Pagamento -->
             <div class="card">
               <div class="card-header">
                 <h6 class="mb-0">Resumo Financeiro</h6>
@@ -453,8 +448,8 @@ function formatCurrency($amount)
 
                   <div class="col-md-6">
                     <h6>Informações de Pagamento</h6>
-                    <div data-payment-method>
-                      <i class="me-2"></i>
+                    <div>
+                      <i class="me-2" data-payment-method></i>
                       <p></p>
                     </div>
                     <p><strong>Status:</strong>
@@ -471,7 +466,6 @@ function formatCurrency($amount)
             </div>
           </div>
 
-          <!-- Informação do cliente -->
           <div class="col-lg-4">
             <div class="card mb-4">
               <div class="card-header">
@@ -500,33 +494,20 @@ function formatCurrency($amount)
                 </button>
               </div>
               <div class="card-body">
-                <p data-customer-email><strong>Email:</strong><br>
-                  <a href="mailto: data-customer-email"
-                    class="text-decoration-none">
-
+                <p><strong>Email:</strong><br>
+                  <a href="mailto: data-customer-email" class="text-decoration-none" data-customer-email>
                   </a>
                 </p>
 
-                <?php if (!empty($order['contacto_cliente'])): ?>
-                  <p><strong>Telefone:</strong><br>
-                    <a href="tel:<?php echo htmlspecialchars($order['contacto_cliente']); ?>"
-                      class="text-decoration-none">
-                      <?php echo htmlspecialchars($order['contacto_cliente']); ?>
-                    </a>
-                  </p>
-                <?php endif; ?>
-
-                <?php if (!empty($order['morada_cliente'])): ?>
-                  <p><strong>Morada de Envio:</strong><br>
-                  <address class="mb-0">
-                    <?php echo nl2br(htmlspecialchars($order['morada_cliente'])); ?>
-                  </address>
-                  </p>
-                <?php endif; ?>
-
-                <?php if (!empty($order['nif_cliente'])): ?>
-                  <p><strong>NIF:</strong> <?php echo htmlspecialchars($order['nif_cliente']); ?></p>
-                <?php endif; ?>
+                <p><strong>Telefone:</strong><br>
+                  <a href="tel: data-customer-phone" class="text-decoration-none" data-customer-phone>
+                  </a>
+                </p>
+                <p><strong>Morada de Envio:</strong>
+                <address class="mb-0" data-customer-address>
+                </address>
+                </p>
+                <strong>NIF: </strong><span data-customer-nif></span>
 
                 <p><small class="text-muted"><i class="bi bi-info-circle"></i> Faturação igual à morada de envio</small>
                 </p>
@@ -539,7 +520,6 @@ function formatCurrency($amount)
               </div>
               <div class="card-body">
                 <div class="alert alert-info">
-                  <i class="bi bi-info-circle me-2"></i>
                   <p class="text-muted mb-0" data-order-notes></p>
                 </div>
               </div>
@@ -550,7 +530,6 @@ function formatCurrency($amount)
     </div>
   </div>
 
-  <!-- Modal -->
   <div id="processModal" class="modal">
     <div class="modal-content">
       <span class="close-button">&times;</span>
@@ -564,56 +543,51 @@ function formatCurrency($amount)
   </div>
 
   <script>
- // Fixed JavaScript code for order processing - replace the existing script section
+    document.addEventListener('DOMContentLoaded', function () {
+      const modal = document.getElementById('processModal');
+      const closeBtn = document.querySelector('.close-button');
+      const modalContent = document.getElementById('modal-body-content');
 
-document.addEventListener('DOMContentLoaded', function() {
-  const modal = document.getElementById('processModal');
-  const closeBtn = document.querySelector('.close-button');
-  const modalContent = document.getElementById('modal-body-content');
+      document.getElementById('button-process').addEventListener('click', function () {
+        modal.style.display = 'block';
 
-  document.getElementById('button-process').addEventListener('click', function() {
-    modal.style.display = 'block';
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('id');
 
-    // Get the order ID from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const orderId = urlParams.get('id');
-
-    if (!orderId) {
-      modalContent.innerHTML = `
+        if (!orderId) {
+          modalContent.innerHTML = `
         <div class="alert alert-danger">
           <h4>Erro</h4>
           <p>ID da encomenda não encontrado.</p>
         </div>
       `;
-      return;
-    }
+          return;
+        }
 
-    // Create the process form directly in the modal
-    modalContent.innerHTML = createProcessForm(orderId);
+        modalContent.innerHTML = createProcessForm(orderId);
 
-    // Attach event listeners for the form
-    attachFormEventListeners(orderId);
-  });
+        attachFormEventListeners(orderId);
+      });
 
-  closeBtn.addEventListener('click', function() {
-    modal.style.display = 'none';
-  });
+      closeBtn.addEventListener('click', function () {
+        modal.style.display = 'none';
+      });
 
-  window.addEventListener('click', function(event) {
-    if (event.target === modal) {
-      modal.style.display = 'none';
-    }
-  });
+      window.addEventListener('click', function (event) {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
 
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape' && modal.style.display === 'block') {
-      modal.style.display = 'none';
-    }
-  });
-});
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && modal.style.display === 'block') {
+          modal.style.display = 'none';
+        }
+      });
+    });
 
-function createProcessForm(orderId) {
-  return `
+    function createProcessForm(orderId) {
+      return `
     <div style="max-height: 70vh; overflow-y: auto;">
       <div class="header mb-4">
         <div class="d-flex justify-content-between align-items-start">
@@ -702,191 +676,190 @@ function createProcessForm(orderId) {
       </div>
     </div>
   `;
-}
+    }
 
-function attachFormEventListeners(orderId) {
-  const processButton = document.getElementById('process-order-btn');
-  const carrierSelect = document.getElementById('carrier');
-  const carrierCustom = document.getElementById('carrier_custom');
+    function attachFormEventListeners(orderId) {
+      const processButton = document.getElementById('process-order-btn');
+      const carrierSelect = document.getElementById('carrier');
+      const carrierCustom = document.getElementById('carrier_custom');
 
-  if (carrierSelect && carrierCustom) {
-    carrierSelect.addEventListener('change', function() {
-      if (this.value === 'Outra') {
-        carrierCustom.style.display = 'block';
-        carrierCustom.required = true;
-      } else {
-        carrierCustom.style.display = 'none';
-        carrierCustom.required = false;
-        carrierCustom.value = '';
-      }
-    });
-  }
-
-  if (processButton) {
-    processButton.addEventListener('click', function() {
-
-      const originalText = processButton.innerHTML;
-      processButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processando...';
-      processButton.disabled = true;
-
-
-      const trackingNumber = document.getElementById('tracking_number').value.trim();
-      let carrier = document.getElementById('carrier').value.trim();
-
-
-      if (carrier === 'Outra') {
-        carrier = document.getElementById('carrier_custom').value.trim();
-      }
-
-      if (!trackingNumber || !carrier) {
-        showAlert('Por favor, preencha todos os campos obrigatórios.', 'warning');
-
-        processButton.innerHTML = originalText;
-        processButton.disabled = false;
-        return;
-      }
-
-     
-      if (trackingNumber.length < 6) {
-        showAlert('O número de rastreio deve ter pelo menos 6 caracteres.', 'warning');
-        processButton.innerHTML = originalText;
-        processButton.disabled = false;
-        return;
-      }
-
-      const requestData = {
-        order_id: parseInt(orderId),
-        numero_seguimento: trackingNumber, 
-        transportadora: carrier,           
-        notify_customer: document.getElementById('notify_customer').checked ? 1 : 0
-      };
-
-      console.log('Sending data to processItemsEngine.php:', requestData);
-
-
-      showProcessingStatus('Enviando dados para o processador...');
-
-
-      const processorUrl = '../../admin/processItemsEngine.php';
-
-      fetch(processorUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(requestData)
-        })
-        .then(response => {
-          console.log('Response status:', response.status);
-          console.log('Response ok:', response.ok);
-
-  
-          return response.text().then(text => {
-            console.log('Raw response:', text);
-
-            try {
-              const jsonData = JSON.parse(text);
-              return {
-                json: jsonData,
-                status: response.status,
-                ok: response.ok
-              };
-            } catch (e) {
-              console.error('Failed to parse JSON:', e);
-              return {
-                text: text,
-                status: response.status,
-                ok: response.ok
-              };
-            }
-          });
-        })
-        .then(result => {
-          if (result.json) {
-            console.log('Parsed JSON response:', result.json);
-
-            if (result.json.success) {
-              showSuccessMessage(orderId, result.json);
-            } else {
-              showErrorMessage(result.json.message || 'Erro desconhecido do processador');
-              // Reset button
-              processButton.innerHTML = originalText;
-              processButton.disabled = false;
-            }
+      if (carrierSelect && carrierCustom) {
+        carrierSelect.addEventListener('change', function () {
+          if (this.value === 'Outra') {
+            carrierCustom.style.display = 'block';
+            carrierCustom.required = true;
           } else {
-            console.error('Non-JSON response:', result.text);
-            
-            if (result.status === 403) {
-              showErrorMessage('Erro 403: Sem permissão para acessar o processador. Verifique as configurações do servidor.');
-            } else if (result.status === 404) {
-              showErrorMessage('Erro 404: Processador não encontrado. Verifique se processItemsEngine.php existe.');
-            } else {
-              showErrorMessage(`Erro do processador (HTTP ${result.status}): ${result.text.substring(0, 200)}`);
-            }
-            
+            carrierCustom.style.display = 'none';
+            carrierCustom.required = false;
+            carrierCustom.value = '';
+          }
+        });
+      }
+
+      if (processButton) {
+        processButton.addEventListener('click', function () {
+
+          const originalText = processButton.innerHTML;
+          processButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processando...';
+          processButton.disabled = true;
+
+
+          const trackingNumber = document.getElementById('tracking_number').value.trim();
+          let carrier = document.getElementById('carrier').value.trim();
+
+
+          if (carrier === 'Outra') {
+            carrier = document.getElementById('carrier_custom').value.trim();
+          }
+
+          if (!trackingNumber || !carrier) {
+            showAlert('Por favor, preencha todos os campos obrigatórios.', 'warning');
+
             processButton.innerHTML = originalText;
             processButton.disabled = false;
+            return;
           }
-        })
-        .catch(error => {
-          console.error('Network or other error:', error);
-          showErrorMessage('Erro de rede: ' + error.message);
 
-          processButton.innerHTML = originalText;
-          processButton.disabled = false;
+
+          if (trackingNumber.length < 6) {
+            showAlert('O número de rastreio deve ter pelo menos 6 caracteres.', 'warning');
+            processButton.innerHTML = originalText;
+            processButton.disabled = false;
+            return;
+          }
+
+          const requestData = {
+            order_id: parseInt(orderId),
+            numero_seguimento: trackingNumber,
+            transportadora: carrier,
+            notify_customer: document.getElementById('notify_customer').checked ? 1 : 0
+          };
+
+          console.log('Sending data to processItemsEngine.php:', requestData);
+
+
+          showProcessingStatus('Enviando dados para o processador...');
+
+
+          const processorUrl = '../../admin/processItemsEngine.php';
+
+          fetch(processorUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+          })
+            .then(response => {
+              console.log('Response status:', response.status);
+              console.log('Response ok:', response.ok);
+
+
+              return response.text().then(text => {
+                console.log('Raw response:', text);
+
+                try {
+                  const jsonData = JSON.parse(text);
+                  return {
+                    json: jsonData,
+                    status: response.status,
+                    ok: response.ok
+                  };
+                } catch (e) {
+                  console.error('Failed to parse JSON:', e);
+                  return {
+                    text: text,
+                    status: response.status,
+                    ok: response.ok
+                  };
+                }
+              });
+            })
+            .then(result => {
+              if (result.json) {
+                console.log('Parsed JSON response:', result.json);
+
+                if (result.json.success) {
+                  showSuccessMessage(orderId, result.json);
+                } else {
+                  showErrorMessage(result.json.message || 'Erro desconhecido do processador');
+                  processButton.innerHTML = originalText;
+                  processButton.disabled = false;
+                }
+              } else {
+                console.error('Non-JSON response:', result.text);
+
+                if (result.status === 403) {
+                  showErrorMessage('Erro 403: Sem permissão para acessar o processador. Verifique as configurações do servidor.');
+                } else if (result.status === 404) {
+                  showErrorMessage('Erro 404: Processador não encontrado. Verifique se processItemsEngine.php existe.');
+                } else {
+                  showErrorMessage(`Erro do processador (HTTP ${result.status}): ${result.text.substring(0, 200)}`);
+                }
+
+                processButton.innerHTML = originalText;
+                processButton.disabled = false;
+              }
+            })
+            .catch(error => {
+              console.error('Network or other error:', error);
+              showErrorMessage('Erro de rede: ' + error.message);
+
+              processButton.innerHTML = originalText;
+              processButton.disabled = false;
+            });
         });
-    });
-  }
+
+      }
 
 
-  const printButton = document.querySelector('.print-label-btn');
-  if (printButton) {
-    printButton.addEventListener('click', function() {
-      window.print();
-    });
-  }
-}
+      const printButton = document.querySelector('.print-label-btn');
+      if (printButton) {
+        printButton.addEventListener('click', function () {
+          window.print();
+        });
+      }
+    }
 
-function showAlert(message, type = 'info') {
-  const alertClass = type === 'warning' ? 'alert-warning' :
-    type === 'danger' ? 'alert-danger' : 'alert-info';
+    function showAlert(message, type = 'info') {
+      const alertClass = type === 'warning' ? 'alert-warning' :
+        type === 'danger' ? 'alert-danger' : 'alert-info';
 
 
-  const alertDiv = document.createElement('div');
-  alertDiv.className = `alert ${alertClass} alert-dismissible fade show`;
-  alertDiv.innerHTML = `
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert ${alertClass} alert-dismissible fade show`;
+      alertDiv.innerHTML = `
     ${message}
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   `;
 
 
-  const modalContent = document.getElementById('modal-body-content');
-  modalContent.insertBefore(alertDiv, modalContent.firstChild);
-}
+      const modalContent = document.getElementById('modal-body-content');
+      modalContent.insertBefore(alertDiv, modalContent.firstChild);
+    }
 
-function showProcessingStatus(message) {
-  const statusDiv = document.createElement('div');
-  statusDiv.id = 'processing-status';
-  statusDiv.className = 'alert alert-info';
-  statusDiv.innerHTML = `
+    function showProcessingStatus(message) {
+      const statusDiv = document.createElement('div');
+      statusDiv.id = 'processing-status';
+      statusDiv.className = 'alert alert-info';
+      statusDiv.innerHTML = `
     <div class="d-flex align-items-center">
       <div class="spinner-border spinner-border-sm me-2"></div>
       <span>${message}</span>
     </div>
   `;
 
-  const existing = document.getElementById('processing-status');
-  if (existing) existing.remove();
+      const existing = document.getElementById('processing-status');
+      if (existing) existing.remove();
 
-  // Add new status
-  const modalContent = document.getElementById('modal-body-content');
-  modalContent.insertBefore(statusDiv, modalContent.firstChild);
-}
+      const modalContent = document.getElementById('modal-body-content');
+      modalContent.insertBefore(statusDiv, modalContent.firstChild);
+    }
 
-function showSuccessMessage(orderId, responseData) {
-  const modalContent = document.getElementById('modal-body-content');
-  modalContent.innerHTML = `
+    function showSuccessMessage(orderId, responseData) {
+      const modalContent = document.getElementById('modal-body-content');
+      modalContent.innerHTML = `
     <div class="text-center">
       <div class="alert alert-success">
         <i class="bi bi-check-circle-fill fs-1 text-success"></i>
@@ -912,13 +885,13 @@ function showSuccessMessage(orderId, responseData) {
       </div>
     </div>
   `;
-}
+    }
 
-function showErrorMessage(message) {
-  const modalContent = document.getElementById('modal-body-content');
-  const errorDiv = document.createElement('div');
-  errorDiv.className = 'alert alert-danger';
-  errorDiv.innerHTML = `
+    function showErrorMessage(message) {
+      const modalContent = document.getElementById('modal-body-content');
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'alert alert-danger';
+      errorDiv.innerHTML = `
     <h5><i class="bi bi-exclamation-triangle"></i> Erro ao Processar</h5>
     <p>${message}</p>
     <div class="mt-3">
@@ -928,25 +901,114 @@ function showErrorMessage(message) {
     </div>
   `;
 
-  // Remove processing status if exists
-  const statusDiv = document.getElementById('processing-status');
-  if (statusDiv) statusDiv.remove();
+      const statusDiv = document.getElementById('processing-status');
+      if (statusDiv) statusDiv.remove();
 
-  // Add error message at top
-  modalContent.insertBefore(errorDiv, modalContent.firstChild);
-}
+      modalContent.insertBefore(errorDiv, modalContent.firstChild);
+    }
 
-function updateOrderStatus() {
-  alert('Funcionalidade de atualização de status em desenvolvimento');
-}
+    function printOrder() {
+      const { jsPDF } = window.jspdf;
 
-function printOrder() {
-  window.print();
-}
+      const doc = new jsPDF('l', 'mm', 'a4');
 
-function editCustomerInfo() {
-  alert('Funcionalidade de edição de informações do cliente em desenvolvimento');
-}
+      const orderNumber = '#PG-' + new URLSearchParams(window.location.search).get('id');
+      const orderNumberRaw = new URLSearchParams(window.location.search).get('id');
+      const customerName = document.querySelector('[data-customer-name]').textContent.trim();
+      const customerAddress = document.querySelector('[data-customer-address]').textContent.trim();
+      const carrier = document.querySelector('[data-carrier]').textContent.trim() || 'Não especificada';
+
+      doc.setFontSize(22);
+      doc.setFont('helvetica', 'bold');
+      doc.text('ETIQUETA DE ENVIO', 150, 20, { align: 'center' });
+
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('REMETENTE:', 20, 35);
+
+      doc.setFont('helvetica', 'normal');
+      doc.text('PrintAndGo', 20, 42);
+      doc.text('R. de Santa Catarina 999', 20, 49);
+
+      doc.setLineWidth(0.3);
+      doc.line(100, 30, 100, 90);
+
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Encomenda: ' + orderNumber, 150, 35, { align: 'center' });
+
+      doc.text('Transportadora: ', 110, 50);
+      doc.setFont('helvetica', 'normal');
+      doc.text(carrier, 150, 50);
+
+      doc.setLineWidth(0.5);
+      doc.line(20, 95, 280, 95);
+
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('DESTINATÁRIO:', 150, 110, { align: 'center' });
+
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text(customerName, 150, 125, { align: 'center' });
+
+      doc.setFont('helvetica', 'normal');
+      const addressLines = doc.splitTextToSize(customerAddress, 200);
+      doc.text(addressLines, 150, 135, { align: 'center' });
+
+      const today = new Date();
+      const dateStr = today.toLocaleDateString('pt-PT');
+      doc.setFontSize(9);
+      doc.setTextColor(100, 100, 100);
+      doc.text('Impresso em: ' + dateStr, 20, 190);
+
+      const canvas = document.createElement('canvas');
+
+      // Obter o número de rastreio do elemento na página
+      const trackingElement = document.querySelector('[data-tracking]');
+      const trackingNumber = trackingElement && trackingElement.textContent.trim()
+        ? trackingElement.textContent.trim()
+        : 'Sem Rastreio';
+
+      // Manter o valor do código de barras como "PG" + orderNumberRaw para compatibilidade
+      // Mas exibir o número de rastreio como texto abaixo do código de barras
+      JsBarcode(canvas, "PG" + orderNumberRaw, {
+        format: "CODE128",
+        width: 2,
+        height: 50,
+        displayValue: true,
+        fontSize: 14,
+        textMargin: 4,
+        text: trackingNumber  // Alterado para mostrar o número de rastreio
+      });
+
+      const barcodeData = canvas.toDataURL('image/png');
+      doc.addImage(barcodeData, 'PNG', 20, 155, 100, 30);
+
+      doc.setFontSize(8);
+      doc.text('Print & Go - Gráfica e Muito Mais, LDA', 150, 200, { align: 'center' });
+
+      const pdfBlob = doc.output('blob');
+      const blobUrl = URL.createObjectURL(pdfBlob);
+
+      const printWindow = window.open(blobUrl, '_blank');
+
+      if (printWindow) {
+        printWindow.addEventListener('load', function () {
+          printWindow.print();
+        });
+      } else {
+        alert('Por favor, permita pop-ups para imprimir a etiqueta.');
+        const downloadLink = document.createElement('a');
+        downloadLink.href = blobUrl;
+        downloadLink.download = `etiqueta-PG-${orderNumberRaw}.pdf`;
+        downloadLink.click();
+      }
+    }
+
+    function editCustomerInfo() {
+      alert('Funcionalidade de edição de informações do cliente em desenvolvimento');
+    }
   </script>
 </body>
 
