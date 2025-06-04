@@ -23,10 +23,16 @@ import { GLTFExporter } from "https://unpkg.com/three@0.174.0/examples/jsm/expor
 
 import { renderCart } from './carrinho.js';
 
+const userIdInput = document.getElementById("userId");
+const cartIdInput = document.getElementById("cartId");
+const userId = userIdInput.value;
+
 let loadingText, logo, decalPlaced = false;
 let canvas, scene, camera, renderer, controls, light;
 let loader, model, box, center, size;
 let mouse, raycaster, helper, customDecal, decal, decalTexture, decalMaterial;
+
+let logoSelected;
 
 let product3DModel;
 
@@ -272,6 +278,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   fileInput.addEventListener("change", function (event) {
     if (event.target.files && event.target.files[0]) {
+
+      logoSelected = event.target.files[0];
+
       const reader = new FileReader();
       reader.onload = function (e) {
         reader.src = URL.createObjectURL(event.target.files[0]); // set src to blob url
@@ -297,6 +306,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   fileInput.addEventListener("change", function (event) {
     if (event.target.files && event.target.files[0]) {
+
+      logoSelected = event.target.files[0];
+
       const reader = new FileReader();
 
       reader.onload = function (e) {
@@ -505,6 +517,18 @@ function removeDecal() {
 }
 
 function addToCart() {
+
+  const now = new Date();
+
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hour = String(now.getHours()).padStart(2, '0');
+  const minute = String(now.getMinutes()).padStart(2, '0');
+  const second = String(now.getSeconds()).padStart(2, '0');
+
+  const formatted = `${year}_${month}_${day}_${hour}_${minute}_${second}`;
+
   document.querySelectorAll(".buttonAdd").forEach((button) => {
     button.addEventListener("click", function () {
       const gltfExporter = new GLTFExporter();
@@ -512,13 +536,15 @@ function addToCart() {
       gltfExporter.parse(
         scene,
         function (result) {
+
           if (result instanceof ArrayBuffer) {
-            saveArrayBuffer(result, "scene.glb");
+            saveArrayBuffer(result, formatted + "_userId_" + userId + "_productId_" + productID  + ".glb");
           } else {
             const output = JSON.stringify(result, null, 2);
-            saveString(output, "scene.gltf");
+            saveString(output, formatted + "_userId_" + userId + "_productId_" + productID  + ".gltf");
           }
         },
+        { binary: true, embedImages: true },
         function (error) {
           console.log("An error happened during parsing", error);
         }
@@ -527,31 +553,126 @@ function addToCart() {
   });
 }
 
-const link = document.createElement("a");
-link.style.display = "none";
-document.body.appendChild(link); // Firefox workaround, see #6594
+function uploadModel(blob, filename) {
 
-function save(blob, filename) {
-  link.href = URL.createObjectURL(blob);
-  link.download = filename;
-  link.click();
+  const formData = new FormData();
 
-  // URL.revokeObjectURL( url ); breaks Firefox...
+  formData.append('image', logoSelected);
+
+  formData.append("modelFile", blob, filename);
+
+  fetch("../client/upload3DModel.php", {
+    method: "POST",
+    body: formData,
+  })
+    .then(response => response.text())
+    .then(text => {
+
+      console.log("Upload result:", text);
+
+      try {
+
+        const result = JSON.parse(text);
+        if (result.status === "success") {
+
+          const x = uploadToDB(result.pathToFile, result.pathToImage);
+
+          console.log(x);
+
+          renderCart().then(() => {
+
+            const cartOffcanvas = document.getElementById('carrinho');
+            const bsOffcanvas = new bootstrap.Offcanvas(cartOffcanvas);
+            bsOffcanvas.show();
+
+          });
+
+        } else {
+
+          console.log("Error uploading to Server");
+
+        }
+
+      } catch (e) {
+
+        console.error("Failed to parse response:", e);
+
+      }
+
+    })
+
+    .catch(error => {
+
+      console.error("Upload error:", error);
+
+    });
 }
 
 function saveString(text, filename) {
-  save(new Blob([text], { type: "text/plain" }), filename);
+
+  const blob = new Blob([text], { type: "text/plain" });
+  uploadModel(blob, filename);
+
 }
 
 function saveArrayBuffer(buffer, filename) {
-  save(new Blob([buffer], { type: "application/octet-stream" }), filename);
+
+  const blob = new Blob([buffer], { type: "application/octet-stream" });
+  uploadModel(blob, filename);
+  
+}
+
+async function uploadToDB(pathToFile, pathToImage) {
+
+        const valuesToAdd = {
+          id_carrinho: cartIdInput.value,
+          id_produto: productID,
+          tamanho: tamanhoValue,
+          cor: corValue,
+          quantidade: 1,
+          preco: productPriceValue,
+          personalizado: 1,
+        };
+
+      const getLastId = await addCarrinhoItem(valuesToAdd);
+
+      if (getLastId.success) {
+
+          const formData = {
+            id_carrinho_item: getLastId.id_cart_item,
+            imagem_escolhida: pathToImage,
+            modelo3d_personalizado: pathToFile,
+            preco_personalizado: 0,
+            mensagem_personalizada: ''
+          };
+
+
+      try {
+        const response = await fetch('../client/addPersonalization.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        })
+
+        const data = await response.json();
+        
+        return data.data;
+      
+      } catch (error) {
+        
+        return null;
+      
+      }
+
+    }
+
 }
 
 
 document.querySelectorAll("#btnAddToCart").forEach((button) => {
     button.addEventListener("click", async function () {
-
-    const cartIdInput = document.getElementById("cartId");
 
     if (!cartIdInput.value) {
 
@@ -589,6 +710,7 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
           cor: corValue,
           quantidade: 1,
           preco: productPriceValue,
+          personalizado: 0,
         };
 
         //const addToCart = await addCarrinhoItem(valuesToAdd);
@@ -688,10 +810,6 @@ async function updateCarrinhoItem(updateCart) {
   }
 }
 
-
-function getUserByEmail(userEmail) {
-  return fetch(`$baseUrl/user/getUserByEmail.php?email=${userEmail}`)
-}
 // estrutura de dados para feedbacks
 let feedbacks = [];
 let currentIndex = 0;

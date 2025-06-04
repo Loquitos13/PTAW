@@ -1268,11 +1268,15 @@ public function searchProductsByTitle($searchTerm): array
                     'preco' => $data['preco'],
                     'tamanho' => $data['tamanho'],
                     'cor' => $data['cor'],
+                    'personalizado' => $data['personalizado']
                 ]);
+
+            $lastId = $this->queryBuilder->getLastInsertId();
 
             return [
                 'success' => true,
                 'message' => 'Added to Cart',
+                'id_cart_item' => $lastId
             ];
 
         } catch (PDOException $e) {
@@ -1396,6 +1400,68 @@ public function searchProductsByTitle($searchTerm): array
 
             return [
                 'error' => 'Error deleting the user',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function insertPersonalizacao(): array {
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = [
+            'id_carrinho_item',
+            'imagem_escolhida',
+            'modelo3d_personalizado',
+            'preco_personalizado'
+        ];
+
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+
+            if (!isset($data[$field])) {
+
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+
+            $this->queryBuilder->table('Personalizacao')
+                ->insert([
+                    'id_carrinho_item' => $data['id_carrinho_item'],
+                    'imagem_escolhida' => $data['imagem_escolhida'],
+                    'modelo3d_personalizado' => $data['modelo3d_personalizado'],
+                    'preco_personalizado' => $data['preco_personalizado'] ?? 0,
+                    'mensagem_personalizada' => $data['mensagem_personalizada'] ?? '',
+                ]);
+
+            return [
+                'success' => true,
+                'message' => 'Personalization created'
+            ];
+
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error creating the personalization',
                 'message' => 'Database error: ' . $e->getMessage()
             ];
         }

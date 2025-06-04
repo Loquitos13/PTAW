@@ -128,5 +128,7 @@
     $router->add('POST', '/updateItemFromCarrinhoItens', fn() => $controller->updateItemFromCarrinhoItens());
     
     $router->add('POST', '/deleteCartItem', fn() => $controller->deleteCartItem());
+    
+    $router->add('POST', '/insertPersonalizacao', fn() => $controller->insertPersonalizacao());
 
     $router->dispatch();
