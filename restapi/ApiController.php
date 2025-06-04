@@ -1195,7 +1195,7 @@ public function searchProductsByTitle($searchTerm): array
     {
 
         return $this->queryBuilder->table('CarrinhoItens')
-            ->select(['id_carrinho_item as ID', 'titulo_produto as Name', 'imagem_principal as Image', 'preco_produto as Price', 'quantidade as Quantity', 'tamanho as Size', 'cor as Color'])
+            ->select(['id_carrinho_item as ID', 'titulo_produto as Name', 'imagem_principal as Image', 'preco as Price', 'quantidade as Quantity', 'tamanho as Size', 'cor as Color'])
             ->join('Produtos', 'CarrinhoItens.id_produto', '=', 'Produtos.id_produto')
             ->where('CarrinhoItens.id_carrinho', '=', $id_carrinho)
             ->get();
