@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const userId = 1; 
 
   try {
-    const response = await fetch('../client/CheckoutClienteDados.php', {
+    const response = await fetch('../client/checkout.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json'
 
