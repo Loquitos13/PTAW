@@ -67,6 +67,13 @@ document.addEventListener("DOMContentLoaded", async function() {
       return;
   }
   
+    const goToCheckout = document.getElementById('concluir-compra');
+    if (goToCheckout) {
+        goToCheckout.addEventListener('click', function () {
+            window.location.href = 'checkout.php';
+        });
+    }
+
   // usando delegacao de eventos para o botao "continuar a comprar"
   document.body.addEventListener("click", async function(event) {
       if (event.target && event.target.id === "continuar-compra") {
@@ -158,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async function() {
           const quantity = quantityValue - 1;
           const priceInCart = Number(priceValue);
           const priceOfProduct = priceInCart / quantityValue;
-          const price = (priceInCart + priceOfProduct);
+          const price = (priceInCart - priceOfProduct);
 
           const updateCart = {
             id_carrinho_item: itemId,

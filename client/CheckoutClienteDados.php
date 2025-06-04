@@ -3,7 +3,7 @@
 session_start();
 require_once '../restapi/Database.php';
 
-$apiUrl = "http://localhost/PTAW/restapi/PrintGoAPI.php";
+$apiUrl = "http://estga-dev.ua.pt/~ptaw-2025-gr4/restapi/PrintGoAPI.php";
 
 function executeCurlRequest($ch) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -37,7 +37,7 @@ try {
     if (json_last_error() !== JSON_ERROR_NONE) throw new Exception("Invalid JSON: " . json_last_error_msg());
 
     // Altera para chamar os dados do cliente
-    $result = getDadosClientePorcarrinho($data['userId']);
+    $result = getDadosCliente($data['userId']);
     echo json_encode($result);
 
 } catch(Exception $e) {
@@ -51,7 +51,7 @@ try {
 
     global $apiUrl;
 
-    $ch = curl_init("$apiUrl/getDadosCliente/$userId");
+    $ch = curl_init("$apiUrl/userInfoByID/$userId");
 
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json'

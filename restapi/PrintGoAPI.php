@@ -20,6 +20,8 @@
     $router->add('GET', '/categories', fn() => $controller->getCategories());
 
     $router->add('GET', '/userById/$id', fn($id) => $controller->getUserByID($id));
+    
+    $router->add('GET', '/userInfoByID/$id', fn($id) => $controller->getUserInfoByID($id));
 
     $router->add('GET', '/userByEmail/$userEmail', fn($userEmail) => $controller->getUserByEmail($userEmail));
 

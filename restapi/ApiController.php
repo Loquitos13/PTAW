@@ -263,6 +263,16 @@ public function searchProductsByTitle($searchTerm): array
             ->get();
     }
 
+    public function getUserInfoByID(int $userID): ?array
+    {
+
+        $result = $this->queryBuilder->table('Clientes')
+            ->select(['*'])
+            ->where('id_cliente', '=', $userID)
+            ->get();
+
+        return $result[0] ?? null;
+    }
 
     public function getUserByID(int $userID): ?array
     {

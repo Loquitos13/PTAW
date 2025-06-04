@@ -1,6 +1,10 @@
 <?php
 session_start();
+
+$userId = $_SESSION['user_id'];
 ?>
+
+<input type="hidden" id="userId" value="<?php echo htmlspecialchars($userId); ?>">
 
 <!DOCTYPE html>
 <html lang="pt-PT">
@@ -71,14 +75,14 @@ session_start();
                         <div class="container-format-column">
                             First Name
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" aria-label="Username"
+                                <input type="text" class="form-control" id="firstName" aria-label="Username"
                                     aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="container-format-column">
                             Last Name
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" aria-label="Username"
+                                <input type="text" class="form-control" id="lastName" aria-label="Username"
                                     aria-describedby="basic-addon1">
                             </div>
                         </div>
@@ -87,7 +91,7 @@ session_start();
     <div class="container-format-column">
         Email
         <div class="input-group mb-3">
-            <input type="text" class="form-control" aria-label="Email" aria-describedby="email-addon">
+            <input type="text" class="form-control" id="email" aria-label="Email" aria-describedby="email-addon">
         </div>
     </div>
 
@@ -113,7 +117,7 @@ session_start();
         <div class="container-format-column" style="flex: 2;">
             Phone Number
             <div class="input-group mb-3">
-                <input type="text" class="form-control" aria-label="Phone Number" aria-describedby="phone-addon">
+                <input type="text" class="form-control" id="phoneNumber" aria-label="Phone Number" aria-describedby="phone-addon">
             </div>
         </div>
     </div>
@@ -123,7 +127,7 @@ session_start();
                         <div class="container-format-column">
                             Adress
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" aria-label="Username"
+                                <input type="text" class="form-control" id="address" aria-label="Username"
                                     aria-describedby="basic-addon1">
                             </div>
                         </div>
@@ -132,14 +136,14 @@ session_start();
                         <div class="container-format-column">
                             City
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" aria-label="Username"
+                                <input type="text" class="form-control" id="city" aria-label="Username"
                                     aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="container-format-column">
                             Postal Code
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" aria-label="Username"
+                                <input type="text" class="form-control" id="postalCode" aria-label="Username"
                                     aria-describedby="basic-addon1">
                             </div>
                         </div>
@@ -148,7 +152,7 @@ session_start();
                         <div class="container-format-column">
                             Tax ID Number
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" aria-label="Username"
+                                <input type="text" class="form-control" id="taxId" aria-label="Username"
                                     aria-describedby="basic-addon1">
                             </div>
                         </div>
@@ -157,7 +161,7 @@ session_start();
             </div>
             <div class="container-format-row format-buttons">
                 <button type="button" id="cart-back" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to Cart
+                    <i class="bi bi-arrow-left"></i> Back to Shopping
                 </button>
                 <button type="button" id="payment-button" class="btn btn-primary bg-blueviolet">
                     Continue to Payment <i class="bi bi-arrow-right"></i>
@@ -427,8 +431,6 @@ session_start();
 
     </footer>
     <script src="js/checkout.js"></script>
-    <script src="js/checkoutA.js"></script>
-    <script src="js/ChechoutInfoCliente.js"></script>
 
 </body>
 
