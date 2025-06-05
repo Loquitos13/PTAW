@@ -1,4 +1,7 @@
-<span?php session_start(); $orderId=isset($_GET['id']); function formatCurrency($amount) { return '€' .
+<?php 
+session_start(); 
+$orderId=isset($_GET['id']); 
+function formatCurrency($amount) { return '€' .
   number_format((float) $amount, 2, ',' , '.' ); } ?>
 
   <!DOCTYPE html>
