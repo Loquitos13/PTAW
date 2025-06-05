@@ -121,7 +121,7 @@ $router->add('GET', '/carrinhoByUserId/$id_cliente', fn($id_cliente) => $control
 
 $router->add('GET', '/carrinhoItensByCarrinhoId/$id_carrinho', fn($id_carrinho) => $controller->getCarrinhoItensByCarrinhoId($id_carrinho));
 
-$router->add('GET', '/checkCarrinhoItem/$id_carrinho/$id_produto/$tamanho/$cor', fn($id_carrinho, $id_produto, $tamanho, $cor) => $controller->checkCarrinhoItem($id_carrinho, $id_produto, $tamanho, $cor));
+$router->add('GET', '/checkCarrinhoItem/$id_carrinho/$id_produto/$tamanho/$cor/$personalizado', fn($id_carrinho, $id_produto, $tamanho, $cor, $personalizado) => $controller->checkCarrinhoItem($id_carrinho, $id_produto, $tamanho, $cor, $personalizado));
 
 $router->add('POST', '/insertCarrinhoItem', fn() => $controller->insertCarrinhoItem());
 

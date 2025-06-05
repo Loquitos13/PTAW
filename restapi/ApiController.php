@@ -43,21 +43,21 @@ class ApiController
                 'GROUP_CONCAT(DISTINCT Dimensoes.tamanho) AS tamanhos',
                 'GROUP_CONCAT(DISTINCT Cores.nome_cor) AS cores'
             ])
-            ->join('Categorias', 'Produtos.id_categoria', '=', 'Categorias.id_categoria')
-            ->join('Dimensoes', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
-            ->join('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
-            ->join('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor');
+            ->join('Categorias', 'Produtos.id_categoria', '=', 'Categorias.id_categoria') // Manter INNER JOIN se uma categoria for sempre obrigatória para um produto ser listadoAdd commentMore actions
+            ->leftJoin('Dimensoes', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
+            ->leftJoin('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
+            ->leftJoin('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor'); // Este JOIN depende de ProdutosVariantes
 
         if (!empty($categoria)) {
             $qb->where('Produtos.id_categoria', 'IN', $categoria);
         }
 
-        if (!empty($precoMinimo)) {
-            $qb->where('Produtos.preco_produto', '>=', $precoMinimo);
+        if (is_numeric($precoMinimo)) {
+            $qb->where('Produtos.preco_produto', '>=', (float) $precoMinimo);
         }
 
-        if (!empty($precoMaximo) && $precoMaximo < 999999) {
-            $qb->where('Produtos.preco_produto', '<=', $precoMaximo);
+        if (is_numeric($precoMaximo)) {
+            $qb->where('Produtos.preco_produto', '<=', (float) $precoMaximo);
         }
 
         if (!empty($cor)) {
@@ -953,7 +953,7 @@ class ApiController
     {
         try {
             error_log("getUserOrders - Buscando encomendas para o usuário ID: $userId");
-            
+
             $encomendas = $this->queryBuilder->table('Encomendas')
                 ->select([
                     'Encomendas.id_encomenda',
@@ -967,14 +967,14 @@ class ApiController
                 ->where('Carrinhos.id_cliente', '=', $userId)
                 ->order('Encomendas.data_criacao_encomenda', 'DESC')
                 ->get();
-                
+
             if (empty($encomendas)) {
                 error_log("Nenhuma encomenda encontrada para o cliente ID: $userId");
                 return [];
             }
-            
+
             error_log("Encontradas " . count($encomendas) . " encomendas para o cliente $userId");
-            
+
             foreach ($encomendas as &$encomenda) {
                 try {
                     $itens = $this->queryBuilder->table('EncomendaItens')
@@ -991,14 +991,14 @@ class ApiController
                         ->leftJoin('Produtos', 'EncomendaItens.id_produto', '=', 'Produtos.id_produto')
                         ->where('EncomendaItens.id_encomenda', '=', $encomenda['id_encomenda'])
                         ->get();
-                        
+
                     $encomenda['itens'] = $itens;
                 } catch (Exception $innerEx) {
                     error_log("Erro ao buscar itens da encomenda " . $encomenda['id_encomenda'] . ": " . $innerEx->getMessage());
                     $encomenda['itens'] = [];
                 }
             }
-            
+
             return $encomendas;
         } catch (Exception $e) {
             error_log("Erro ao buscar encomendas do cliente $userId: " . $e->getMessage());
@@ -1035,13 +1035,13 @@ class ApiController
                 ->leftJoin('MetodoPagamento', 'Pagamento.id_metodo_pagamento', '=', 'MetodoPagamento.id_metodo_pagamento')
                 ->where('Encomendas.id_encomenda', '=', $orderId)
                 ->get();
-    
+
             if (!empty($result) && isset($result[0])) {
                 if (!isset($result[0]['nome_metodo_pagamento'])) {
                     $result[0]['nome_metodo_pagamento'] = 'Não especificado';
                 }
             }
-    
+
             return $result[0] ?? null;
         } catch (Exception $e) {
             error_log("Error in getOrderById: " . $e->getMessage());
@@ -1247,14 +1247,14 @@ class ApiController
     {
 
         return $this->queryBuilder->table('CarrinhoItens')
-            ->select(['id_carrinho_item as ID', 'titulo_produto as Name', 'imagem_principal as Image', 'preco as Price', 'quantidade as Quantity', 'tamanho as Size', 'cor as Color'])
+            ->select(['id_carrinho_item as ID', 'titulo_produto as Name', 'imagem_principal as Image', 'preco as Price', 'quantidade as Quantity', 'tamanho as Size', 'cor as Color', 'personalizado as Personalization'])
             ->join('Produtos', 'CarrinhoItens.id_produto', '=', 'Produtos.id_produto')
             ->where('CarrinhoItens.id_carrinho', '=', $id_carrinho)
             ->get();
 
     }
 
-    public function checkCarrinhoItem($id_carrinho, $id_product, $tamanho, $cor): array
+    public function checkCarrinhoItem($id_carrinho, $id_product, $tamanho, $cor, $personalizado): array
     {
 
         return $this->queryBuilder->table('CarrinhoItens')
@@ -1263,6 +1263,7 @@ class ApiController
             ->where('id_produto', '=', $id_product)
             ->where('tamanho', '=', $tamanho)
             ->where('cor', '=', $cor)
+            ->where('personalizado', '=', $personalizado)
             ->get();
 
     }
@@ -1854,14 +1855,14 @@ class ApiController
                 ->join('MetodoPagamento', 'MetodoPagamento.id_cartao', '=', 'PagamentoCartao.id_cartao')
                 ->where('MetodoPagamento.id_cliente', '=', $id_cliente)
                 ->get();
-    
+
             if (empty($result)) {
                 return [
                     'success' => false,
                     'message' => 'Nenhum cartão encontrado para este cliente'
                 ];
             }
-    
+
             return [
                 'success' => true,
                 'data' => $result[0]
