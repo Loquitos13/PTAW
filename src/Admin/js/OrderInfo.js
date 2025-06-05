@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Fix the navigation link
   const dashboardLink = document.querySelector("#link-orders");
   if (dashboardLink) {
     dashboardLink.innerHTML = `<li>
@@ -15,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
         </li>`;
   }
 
-  // Get order ID from URL parameters
   const urlParams = new URLSearchParams(window.location.search);
   const orderId = urlParams.get("id");
 
@@ -27,7 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function getOrderInfo(orderId) {
-  // Make POST request to orderInfoEngine.php with the order ID
   fetch("../../admin/orderInfoEngine.php", {
     method: "POST",
     headers: {
@@ -60,7 +57,7 @@ function getOrderInfo(orderId) {
 
 function getOrderItems(orderId) {
   fetch("../../admin/orderItemsEngine.php", {
-    method: "POST", // Changed from GET to POST
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
@@ -89,28 +86,26 @@ function getOrderItems(orderId) {
 
 function displayOrderInfo(orderData) {
   try {
-    // Update order date in header
+
+    if (!orderData) {
+        console.error("No order data received");
+        document.querySelector('.order-header').innerHTML += `
+            <div class="alert alert-warning">
+                Dados da encomenda incompletos. Alguns detalhes podem não estar disponíveis.
+            </div>
+        `;
+        return;
+    }
     const orderDate = document.querySelector("#order-date");
     if (orderDate && orderData.data_criacao_encomenda) {
       orderDate.textContent = formatDate(orderData.data_criacao_encomenda);
     }
     
     updateTrackingInfo(orderData);
-    // Update order status timeline
     updateStatusTimeline(orderData.status_encomenda);
-
-    // Update order information section
     updateOrderInfoSection(orderData);
-
-    // Update customer information
     updateCustomerInfo(orderData);
-
-    // Update payment information
-
-    // Update financial summary
     updateFinancialSummary(orderData);
-
-    // Update notes
     updateOrderNotes(orderData.notas_encomenda);
   } catch (error) {
     console.error("Error displaying order info:", error);
@@ -144,21 +139,27 @@ function updateStatusTimeline(status) {
 }
 
 function updateTrackingInfo(orderData) {
-    const trackingEl = document.querySelector("[data-tracking]");
-    if (trackingEl && orderData.numero_seguimento) {
-      trackingEl.textContent = orderData.numero_seguimento;
+    const trackingElement = document.querySelector('[data-tracking]');
+    const carrierElement = document.querySelector('[data-carrier]');
+    
+    if (trackingElement) {
+        trackingElement.textContent = orderData && orderData.numero_seguimento ? 
+            orderData.numero_seguimento : 'Pendente';
+    }
+    
+    if (carrierElement) {
+        carrierElement.textContent = orderData && orderData.transportadora ? 
+            orderData.transportadora : 'Pendente';
     }
 }
 
 function updateOrderInfoSection(orderData) {
-  // Update status badge
   const statusElements = document.querySelectorAll("[data-order-status]");
   statusElements.forEach((el) => {
     el.innerHTML =
       "Estado da Encomenda: " + getStatusBadge(orderData.status_encomenda);
   });
 
-  // Update creation date
   const creationDateEl = document.querySelector("[data-creation-date]");
 
   if (creationDateEl && orderData.data_criacao_encomenda) {
@@ -171,20 +172,17 @@ function updateOrderInfoSection(orderData) {
       "Encomenda criada a " + formatDate(orderData.data_criacao_encomenda);
   }
 
-  // Update last update date
   const updateDateEl = document.querySelector("[data-update-date]");
   if (updateDateEl && orderData.data_atualizacao_encomenda) {
     updateDateEl.textContent =
       "Última atualização: " + formatDate(orderData.data_atualizacao_encomenda);
   }
 
-  // Update carrier
   const carrierEl = document.querySelector("[data-carrier]");
   if (carrierEl && orderData.transportadora) {
     carrierEl.textContent = orderData.transportadora;
   }
 
-  // Update total
   const totalEl = document.querySelector("[data-order-total]");
   if (totalEl && orderData.preco_total_encomenda) {
     totalEl.textContent = formatCurrency(orderData.preco_total_encomenda);
@@ -192,39 +190,33 @@ function updateOrderInfoSection(orderData) {
 }
 
 function updateCustomerInfo(orderData) {
-  // Update customer name
   const customerNameEl = document.querySelector("[data-customer-name]");
   if (customerNameEl && orderData.nome_cliente) {
     customerNameEl.textContent = orderData.nome_cliente;
   }
 
-  // Update customer email
   const emailEl = document.querySelector("[data-customer-email]");
   if (emailEl && orderData.email_cliente) {
     emailEl.textContent = orderData.email_cliente;
     emailEl.href = `mailto:${orderData.email_cliente}`;
   }
 
-  // Update customer phone
   const phoneEl = document.querySelector("[data-customer-phone]");
   if (phoneEl && orderData.contacto_cliente) {
     phoneEl.textContent = orderData.contacto_cliente;
     phoneEl.href = `tel:${orderData.contacto_cliente}`;
   }
 
-  // Update customer address
   const addressEl = document.querySelector("[data-customer-address]");
   if (addressEl && orderData.morada_cliente) {
     addressEl.innerHTML = orderData.morada_cliente.replace(/\n/g, "<br>");
   }
 
-  // Update customer NIF
   const nifEl = document.querySelector("[data-customer-nif]");
   if (nifEl && orderData.nif_cliente) {
     nifEl.textContent = orderData.nif_cliente;
   }
 
-  // Update member since date
   const memberSinceEl = document.querySelector("[data-member-since]");
   if (memberSinceEl && orderData.data_criacao_cliente) {
     const date = new Date(orderData.data_criacao_cliente);
@@ -274,7 +266,6 @@ function updateOrderItems(items) {
     return;
   }
 
-  // Add styles to the parent table if it exists
   const parentTable = itemsTableBody.closest("table");
   if (parentTable) {
     parentTable.classList.add("table-responsive-sm");
@@ -299,7 +290,6 @@ function updateOrderItems(items) {
 
   items.forEach((item) => {
     const row = document.createElement("tr");
-    // Substitui '%' por espaço em branco nos campos relevantes
     const tituloProduto = (item.titulo_produto || "Produto sem título").replace(
       /%/g,
       " "
@@ -354,7 +344,6 @@ function updateOrderItems(items) {
     itemsTableBody.appendChild(row);
   });
 
-  // Add CSS to the document if it doesn't exist yet
   if (!document.getElementById("order-items-styles")) {
     const styleEl = document.createElement("style");
     styleEl.id = "order-items-styles";
@@ -384,13 +373,11 @@ function updateOrderItems(items) {
 }
 
 function updateFinancialSummary(orderData) {
-  // Update subtotal
   const subtotalEl = document.querySelector("[data-subtotal]");
   if (subtotalEl && orderData.subtotal) {
     subtotalEl.textContent = formatCurrency(orderData.subtotal);
   }
 
-  // Update shipping cost
   const shippingEl = document.querySelector("[data-shipping]");
   if (shippingEl) {
     const shippingCost = orderData.shipping_cost || 0;
@@ -400,7 +387,6 @@ function updateFinancialSummary(orderData) {
         : '<span class="text-success">Gratuito</span>';
   }
 
-  // Update total
   const totalEl = document.querySelector("[data-financial-total]");
   if (totalEl && orderData.preco_total_encomenda) {
     totalEl.innerHTML = `<strong>${formatCurrency(
@@ -429,7 +415,6 @@ function updateOrderNotes(notes) {
   }
 }
 
-// Utility functions
 function formatDate(dateString) {
   if (!dateString) return "";
   const date = new Date(dateString);
@@ -479,7 +464,6 @@ function getPaymentIcon(method) {
 }
 
 function showErrorMessage(message) {
-  // Create or update error message display
   let errorContainer = document.querySelector("#error-message");
   if (!errorContainer) {
     errorContainer = document.createElement("div");
@@ -498,11 +482,9 @@ function showErrorMessage(message) {
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
 
-  // Auto-remove after 5 seconds
   setTimeout(() => {
     if (errorContainer && errorContainer.parentNode) {
       errorContainer.remove();
     }
   }, 5000);
 }
-

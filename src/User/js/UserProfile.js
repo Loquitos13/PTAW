@@ -1,20 +1,24 @@
 const clientId = document.body.dataset.clientId; // obtém o ID do cliente a partir do atributo data-user-id no body
 console.log('clientId:', clientId);
 document.addEventListener('DOMContentLoaded', async function () {
-    const dataOrders = await getRecentOrderItems();
-    const dataClient = await getClientProfileInfo();
-    const dataSummary = await getAcoountSummary();
+    try {
+        const dataOrders = await getRecentOrderItems();
+        const dataClient = await getClientProfileInfo();
+        const dataSummary = await getAcoountSummary();
 
-    let totalOrders = 0;
-    if (Array.isArray(dataSummary)) {
-        totalOrders = dataSummary[0]?.total ?? 0;
-    } else if (typeof dataSummary === 'object' && dataSummary !== null && 'total' in dataSummary) {
-        totalOrders = dataSummary.total;
+        let totalOrders = 0;
+        if (Array.isArray(dataSummary)) {
+            totalOrders = dataSummary[0]?.total ?? 0;
+        } else if (typeof dataSummary === 'object' && dataSummary !== null) {
+            totalOrders = dataSummary.total || dataSummary.data?.total || 0;
+        }
+
+        renderRecentOrders(dataOrders); 
+        renderUserProfile(dataClient);
+        renderAccountSummary(totalOrders);
+    } catch (error) {
+        console.error('Erro ao inicializar perfil do usuário:', error);
     }
-
-    renderRecentOrders(dataOrders); 
-    renderUserProfile(dataClient);
-    renderAccountSummary(totalOrders);
 });
 
 function renderRecentOrders(data) {
@@ -23,19 +27,31 @@ function renderRecentOrders(data) {
 
     listGroup.innerHTML = '';
 
-    if (data.length === 0) {
-        listGroup.innerHTML = '<div class="list-group-item">No recent orders found.</div>';
+    if (!data || data.length === 0) {
+        listGroup.innerHTML = '<div class="list-group-item">Nenhuma encomenda encontrada.</div>';
         return;
     }
 
-    data.forEach(encomenda => {
+    // Limitar a exibição às 5 encomendas mais recentes
+    const recentOrders = data.slice(0, 5);
+
+    recentOrders.forEach(encomenda => {
         let badgeClass = 'bg-secondary';
-        if (encomenda.status_encomenda === 'Delivered') {
+        let status = encomenda.status_encomenda || 'Pending';
+        
+        // Tradução e definição de cores para os status
+        if (status.toLowerCase() === 'delivered' || status.toLowerCase() === 'entregue') {
             badgeClass = 'bg-success';
-        } else if (encomenda.status_encomenda === 'Processing') {
+            status = 'Entregue';
+        } else if (status.toLowerCase() === 'processing' || status.toLowerCase() === 'processando') {
             badgeClass = 'bg-info';
-        } else if (encomenda.status_encomenda === 'Cancelled') {
+            status = 'Processando';
+        } else if (status.toLowerCase() === 'cancelled' || status.toLowerCase() === 'cancelado') {
             badgeClass = 'bg-danger';
+            status = 'Cancelado';
+        } else if (status.toLowerCase() === 'shipping' || status.toLowerCase() === 'enviado') {
+            badgeClass = 'bg-primary';
+            status = 'Enviado';
         }
 
         const date = new Date(encomenda.data_criacao_encomenda);
@@ -45,22 +61,44 @@ function renderRecentOrders(data) {
             day: 'numeric'
         });
 
+        // Calcular valor total do pedido
+        const total = encomenda.preco_total_encomenda || 0;
+        const formattedTotal = total.toLocaleString('pt-PT', {
+            style: 'currency',
+            currency: 'EUR'
+        });
+
         const item = document.createElement('div');
         item.className = 'list-group-item border rounded mb-2';
         item.innerHTML = `
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="mb-1">Order #${encomenda.id_encomenda}</h6>
-                    <small class="text-muted">Placed on ${formattedDate}</small>
+                    <h6 class="mb-1">Encomenda #${encomenda.id_encomenda}</h6>
+                    <small class="text-muted">Realizada em ${formattedDate}</small>
+                    <p class="mb-0 mt-1">Total: ${formattedTotal}</p>
                 </div>
-                <span class="badge ${badgeClass} rounded-pill">${encomenda.status_encomenda}</span>
+                <span class="badge ${badgeClass} rounded-pill">${status}</span>
             </div>
         `;
+        
+        // Adicionar evento de clique para ir para a página de detalhes da encomenda
+        item.style.cursor = 'pointer';
+        item.addEventListener('click', () => {
+            window.location.href = `./order_details.php?id=${encomenda.id_encomenda}`;
+        });
+        
         listGroup.appendChild(item);
     });
 }
 
 async function getRecentOrderItems() {
+    console.log("Buscando encomendas para cliente ID:", clientId);
+    
+    if (!clientId) {
+        console.error("ID do cliente não disponível");
+        return [];
+    }
+    
     try {
         const response = await fetch('../../client/getRecentOrdersByClient.php', {
             method: 'POST',
@@ -69,13 +107,45 @@ async function getRecentOrderItems() {
             },
             body: JSON.stringify({ id_cliente: clientId })
         });
-        return await response.json();
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`Erro HTTP ${response.status}:`, errorText);
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        
+        const responseText = await response.text();
+        console.log("Resposta bruta:", responseText);
+        
+        // Se a resposta estiver vazia, retornar array vazio
+        if (!responseText.trim()) {
+            console.log("Resposta vazia da API");
+            return [];
+        }
+        
+        // Tentar analisar a resposta como JSON
+        try {
+            const data = JSON.parse(responseText);
+            console.log('Dados de encomendas recebidos:', data);
+            
+            // Verificação para garantir que temos um array de encomendas
+            if (Array.isArray(data)) {
+                return data;
+            } else if (data && Array.isArray(data.data)) {
+                return data.data;
+            } else {
+                console.log('Formato de dados inesperado, retornando array vazio');
+                return [];
+            }
+        } catch (e) {
+            console.error("Erro ao analisar resposta JSON:", e);
+            return [];
+        }
     } catch (error) {
-        console.error('Erro ao buscar itens da encomenda:', error);
+        console.error('Erro ao buscar encomendas do cliente:', error);
         return [];
     }
 }
-
 function renderUserProfile(data) {
     console.log('A renderizar perfil', data);
     const profileDiv = document.getElementById('user-profile-card');
