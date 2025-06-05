@@ -1209,14 +1209,14 @@ class ApiController
     {
 
         return $this->queryBuilder->table('CarrinhoItens')
-            ->select(['id_carrinho_item as ID', 'titulo_produto as Name', 'imagem_principal as Image', 'preco as Price', 'quantidade as Quantity', 'tamanho as Size', 'cor as Color'])
+            ->select(['id_carrinho_item as ID', 'titulo_produto as Name', 'imagem_principal as Image', 'preco as Price', 'quantidade as Quantity', 'tamanho as Size', 'cor as Color', 'personalizado as Personalization'])
             ->join('Produtos', 'CarrinhoItens.id_produto', '=', 'Produtos.id_produto')
             ->where('CarrinhoItens.id_carrinho', '=', $id_carrinho)
             ->get();
 
     }
 
-    public function checkCarrinhoItem($id_carrinho, $id_product, $tamanho, $cor): array
+    public function checkCarrinhoItem($id_carrinho, $id_product, $tamanho, $cor, $personalizado): array
     {
 
         return $this->queryBuilder->table('CarrinhoItens')
@@ -1225,6 +1225,7 @@ class ApiController
             ->where('id_produto', '=', $id_product)
             ->where('tamanho', '=', $tamanho)
             ->where('cor', '=', $cor)
+            ->where('personalizado', '=', $personalizado)
             ->get();
 
     }

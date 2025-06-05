@@ -1,5 +1,7 @@
 <?php
 
+$serverURL = "http://estga-dev.ua.pt/~ptaw-2025-gr4/uploads/";
+
 $targetDir = "../uploads/";
 
 if (isset($_FILES['modelFile']) && isset($_FILES['image'])) {
@@ -12,11 +14,11 @@ if (isset($_FILES['modelFile']) && isset($_FILES['image'])) {
 
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
 
-        $pathToFile = $targetDir . htmlspecialchars($file['name']);
+        $pathToFile = $serverURL . htmlspecialchars($file['name']);
 
         if (move_uploaded_file($image['tmp_name'], $targetImage)) {
 
-            $pathToImage = $targetDir . htmlspecialchars($image['name']);
+            $pathToImage = $serverURL . htmlspecialchars($image['name']);
 
             echo json_encode([
                 'status' => 'success',

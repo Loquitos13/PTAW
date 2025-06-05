@@ -25,7 +25,12 @@ import { renderCart } from './carrinho.js';
 
 const userIdInput = document.getElementById("userId");
 const cartIdInput = document.getElementById("cartId");
-const userId = userIdInput.value;
+let userId = userIdInput.value;
+let cartId = cartIdInput.value;
+
+console.log("userId: " + userId);
+
+console.log("cartId: " + cartId);
 
 let loadingText, logo, decalPlaced = false;
 let canvas, scene, camera, renderer, controls, light;
@@ -509,8 +514,7 @@ function removeDecal() {
   scene.remove(decal);
   decalPlaced = false;
 
-  document.getElementById("warningsId").innerText =
-    "Double Click to place decal!";
+  document.getElementById("warningsId").innerText ="Double Click to place decal!";
   document.addEventListener("dblclick", onClick);
   addClass("rmvDecal", "disableButton");
   addClass("btnAdd", "disableButton");
@@ -518,38 +522,46 @@ function removeDecal() {
 
 function addToCart() {
 
-  const now = new Date();
-
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const hour = String(now.getHours()).padStart(2, '0');
-  const minute = String(now.getMinutes()).padStart(2, '0');
-  const second = String(now.getSeconds()).padStart(2, '0');
-
-  const formatted = `${year}_${month}_${day}_${hour}_${minute}_${second}`;
-
   document.querySelectorAll(".buttonAdd").forEach((button) => {
     button.addEventListener("click", function () {
-      const gltfExporter = new GLTFExporter();
 
-      gltfExporter.parse(
-        scene,
-        function (result) {
+    if (!cartIdInput.value) {
 
-          if (result instanceof ArrayBuffer) {
-            saveArrayBuffer(result, formatted + "_userId_" + userId + "_productId_" + productID  + ".glb");
-          } else {
-            const output = JSON.stringify(result, null, 2);
-            saveString(output, formatted + "_userId_" + userId + "_productId_" + productID  + ".gltf");
+      let alertMsg = 
+      `
+      You need to be sign in to add products to the cart.
+      Do you wish to proceed?
+      `;
+
+      if (confirm(alertMsg)) {
+
+        window.location.href = "SignIn.html";
+      
+      }
+
+    } else {
+
+        const gltfExporter = new GLTFExporter();
+
+        gltfExporter.parse(
+          scene,
+          function (result) {
+
+            if (result instanceof ArrayBuffer) {
+              saveArrayBuffer(result, getDate() + "_userId_" + userId + "_productId_" + productID  + ".glb");
+            } else {
+              const output = JSON.stringify(result, null, 2);
+              saveString(output, getDate() + "_userId_" + userId + "_productId_" + productID  + ".gltf");
+            }
+          },
+          { binary: true, embedImages: true },
+          function (error) {
+            console.log("An error happened during parsing", error);
           }
-        },
-        { binary: true, embedImages: true },
-        function (error) {
-          console.log("An error happened during parsing", error);
-        }
-      );
-    });
+        );
+
+      }
+      });
   });
 }
 
@@ -557,7 +569,15 @@ function uploadModel(blob, filename) {
 
   const formData = new FormData();
 
-  formData.append('image', logoSelected);
+  const baseName = logoSelected.name.substring(0, logoSelected.name.lastIndexOf('.'));
+
+  const extension = logoSelected.name.substring(logoSelected.name.lastIndexOf('.'));
+
+  const newFileName = getDate() + "_userId_" + userId + "_productId_" + productID + "_" + baseName + extension;
+
+  const renamedLogoFile = new File([logoSelected], newFileName, { type: logoSelected.type });
+
+  formData.append('image', renamedLogoFile);
 
   formData.append("modelFile", blob, filename);
 
@@ -566,18 +586,14 @@ function uploadModel(blob, filename) {
     body: formData,
   })
     .then(response => response.text())
-    .then(text => {
-
-      console.log("Upload result:", text);
+    .then(async text => {
 
       try {
 
         const result = JSON.parse(text);
         if (result.status === "success") {
 
-          const x = uploadToDB(result.pathToFile, result.pathToImage);
-
-          console.log(x);
+          await uploadToDB(result.pathToFile, result.pathToImage);
 
           renderCart().then(() => {
 
@@ -622,10 +638,42 @@ function saveArrayBuffer(buffer, filename) {
   
 }
 
+function getDate() {
+
+  const now = new Date();
+
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hour = String(now.getHours()).padStart(2, '0');
+  const minute = String(now.getMinutes()).padStart(2, '0');
+  const second = String(now.getSeconds()).padStart(2, '0');
+
+  const formatted = `${year}_${month}_${day}_${hour}_${minute}_${second}`;
+
+  return formatted;
+
+}
+
+
 async function uploadToDB(pathToFile, pathToImage) {
 
+      tamanhoValue = tamanhoValue.replaceAll(' ', '%20');
+
+      const formData = {
+        id_carrinho: cartId,
+        id_produto: productID,
+        tamanho: tamanhoValue,
+        cor: corValue,
+        personalizado: 1,
+      };
+
+      const carrinhoItemId = await checkCarrinhoItem(formData);
+
+      if (carrinhoItemId.data.length === 0) {
+
         const valuesToAdd = {
-          id_carrinho: cartIdInput.value,
+          id_carrinho: cartId,
           id_produto: productID,
           tamanho: tamanhoValue,
           cor: corValue,
@@ -634,40 +682,64 @@ async function uploadToDB(pathToFile, pathToImage) {
           personalizado: 1,
         };
 
-      const getLastId = await addCarrinhoItem(valuesToAdd);
+        const getLastId = await addCarrinhoItem(valuesToAdd);
 
-      if (getLastId.success) {
+        if (getLastId.status === 'success') {
 
-          const formData = {
-            id_carrinho_item: getLastId.id_cart_item,
-            imagem_escolhida: pathToImage,
-            modelo3d_personalizado: pathToFile,
-            preco_personalizado: 0,
-            mensagem_personalizada: ''
-          };
+            const personalizationData = {
+              id_carrinho_item: getLastId.id.id_cart_item,
+              imagem_escolhida: pathToImage,
+              modelo3d_personalizado: pathToFile,
+              preco_personalizado: 0,
+              mensagem_personalizada: ''
+            };
 
+          await addPersonalization(personalizationData);
 
-      try {
-        const response = await fetch('../client/addPersonalization.php', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(formData)
-        })
+        } else {
 
-        const data = await response.json();
-        
-        return data.data;
-      
-      } catch (error) {
-        
-        return null;
-      
-      }
+          console.log("Error adding personalization");
+
+        }
+
+    } else {
+
+        let quantity = carrinhoItemId.data[0].quantidade + 1;
+        let priceInCart = Number(carrinhoItemId.data[0].preco);
+        let priceOfProduct = Number(productPriceValue);
+        let price = (priceInCart + priceOfProduct);
+
+        const updateCart = {
+          id_carrinho_item: carrinhoItemId.data[0].id_carrinho_item,
+          quantidade: quantity,
+          preco: price.toFixed(2),
+        }
+
+        await updateCarrinhoItem(updateCart);
 
     }
+}
 
+async function addPersonalization(personalizationData) {
+
+  try {
+    const response = await fetch('../client/addPersonalization.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(personalizationData)
+    })
+
+    const data = await response.json();
+    
+    return data.data;
+  
+  } catch (error) {
+    
+    return null;
+  
+  }
 }
 
 
@@ -697,6 +769,7 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
         id_produto: productID,
         tamanho: tamanhoValue,
         cor: corValue,
+        personalizado: 0,
       };
 
       const carrinhoItemId = await checkCarrinhoItem(formData);
@@ -713,7 +786,6 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
           personalizado: 0,
         };
 
-        //const addToCart = await addCarrinhoItem(valuesToAdd);
         await addCarrinhoItem(valuesToAdd);
 
       } else {
@@ -729,7 +801,6 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
           preco: price.toFixed(2),
         }
 
-        //const updateCarrinho = await updateCarrinhoItem(updateCart);
         await updateCarrinhoItem(updateCart);
       
       }

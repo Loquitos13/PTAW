@@ -73,11 +73,12 @@ function addItem($data) {
 
     $response = executeCurlRequest($ch);
 
-    $userData = json_decode($response, true);
+    $cartItemData = json_decode($response, true);
 
      return [
          'status' => 'success',
          'message' => 'Added to Cart',
+         'id' => $cartItemData,
      ];
 
 }

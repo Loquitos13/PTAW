@@ -73,11 +73,12 @@ function addPersonalization($data) {
 
     $response = executeCurlRequest($ch);
 
-    $userData = json_decode($response, true);
+    $personalizationData = json_decode($response, true);
 
      return [
          'status' => 'success',
          'message' => 'Added to Cart',
+         'data' => $personalizationData,
      ];
 
 }

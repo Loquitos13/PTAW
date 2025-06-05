@@ -40,7 +40,7 @@ try {
         throw new Exception("Invalid JSON: " . json_last_error_msg());
     }
     
-    $result = checkCarrinhoItem($data['id_carrinho'], $data['id_produto'], $data['tamanho'], $data['cor']);
+    $result = checkCarrinhoItem($data['id_carrinho'], $data['id_produto'], $data['tamanho'], $data['cor'], $data['personalizado']);
 
     echo json_encode([
         'status' => 'success',
@@ -55,11 +55,11 @@ try {
     ]);
 }
 
-function checkCarrinhoItem($id_carrinho, $id_produto, $tamanho, $cor) {
+function checkCarrinhoItem($id_carrinho, $id_produto, $tamanho, $cor, $personalizado) {
 
     global $apiUrl;
 
-    $ch = curl_init("$apiUrl/checkCarrinhoItem/$id_carrinho/$id_produto/$tamanho/$cor");
+    $ch = curl_init("$apiUrl/checkCarrinhoItem/$id_carrinho/$id_produto/$tamanho/$cor/$personalizado");
 
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json'

@@ -20,8 +20,20 @@ export async function renderCart() {
 
         let html = '';
         cartItensArray.forEach(element => {
-            console.log(element);
+
             element.Size = element.Size.replaceAll('%20', ' ');
+            
+            if(element.Personalization === 1) {
+
+              element.Personalization = 'Personalized item';
+
+            } else {
+
+              element.Personalization = '';
+
+            }
+            
+
             html += `
                 <div class="row align-items-start">
                     <div class="col-4">
@@ -29,7 +41,7 @@ export async function renderCart() {
                     </div>
                     <div class="col-8 d-flex justify-content-between align-items-start cart-item">
                         <div>
-                            <p class="product-info mb-1">${element.Name}</p>
+                            <p class="product-info mb-1">${element.Name} | ${element.Personalization}</p>
                             <span class="product-info">Size: ${element.Size}</span>
                             <span class="product-info"> | </span>
                             <span class="product-info">Color: ${element.Color}</span>
@@ -140,7 +152,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         if (event.target && (event.target.classList.contains("decrease-cartItem-btn") || (event.target.parentElement && event.target.parentElement.classList.contains("decrease-cartItem-btn")))) {
           
-          // garantir que temos o botao mesmo se o clique foi no icone dentro dele
           const decreaseBtn = event.target.classList.contains("decrease-cartItem-btn") ? event.target : event.target.parentElement;
 
           let quantitySpan = decreaseBtn.nextElementSibling;
@@ -158,33 +169,38 @@ document.addEventListener("DOMContentLoaded", async function() {
 
           }
 
-          const quantityValue = parseInt(quantitySpan.textContent, 10);
-          const priceValue = parseInt(priceSpan.textContent, 10);
+          const quantityValue = parseInt(quantitySpan.textContent);
+          const priceValue = parseFloat(priceSpan.textContent);
 
-          const itemId = decreaseBtn.value;
-          const quantity = quantityValue - 1;
-          const priceInCart = Number(priceValue);
-          const priceOfProduct = priceInCart / quantityValue;
-          const price = (priceInCart - priceOfProduct);
+          
+          if (quantityValue > 1) {
 
-          const updateCart = {
-            id_carrinho_item: itemId,
-            quantidade: quantity,
-            preco: price.toFixed(2),
+            const itemId = decreaseBtn.value;
+            const quantity = quantityValue - 1;
+            const priceInCart = Number(priceValue);
+            const priceOfProduct = priceInCart / quantityValue;
+            const price = (priceInCart - priceOfProduct);
+
+            const updateCart = {
+              id_carrinho_item: itemId,
+              quantidade: quantity,
+              preco: price.toFixed(2),
+            }
+
+            const updateCarrinho = await updateCarrinhoItem(updateCart);
+
+            if (updateCarrinho.status == "success") {
+
+              await renderCart();
+
+            }
+
           }
 
-          const updateCarrinho = await updateCarrinhoItem(updateCart);
-
-          if (updateCarrinho.status == "success") {
-
-            await renderCart();
-
-          }
       }
 
         if (event.target && (event.target.classList.contains("increase-cartItem-btn") || (event.target.parentElement && event.target.parentElement.classList.contains("increase-cartItem-btn")))) {
           
-          // garantir que temos o botao mesmo se o clique foi no icone dentro dele
           const increaseBtn = event.target.classList.contains("increase-cartItem-btn") ? event.target : event.target.parentElement;
 
           let quantitySpan = increaseBtn.previousElementSibling;
