@@ -33,7 +33,6 @@ class ApiController
 
     public function getFiltersProducts($categoria, $precoMinimo, $precoMaximo, $cor, $tamanho): array
     {
-        // Se vier '_', tratar como vazio
         $categoria = ($categoria === '_') ? [] : explode(',', $categoria);
         $cor = ($cor === '_') ? [] : explode(',', $cor);
         $tamanho = ($tamanho === '_') ? [] : explode(',', $tamanho);
@@ -44,7 +43,7 @@ class ApiController
                 'GROUP_CONCAT(DISTINCT Dimensoes.tamanho) AS tamanhos',
                 'GROUP_CONCAT(DISTINCT Cores.nome_cor) AS cores'
             ])
-            ->join('Categorias', 'Produtos.id_categoria', '=', 'Categorias.id_categoria') // Manter INNER JOIN se uma categoria for sempre obrigatória para um produto ser listado
+            ->join('Categorias', 'Produtos.id_categoria', '=', 'Categorias.id_categoria') // Manter INNER JOIN se uma categoria for sempre obrigatória para um produto ser listadoAdd commentMore actionsMore actions
             ->leftJoin('Dimensoes', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
             ->leftJoin('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
             ->leftJoin('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor'); // Este JOIN depende de ProdutosVariantes
@@ -127,7 +126,6 @@ class ApiController
             return [];
         }
 
-        // Montar produto base
         $produto = [
             'id_produto' => $rows[0]['id_produto'],
             'id_categoria' => $rows[0]['id_categoria'],
@@ -145,9 +143,7 @@ class ApiController
             'imagens_extras' => []
         ];
 
-        // Agrupar cores, dimensões e imagens extras
         foreach ($rows as $row) {
-            // Cores
             if ($row['id_cor'] && !in_array($row['id_cor'], array_column($produto['cores'], 'id_cor'))) {
                 $produto['cores'][] = [
                     'id_cor' => $row['id_cor'],
@@ -155,14 +151,12 @@ class ApiController
                     'nome_cor' => $row['nome_cor']
                 ];
             }
-            // Dimensões
             if ($row['tamanho'] && !in_array($row['tamanho'], array_column($produto['dimensoes'], 'tamanho'))) {
                 $produto['dimensoes'][] = [
                     'dimensao_tipo' => $row['dimensao_tipo'],
                     'tamanho' => $row['tamanho']
                 ];
             }
-            // Imagens extras
             if ($row['id_imagem_extra'] && !in_array($row['id_imagem_extra'], array_column($produto['imagens_extras'], 'id_imagem_extra'))) {
                 $produto['imagens_extras'][] = [
                     'id_imagem_extra' => $row['id_imagem_extra'],
@@ -196,7 +190,6 @@ class ApiController
                 return [];
             }
 
-
             return $this->queryBuilder->table('Produtos')
                 ->select([
                     'Produtos.*',
@@ -222,7 +215,6 @@ class ApiController
     }
     public function getCategoriesByID(): array
     {
-        // Obtém todas as categorias ordenadas pelo ID da categoria em ordem ascendente.
         return $this->queryBuilder->table('Categorias')
             ->select(['*'])
             ->order('id_categoria', 'ASC')
@@ -231,35 +223,29 @@ class ApiController
 
     public function getColorsByCategories($categorias): array
     {
-        // Converte a string de categorias (separada por vírgulas) para um array, se necessário.
         if (is_string($categorias)) {
             $categorias = explode(',', $categorias);
         }
 
-        // Constrói e executa a query para obter cores distintas
-        // junta Produtos com ProdutosVariantes e Cores
-        // e filtra por ID de categoria.
         return $this->queryBuilder->table('Produtos')
             ->select(['DISTINCT Cores.id_cor', 'Cores.nome_cor', 'Cores.hex_cor'])
             ->join('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
             ->join('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
-            ->where('Produtos.id_categoria', 'IN', $categorias) // Filtra produtos que pertencem às categorias fornecidas.
+            ->where('Produtos.id_categoria', 'IN', $categorias)
             ->get();
     }
 
     public function getSizesByCategories($categorias): array
     {
-        // Converte a string de categorias (separada por vírgulas) para um array, se necessário.
         if (is_string($categorias)) {
             $categorias = explode(',', $categorias);
         }
 
-        // Constrói e executa a query para obter os tamanhos distintas
         return $this->queryBuilder->table('Dimensoes')
             ->select(['tamanho'])
             ->join('Produtos', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
             ->join('Categorias', 'Categorias.id_categoria', '=', 'Produtos.id_categoria')
-            ->where('Categorias.id_categoria', 'IN', $categorias) // In pois pode haver mais de uma categoria
+            ->where('Categorias.id_categoria', 'IN', $categorias)
             ->get();
     }
 
@@ -525,7 +511,6 @@ class ApiController
                     'cod_postal_cliente' => $data['cod_postal_cliente'] ?? null,
                     'pais_cliente' => $data['pais_cliente'] ?? null,
                     'nif_cliente' => $data['nif_cliente'] ?? null,
-                    //'ip_cliente' => $this->getClientIP(),
                     'ip_cliente' => $data['ip_cliente'] ?? null,
                     'imagem_cliente' => $data['imagem_cliente'] ?? null,
                     'id_gift' => $data['id_gift'] ?? null,
@@ -955,8 +940,6 @@ class ApiController
             ->get();
     }
 
-    //obter id da order
-
     public function getOrderID($id): array
     {
         return $this->queryBuilder->table('Encomendas')
@@ -965,44 +948,114 @@ class ApiController
             ->get();
     }
 
-    public function getOrderById(int $orderId): ?array
-    {
-        $result = $this->queryBuilder->table('Encomendas')
-            ->select([
-                'Encomendas.id_encomenda',
-                'Encomendas.preco_total_encomenda',
-                'Encomendas.fatura',
-                'Encomendas.status_encomenda',
-                'Encomendas.data_criacao_encomenda',
-                'Encomendas.data_atualizacao_encomenda',
-                'Encomendas.transportadora',
-                'Encomendas.numero_seguimento',
-                'Encomendas.notas_encomenda',
-                'Clientes.id_cliente',
-                'Clientes.nome_cliente',
-                'Clientes.email_cliente',
-                'Clientes.contacto_cliente',
-                'Clientes.morada_cliente',
-                'Clientes.nif_cliente',
-                'Clientes.data_criacao_cliente',
-                'Pagamento.id_pagamento',
-                'MetodoPagamento.nome_metodo_pagamento',
-            ])
-            ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
-            ->join('CarrinhoItens', 'Carrinhos.id_carrinho', '=', 'CarrinhoItens.id_carrinho')
-            ->join('Produtos', 'CarrinhoItens.id_produto', '=', 'Produtos.id_produto')
-            ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
-            ->join('Pagamento', 'Encomendas.id_encomenda', '=', 'Pagamento.id_encomenda')
-            ->join('MetodoPagamento', 'Pagamento.id_metodo_pagamento', '=', 'MetodoPagamento.id_metodo_pagamento')
-            ->where('Encomendas.id_encomenda', '=', $orderId)
-            ->get();
 
-        return $result[0] ?? null;
+    public function getUserOrders(int $userId): array
+    {
+        try {
+            error_log("getUserOrders - Buscando encomendas para o usuário ID: $userId");
+
+
+            $encomendas = $this->queryBuilder->table('Encomendas')
+                ->select([
+                    'Encomendas.id_encomenda',
+                    'Encomendas.preco_total_encomenda',
+                    'Encomendas.status_encomenda',
+                    'Encomendas.data_criacao_encomenda',
+                    'Encomendas.numero_seguimento',
+                    'Encomendas.transportadora'
+                ])
+                ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
+                ->where('Carrinhos.id_cliente', '=', $userId)
+                ->order('Encomendas.data_criacao_encomenda', 'DESC')
+                ->get();
+
+
+            if (empty($encomendas)) {
+                error_log("Nenhuma encomenda encontrada para o cliente ID: $userId");
+                return [];
+            }
+
+
+            error_log("Encontradas " . count($encomendas) . " encomendas para o cliente $userId");
+
+
+            foreach ($encomendas as &$encomenda) {
+                try {
+                    $itens = $this->queryBuilder->table('EncomendaItens')
+                        ->select([
+                            'EncomendaItens.id_encomenda_item',
+                            'EncomendaItens.quantidade',
+                            'EncomendaItens.preco AS preco_item',
+                            'EncomendaItens.nome_cor',
+                            'EncomendaItens.tamanho',
+                            'Produtos.id_produto',
+                            'Produtos.titulo_produto',
+                            'Produtos.imagem_principal'
+                        ])
+                        ->leftJoin('Produtos', 'EncomendaItens.id_produto', '=', 'Produtos.id_produto')
+                        ->where('EncomendaItens.id_encomenda', '=', $encomenda['id_encomenda'])
+                        ->get();
+
+
+                    $encomenda['itens'] = $itens;
+                } catch (Exception $innerEx) {
+                    error_log("Erro ao buscar itens da encomenda " . $encomenda['id_encomenda'] . ": " . $innerEx->getMessage());
+                    $encomenda['itens'] = [];
+                }
+            }
+
+
+            return $encomendas;
+        } catch (Exception $e) {
+            error_log("Erro ao buscar encomendas do cliente $userId: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
+            return [];
+        }
     }
 
-    /**
-     * Obter itens de uma encomenda específica
-     */
+    public function getOrderById(int $orderId): ?array
+    {
+        try {
+            $result = $this->queryBuilder->table('Encomendas')
+                ->select([
+                    'Encomendas.id_encomenda',
+                    'Encomendas.preco_total_encomenda',
+                    'Encomendas.fatura',
+                    'Encomendas.status_encomenda',
+                    'Encomendas.data_criacao_encomenda',
+                    'Encomendas.data_atualizacao_encomenda',
+                    'Encomendas.transportadora',
+                    'Encomendas.numero_seguimento',
+                    'Encomendas.notas_encomenda',
+                    'Clientes.id_cliente',
+                    'Clientes.nome_cliente',
+                    'Clientes.email_cliente',
+                    'Clientes.contacto_cliente',
+                    'Clientes.morada_cliente',
+                    'Clientes.nif_cliente',
+                    'Clientes.data_criacao_cliente'
+                ])
+                ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
+                ->leftJoin('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
+                ->leftJoin('Pagamento', 'Encomendas.id_encomenda', '=', 'Pagamento.id_encomenda')
+                ->leftJoin('MetodoPagamento', 'Pagamento.id_metodo_pagamento', '=', 'MetodoPagamento.id_metodo_pagamento')
+                ->where('Encomendas.id_encomenda', '=', $orderId)
+                ->get();
+
+
+            if (!empty($result) && isset($result[0])) {
+                if (!isset($result[0]['nome_metodo_pagamento'])) {
+                    $result[0]['nome_metodo_pagamento'] = 'Não especificado';
+                }
+            }
+
+
+            return $result[0] ?? null;
+        } catch (Exception $e) {
+            error_log("Error in getOrderById: " . $e->getMessage());
+            return null;
+        }
+    }
     public function getOrderItems(int $orderId): array
     {
         try {
@@ -1032,14 +1085,10 @@ class ApiController
         } catch (Exception $e) {
             error_log("Error in getOrderItems: " . $e->getMessage());
             error_log("Stack trace: " . $e->getTraceAsString());
-            // Return empty array instead of throwing exception to prevent complete failure
             return [];
         }
     }
 
-    /**
-     * Obter informações de pagamento de uma encomenda
-     */
     public function getOrderPaymentInfo(int $orderId): ?array
     {
         $result = $this->queryBuilder->table('Pagamento')
@@ -1071,7 +1120,6 @@ class ApiController
                 'data_atualizacao_encomenda' => date('Y-m-d H:i:s')
             ];
 
-            // Adicionar informações de rastreio se fornecidas
             if ($data && isset($data['tracking_number'])) {
                 $updateData['numero_seguimento'] = $data['tracking_number'];
             }
@@ -1080,7 +1128,6 @@ class ApiController
                 $updateData['transportadora'] = $data['carrier'];
             }
 
-            // Log the update for debugging
             error_log("Updating order $orderId with data: " . json_encode($updateData));
 
             $this->queryBuilder->table('Encomendas')
@@ -1088,7 +1135,6 @@ class ApiController
                 ->where('id_encomenda', '=', $orderId)
                 ->execute();
 
-            // Verificar se notificação foi solicitada
             $notificationSent = false;
             if ($data && isset($data['notify_customer']) && $data['notify_customer'] == 1) {
                 $notificationSent = true;
@@ -1481,7 +1527,6 @@ class ApiController
             return ['success' => false, 'message' => 'Invalid JSON data received'];
         }
 
-        // Validar campos obrigatórios
         $requiredFields = ['order_id', 'customer_info'];
         foreach ($requiredFields as $field) {
             if (!isset($data[$field])) {
@@ -1493,12 +1538,10 @@ class ApiController
         $customerInfo = $data['customer_info'];
 
         try {
-            // Debug: Log dados recebidos
             error_log("=== UPDATE CUSTOMER INFO DEBUG ===");
             error_log("Order ID: " . $orderId);
             error_log("Customer Info: " . json_encode($customerInfo));
 
-            // Obter o id_cliente da encomenda
             $order = $this->queryBuilder->table('Encomendas')
                 ->select(['Carrinhos.id_cliente'])
                 ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
@@ -1512,7 +1555,6 @@ class ApiController
             $clienteId = $order[0]['id_cliente'];
             error_log("Cliente ID found: " . $clienteId);
 
-            // Verificar dados atuais do cliente ANTES da atualização
             $clienteBefore = $this->queryBuilder->table('Clientes')
                 ->select(['*'])
                 ->where('id_cliente', '=', $clienteId)
@@ -1527,10 +1569,8 @@ class ApiController
             $totalUpdates = 0;
             $updatedFields = [];
 
-            // MÉTODO ALTERNATIVO: Usar WHERE com valor atual para forçar update
             if (!empty($customerInfo['nome'])) {
                 try {
-                    // Primeiro, verificar valor atual
                     $currentNome = $clienteBefore[0]['nome_cliente'] ?? '';
                     error_log("Current nome_cliente: '$currentNome', New value: '{$customerInfo['nome']}'");
 
@@ -1654,7 +1694,6 @@ class ApiController
                 }
             }
 
-            // Verificar dados APÓS a atualização
             $clienteAfter = $this->queryBuilder->table('Clientes')
                 ->select(['*'])
                 ->where('id_cliente', '=', $clienteId)
@@ -1697,8 +1736,242 @@ class ApiController
             return ['success' => false, 'message' => 'Error updating customer information: ' . $e->getMessage()];
         }
     }
+
+    public function updateClientInfo(): array
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data) || !isset($data['id_cliente'])) {
+            return ['success' => false, 'message' => 'Dados inválidos'];
+        }
+
+        $clienteId = (int) $data['id_cliente'];
+
+        try {
+            $cliente = $this->queryBuilder->table('Clientes')
+                ->select(['id_cliente'])
+                ->where('id_cliente', '=', $clienteId)
+                ->get();
+
+            if (empty($cliente)) {
+                return ['success' => false, 'message' => 'Cliente não encontrado'];
+            }
+
+            $updateFields = [];
+            $fieldsToUpdate = [
+                'nome_cliente',
+                'email_cliente',
+                'contacto_cliente',
+                'morada_cliente',
+                'cidade_cliente',
+                'state_cliente',
+                'cod_postal_cliente',
+                'pais_cliente'
+            ];
+
+            foreach ($fieldsToUpdate as $field) {
+                if (isset($data[$field]) && $data[$field] !== '') {
+                    $updateFields[$field] = $data[$field];
+                }
+            }
+
+            error_log("Campos para atualização: " . json_encode($updateFields));
+
+            if (empty($updateFields)) {
+                return ['success' => false, 'message' => 'Nenhum campo válido para atualizar'];
+            }
+
+            $result = $this->queryBuilder->table('Clientes')
+                ->update($updateFields)
+                ->where('id_cliente', '=', $clienteId)
+                ->execute();
+
+            if (!$result) {
+                return ['success' => false, 'message' => 'Falha ao atualizar informações do cliente'];
+            }
+
+            return [
+                'success' => true,
+                'message' => 'Informações do cliente atualizadas com sucesso',
+                'updated_fields' => array_keys($updateFields)
+            ];
+
+        } catch (PDOException $e) {
+            error_log("Erro de banco de dados em updateClientInfo: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Erro de banco de dados: ' . $e->getMessage()];
+        } catch (Exception $e) {
+            error_log("Erro geral em updateClientInfo: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Erro ao atualizar informações: ' . $e->getMessage()];
+        }
+    }
+
+
+    public function showClientInfo($id_cliente): array
+    {
+        try {
+            $result = $this->queryBuilder->table('Clientes')
+                ->select([
+                    'id_cliente',
+                    'nome_cliente',
+                    'email_cliente',
+                    'contacto_cliente',
+                    'morada_cliente',
+                    'cidade_cliente',
+                    'state_cliente',
+                    'cod_postal_cliente',
+                    'pais_cliente',
+                    'imagem_cliente',
+                    'nif_cliente'
+                ])
+                ->where('id_cliente', '=', $id_cliente)
+                ->get();
+
+            if (empty($result)) {
+                return [
+                    'success' => false,
+                    'message' => 'Cliente não encontrado'
+                ];
+            }
+
+            return [
+                'success' => true,
+                'data' => $result[0]
+            ];
+
+        } catch (Exception $e) {
+            error_log("Erro em showClientInfo: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Erro ao buscar informações do cliente: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function showClientCardInfo($id_cliente): array
+    {
+        try {
+            $result = $this->queryBuilder->table('PagamentoCartao')
+                ->select([
+                    'PagamentoCartao.id_cartao',
+                    'PagamentoCartao.numero_cartao',
+                    'PagamentoCartao.validade_cartao',
+                    'PagamentoCartao.cvv_cartao',
+                    'PagamentoCartao.nome_cartao',
+                    'MetodoPagamento.nome_metodo_pagamento'
+                ])
+                ->join('MetodoPagamento', 'MetodoPagamento.id_cartao', '=', 'PagamentoCartao.id_cartao')
+                ->where('MetodoPagamento.id_cliente', '=', $id_cliente)
+                ->get();
+
+
+            if (empty($result)) {
+                return [
+                    'success' => false,
+                    'message' => 'Nenhum cartão encontrado para este cliente'
+                ];
+            }
+
+
+            return [
+                'success' => true,
+                'data' => $result[0]
+            ];
+        } catch (Exception $e) {
+            error_log("Erro em showClientCardInfo: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Erro ao buscar informações do cartão: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function updateClientCardInfo($id_cliente, $data): bool
+    {
+        $cartao = $this->queryBuilder->table('MetodoPagamento')
+            ->select(['id_cartao'])
+            ->where('id_cliente', '=', $id_cliente)
+            ->get();
+
+        if (empty($cartao[0]['id_cartao'])) {
+            return false;
+        }
+
+        $id_cartao = $cartao[0]['id_cartao'];
+
+        return $this->queryBuilder->table('PagamentoCartao')
+            ->where('id_cartao', '=', $id_cartao)
+            ->update([
+                'numero_cartao' => $data['numero_cartao'],
+                'validade_cartao' => $data['validade_cartao'],
+                'cvv_cartao' => $data['cvv_cartao'],
+                'nome_cartao' => $data['nome_cartao']
+            ])
+            ->execute();
+    }
+
+    public function insertClientCard(): array
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = [
+            'id_cliente',
+            'numero_cartao',
+            'validade_cartao',
+            'cvv_cartao',
+            'nome_cartao'
+        ];
+
+        $missingFields = [];
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+            $this->queryBuilder->table('PagamentoCartao')
+                ->insert([
+                    'numero_cartao' => $data['numero_cartao'],
+                    'validade_cartao' => $data['validade_cartao'],
+                    'cvv_cartao' => $data['cvv_cartao'],
+                    'nome_cartao' => $data['nome_cartao']
+                ]);
+            $id_cartao = $this->queryBuilder->getLastInsertId();
+
+            $this->queryBuilder->table('MetodoPagamento')
+                ->insert([
+                    'id_cliente' => $data['id_cliente'],
+                    'id_cartao' => $id_cartao
+                ]);
+
+            return [
+                'success' => true,
+                'message' => 'Card added and associated to client',
+                'id_cartao' => $id_cartao
+            ];
+
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            return [
+                'error' => 'Error adding card',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
 }
-
-
 
 ?>
