@@ -259,23 +259,11 @@ session_start();
 
       <div class="range-container">
         <h6 class="mb-3 fw-semibold">Price Range</h6>
-
-        <!-- Slider de intervalo duplo -->
-        <div class="double-range-slider">
-          <div class="slider-track">
-            <div class="slider-track-highlight" id="track-highlight"></div>
-          </div>
-
-          <div class="slider-thumb" id="thumb-min"></div>
-          <div class="slider-thumb" id="thumb-max"></div>
-
-          <input type="range" class="range-input" id="range-min" min="0" max="100" value="0">
-          <input type="range" class="range-input" id="range-max" min="0" max="100" value="100">
-        </div>
-
-        <div class="price-labels mt-2">
-          <span class="price-label">€<span id="value-min">30</span></span>
-          <span class="price-label">€<span id="value-max">70</span></span>
+        <div class="d-flex gap-2 align-items-center">
+          <label for="price-min-input" class="form-label mb-0">Min:</label>
+          <input type="number" class="form-control" id="price-min-input" value="0" min="0" step="1">
+          <label for="price-max-input" class="form-label mb-0">Max:</label>
+          <input type="number" class="form-control" id="price-max-input" value="100" min="0" step="1">
         </div>
       </div>
       <hr>
@@ -290,9 +278,6 @@ session_start();
       <hr>
 
       <!-- Tamanhos -->
-      <!-- quando for para pegar o valor selecionado udar um querySelector .btn-check[name="size-desktop"] -->
-      <!-- Exemplo na linha 209 do profuto.js -->
-
       <div>
         <h6>Size</h6>
 

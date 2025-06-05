@@ -3,49 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#link-produtos").innerHTML = `<li class="nav-item"><a href="<?= $base_url ?>/index.php" class="nav-link active" style="background-color: #4F46E5;">Products</a></li>`;
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Função para configurar um slider com base nos IDs fornecidos
-    function setupSlider(rangeMinId, rangeMaxId, thumbMinId, thumbMaxId, trackHighlightId, valueMinId, valueMaxId) {
-        const rangeMin = document.getElementById(rangeMinId);
-        const rangeMax = document.getElementById(rangeMaxId);
-        const thumbMin = document.getElementById(thumbMinId);
-        const thumbMax = document.getElementById(thumbMaxId);
-        const trackHighlight = document.getElementById(trackHighlightId);
-        const valueMin = document.getElementById(valueMinId);
-        const valueMax = document.getElementById(valueMaxId);
-
-        function updateSlider() {
-            // Garantir que o valor mínimo não exceda o máximo
-            if (parseInt(rangeMin.value) > parseInt(rangeMax.value)) {
-                rangeMin.value = rangeMax.value;
-            }
-
-            const minPercent = (rangeMin.value / rangeMin.max) * 100;
-            const maxPercent = (rangeMax.value / rangeMax.max) * 100;
-
-            thumbMin.style.left = minPercent + '%';
-            thumbMax.style.left = maxPercent + '%';
-            trackHighlight.style.left = minPercent + '%';
-            trackHighlight.style.width = (maxPercent - minPercent) + '%';
-            valueMin.textContent = rangeMin.value;
-            valueMax.textContent = rangeMax.value;
-        }
-
-        // Adicionar eventos de input
-        rangeMin.addEventListener('input', updateSlider);
-        rangeMax.addEventListener('input', updateSlider);
-
-        // Inicializar o slider
-        updateSlider();
-    }
-
-    // Configurar o slider principal
-    setupSlider('range-min', 'range-max', 'thumb-min', 'thumb-max', 'track-highlight', 'value-min', 'value-max');
-
-    // Configurar o slider mobile
-    setupSlider('range-min-mobile', 'range-max-mobile', 'thumb-min-mobile', 'thumb-max-mobile', 'track-highlight-mobile', 'value-min-mobile', 'value-max-mobile');
-});
-
 /*
 document.addEventListener('DOMContentLoaded', function () {
     const colors = ["red","blue","green","orange","purple","black"]; 
@@ -451,12 +408,7 @@ fetch('../restapi/PrintGoAPI.php/getCategoriesByID')
 // Função para buscar produtos (com ou sem filtros)
 function buscarProdutos(filtros = {}) {
     // Check if filters are empty
-    const isEmptyFilters = Object.keys(filtros).length === 0 ||
-        ((!filtros.categorias || filtros.categorias.length === 0) &&
-            (!filtros.cores || filtros.cores.length === 0) &&
-            (!filtros.tamanhos || filtros.tamanhos.length === 0) &&
-            (!filtros.precoMin || filtros.precoMin === '0') && // Added price check
-            (!filtros.precoMax || filtros.precoMax === '100')); // Added price check
+    const isEmptyFilters = Object.keys(filtros).length === 0
 
 
     let url = '';
@@ -681,18 +633,16 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 const applyFiltersDesktop = document.getElementById('apply-filters-desktop');
-// Quando clicar em "Apply Filters", buscar com filtros
 if (applyFiltersDesktop) {
     applyFiltersDesktop.addEventListener('click', function () {
         const filtros = {
             categorias: [...document.querySelectorAll('input[type=checkbox][id^="defaultCategory"]:checked')].map(cb => cb.value),
-            precoMin: document.getElementById('range-min').value,
-            precoMax: document.getElementById('range-max').value,
-            cores: [...document.querySelectorAll('input[name="color"]:checked')].map(cb => cb.getAttribute('data-color-name')), // Use color name instead of hex value
+            precoMin: document.getElementById('price-min-input').value, // Altere aqui
+            precoMax: document.getElementById('price-max-input').value, // Altere aqui
+            cores: [...document.querySelectorAll('input[name="color"]:checked')].map(cb => cb.getAttribute('data-color-name')),
             tamanhos: [...document.querySelectorAll('input[name="size-desktop"]:checked')].map(cb => cb.value),
         };
-        // console.log("Filtros:" + JSON.stringify(filtros));
-        buscarProdutos(filtros); // Isso vai resetar para pagina 1 e re-renderizar tudo
+        buscarProdutos(filtros);
     });
 }
 
@@ -716,24 +666,19 @@ if (clearFiltersDesktop) {
             checkedSizeDesktop.checked = false;
         }
 
-        // 4. Reset the price range slider (desktop)
-        const rangeMinDesktop = document.getElementById('range-min');
-        const rangeMaxDesktop = document.getElementById('range-max');
-        if (rangeMinDesktop && rangeMaxDesktop) {
-            rangeMinDesktop.value = rangeMinDesktop.min; // Or "0"
-            rangeMaxDesktop.value = rangeMaxDesktop.max; // Or "100"
-
-            // Trigger input events to update slider UI
-            rangeMinDesktop.dispatchEvent(new Event('input'));
-            rangeMaxDesktop.dispatchEvent(new Event('input'));
+        // 4. Reset the price range input fields (desktop)
+        const priceMinInput = document.getElementById('price-min-input');
+        const priceMaxInput = document.getElementById('price-max-input');
+        if (priceMinInput && priceMaxInput) {
+            priceMinInput.value = "0";
+            priceMaxInput.value = "100";
         }
 
-        // 5. Update color and size sections to reflect no categories selected
         // These functions will now clear their respective containers and show a placeholder message
         atualizarCoresPorCategoria();
         atualizarSizePorCategoria();
 
         // 6. Fetch and display all products (no filters)
-        buscarProdutos(); // Isso vai resetar para pagina 1 e re-renderizar tudo
+        buscarProdutos();
     });
 }
