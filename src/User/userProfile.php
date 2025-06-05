@@ -1,15 +1,17 @@
+
 <?php
 $base_url="/~ptaw-2025-gr4";
 session_start();
 if (!isset($_SESSION['user_id'])) {
-
   header("location: /~ptaw-2025-gr4/src/SignIn.html");
-
+  exit;
 } else {
   $id_cliente = $_SESSION['user_id'];
+  // Log para debug
+  error_log("ID do cliente no userProfile.php: $id_cliente");
 }
-
 ?>
+
 
 
 <!DOCTYPE html>

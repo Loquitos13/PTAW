@@ -2,82 +2,81 @@
 session_start();
 require_once '../restapi/Database.php';
 
-$apiUrl = "http://estga-dev.ua.pt/~ptaw-2025-gr4/restapi/PrintGoAPI.php";
+$baseUrl = (strpos($_SERVER['HTTP_HOST'], 'estga-dev.ua.pt') !== false) 
+    ? "http://estga-dev.ua.pt/~ptaw-2025-gr4" 
+    : "http://localhost/PTAW";
 
-function executeCurlRequest($ch) {
+$apiUrl = "$baseUrl/restapi/PrintGoAPI.php";
+
+error_log("getRecentOrdersByClient.php - Iniciando...");
+error_log("API URL: $apiUrl");
+
+header('Content-Type: application/json');
+
+try {
+    $rawInput = file_get_contents('php://input');
+    error_log("Input recebido: $rawInput");
+    
+    if (empty($rawInput)) {
+        throw new Exception("Corpo da requisição vazio");
+    }
+    
+    $data = json_decode($rawInput, true);
+    
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new Exception("JSON inválido: " . json_last_error_msg());
+    }
+    
+    if (!isset($data['id_cliente'])) {
+        throw new Exception("ID do cliente não fornecido");
+    }
+    
+    $clientId = $data['id_cliente'];
+    error_log("ID do cliente: $clientId");
+    
+    $requestUrl = "$apiUrl/userOrders/$clientId";
+    error_log("Requisição para: $requestUrl");
+    
+    $ch = curl_init($requestUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPGET, true);
+    
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     
     if (curl_errno($ch)) {
         $error = curl_error($ch);
         curl_close($ch);
-        throw new Exception("CURL Error: $error");
+        throw new Exception("Erro CURL: $error");
     }
     
     curl_close($ch);
     
-    json_decode($response);
-    if(json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception("Invalid JSON response: " . json_last_error_msg());
+    error_log("Código HTTP da resposta: $httpCode");
+    error_log("Resposta: " . substr($response, 0, 200) . "...");
+    
+    if ($httpCode === 500) {
+        error_log("Erro 500 da API, retornando array vazio");
+        echo json_encode([]);
+        exit;
+    } else if ($httpCode !== 200) {
+        throw new Exception("Erro na API: Código HTTP $httpCode");
     }
     
-    return $response;
-}
-
-header('Content-Type: application/json');
-
-try {
-    $json = file_get_contents('php://input');
+    $responseData = json_decode($response, true);
     
-    if(empty($json)) {
-        throw new Exception("Empty request body");
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new Exception("Resposta não é um JSON válido: " . json_last_error_msg());
     }
     
-    $data = json_decode($json, true);
+    echo $response;
     
-    if(json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception("Invalid JSON: " . json_last_error_msg());
-    }
-    
-    $result = getRecentOrdersData($data);
-    echo json_encode($result);
-    
-} catch(Exception $e) {
+} catch (Exception $e) {
+    error_log("Erro em getRecentOrdersByClient.php: " . $e->getMessage());
     http_response_code(400);
     echo json_encode([
         'status' => 'error',
         'message' => $e->getMessage()
     ]);
 }
-
-function getRecentOrdersData($data) {
-    global $apiUrl;
-
-    if (empty($data)) {
-        throw new Exception("No data provided");
-    }
-
-    $id = $data['id_cliente'] ?? null;
-        if (!$id) {
-            throw new Exception("Missing 'id_cliente' in request data");
-        }
-
-    $ch = curl_init("$apiUrl/recentOrdersByClient/$id");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPGET, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json'
-    ]);
-
-    $response = executeCurlRequest($ch);
-    $decoded = json_decode($response, true);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception("Invalid JSON response: " . json_last_error_msg());
-    }
-
-    return $decoded;
-}
-
 ?>
