@@ -1972,6 +1972,399 @@ class ApiController
         }
     }
 
+    public function getClientPaymentMethod(int $id_cliente): ?array
+    {
+
+        return $this->queryBuilder->table('MetodoPagamento')
+            ->select(['MetodoPagamento.id_metodo_pagamento', 'PagamentoCartao.numero_cartao', 'PagamentoCartao.validade_cartao', 'PagamentoCartao.cvv_cartao', 'PagamentoCartao.nome_cartao'])
+            ->join('PagamentoCartao', 'MetodoPagamento.id_cartao', '=', 'PagamentoCartao.id_cartao')
+            ->where('MetodoPagamento.id_cliente', '=', $id_cliente)
+            ->get();
+
+    }
+
+    public function insertEncomenda(): array
+    {
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = ['id_carrinho', 'preco_total_encomenda', 'fatura', 'status_encomenda'];
+
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+
+            if (empty($data[$field])) {
+
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+
+            $dataCriacao = date("Y-m-d H:i:s");
+
+            $this->queryBuilder->table('Encomendas')
+                ->insert([
+                    'id_carrinho' => $data['id_carrinho'],
+                    'preco_total_encomenda' => $data['preco_total_encomenda'],
+                    'fatura' => $data['fatura'],
+                    'status_encomenda' => $data['status_encomenda'],
+                    'data_criacao_encomenda' => $dataCriacao,
+                    'data_atualizacao_encomenda' => $data['data_atualizacao_encomenda'] ?? null,
+                    'numero_seguimento' => $data['numero_seguimento'] ?? '',
+                    'transportadora' => $data['transportadora'] ?? '',
+                    'notas_encomenda' => $data['notas_encomenda'] ?? ''
+                ]);
+
+            $lastId = $this->queryBuilder->getLastInsertId();
+
+            return [
+                'success' => true,
+                'message' => 'Order created',
+                'id_encomenda' => $lastId
+            ];
+
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error creating the order',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function getCarrinhoItensbackup($id_carrinho): array
+    {
+
+        return $this->queryBuilder->table('CarrinhoItens')
+            ->select(['CarrinhoItens.id_produto as ProductId', 'preco as Price', 'quantidade as Quantity', 'tamanho as Size', 'cor as Color', 'COALESCE(Personalizacao.id_carrinho_item, 0) AS PersonalizacaoId'])
+            ->join('Produtos', 'CarrinhoItens.id_produto', '=', 'Produtos.id_produto')
+            ->leftJoin('Personalizacao', 'CarrinhoItens.id_carrinho_item', '=', 'Personalizacao.id_carrinho_item')
+            ->where('CarrinhoItens.id_carrinho', '=', $id_carrinho)
+            ->get();
+
+    }
+
+    public function insertEncomendaItens(): array
+    {
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = ['id_encomenda', 'id_produto', 'quantidade', 'preco', 'nome_cor', 'tamanho'];
+
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+
+            if (empty($data[$field])) {
+
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+
+            $this->queryBuilder->table('EncomendaItens')
+                ->insert([
+                    'id_encomenda' => $data['id_encomenda'],
+                    'id_produto' => $data['id_produto'],
+                    'quantidade' => $data['quantidade'],
+                    'preco' => $data['preco'],
+                    'nome_cor' => $data['nome_cor'],
+                    'tamanho' => $data['tamanho'],
+                    'id_personalizacao' => $data['id_personalizacao'] ?? null
+                ]);
+
+            return [
+                'success' => true,
+                'message' => 'Order Item created'
+            ];
+
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error creating the order',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+        public function deleteCartItemBackup(): array
+    {
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = ['id_carrinho'];
+
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+
+            if (!isset($data[$field])) {
+
+                return [
+                    'error' => 'Invalid data',
+                    'message' => "Missing required field: $field"
+                ];
+            }
+        }
+
+        if (!empty($missingFields)) {
+
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+
+            $this->queryBuilder->table('CarrinhoItens')
+                ->delete()
+                ->where('id_carrinho', '=', $data['id_carrinho'])
+                ->execute();
+
+            return [
+                'success' => true,
+                'message' => 'Cart itens deleted'
+            ];
+
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error deleting the user',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function insertPayment(): array
+    {
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = ['id_encomenda', 'id_metodo_pagamento', 'valor_pago'];
+
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+
+            if (empty($data[$field])) {
+
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+
+            $dataCriacao = date("Y-m-d H:i:s");
+
+            $this->queryBuilder->table('Pagamento')
+                ->insert([
+                    'id_encomenda' => $data['id_encomenda'],
+                    'id_metodo_pagamento' => $data['id_metodo_pagamento'],
+                    'valor_pago' => $data['valor_pago'],
+                    'data_pagamento' => $dataCriacao
+                ]);
+
+            return [
+                'success' => true,
+                'message' => 'Payment created'
+            ];
+
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error creating the order',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function checkPaymentByCard($card_number): array
+    {
+
+        return $this->queryBuilder->table('PagamentoCartao')
+            ->select(['id_cartao'])
+            ->where('numero_cartao', '=', $card_number)
+            ->get();
+
+    }
+
+    public function insertCardPayment(): array
+    {
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = ['numero_cartao', 'validade_cartao', 'cvv_cartao', 'nome_cartao'];
+
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+
+            if (empty($data[$field])) {
+
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+
+            $this->queryBuilder->table('PagamentoCartao')
+                ->insert([
+                    'numero_cartao' => $data['numero_cartao'],
+                    'validade_cartao' => $data['validade_cartao'],
+                    'cvv_cartao' => $data['cvv_cartao'],
+                    'nome_cartao' => $data['nome_cartao']
+                ]);
+
+            $lastId = $this->queryBuilder->getLastInsertId();
+
+            return [
+                'success' => true,
+                'message' => 'Payment Card created',
+                'id_cartao' => $lastId
+            ];
+
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error creating the order',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function insertPaymentMethod(): array
+    {
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = ['id_cartao', 'id_cliente'];
+
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+
+            if (empty($data[$field])) {
+
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+
+            $this->queryBuilder->table('MetodoPagamento')
+                ->insert([
+                    'id_cartao' => $data['id_cartao'],
+                    'id_cliente' => $data['id_cliente']
+                ]);
+
+            $lastId = $this->queryBuilder->getLastInsertId();
+
+            return [
+                'success' => true,
+                'message' => 'Payment Card created',
+                'id_metodo_pagamento' => $lastId
+            ];
+
+        } catch (PDOException $e) {
+
+            error_log("Database error: " . $e->getMessage());
+
+            return [
+                'error' => 'Error creating the order',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
 }
 
 ?>

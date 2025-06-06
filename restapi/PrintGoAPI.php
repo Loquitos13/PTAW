@@ -137,13 +137,28 @@ $router->add('GET', '/showClientInfo/$id_cliente', fn($id_cliente) => $controlle
 
 $router->add('GET', '/showClientCardInfo/$id', fn($id) => $controller->showClientCardInfo($id));
 
-
 $router->add('POST', '/insertClientCard', fn() => $controller->insertClientCard());
 
 $router->add('GET', '/userOrders/$userId', fn($userId) => $controller->getUserOrders($userId));
 
-
 $router->add('POST', '/updateClientInfo', fn() => $controller->updateClientInfo());
 
+$router->add('GET', '/clientPaymentMethod/$id_cliente', fn($id_cliente) => $controller->getClientPaymentMethod($id_cliente));
+
+$router->add('POST', '/insertEncomenda', fn() => $controller->insertEncomenda());
+
+$router->add('GET', '/carrinhoItensbackup/$id_carrinho', fn($id_carrinho) => $controller->getCarrinhoItensbackup($id_carrinho));
+
+$router->add('POST', '/insertEncomendaItens', fn() => $controller->insertEncomendaItens());
+
+$router->add('POST', '/deleteCartItemBackup', fn() => $controller->deleteCartItemBackup());
+
+$router->add('POST', '/insertPayment', fn() => $controller->insertPayment());
+
+$router->add('GET', '/checkPaymentByCard/$card_number', fn($card_number) => $controller->checkPaymentByCard($card_number));
+
+$router->add('POST', '/insertCardPayment', fn() => $controller->insertCardPayment());
+
+$router->add('POST', '/insertPaymentMethod', fn() => $controller->insertPaymentMethod());
 
 $router->dispatch();

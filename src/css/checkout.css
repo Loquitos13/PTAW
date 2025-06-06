@@ -116,10 +116,16 @@ body {
 .container-standard-delivery,
 .container-express-delivery {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
     width: 30vw;
-    height: 20vh;
-    padding: 2vh 3vw ;
+    height: auto;
+    padding: 2vh 3vw;
     border: 1px solid #e7e7de;
+    border-radius: 8px;
+    gap: 0.5rem;
+    cursor: pointer;
 }
 
 .container-standard {
@@ -204,3 +210,9 @@ hr {
     justify-content: space-between;
 }
 
+.product-image {
+    width: 80px;
+    height: auto;
+    margin-right: 15px;
+    object-fit: contain;
+}
