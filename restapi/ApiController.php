@@ -179,6 +179,19 @@ class ApiController
             ->get();
 
     }
+
+    public function getProductsBYCategory(int $productCategory, int $currentProductID): array
+    {
+
+        return $this->queryBuilder->table('Produtos')
+            ->select(['*'])
+            ->where('id_categoria', '=', $productCategory)
+            ->where('id_produto', '!=', $currentProductID) // Adiciona esta linha para excluir o produto atual
+            ->limit(4)
+            ->get();
+
+    }
+
     public function searchProductsByTitle($searchTerm): array
     {
         try {
@@ -2122,7 +2135,7 @@ class ApiController
         }
     }
 
-        public function deleteCartItemBackup(): array
+    public function deleteCartItemBackup(): array
     {
 
         $json = file_get_contents('php://input');

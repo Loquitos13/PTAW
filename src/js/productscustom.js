@@ -47,7 +47,8 @@ let productPriceValue;
 
 // Obter o ID do produto da URL
 const productID = window.location.search.split('=')[1];
-console.log("Product ID:", productID);
+let IDCategoriaProduto;
+
 
 window.addEventListener('DOMContentLoaded', () => {
   // Chamada para API para obter produtos
@@ -55,7 +56,8 @@ window.addEventListener('DOMContentLoaded', () => {
     .then(response => response.json())
     .then(data => {
       const produto = Array.isArray(data) ? data[0] : data;
-      console.log(produto);
+      IDCategoriaProduto = produto.id_categoria;
+      processarDadosCategoria(IDCategoriaProduto);
 
       // pega a div onde a imagem principal do produto sera exibida
       const bigImage = document.getElementById('bigImage');
@@ -183,7 +185,7 @@ window.addEventListener('DOMContentLoaded', () => {
           tamanhoValue = firstBtn.innerText;
         }
       }
-      
+
       const productColor = document.getElementById('idColorOptions');
       if (produto.cores && Array.isArray(produto.cores) && produto.cores.length > 0) {
 
@@ -264,6 +266,38 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('productReviews').innerHTML = starsHTML + ` (${Number(productReviewData.TotalCount) || 0} reviews)`;
     });
 });
+
+function processarDadosCategoria(idCategoria) {
+  console.log("Categoria do produto: " + idCategoria);
+  fetch(`../restapi/PrintGoAPI.php/getProductsBYCategory/${idCategoria}/${productID}`)
+    .then(response => response.json())
+    .then(data => {
+      console.log("Produtos da categoria (excluindo o atual):", data);
+
+      if (data.length != 0) {
+        const Also_Like = document.getElementById('Also_Like');
+        const Titulo_You_May = document.getElementById('Titulo_You_May');
+        Also_Like.innerHTML = ''; // Limpa itens anteriores para evitar duplicatas
+        Titulo_You_May.innerHTML = 'You may also like';
+        data.forEach(produto => {
+          Also_Like.innerHTML += `<a href="productscustom.php?id=${produto.id_produto}" class="boxItemLink">
+            <div class="boxItem">
+              <img src="${produto.imagem_principal}" alt="${produto.titulo_produto}" class="boxItemImg">
+              <p class="boxItemTitle">${produto.titulo_produto}</p>
+              <div class="boxItemFooter">
+                <span class="boxItemPrice">${produto.preco_produto}€</span>
+              </div>
+            </div>
+          </a>`;
+        });
+      }
+
+    })
+    .catch(error => {
+      console.error('Erro ao buscar produtos da categoria:', error);
+    });
+}
+
 
 document.getElementById("openModal").addEventListener("click", function () {
   document.getElementById("modal3D").style.display = "flex";
@@ -514,7 +548,7 @@ function removeDecal() {
   scene.remove(decal);
   decalPlaced = false;
 
-  document.getElementById("warningsId").innerText ="Double Click to place decal!";
+  document.getElementById("warningsId").innerText = "Double Click to place decal!";
   document.addEventListener("dblclick", onClick);
   addClass("rmvDecal", "disableButton");
   addClass("btnAdd", "disableButton");
@@ -525,21 +559,21 @@ function addToCart() {
   document.querySelectorAll(".buttonAdd").forEach((button) => {
     button.addEventListener("click", function () {
 
-    if (!cartIdInput.value) {
+      if (!cartIdInput.value) {
 
-      let alertMsg = 
-      `
+        let alertMsg =
+          `
       You need to be sign in to add products to the cart.
       Do you wish to proceed?
       `;
 
-      if (confirm(alertMsg)) {
+        if (confirm(alertMsg)) {
 
-        window.location.href = "SignIn.html";
-      
-      }
+          window.location.href = "SignIn.html";
 
-    } else {
+        }
+
+      } else {
 
         const gltfExporter = new GLTFExporter();
 
@@ -548,10 +582,10 @@ function addToCart() {
           function (result) {
 
             if (result instanceof ArrayBuffer) {
-              saveArrayBuffer(result, getDate() + "_userId_" + userId + "_productId_" + productID  + ".glb");
+              saveArrayBuffer(result, getDate() + "_userId_" + userId + "_productId_" + productID + ".glb");
             } else {
               const output = JSON.stringify(result, null, 2);
-              saveString(output, getDate() + "_userId_" + userId + "_productId_" + productID  + ".gltf");
+              saveString(output, getDate() + "_userId_" + userId + "_productId_" + productID + ".gltf");
             }
           },
           { binary: true, embedImages: true },
@@ -561,7 +595,7 @@ function addToCart() {
         );
 
       }
-      });
+    });
   });
 }
 
@@ -635,7 +669,7 @@ function saveArrayBuffer(buffer, filename) {
 
   const blob = new Blob([buffer], { type: "application/octet-stream" });
   uploadModel(blob, filename);
-  
+
 }
 
 function getDate() {
@@ -658,66 +692,66 @@ function getDate() {
 
 async function uploadToDB(pathToFile, pathToImage) {
 
-      tamanhoValue = tamanhoValue.replaceAll(' ', '%20');
+  tamanhoValue = tamanhoValue.replaceAll(' ', '%20');
 
-      const formData = {
-        id_carrinho: cartId,
-        id_produto: productID,
-        tamanho: tamanhoValue,
-        cor: corValue,
-        personalizado: 1,
+  const formData = {
+    id_carrinho: cartId,
+    id_produto: productID,
+    tamanho: tamanhoValue,
+    cor: corValue,
+    personalizado: 1,
+  };
+
+  const carrinhoItemId = await checkCarrinhoItem(formData);
+
+  if (carrinhoItemId.data.length === 0) {
+
+    const valuesToAdd = {
+      id_carrinho: cartId,
+      id_produto: productID,
+      tamanho: tamanhoValue,
+      cor: corValue,
+      quantidade: 1,
+      preco: productPriceValue,
+      personalizado: 1,
+    };
+
+    const getLastId = await addCarrinhoItem(valuesToAdd);
+
+    if (getLastId.status === 'success') {
+
+      const personalizationData = {
+        id_carrinho_item: getLastId.id.id_cart_item,
+        imagem_escolhida: pathToImage,
+        modelo3d_personalizado: pathToFile,
+        preco_personalizado: 0,
+        mensagem_personalizada: ''
       };
 
-      const carrinhoItemId = await checkCarrinhoItem(formData);
-
-      if (carrinhoItemId.data.length === 0) {
-
-        const valuesToAdd = {
-          id_carrinho: cartId,
-          id_produto: productID,
-          tamanho: tamanhoValue,
-          cor: corValue,
-          quantidade: 1,
-          preco: productPriceValue,
-          personalizado: 1,
-        };
-
-        const getLastId = await addCarrinhoItem(valuesToAdd);
-
-        if (getLastId.status === 'success') {
-
-            const personalizationData = {
-              id_carrinho_item: getLastId.id.id_cart_item,
-              imagem_escolhida: pathToImage,
-              modelo3d_personalizado: pathToFile,
-              preco_personalizado: 0,
-              mensagem_personalizada: ''
-            };
-
-          await addPersonalization(personalizationData);
-
-        } else {
-
-          console.log("Error adding personalization");
-
-        }
+      await addPersonalization(personalizationData);
 
     } else {
 
-        let quantity = carrinhoItemId.data[0].quantidade + 1;
-        let priceInCart = Number(carrinhoItemId.data[0].preco);
-        let priceOfProduct = Number(productPriceValue);
-        let price = (priceInCart + priceOfProduct);
-
-        const updateCart = {
-          id_carrinho_item: carrinhoItemId.data[0].id_carrinho_item,
-          quantidade: quantity,
-          preco: price.toFixed(2),
-        }
-
-        await updateCarrinhoItem(updateCart);
+      console.log("Error adding personalization");
 
     }
+
+  } else {
+
+    let quantity = carrinhoItemId.data[0].quantidade + 1;
+    let priceInCart = Number(carrinhoItemId.data[0].preco);
+    let priceOfProduct = Number(productPriceValue);
+    let price = (priceInCart + priceOfProduct);
+
+    const updateCart = {
+      id_carrinho_item: carrinhoItemId.data[0].id_carrinho_item,
+      quantidade: quantity,
+      preco: price.toFixed(2),
+    }
+
+    await updateCarrinhoItem(updateCart);
+
+  }
 }
 
 async function addPersonalization(personalizationData) {
@@ -732,24 +766,24 @@ async function addPersonalization(personalizationData) {
     })
 
     const data = await response.json();
-    
+
     return data.data;
-  
+
   } catch (error) {
-    
+
     return null;
-  
+
   }
 }
 
 
 document.querySelectorAll("#btnAddToCart").forEach((button) => {
-    button.addEventListener("click", async function () {
+  button.addEventListener("click", async function () {
 
     if (!cartIdInput.value) {
 
-      let alertMsg = 
-      `
+      let alertMsg =
+        `
       You need to be sign in to add products to the cart.
       Do you wish to proceed?
       `;
@@ -757,7 +791,7 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
       if (confirm(alertMsg)) {
 
         window.location.href = "SignIn.html";
-      
+
       }
 
     } else {
@@ -802,7 +836,7 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
         }
 
         await updateCarrinhoItem(updateCart);
-      
+
       }
     }
 
@@ -827,13 +861,13 @@ async function checkCarrinhoItem(formData) {
     });
 
     const data = await response.json();
-    
+
     return data;
-  
+
   } catch (error) {
-    
+
     return null;
-  
+
   }
 }
 
@@ -849,13 +883,13 @@ async function addCarrinhoItem(valuesToAdd) {
     })
 
     const data = await response.json();
-    
+
     return data.data;
-  
+
   } catch (error) {
-    
+
     return null;
-  
+
   }
 }
 
@@ -871,13 +905,13 @@ async function updateCarrinhoItem(updateCart) {
     })
 
     const data = await response.json();
-    
+
     return data.data;
-  
+
   } catch (error) {
-    
+
     return null;
-  
+
   }
 }
 
@@ -1254,7 +1288,7 @@ document
 
     // armazenar dados do formulario
     const comentario = document.querySelector('textarea[name="comments"]').value;
-    const recommend =document.querySelector('input[name="recommend"]:checked')?.value === "yes" ? "2" : "1";
+    const recommend = document.querySelector('input[name="recommend"]:checked')?.value === "yes" ? "2" : "1";
     const classificacao = document.querySelector('input[name="rating"]:checked')?.value || "5";
     //const id_categoria = document.querySelector('select[name="purchase"]').value;
 

@@ -372,45 +372,10 @@ $userId = $_SESSION['user_id'] ?? null;
 
 
   <div class="greyBackgroundContainer">
-    <div class="mayAlsoLike">
-      <h1 class="mayAlsoLikeText">You May Also Like</h1>
-      <div class="containerDestaques">
-        <a href="" class="boxItemLink">
-          <div class="boxItem">
-            <img src="<?= $base_url ?>/imagens/TShirtfront.png" alt="" class="boxItemImg">
-            <p class="boxItemTitle">Product Title</p>
-            <div class="boxItemFooter">
-              <span class="boxItemPrice">10,00€</span>
-            </div>
-          </div>
-        </a>
-        <a href="" class="boxItemLink">
-          <div class="boxItem">
-            <img src="<?= $base_url ?>/imagens/TShirtfront.png" alt="" class="boxItemImg">
-            <p class="boxItemTitle">Product Title</p>
-            <div class="boxItemFooter">
-              <span class="boxItemPrice">10,00€</span>
-            </div>
-          </div>
-        </a>
-        <a href="" class="boxItemLink">
-          <div class="boxItem">
-            <img src="<?= $base_url ?>/imagens/TShirtfront.png" alt="" class="boxItemImg">
-            <p class="boxItemTitle">Product Title</p>
-            <div class="boxItemFooter">
-              <span class="boxItemPrice">10,00€</span>
-            </div>
-          </div>
-        </a>
-        <a href="" class="boxItemLink">
-          <div class="boxItem">
-            <img src="<?= $base_url ?>/imagens/TShirtfront.png" alt="" class="boxItemImg">
-            <p class="boxItemTitle">Product Title</p>
-            <div class="boxItemFooter">
-              <span class="boxItemPrice">10,00€</span>
-            </div>
-          </div>
-        </a>
+    <div class="mayAlsoLike px-4 px-md-5">
+      <h1 id="Titulo_You_May" class="mayAlsoLikeText"></h1>
+      <div id="Also_Like" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4">
+        <!-- Os produtos serão aqui inseridos por JavaScript -->
       </div>
     </div>
 

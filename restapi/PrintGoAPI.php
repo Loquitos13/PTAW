@@ -95,6 +95,8 @@ $router->add('GET', '/getColorsByCategories/$categorias', fn($categorias) => $co
 
 $router->add('GET', '/productByID/$id', fn($id) => $controller->getProductByID($id));
 
+$router->add('GET', '/getProductsBYCategory/$productCategory/$currentProductID', fn($productCategory, $currentProductID) => $controller->getProductsBYCategory($productCategory, $currentProductID));
+
 $router->add('PUT', '/updateProduct', fn() => $controller->updateProduct());
 
 $router->add('DELETE', '/deleteProductByID/$id', fn($id) => $controller->deleteProductByID($id));
