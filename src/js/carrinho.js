@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const goToCheckout = document.getElementById('concluir-compra');
     if (goToCheckout) {
         goToCheckout.addEventListener('click', function () {
-            window.location.href = 'checkout.php';
+            window.location.href = 'http://estga-dev.ua.pt/~ptaw-2025-gr4/src/checkout.php';
         });
     }
 
