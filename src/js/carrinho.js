@@ -324,7 +324,7 @@ async function deleteCartItens(id_carrinho_item) {
 async function updateCarrinhoItem(updateCart) {
 
   try {
-    const response = await fetch('../client/updateItemFromCarrinho.php', {
+    const response = await fetch('/~ptaw-2025-gr4/client/updateItemFromCarrinho.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
