@@ -1,6 +1,5 @@
-<?php
-session_start();
-?>
+
+
 
 <!-- Menu lateral -->
 <div class="container d-flex flex-column flex-shrink-0 p-3 min-vh-100 header-desktop" id="div-menu" style="width: 280px;">

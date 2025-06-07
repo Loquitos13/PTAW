@@ -1,8 +1,7 @@
-<?php
-$base_url = "/~ptaw-2025-gr4";
-session_start();
 
-?>
+
+
+
 
 <div class="fixed-header">
   <button id="menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu"

@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS `PTAW-2025-GR4`;
 USE `PTAW-2025-GR4`;
 
-INSERT INTO Admins(id_admin, nome_admin, email_admin, pass_admin, contacto_admin, funcao_admin, data_criacao_admin) 
+INSERT INTO Admins(id_admin, nome_admin, email_admin, pass_admin, contacto_admin, funcao_admin, data_criacao_admin)
 VALUES (1, "Geral", "geral@printandgo.pt", "senha123", "912345678", "teste", '2025-05-18');
 
 
@@ -63,7 +63,7 @@ CREATE TABLE Produtos (
     stock_produto INT NOT NULL,
     keywords_produto VARCHAR(255) NOT NULL,
     status_produto BOOLEAN DEFAULT 0,
-    FOREIGN KEY (id_categoria) 
+    FOREIGN KEY (id_categoria)
         REFERENCES Categorias(id_categoria)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
@@ -87,7 +87,7 @@ CREATE TABLE ImagemProdutos (
     imagem_extra VARCHAR(255) NOT NULL,
     imagem_extra_2 VARCHAR(255),
     imagem_extra_3 VARCHAR(255),
-    FOREIGN KEY (id_produto) 
+    FOREIGN KEY (id_produto)
         REFERENCES Produtos(id_produto)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -98,11 +98,11 @@ CREATE TABLE ProdutosVariantes (
     id_produto INT NOT NULL,
     id_cor INT NOT NULL,
     promocao DECIMAL(5, 2) DEFAULT 0,
-    FOREIGN KEY (id_produto) 
+    FOREIGN KEY (id_produto)
         REFERENCES Produtos(id_produto)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (id_cor) 
+    FOREIGN KEY (id_cor)
         REFERENCES Cores(id_cor)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
@@ -112,7 +112,7 @@ CREATE TABLE Carrinhos (
     id_carrinho INT AUTO_INCREMENT PRIMARY KEY,
     id_cliente INT NOT NULL,
     ip_cliente VARCHAR(45),
-    FOREIGN KEY (id_cliente) 
+    FOREIGN KEY (id_cliente)
         REFERENCES Clientes(id_cliente)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -127,11 +127,11 @@ CREATE TABLE CarrinhoItens (
     cor VARCHAR(50) NOT NULL,
     personalizado BOOLEAN DEFAULT 0 NOT NULL,
     preco DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (id_carrinho) 
+    FOREIGN KEY (id_carrinho)
         REFERENCES Carrinhos(id_carrinho)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (id_produto) 
+    FOREIGN KEY (id_produto)
         REFERENCES Produtos(id_produto)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
@@ -145,7 +145,7 @@ CREATE TABLE Encomendas (
     status_encomenda VARCHAR(50) NOT NULL,
     data_criacao_encomenda DATETIME NOT NULL,
     data_rececao_encomenda DATETIME,
-    FOREIGN KEY (id_carrinho) 
+    FOREIGN KEY (id_carrinho)
         REFERENCES Carrinhos(id_carrinho)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
@@ -189,19 +189,19 @@ CREATE TABLE MetodoPagamento (
     id_cartao INT,
     id_mbway INT,
     id_paypal INT,
-    FOREIGN KEY (id_cliente) 
+    FOREIGN KEY (id_cliente)
         REFERENCES Clientes(id_cliente)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (id_cartao) 
+    FOREIGN KEY (id_cartao)
         REFERENCES PagamentoCartao(id_cartao)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (id_mbway) 
+    FOREIGN KEY (id_mbway)
         References PagamentoMbway(id_mbway)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (id_paypal) 
+    FOREIGN KEY (id_paypal)
         References PagamentoPaypal(id_paypal)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -213,11 +213,11 @@ CREATE TABLE Pagamento (
     id_metodo_pagamento INT NOT NULL,
     valor_pago DECIMAL(10, 2) NOT NULL,
     data_pagamento DATETIME NOT NULL,
-    FOREIGN KEY (id_encomenda) 
+    FOREIGN KEY (id_encomenda)
         REFERENCES Encomendas(id_encomenda)
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
-    FOREIGN KEY (id_metodo_pagamento) 
+    FOREIGN KEY (id_metodo_pagamento)
         REFERENCES MetodoPagamento(id_metodo_pagamento)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
@@ -230,7 +230,7 @@ CREATE TABLE Personalizacao (
     modelo3d_personalizado VARCHAR(255) NOT NULL,
     mensagem_personalizada VARCHAR(255),
     preco_personalizacao DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (id_carrinho_item) 
+    FOREIGN KEY (id_carrinho_item)
         REFERENCES CarrinhoItens(id_carrinho_item)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -245,12 +245,133 @@ CREATE TABLE Reviews (
     classificacao INT NOT NULL,
     data_review DATETIME NOT NULL,
     recommend BOOLEAN DEFAULT 0,
-    FOREIGN KEY (id_cliente) 
+    FOREIGN KEY (id_cliente)
         REFERENCES Clientes(id_cliente)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (id_produto) 
+    FOREIGN KEY (id_produto)
         REFERENCES Produtos(id_produto)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
+
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    avatar VARCHAR(255),
+    role ENUM('admin', 'user', 'manager') DEFAULT 'user',
+    status ENUM('active', 'inactive', 'suspended') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_notification_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    email_notifications BOOLEAN DEFAULT true,
+    sms_notifications BOOLEAN DEFAULT false,
+    push_notifications BOOLEAN DEFAULT true,
+    security_alerts BOOLEAN DEFAULT true,
+    marketing_emails BOOLEAN DEFAULT false,
+    weekly_reports BOOLEAN DEFAULT true,
+    system_updates BOOLEAN DEFAULT true,
+    team_invitations BOOLEAN DEFAULT true,
+    billing_alerts BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS user_security_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    login_alerts BOOLEAN DEFAULT true,
+    session_timeout INT DEFAULT 3600,
+    password_change_required BOOLEAN DEFAULT false,
+    password_expires_at DATE NULL,
+    login_attempts_limit INT DEFAULT 5,
+    ip_restriction BOOLEAN DEFAULT false,
+    allowed_ips TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS teams (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    owner_id INT NOT NULL,
+    max_members INT DEFAULT 10,
+    status ENUM('active', 'inactive') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS team_members (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    team_id INT NOT NULL,
+    user_id INT NOT NULL,
+    role ENUM('owner', 'admin', 'member') DEFAULT 'member',
+    permissions JSON NULL,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_team_user (team_id, user_id),
+    FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS billing_info (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    plan_type ENUM('free', 'basic', 'premium', 'enterprise') DEFAULT 'free',
+    billing_cycle ENUM('monthly', 'yearly') DEFAULT 'monthly',
+    price DECIMAL(10,2) DEFAULT 0.00,
+    currency VARCHAR(3) DEFAULT 'USD',
+    payment_method ENUM('credit_card', 'paypal', 'bank_transfer') NULL,
+    card_last_four VARCHAR(4) NULL,
+    card_brand VARCHAR(20) NULL,
+    next_billing_date DATE NULL,
+    status ENUM('active', 'cancelled', 'past_due', 'trialing') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS billing_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    currency VARCHAR(3) DEFAULT 'EUR',
+    description VARCHAR(255),
+    transaction_id VARCHAR(100),
+    payment_method VARCHAR(50),
+    status ENUM('pending', 'completed', 'failed', 'refunded') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS user_activity_log (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    action VARCHAR(100) NOT NULL,
+    description TEXT,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+INSERT IGNORE INTO user_notification_settings (user_id)
+SELECT id FROM users WHERE id NOT IN (SELECT user_id FROM user_notification_settings);
+
+INSERT IGNORE INTO user_security_settings (user_id)
+SELECT id FROM users WHERE id NOT IN (SELECT user_id FROM user_security_settings);
+
+INSERT IGNORE INTO billing_info (user_id)
+SELECT id FROM users WHERE id NOT IN (SELECT user_id FROM billing_info);
