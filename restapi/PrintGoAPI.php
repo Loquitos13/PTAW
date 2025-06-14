@@ -163,4 +163,14 @@ $router->add('POST', '/insertCardPayment', fn() => $controller->insertCardPaymen
 
 $router->add('POST', '/insertPaymentMethod', fn() => $controller->insertPaymentMethod());
 
+$router->add('GET', '/adminInfoByID/$id', fn($id) => $controller->getAdminInfoByID($id));
+
+$router->add('PUT', '/updateAdmin', fn() => $controller->updateAdmin());
+
+$router->add('GET', '/teamMembers', fn() => $controller->getTeamMembers());
+
+$router->add('POST', '/addTeamMember', fn() => $controller->addTeamMember());
+
+$router->add('DELETE', '/removeTeamMember/$id', fn($id) => $controller->removeTeamMember($id));
+
 $router->dispatch();

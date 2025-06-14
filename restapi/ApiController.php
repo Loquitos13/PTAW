@@ -2378,6 +2378,160 @@ class ApiController
         }
     }
 
+    
+
+public function getAdminInfoByID(int $adminID): ?array
+{
+    $result = $this->queryBuilder->table('Admins')
+        ->select(['*'])
+        ->where('id_admin', '=', $adminID)
+        ->get();
+
+    return $result[0] ?? null;
+}
+
+public function updateAdmin(): array
+{
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    if (!is_array($data)) {
+        return ['success' => false, 'message' => 'Invalid JSON data received'];
+    }
+
+    $key_first_element = array_key_first($data);
+    $value_first_element = $data[$key_first_element];
+    unset($data[$key_first_element]);
+
+    try {
+        $this->queryBuilder->table('Admins')
+            ->update($data)
+            ->where($key_first_element, '=', $value_first_element)
+            ->execute();
+
+        return ['success' => true, 'message' => 'Admin updated'];
+    } catch (PDOException $e) {
+        error_log("Database error: " . $e->getMessage());
+        return [
+            'error' => 'Error updating the admin',
+            'message' => 'Database error: ' . $e->getMessage()
+        ];
+    }
+}
+
+public function getTeamMembers(): array
+{
+    
+    try {
+        return $this->queryBuilder->table('Clientes')
+            ->select([
+                'Clientes.id_cliente as id',
+                'Clientes.nome_cliente as first_name',
+                'Clientes.email_cliente as email',
+                'COALESCE(TeamMembers.role, "member") as role',
+                'COALESCE(TeamMembers.status, "active") as status'
+            ])
+            ->leftJoin('TeamMembers', 'Clientes.id_cliente', '=', 'TeamMembers.id_cliente')
+            ->where('TeamMembers.id_cliente', 'IS NOT', null)
+            ->order('Clientes.id_cliente', 'DESC')
+            ->get();
+    } catch (Exception $e) {
+      
+        error_log("TeamMembers table might not exist: " . $e->getMessage());
+        return [];
+    }
+}
+
+public function addTeamMember(): array
+{
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    if (!is_array($data)) {
+        return ['success' => false, 'message' => 'Invalid JSON data received'];
+    }
+
+    $requiredFields = ['id_cliente', 'role'];
+    $missingFields = [];
+
+    foreach ($requiredFields as $field) {
+        if (empty($data[$field])) {
+            $missingFields[] = $field;
+        }
+    }
+
+    if (!empty($missingFields)) {
+        return [
+            'error' => 'Invalid data',
+            'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+        ];
+    }
+
+    try {
+       
+        $this->createTeamMembersTableIfNotExists();
+        
+        $this->queryBuilder->table('TeamMembers')
+            ->insert([
+                'id_cliente' => $data['id_cliente'],
+                'role' => $data['role'],
+                'status' => $data['status'] ?? 'active',
+                'added_by' => $data['added_by'] ?? 1,
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
+
+        return [
+            'success' => true,
+            'message' => 'Team member added successfully'
+        ];
+
+    } catch (PDOException $e) {
+        error_log("Database error: " . $e->getMessage());
+        return [
+            'error' => 'Error adding team member',
+            'message' => 'Database error: ' . $e->getMessage()
+        ];
+    }
+}
+
+public function removeTeamMember(int $memberId): array
+{
+    try {
+        $this->queryBuilder->table('TeamMembers')
+            ->delete()
+            ->where('id_cliente', '=', $memberId)
+            ->execute();
+
+        return ['success' => true, 'message' => 'Team member removed'];
+    } catch (PDOException $e) {
+        error_log("Database error: " . $e->getMessage());
+        return [
+            'error' => 'Error removing team member',
+            'message' => 'Database error: ' . $e->getMessage()
+        ];
+    }
+}
+
+private function createTeamMembersTableIfNotExists(): void
+{
+    try {
+        $sql = "CREATE TABLE IF NOT EXISTS TeamMembers (
+            id_team_member INT AUTO_INCREMENT PRIMARY KEY,
+            id_cliente INT NOT NULL,
+            role ENUM('member', 'admin') DEFAULT 'member',
+            status ENUM('active', 'inactive') DEFAULT 'active',
+            added_by INT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (id_cliente) REFERENCES Clientes(id_cliente) ON DELETE CASCADE
+        )";
+        
+        $this->queryBuilder->getConnection()->exec($sql);
+    } catch (PDOException $e) {
+        error_log("Error creating TeamMembers table: " . $e->getMessage());
+        throw $e;
+    }
+}
+
 }
 
 ?>
