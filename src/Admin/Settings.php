@@ -1,7 +1,12 @@
 <?php
-session_start()
-?>
+session_start();
 
+// Check if admin is logged in
+if (!isset($_SESSION['admin_id'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-pt">
 
@@ -298,7 +303,7 @@ session_start()
             <div class="spinner-border text-primary" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
-            <p class="mt-2">Loading user data...</p>
+            <p class="mt-2">Loading admin data...</p>
           </div>
 
           <div class="row gx-4">
@@ -310,18 +315,24 @@ session_start()
                   <form id="general-form">
                     <div class="row">
                       <div class="col-md-6 mb-3">
-                        <label for="first_name" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="first_name" name="first_name" required>
+                        <label for="nome_admin" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="nome_admin" name="nome_admin" required>
                       </div>
                       <div class="col-md-6 mb-3">
-                        <label for="last_name" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="last_name" name="last_name" required>
+                        <label for="email_admin" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email_admin" name="email_admin" required>
                       </div>
                     </div>
-
-                    <div class="mb-3">
-                      <label for="email" class="form-label">Email Address</label>
-                      <input type="email" class="form-control" id="email" name="email" required>
+                    
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label for="contacto_admin" class="form-label">Contact</label>
+                        <input type="text" class="form-control" id="contacto_admin" name="contacto_admin">
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label for="funcao_admin" class="form-label">Function</label>
+                        <input type="text" class="form-control" id="funcao_admin" name="funcao_admin">
+                      </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary">
@@ -425,14 +436,14 @@ session_start()
                   <form id="add-member-form">
                     <div class="mb-3">
                       <label for="member_select" class="form-label">Select User</label>
-                      <select class="form-select" id="member_select" name="member_select" required>
+                      <select class="form-select" id="member_select" name="id_cliente" required>
                         <option value="">Select a user...</option>
                       </select>
                     </div>
 
                     <div class="mb-3">
                       <label for="member_role" class="form-label">Role</label>
-                      <select class="form-select" id="member_role" name="member_role" required>
+                      <select class="form-select" id="member_role" name="role" required>
                         <option value="member">Member</option>
                         <option value="admin">Admin</option>
                       </select>
@@ -474,286 +485,31 @@ session_start()
     </div>
   </div>
 
+  <!-- Footer -->
+  <?php include '../includes/footer-admin.php'; ?>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    class AdminSettings {
-        constructor() {
-            this.apiBase = 'Settings.php';
-            this.init();
-        }
-
-        init() {
-            this.setupEventListeners();
-            this.loadUserData();
-        }
-
-        setupEventListeners() {
-            // Tab navigation
-            document.querySelectorAll('.settings-tabs .nav-link').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.switchTab(e.target.dataset.tab);
-                });
-            });
-
-            // Forms
-            document.getElementById('general-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.updateGeneralSettings();
-            });
-
-            document.getElementById('password-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.updatePassword();
-            });
-
-            document.getElementById('add-member-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.addTeamMember();
-            });
-        }
-
-        switchTab(tabName) {
-            // Update tab links
-            document.querySelectorAll('.settings-tabs .nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-
-            // Update tab content
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.style.display = 'none';
-            });
-            document.getElementById(`${tabName}-content`).style.display = 'block';
-
-            // Load tab data
-            if (tabName === 'team') {
-                this.loadTeamData();
-            }
-        }
-
-        async loadUserData() {
-            this.showLoading('general', true);
-            try {
-                const response = await this.apiCall('GET', 'user_data');
-                if (response.success) {
-                    const user = response.data;
-                    document.getElementById('first_name').value = user.first_name || '';
-                    document.getElementById('last_name').value = user.last_name || '';
-                    document.getElementById('email').value = user.email || '';
-                    
-                    const lastLogin = new Date(user.created_at).toLocaleDateString('pt-PT');
-                    document.getElementById('last-login').textContent = `Account created: ${lastLogin}`;
-                }
-            } catch (error) {
-                this.showAlert('Error loading user data', 'danger');
-            } finally {
-                this.showLoading('general', false);
-            }
-        }
-
-        async updateGeneralSettings() {
-            const formData = new FormData(document.getElementById('general-form'));
-            const data = Object.fromEntries(formData);
-
-            try {
-                const response = await this.apiCall('POST', 'update_general', data);
-                this.showAlert(response.message, response.success ? 'success' : 'danger');
-            } catch (error) {
-                this.showAlert('Error updating settings', 'danger');
-            }
-        }
-
-        async updatePassword() {
-            const formData = new FormData(document.getElementById('password-form'));
-            const data = Object.fromEntries(formData);
-
-            if (data.new_password !== data.confirm_password) {
-                this.showAlert('Password confirmation does not match', 'danger');
-                return;
-            }
-
-            try {
-                const response = await this.apiCall('POST', 'update_password', {
-                    current_password: data.current_password,
-                    new_password: data.new_password
-                });
-                this.showAlert(response.message, response.success ? 'success' : 'danger');
-
-                if (response.success) {
-                    document.getElementById('password-form').reset();
-                }
-            } catch (error) {
-                this.showAlert('Error updating password', 'danger');
-            }
-        }
-
-        async loadTeamData() {
-            this.showLoading('team', true);
-            try {
-                const [teamResponse, usersResponse] = await Promise.all([
-                    this.apiCall('GET', 'team_members'),
-                    this.apiCall('GET', 'all_users')
-                ]);
-
-                if (teamResponse.success) {
-                    this.displayTeamMembers(teamResponse.data);
-                    this.updateTeamStats(teamResponse.data);
-                }
-
-                if (usersResponse.success) {
-                    this.populateUserSelect(usersResponse.data);
-                }
-            } catch (error) {
-                this.showAlert('Error loading team data', 'danger');
-            } finally {
-                this.showLoading('team', false);
-            }
-        }
-
-        displayTeamMembers(members) {
-            const teamsList = document.getElementById('teamMembersList');
-            if (members.length === 0) {
-                teamsList.innerHTML = '<p class="text-muted">No team members yet.</p>';
-                return;
-            }
-
-            teamsList.innerHTML = members.map(member => `
-                <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-${member.role === 'admin' ? 'success' : 'primary'} rounded-circle d-flex align-items-center justify-content-center me-3"
-                             style="width: 40px; height: 40px; color: white; font-weight: bold;">
-                            ${member.first_name.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                            <p class="mb-0 fw-medium">${member.first_name} ${member.last_name}</p>
-                            <p class="text-muted small mb-0">${member.email}</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <span class="badge bg-${member.role === 'admin' ? 'success' : 'light text-dark'} me-2">
-                            ${member.role}
-                        </span>
-                        <button class="btn btn-sm btn-outline-danger" onclick="adminSettings.removeMember(${member.id})">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        populateUserSelect(users) {
-            const select = document.getElementById('member_select');
-            select.innerHTML = '<option value="">Select a user...</option>';
-            users.forEach(user => {
-                select.innerHTML += `<option value="${user.id}">${user.first_name} ${user.last_name} (${user.email})</option>`;
-            });
-        }
-
-        updateTeamStats(members) {
-            const totalMembers = members.length;
-            const activeMembers = members.filter(m => m.status === 'active').length;
-            const adminMembers = members.filter(m => m.role === 'admin').length;
-
-            document.getElementById('total-members').textContent = totalMembers;
-            document.getElementById('active-members').textContent = activeMembers;
-            document.getElementById('admin-members').textContent = adminMembers;
-        }
-
-        async addTeamMember() {
-            const formData = new FormData(document.getElementById('add-member-form'));
-            const data = Object.fromEntries(formData);
-
-            try {
-                const response = await this.apiCall('POST', 'add_team_member', data);
-                this.showAlert(response.message, response.success ? 'success' : 'danger');
-
-                if (response.success) {
-                    document.getElementById('add-member-form').reset();
-                    this.loadTeamData();
-                }
-            } catch (error) {
-                this.showAlert('Error adding team member', 'danger');
-            }
-        }
-
-        async removeMember(memberId) {
-            if (!confirm('Are you sure you want to remove this member?')) {
-                return;
-            }
-
-            try {
-                const response = await this.apiCall('POST', 'remove_team_member', { member_id: memberId });
-                this.showAlert(response.message, response.success ? 'success' : 'danger');
-
-                if (response.success) {
-                    this.loadTeamData();
-                }
-            } catch (error) {
-                this.showAlert('Error removing team member', 'danger');
-            }
-        }
-
-        async apiCall(method, action, data = null) {
-            const url = `${this.apiBase}?action=${action}`;
-            const options = {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            };
-
-            if (data && (method === 'POST' || method === 'PUT')) {
-                options.body = JSON.stringify(data);
-            }
-
-            const response = await fetch(url, options);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            return await response.json();
-        }
-
-        showAlert(message, type) {
-            const alertContainer = document.getElementById('alert-container');
-            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-
-            alertContainer.innerHTML = `
-                <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            `;
-
-            if (type === 'success') {
-                setTimeout(() => {
-                    const alert = alertContainer.querySelector('.alert');
-                    if (alert) {
-                        const bsAlert = new bootstrap.Alert(alert);
-                        bsAlert.close();
-                    }
-                }, 5000);
-            }
-        }
-
-        showLoading(tabName, show) {
-            const loadingElement = document.getElementById(`${tabName}-loading`);
-            if (show) {
-                loadingElement.classList.add('show');
-            } else {
-                loadingElement.classList.remove('show');
-            }
-        }
-    }
-
-    
-    let adminSettings;
-    document.addEventListener('DOMContentLoaded', () => {
-        adminSettings = new AdminSettings();
+    // Mobile menu toggle
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      const mobileMenu = document.getElementById('menu-mobile');
+      mobileMenu.classList.toggle('open');
     });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const mobileMenu = document.getElementById('menu-mobile');
+      const menuToggle = document.getElementById('menu-toggle');
+      
+      if (!mobileMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+        mobileMenu.classList.remove('open');
+      }
+    });
+
+    // Pass admin ID to JavaScript
+    window.adminId = <?php echo $_SESSION['admin_id']; ?>;
   </script>
+  <script src="js/Settings.js"></script>
 </body>
 
 </html>

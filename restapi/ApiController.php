@@ -2403,16 +2403,22 @@ public function updateAdmin(): array
     $value_first_element = $data[$key_first_element];
     unset($data[$key_first_element]);
 
+    // Se estiver atualizando a password, hash it
+    if (isset($data['pass_admin'])) {
+        $data['pass_admin'] = password_hash($data['pass_admin'], PASSWORD_DEFAULT);
+    }
+
     try {
         $this->queryBuilder->table('Admins')
             ->update($data)
             ->where($key_first_element, '=', $value_first_element)
             ->execute();
 
-        return ['success' => true, 'message' => 'Admin updated'];
+        return ['success' => true, 'message' => 'Admin updated successfully'];
     } catch (PDOException $e) {
         error_log("Database error: " . $e->getMessage());
         return [
+            'success' => false,
             'error' => 'Error updating the admin',
             'message' => 'Database error: ' . $e->getMessage()
         ];
