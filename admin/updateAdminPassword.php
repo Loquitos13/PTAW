@@ -19,7 +19,7 @@ try {
     
     $result = updateAdminPassword($data);
     echo json_encode([
-        'status' => 'success',
+        'success' => true,
         'message' => 'Password updated successfully',
         'data' => $result
     ]);
@@ -27,7 +27,7 @@ try {
 } catch(Exception $e) {
     http_response_code(400);
     echo json_encode([
-        'status' => 'error',
+        'success' => false,
         'message' => $e->getMessage()
     ]);
 }
@@ -68,7 +68,7 @@ function updateAdminPassword($data) {
         throw new Exception("Admin not found");
     }
     
-    // Check if current password matches (plain text comparison for school project)
+    // Check if current password matches
     if ($admin['pass_admin'] !== $currentPassword) {
         $stmt->close();
         $connection->close();
@@ -77,7 +77,7 @@ function updateAdminPassword($data) {
     
     $stmt->close();
     
-    // Update password (store as plain text for school project)
+    // Update password
     $updateQuery = "UPDATE Admins SET pass_admin = ? WHERE id_admin = ?";
     $updateStmt = $connection->prepare($updateQuery);
     $updateStmt->bind_param("si", $newPassword, $adminId);
@@ -91,6 +91,10 @@ function updateAdminPassword($data) {
     $affectedRows = $updateStmt->affected_rows;
     $updateStmt->close();
     $connection->close();
+    
+    if ($affectedRows === 0) {
+        throw new Exception("No changes made or admin not found");
+    }
     
     return ['updated' => true, 'affected_rows' => $affectedRows];
 }

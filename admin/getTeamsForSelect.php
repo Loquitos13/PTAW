@@ -5,7 +5,7 @@ require_once '../restapi/Database.php';
 header('Content-Type: application/json');
 
 try {
-    $result = getAllUsers();
+    $result = getTeamsForSelect();
     echo json_encode($result);
     
 } catch(Exception $e) {
@@ -16,26 +16,26 @@ try {
     ]);
 }
 
-function getAllUsers() {
+function getTeamsForSelect() {
     // Direct database connection
     $db = new Database();
     $connection = $db->getConnection();
     
-    // Query to get all clients
-    $query = "SELECT id_cliente, nome_cliente, email_cliente, contacto_cliente, morada_cliente FROM Clientes ORDER BY nome_cliente ASC";
+    // Query to get all teams
+    $query = "SELECT id_team, nome_team, descricao_team FROM Teams ORDER BY nome_team ASC";
     $stmt = $connection->prepare($query);
     $stmt->execute();
     
     $result = $stmt->get_result();
-    $users = [];
+    $teams = [];
     
     while ($row = $result->fetch_assoc()) {
-        $users[] = $row;
+        $teams[] = $row;
     }
     
     $stmt->close();
     $connection->close();
     
-    return $users;
+    return $teams;
 }
 ?>

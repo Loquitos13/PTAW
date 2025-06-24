@@ -14,6 +14,7 @@ class AdminSettings {
     init() {
         // Get admin ID from global variable
         this.adminId = window.adminId || 1;
+        console.log('Admin ID:', this.adminId);
         this.setupEventListeners();
         this.loadAdminData();
     }
@@ -88,15 +89,45 @@ class AdminSettings {
         }
     }
 
+    async makeApiCall(endpoint, options = {}) {
+        const defaultOptions = {
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        };
+
+        const finalOptions = { ...defaultOptions, ...options };
+        const url = `${this.apiBase}${endpoint}`;
+        
+        console.log(`Making API call to: ${url}`, finalOptions);
+
+        try {
+            const response = await fetch(url, finalOptions);
+            
+            console.log(`Response status: ${response.status}`);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`API Error Response:`, errorText);
+                throw new Error(`HTTP ${response.status}: ${response.statusText}\nResponse: ${errorText}`);
+            }
+
+            const data = await response.json();
+            console.log(`API Response:`, data);
+            return data;
+            
+        } catch (error) {
+            console.error(`API call failed for ${endpoint}:`, error);
+            throw error;
+        }
+    }
+
     async loadAdminData() {
         this.showLoading('general', true);
         try {
-            const response = await fetch(`${this.apiBase}/adminInfoByID/${this.adminId}`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            const data = await response.json();
+            const data = await this.makeApiCall(`/adminInfoByID/${this.adminId}`);
             
             if (data && !data.error) {
                 this.populateAdminForm(data);
@@ -104,25 +135,26 @@ class AdminSettings {
                 this.showAlert('Error loading admin data: ' + (data.message || 'Unknown error'), 'danger');
             }
         } catch (error) {
-            console.error('Error loading admin data:', error);
-            this.showAlert('Error loading admin data', 'danger');
+            this.showAlert(`Error loading admin data: ${error.message}`, 'danger');
         } finally {
             this.showLoading('general', false);
         }
     }
 
     populateAdminForm(adminData) {
-        const nomeField = document.getElementById('nome_admin');
-        const emailField = document.getElementById('email_admin');
-        const contactoField = document.getElementById('contacto_admin');
-        const funcaoField = document.getElementById('funcao_admin');
-        const lastLoginField = document.getElementById('last-login');
+        const fields = {
+            'nome_admin': adminData.nome_admin || '',
+            'email_admin': adminData.email_admin || '',
+            'contacto_admin': adminData.contacto_admin || '',
+            'funcao_admin': adminData.funcao_admin || ''
+        };
 
-        if (nomeField) nomeField.value = adminData.nome_admin || '';
-        if (emailField) emailField.value = adminData.email_admin || '';
-        if (contactoField) contactoField.value = adminData.contacto_admin || '';
-        if (funcaoField) funcaoField.value = adminData.funcao_admin || '';
+        Object.entries(fields).forEach(([fieldId, value]) => {
+            const field = document.getElementById(fieldId);
+            if (field) field.value = value;
+        });
         
+        const lastLoginField = document.getElementById('last-login');
         if (lastLoginField) {
             const creationDate = adminData.data_criacao_admin ? 
                 new Date(adminData.data_criacao_admin).toLocaleDateString('pt-PT') : 
@@ -134,27 +166,21 @@ class AdminSettings {
     async updateGeneralSettings() {
         const formData = new FormData(document.getElementById('general-form'));
         const data = Object.fromEntries(formData);
-        
-        // Add admin ID to the data
         data.id_admin = this.adminId;
 
         try {
-            const response = await fetch(`${this.apiBase}/updateAdmin`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+            const result = await this.makeApiCall('/updateAdmin', {
+                method: 'POST',
                 body: JSON.stringify(data)
             });
-
-            const result = await response.json();
             
-            if (result.success) {
+            if (result.status === 'success') {
                 this.showAlert('Information updated successfully', 'success');
             } else {
                 this.showAlert(result.message || 'Error updating information', 'danger');
             }
         } catch (error) {
-            console.error('Error updating settings:', error);
-            this.showAlert('Error updating settings', 'danger');
+            this.showAlert(`Error updating settings: ${error.message}`, 'danger');
         }
     }
 
@@ -172,18 +198,17 @@ class AdminSettings {
             return;
         }
 
-        try {
-            const response = await fetch(`${this.apiBase}/updateAdminPassword`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    id_admin: this.adminId,
-                    current_password: data.current_password,
-                    new_password: data.new_password
-                })
-            });
+        const requestData = {
+            id_admin: this.adminId,
+            current_password: data.current_password,
+            new_password: data.new_password
+        };
 
-            const result = await response.json();
+        try {
+            const result = await this.makeApiCall('/updateAdminPassword', {
+                method: 'POST',
+                body: JSON.stringify(requestData)
+            });
             
             if (result.success) {
                 this.showAlert('Password updated successfully', 'success');
@@ -192,31 +217,24 @@ class AdminSettings {
                 this.showAlert(result.message || 'Error updating password', 'danger');
             }
         } catch (error) {
-            console.error('Error updating password:', error);
-            this.showAlert('Error updating password', 'danger');
+            this.showAlert(`Error updating password: ${error.message}`, 'danger');
         }
     }
 
     async loadTeamsData() {
         this.showLoading('teams', true);
         try {
-            const response = await fetch(`${this.apiBase}/teams`, { 
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            });
+            const teamsData = await this.makeApiCall('/getTeams');
 
-            const teamsData = await response.json();
-
-            if (teamsData && Array.isArray(teamsData)) {
+            if (Array.isArray(teamsData)) {
                 this.displayTeams(teamsData);
                 this.updateTeamsStats(teamsData);
-            } else if (teamsData && !teamsData.error) {
-                this.displayTeams([]);
-                this.updateTeamsStats([]);
             } else {
-                this.showAlert('Error loading teams: ' + (teamsData.message || 'Unknown error'), 'danger');
                 this.displayTeams([]);
                 this.updateTeamsStats([]);
+                if (teamsData && teamsData.error) {
+                    this.showAlert('Error loading teams: ' + teamsData.message, 'danger');
+                }
             }
         } catch (error) {
             console.error('Error loading teams data:', error);
@@ -231,39 +249,56 @@ class AdminSettings {
     async loadMembersData() {
         this.showLoading('members', true);
         try {
-            const [teamResponse, usersResponse] = await Promise.all([
-                fetch(`${this.apiBase}/teamMembers`, { 
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
-                }),
-                fetch(`${this.apiBase}/allUsers`, { 
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
-                })
-            ]);
+            // Load data with individual error handling
+            let teamData = [];
+            let usersData = [];
+            let teamsForSelectData = [];
 
-            const teamData = await teamResponse.json();
-            const usersData = await usersResponse.json();
-
-            if (teamData && Array.isArray(teamData)) {
-                this.displayTeamMembers(teamData);
-                this.updateMemberStats(teamData);
-            } else {
-                this.displayTeamMembers([]);
-                this.updateMemberStats([]);
+            try {
+                teamData = await this.makeApiCall('/teamMembers');
+                if (!Array.isArray(teamData)) teamData = [];
+            } catch (e) {
+                console.warn('teamMembers failed:', e);
+                teamData = [];
             }
 
-            if (usersData && Array.isArray(usersData)) {
-                this.populateUserSelect(usersData);
-            } else {
-                this.populateUserSelect([]);
+            try {
+                usersData = await this.makeApiCall('/getAllUsers');
+                if (!Array.isArray(usersData)) usersData = [];
+            } catch (e) {
+                console.warn('getAllUsers failed:', e);
+                usersData = [];
             }
+
+            try {
+                teamsForSelectData = await this.makeApiCall('/getTeamsForSelect');
+                if (!Array.isArray(teamsForSelectData)) {
+                    // Fallback to /teams endpoint
+                    teamsForSelectData = await this.makeApiCall('/getTeams');
+                }
+                if (!Array.isArray(teamsForSelectData)) teamsForSelectData = [];
+            } catch (e) {
+                console.warn('getTeamsForSelect and teams failed:', e);
+                teamsForSelectData = [];
+            }
+
+            // Display team members
+            this.displayTeamMembers(teamData);
+            this.updateMemberStats(teamData);
+
+            // Populate user select
+            this.populateUserSelect(usersData);
+
+            // Populate team select  
+            this.populateTeamSelect(teamsForSelectData);
+
         } catch (error) {
             console.error('Error loading members data:', error);
-            this.showAlert('Error loading members data', 'danger');
+            this.showAlert(`Error loading members data: ${error.message}`, 'danger');
             this.displayTeamMembers([]);
             this.updateMemberStats([]);
             this.populateUserSelect([]);
+            this.populateTeamSelect([]);
         } finally {
             this.showLoading('members', false);
         }
@@ -320,11 +355,11 @@ class AdminSettings {
                 <div class="d-flex align-items-center">
                     <div class="bg-${member.role === 'admin' ? 'success' : 'primary'} rounded-circle d-flex align-items-center justify-content-center me-3"
                          style="width: 40px; height: 40px; color: white; font-weight: bold;">
-                        ${(member.first_name || 'U').charAt(0).toUpperCase()}
+                        ${(member.first_name || member.nome_cliente || 'U').charAt(0).toUpperCase()}
                     </div>
                     <div>
-                        <p class="mb-0 fw-medium">${member.first_name || 'Unknown'}</p>
-                        <p class="text-muted small mb-0">${member.email || 'No email'}</p>
+                        <p class="mb-0 fw-medium">${member.first_name || member.nome_cliente || 'Unknown'}</p>
+                        <p class="text-muted small mb-0">${member.email || member.email_cliente || 'No email'}</p>
                         <p class="text-muted small mb-0">Team: ${member.team_name || 'Unknown'}</p>
                     </div>
                 </div>
@@ -332,7 +367,7 @@ class AdminSettings {
                     <span class="badge bg-${member.role === 'admin' ? 'success' : 'light text-dark'} me-2">
                         ${member.role || 'member'}
                     </span>
-                    <button class="btn btn-sm btn-outline-danger" onclick="adminSettings.removeMember(${member.id})">
+                    <button class="btn btn-sm btn-outline-danger" onclick="adminSettings.removeMember(${member.id || member.id_cliente})">
                         <i class="bi bi-trash"></i>
                     </button>
                 </div>
@@ -342,75 +377,105 @@ class AdminSettings {
 
     populateUserSelect(users) {
         const select = document.getElementById('member_select');
-        if (!select) return;
+        if (!select) {
+            console.error('member_select element not found');
+            return;
+        }
 
         select.innerHTML = '<option value="">Select a user...</option>';
-        if (users && Array.isArray(users)) {
+        
+        if (users && Array.isArray(users) && users.length > 0) {
             users.forEach(user => {
-                select.innerHTML += `<option value="${user.id_cliente}">${user.nome_cliente} (${user.email_cliente})</option>`;
+                const option = document.createElement('option');
+                option.value = user.id_cliente;
+                option.textContent = `${user.nome_cliente} (${user.email_cliente})`;
+                select.appendChild(option);
             });
+            console.log(`Added ${users.length} users to select`);
+        } else {
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = 'No users available';
+            option.disabled = true;
+            select.appendChild(option);
+        }
+    }
+
+    populateTeamSelect(teams) {
+        const select = document.getElementById('team_select');
+        if (!select) {
+            console.error('team_select element not found');
+            return;
+        }
+
+        select.innerHTML = '<option value="">Select a team...</option>';
+        
+        if (teams && Array.isArray(teams) && teams.length > 0) {
+            teams.forEach(team => {
+                const option = document.createElement('option');
+                option.value = team.id_team;
+                option.textContent = team.nome_team;
+                select.appendChild(option);
+            });
+            console.log(`Added ${teams.length} teams to select`);
+        } else {
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = 'No teams available';
+            option.disabled = true;
+            select.appendChild(option);
         }
     }
 
     updateTeamsStats(teams) {
-        const totalTeams = teams ? teams.length : 0;
-        const activeTeams = teams ? teams.filter(t => t.status_team === 'active').length : 0;
-        const totalMembers = teams ? teams.reduce((sum, team) => sum + parseInt(team.member_count || 0), 0) : 0;
+        const stats = {
+            'total-teams': teams ? teams.length : 0,
+            'active-teams': teams ? teams.filter(t => t.status_team === 'active').length : 0,
+            'total-team-members': teams ? teams.reduce((sum, team) => sum + parseInt(team.member_count || 0), 0) : 0
+        };
 
-        const totalElement = document.getElementById('total-teams');
-        const activeElement = document.getElementById('active-teams');
-        const membersElement = document.getElementById('total-team-members');
-
-        if (totalElement) totalElement.textContent = totalTeams;
-        if (activeElement) activeElement.textContent = activeTeams;
-        if (membersElement) membersElement.textContent = totalMembers;
+        Object.entries(stats).forEach(([elementId, value]) => {
+            const element = document.getElementById(elementId);
+            if (element) element.textContent = value;
+        });
     }
 
     updateMemberStats(members) {
-        const totalMembers = members ? members.length : 0;
-        const activeMembers = members ? members.filter(m => m.status === 'active').length : 0;
-        const adminMembers = members ? members.filter(m => m.role === 'admin').length : 0;
+        const stats = {
+            'total-members': members ? members.length : 0,
+            'active-members': members ? members.filter(m => m.status === 'active').length : 0,
+            'admin-members': members ? members.filter(m => m.role === 'admin').length : 0
+        };
 
-        const totalElement = document.getElementById('total-members');
-        const activeElement = document.getElementById('active-members');
-        const adminElement = document.getElementById('admin-members');
-
-        if (totalElement) totalElement.textContent = totalMembers;
-        if (activeElement) activeElement.textContent = activeMembers;
-        if (adminElement) adminElement.textContent = adminMembers;
+        Object.entries(stats).forEach(([elementId, value]) => {
+            const element = document.getElementById(elementId);
+            if (element) element.textContent = value;
+        });
     }
 
     async createTeam() {
         const formData = new FormData(document.getElementById('create-team-form'));
         const data = Object.fromEntries(formData);
-        
-        // Add admin ID
         data.created_by_admin = this.adminId;
 
         try {
-            const response = await fetch(`${this.apiBase}/createTeam`, {
+            const result = await this.makeApiCall('/createTeam', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-
-            const result = await response.json();
             
             if (result.success) {
                 this.showAlert('Team created successfully', 'success');
                 document.getElementById('create-team-form').reset();
                 
-                // Close modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('createTeamModal'));
                 if (modal) modal.hide();
                 
-                // Reload teams data
                 this.loadTeamsData();
             } else {
                 this.showAlert(result.message || 'Error creating team', 'danger');
             }
         } catch (error) {
-            console.error('Error creating team:', error);
             this.showAlert('Error creating team', 'danger');
         }
     }
@@ -424,14 +489,16 @@ class AdminSettings {
             return;
         }
 
+        if (!data.id_team) {
+            this.showAlert('Please select a team', 'danger');
+            return;
+        }
+
         try {
-            const response = await fetch(`${this.apiBase}/addTeamMember`, {
+            const result = await this.makeApiCall('/addTeamMember', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-
-            const result = await response.json();
             
             if (result.success) {
                 this.showAlert('Team member added successfully', 'success');
@@ -441,7 +508,6 @@ class AdminSettings {
                 this.showAlert(result.message || 'Error adding team member', 'danger');
             }
         } catch (error) {
-            console.error('Error adding team member:', error);
             this.showAlert('Error adding team member', 'danger');
         }
     }
@@ -452,12 +518,9 @@ class AdminSettings {
         }
 
         try {
-            const response = await fetch(`${this.apiBase}/removeTeamMember/${memberId}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' }
+            const result = await this.makeApiCall(`/removeTeamMember/${memberId}`, {
+                method: 'POST'
             });
-
-            const result = await response.json();
             
             if (result.success) {
                 this.showAlert('Team member removed successfully', 'success');
@@ -466,7 +529,6 @@ class AdminSettings {
                 this.showAlert(result.message || 'Error removing team member', 'danger');
             }
         } catch (error) {
-            console.error('Error removing team member:', error);
             this.showAlert('Error removing team member', 'danger');
         }
     }
@@ -477,13 +539,10 @@ class AdminSettings {
         }
 
         try {
-            const response = await fetch(`${this.apiBase}/deleteTeam`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+            const result = await this.makeApiCall('/deleteTeam', {
+                method: 'POST',
                 body: JSON.stringify({ team_id: teamId })
             });
-
-            const result = await response.json();
             
             if (result.success) {
                 this.showAlert('Team deleted successfully', 'success');
@@ -492,22 +551,19 @@ class AdminSettings {
                 this.showAlert(result.message || 'Error deleting team', 'danger');
             }
         } catch (error) {
-            console.error('Error deleting team:', error);
             this.showAlert('Error deleting team', 'danger');
         }
     }
 
     viewTeamMembers(teamId) {
-        // Switch to members tab and filter by team
         this.switchTab('members');
-        // You can add filtering logic here if needed
     }
 
     showAlert(message, type) {
         const alertContainer = document.getElementById('alert-container');
         if (!alertContainer) return;
 
-        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-success';
 
         alertContainer.innerHTML = `
             <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
@@ -516,7 +572,6 @@ class AdminSettings {
             </div>
         `;
 
-        // Auto-hide success alerts after 5 seconds
         if (type === 'success') {
             setTimeout(() => {
                 const alert = alertContainer.querySelector('.alert');

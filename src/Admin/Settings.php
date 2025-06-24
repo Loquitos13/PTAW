@@ -503,33 +503,40 @@ if (!isset($_SESSION['admin_id'])) {
             </div>
 
             <div class="col-lg-4">
-              <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                  <h5 class="card-title mb-4">Add Team Member</h5>
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h5 class="card-title mb-4">Add Team Member</h5>
 
-                  <form id="add-member-form">
-                    <div class="mb-3">
-                      <label for="member_select" class="form-label">Select User</label>
-                      <select class="form-select" id="member_select" name="id_cliente" required>
-                        <option value="">Select a user...</option>
-                      </select>
-                    </div>
+    <form id="add-member-form">
+      <div class="mb-3">
+        <label for="member_select" class="form-label">Select User</label>
+        <select class="form-select" id="member_select" name="id_cliente" required>
+          <option value="">Select a user...</option>
+        </select>
+      </div>
 
-                    <div class="mb-3">
-                      <label for="member_role" class="form-label">Role</label>
-                      <select class="form-select" id="member_role" name="role" required>
-                        <option value="member">Member</option>
-                        <option value="admin">Admin</option>
-                      </select>
-                    </div>
+      <div class="mb-3">
+        <label for="team_select" class="form-label">Select Team</label>
+        <select class="form-select" id="team_select" name="id_team" required>
+          <option value="">Select a team...</option>
+        </select>
+      </div>
 
-                    <button type="submit" class="btn btn-primary w-100">
-                      <i class="bi bi-person-plus me-2"></i>
-                      Add Member
-                    </button>
-                  </form>
-                </div>
-              </div>
+      <div class="mb-3">
+        <label for="member_role" class="form-label">Role</label>
+        <select class="form-select" id="member_role" name="role" required>
+          <option value="member">Member</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">
+        <i class="bi bi-person-plus me-2"></i>
+        Add Member
+      </button>
+    </form>
+  </div>
+</div>
 
               <div class="card shadow-sm">
                 <div class="card-body">

@@ -165,22 +165,25 @@ $router->add('POST', '/insertPaymentMethod', fn() => $controller->insertPaymentM
 
 $router->add('GET', '/adminInfoByID/$id', fn($id) => $controller->getAdminInfoByID($id));
 
-$router->add('PUT', '/updateAdmin', fn() => $controller->updateAdmin());
+$router->add('POST', '/updateAdmin', fn() => $controller->updateAdmin());
 
-$router->add('PUT', '/updateAdminPassword', fn() => $controller->updateAdminPassword());
+$router->add('POST', '/updateAdminPassword', fn() => $controller->updateAdminPassword());
 
 $router->add('GET', '/teamMembers', fn() => $controller->getTeamMembers());
 
 $router->add('POST', '/addTeamMember', fn() => $controller->addTeamMember());
 
-$router->add('DELETE', '/removeTeamMember/$id', fn($id) => $controller->removeTeamMember($id));
-
-$router->add('GET', '/teams', fn() => $controller->getTeams());
+$router->add('POST', '/removeTeamMember/$id', fn($id) => $controller->removeTeamMember($id));
 
 $router->add('POST', '/createTeam', fn() => $controller->createTeam());
 
-$router->add('DELETE', '/deleteTeam', fn() => $controller->deleteTeam());
+$router->add('POST', '/deleteTeam', fn() => $controller->deleteTeam());
+
+$router->add('GET', '/getTeams', fn() => $controller->getTeams());
+
+$router->add('GET', '/getTeamsForSelect', fn() => $controller->getTeamsForSelect());
 
 $router->add('GET', '/getAllUsers', fn() => $controller->getAllUsers());
+
 
 $router->dispatch();

@@ -2563,31 +2563,106 @@ public function removeTeamMember(int $memberId): array
     }
 }
 
-
-public function getAllUsers(): array
-{
+public function getAllUsers() {
     try {
+        // Get database connection
+        $connection = Database::connect();
         
-        return $this->queryBuilder->table('Clientes')
-            ->select(['id_cliente', 'nome_cliente', 'email_cliente'])
-            ->where('id_cliente', 'NOT IN', function($subquery) {
-                return $subquery->table('TeamMembers')
-                    ->select(['id_cliente'])
-                    ->where('status_member', '=', 'active');
-            })
-            ->order('nome_cliente', 'ASC')
-            ->get();
+        $query = "SELECT 
+                    id_cliente, 
+                    nome_cliente, 
+                    email_cliente, 
+                    contacto_cliente, 
+                    morada_cliente,
+                    data_criacao_cliente
+                  FROM Clientes 
+                  ORDER BY nome_cliente ASC";
+        
+        $result = mysqli_query($connection, $query);
+        
+        if (!$result) {
+            throw new Exception("Database query failed: " . mysqli_error($connection));
+        }
+        
+        $users = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $users[] = [
+                'id_cliente' => $row['id_cliente'],
+                'nome_cliente' => $row['nome_cliente'],
+                'email_cliente' => $row['email_cliente'],
+                'contacto_cliente' => $row['contacto_cliente'],
+                'morada_cliente' => $row['morada_cliente'],
+                'data_criacao_cliente' => $row['data_criacao_cliente']
+            ];
+        }
+        
+        // Close connection
+        mysqli_close($connection);
+        
+        // Return JSON response
+        header('Content-Type: application/json');
+        echo json_encode($users);
+        
     } catch (Exception $e) {
         error_log("Error in getAllUsers: " . $e->getMessage());
-        // Fallback: get all users if subquery fails
-        return $this->queryBuilder->table('Clientes')
-            ->select(['id_cliente', 'nome_cliente', 'email_cliente'])
-            ->order('nome_cliente', 'ASC')
-            ->get();
+        
+        header('Content-Type: application/json');
+        http_response_code(500);
+        echo json_encode([
+            'error' => true,
+            'message' => 'Error retrieving users: ' . $e->getMessage()
+        ]);
     }
 }
 
-// New method: Get all teams
+public function getTeamsForSelect() {
+    try {
+        // Get database connection
+        $connection = Database::connect();
+        
+        $query = "SELECT 
+                    id_team, 
+                    nome_team,
+                    descricao_team,
+                    data_criacao_team
+                  FROM Teams 
+                  ORDER BY nome_team ASC";
+        
+        $result = mysqli_query($connection, $query);
+        
+        if (!$result) {
+            throw new Exception("Database query failed: " . mysqli_error($connection));
+        }
+        
+        $teams = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $teams[] = [
+                'id_team' => $row['id_team'],
+                'nome_team' => $row['nome_team'],
+                'descricao_team' => $row['descricao_team'],
+                'data_criacao_team' => $row['data_criacao_team']
+            ];
+        }
+        
+        // Close connection
+        mysqli_close($connection);
+        
+        // Return JSON response
+        header('Content-Type: application/json');
+        echo json_encode($teams);
+        
+    } catch (Exception $e) {
+        error_log("Error in getTeamsForSelect: " . $e->getMessage());
+        
+        header('Content-Type: application/json');
+        http_response_code(500);
+        echo json_encode([
+            'error' => true,
+            'message' => 'Error retrieving teams: ' . $e->getMessage()
+        ]);
+    }
+}
+
 public function getTeams(): array
 {
     try {
