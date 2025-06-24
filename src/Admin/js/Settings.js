@@ -1,6 +1,6 @@
-// settings.js - Admin Settings functionality
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize AdminSettings when DOM is ready
+    
     window.adminSettings = new AdminSettings();
 });
 
@@ -12,7 +12,7 @@ class AdminSettings {
     }
 
     init() {
-        // Get admin ID from global variable
+        
         this.adminId = window.adminId || 1;
         console.log('Admin ID:', this.adminId);
         this.setupEventListeners();
@@ -20,7 +20,7 @@ class AdminSettings {
     }
 
     setupEventListeners() {
-        // Tab navigation
+      
         document.querySelectorAll('.settings-tabs .nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -28,7 +28,7 @@ class AdminSettings {
             });
         });
 
-        // Forms
+       
         const generalForm = document.getElementById('general-form');
         if (generalForm) {
             generalForm.addEventListener('submit', (e) => {
@@ -62,32 +62,38 @@ class AdminSettings {
         }
     }
 
-    switchTab(tabName) {
-        // Update tab links
-        document.querySelectorAll('.settings-tabs .nav-link').forEach(link => {
-            link.classList.remove('active');
-        });
-        const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
-        if (activeTab) {
-            activeTab.classList.add('active');
-        }
 
-        // Update tab content
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.style.display = 'none';
-        });
-        const activeContent = document.getElementById(`${tabName}-content`);
-        if (activeContent) {
-            activeContent.style.display = 'block';
-        }
+switchTab(tabName) {
+    console.log(`🔄 Switching to tab: ${tabName}`);
+    
 
-        // Load tab data
-        if (tabName === 'teams') {
-            this.loadTeamsData();
-        } else if (tabName === 'members') {
-            this.loadMembersData();
+    document.querySelectorAll('.settings-tabs .nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
+    if (activeTab) {
+        activeTab.classList.add('active');
+    }
+
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.style.display = 'none';
+    });
+    const activeContent = document.getElementById(`${tabName}-content`);
+    if (activeContent) {
+        activeContent.style.display = 'block';
+    }
+
+    console.log(`📊 Loading data for tab: ${tabName}`);
+    if (tabName === 'teams') {
+        this.loadTeamsData();
+    } else if (tabName === 'members') {
+        this.loadMembersData();
+    } else if (tabName === 'general') {
+        if (!document.getElementById('nome_admin').value) {
+            this.loadAdminData();
         }
     }
+}
 
     async makeApiCall(endpoint, options = {}) {
         const defaultOptions = {
@@ -184,42 +190,55 @@ class AdminSettings {
         }
     }
 
-    async updatePassword() {
-        const formData = new FormData(document.getElementById('password-form'));
-        const data = Object.fromEntries(formData);
+   
+async updatePassword() {
+    const formData = new FormData(document.getElementById('password-form'));
+    const data = Object.fromEntries(formData);
 
-        if (data.new_password !== data.confirm_password) {
-            this.showAlert('Password confirmation does not match', 'danger');
-            return;
-        }
 
-        if (data.new_password.length < 8) {
-            this.showAlert('Password must be at least 8 characters long', 'danger');
-            return;
-        }
-
-        const requestData = {
-            id_admin: this.adminId,
-            current_password: data.current_password,
-            new_password: data.new_password
-        };
-
-        try {
-            const result = await this.makeApiCall('/updateAdminPassword', {
-                method: 'POST',
-                body: JSON.stringify(requestData)
-            });
-            
-            if (result.success) {
-                this.showAlert('Password updated successfully', 'success');
-                document.getElementById('password-form').reset();
-            } else {
-                this.showAlert(result.message || 'Error updating password', 'danger');
-            }
-        } catch (error) {
-            this.showAlert(`Error updating password: ${error.message}`, 'danger');
-        }
+    if (data.new_password !== data.confirm_password) {
+        this.showAlert('Password confirmation does not match', 'danger');
+        return;
     }
+
+    if (data.new_password.length < 8) {
+        this.showAlert('Password must be at least 8 characters long', 'danger');
+        return;
+    }
+
+   
+    const requestData = {
+        id_admin: this.adminId,
+        current_password: data.current_password.trim(),
+        new_password: data.new_password.trim()
+    };
+
+    console.log('Sending password update request:', {
+        ...requestData,
+        current_password: '[HIDDEN]',
+        new_password: '[HIDDEN]'
+    });
+
+    try {
+        
+        const result = await this.makeApiCall('/updateAdminPassword', {
+            method: 'POST',
+            body: JSON.stringify(requestData)
+        });
+        
+        console.log('Password update response:', result);
+        
+        if (result.success) {
+            this.showAlert('Password updated successfully', 'success');
+            document.getElementById('password-form').reset();
+        } else {
+            this.showAlert(result.message || 'Error updating password', 'danger');
+        }
+    } catch (error) {
+        console.error('Password update error:', error);
+        this.showAlert(`Error updating password: ${error.message}`, 'danger');
+    }
+}
 
     async loadTeamsData() {
         this.showLoading('teams', true);
@@ -246,63 +265,86 @@ class AdminSettings {
         }
     }
 
-    async loadMembersData() {
-        this.showLoading('members', true);
-        try {
-            // Load data with individual error handling
-            let teamData = [];
-            let usersData = [];
-            let teamsForSelectData = [];
 
-            try {
-                teamData = await this.makeApiCall('/teamMembers');
-                if (!Array.isArray(teamData)) teamData = [];
-            } catch (e) {
-                console.warn('teamMembers failed:', e);
+async loadMembersData() {
+    this.showLoading('members', true);
+    try {
+        
+        let teamData = [];
+        let usersData = [];
+        let teamsForSelectData = [];
+
+        try {
+            const teamResponse = await this.makeApiCall('/teamMembers');
+            if (Array.isArray(teamResponse)) {
+                teamData = teamResponse;
+            } else if (teamResponse && !teamResponse.error) {
                 teamData = [];
             }
-
-            try {
-                usersData = await this.makeApiCall('/getAllUsers');
-                if (!Array.isArray(usersData)) usersData = [];
-            } catch (e) {
-                console.warn('getAllUsers failed:', e);
-                usersData = [];
-            }
-
-            try {
-                teamsForSelectData = await this.makeApiCall('/getTeamsForSelect');
-                if (!Array.isArray(teamsForSelectData)) {
-                    // Fallback to /teams endpoint
-                    teamsForSelectData = await this.makeApiCall('/getTeams');
-                }
-                if (!Array.isArray(teamsForSelectData)) teamsForSelectData = [];
-            } catch (e) {
-                console.warn('getTeamsForSelect and teams failed:', e);
-                teamsForSelectData = [];
-            }
-
-            // Display team members
-            this.displayTeamMembers(teamData);
-            this.updateMemberStats(teamData);
-
-            // Populate user select
-            this.populateUserSelect(usersData);
-
-            // Populate team select  
-            this.populateTeamSelect(teamsForSelectData);
-
-        } catch (error) {
-            console.error('Error loading members data:', error);
-            this.showAlert(`Error loading members data: ${error.message}`, 'danger');
-            this.displayTeamMembers([]);
-            this.updateMemberStats([]);
-            this.populateUserSelect([]);
-            this.populateTeamSelect([]);
-        } finally {
-            this.showLoading('members', false);
+        } catch (e) {
+            console.warn('teamMembers failed:', e);
+            teamData = [];
         }
+
+        try {
+            const usersResponse = await this.makeApiCall('/getAllUsers');
+            console.log('Users API response:', usersResponse); 
+            if (Array.isArray(usersResponse)) {
+                usersData = usersResponse;
+            } else if (usersResponse && usersResponse.error) {
+                console.error('Users API error:', usersResponse.message);
+                this.showAlert('Error loading users: ' + usersResponse.message, 'danger');
+            }
+        } catch (e) {
+            console.warn('getAllUsers failed:', e);
+            this.showAlert('Failed to load users', 'danger');
+            usersData = [];
+        }
+
+        try {
+            const teamsResponse = await this.makeApiCall('/getTeamsForSelect');
+            console.log('Teams API response:', teamsResponse); 
+            if (Array.isArray(teamsResponse)) {
+                teamsForSelectData = teamsResponse;
+            } else if (teamsResponse && teamsResponse.error) {
+                console.error('Teams API error:', teamsResponse.message);
+                
+                try {
+                    const fallbackResponse = await this.makeApiCall('/getTeams');
+                    if (Array.isArray(fallbackResponse)) {
+                        teamsForSelectData = fallbackResponse;
+                    }
+                } catch (fallbackError) {
+                    console.warn('Fallback teams request failed:', fallbackError);
+                }
+            }
+        } catch (e) {
+            console.warn('getTeamsForSelect failed:', e);
+            teamsForSelectData = [];
+        }
+
+       
+        this.displayTeamMembers(teamData);
+        this.updateMemberStats(teamData);
+
+        
+        console.log('Populating user select with:', usersData.length, 'users');
+        console.log('Populating team select with:', teamsForSelectData.length, 'teams');
+        
+        this.populateUserSelect(usersData);
+        this.populateTeamSelect(teamsForSelectData);
+
+    } catch (error) {
+        console.error('Error loading members data:', error);
+        this.showAlert(`Error loading members data: ${error.message}`, 'danger');
+        this.displayTeamMembers([]);
+        this.updateMemberStats([]);
+        this.populateUserSelect([]);
+        this.populateTeamSelect([]);
+    } finally {
+        this.showLoading('members', false);
     }
+}
 
     displayTeams(teams) {
         const teamsList = document.getElementById('teamsList');

@@ -2408,7 +2408,7 @@ public function updateAdminPassword(): array
     }
 
     try {
-        // Check current password (plain text comparison)
+        
         $admin = $this->queryBuilder->table('Admins')
             ->select(['pass_admin'])
             ->where('id_admin', '=', $adminId)
@@ -2418,7 +2418,7 @@ public function updateAdminPassword(): array
             return ['success' => false, 'message' => 'Current password is incorrect'];
         }
 
-        // Update password (plain text)
+     
         $this->queryBuilder->table('Admins')
             ->update(['pass_admin' => $newPassword])
             ->where('id_admin', '=', $adminId)
@@ -2509,11 +2509,11 @@ public function addTeamMember(): array
 
     try {
         
-        $teamId = $data['id_team'] ?? 1; // Default team
+        $teamId = $data['id_team'] ?? 1; 
         $role = $data['role'];
         $clienteId = $data['id_cliente'];
 
-        // Check if member already exists
+      
         $existing = $this->queryBuilder->table('TeamMembers')
             ->select(['id_team_member'])
             ->where('id_team', '=', $teamId)
@@ -2563,103 +2563,49 @@ public function removeTeamMember(int $memberId): array
     }
 }
 
-public function getAllUsers() {
+
+public function getAllUsers(): array
+{
     try {
-        // Get database connection
-        $connection = Database::connect();
-        
-        $query = "SELECT 
-                    id_cliente, 
-                    nome_cliente, 
-                    email_cliente, 
-                    contacto_cliente, 
-                    morada_cliente,
-                    data_criacao_cliente
-                  FROM Clientes 
-                  ORDER BY nome_cliente ASC";
-        
-        $result = mysqli_query($connection, $query);
-        
-        if (!$result) {
-            throw new Exception("Database query failed: " . mysqli_error($connection));
-        }
-        
-        $users = [];
-        while ($row = mysqli_fetch_assoc($result)) {
-            $users[] = [
-                'id_cliente' => $row['id_cliente'],
-                'nome_cliente' => $row['nome_cliente'],
-                'email_cliente' => $row['email_cliente'],
-                'contacto_cliente' => $row['contacto_cliente'],
-                'morada_cliente' => $row['morada_cliente'],
-                'data_criacao_cliente' => $row['data_criacao_cliente']
-            ];
-        }
-        
-        // Close connection
-        mysqli_close($connection);
-        
-        // Return JSON response
-        header('Content-Type: application/json');
-        echo json_encode($users);
-        
+        return $this->queryBuilder->table('Clientes')
+            ->select([
+                'id_cliente',
+                'nome_cliente', 
+                'email_cliente',
+                'contacto_cliente',
+                'morada_cliente',
+                'data_criacao_cliente'
+            ])
+            ->order('nome_cliente', 'ASC')
+            ->get();
     } catch (Exception $e) {
         error_log("Error in getAllUsers: " . $e->getMessage());
-        
-        header('Content-Type: application/json');
-        http_response_code(500);
-        echo json_encode([
+        return [
             'error' => true,
             'message' => 'Error retrieving users: ' . $e->getMessage()
-        ]);
+        ];
     }
 }
 
-public function getTeamsForSelect() {
+public function getTeamsForSelect(): array
+{
     try {
-        // Get database connection
-        $connection = Database::connect();
-        
-        $query = "SELECT 
-                    id_team, 
-                    nome_team,
-                    descricao_team,
-                    data_criacao_team
-                  FROM Teams 
-                  ORDER BY nome_team ASC";
-        
-        $result = mysqli_query($connection, $query);
-        
-        if (!$result) {
-            throw new Exception("Database query failed: " . mysqli_error($connection));
-        }
-        
-        $teams = [];
-        while ($row = mysqli_fetch_assoc($result)) {
-            $teams[] = [
-                'id_team' => $row['id_team'],
-                'nome_team' => $row['nome_team'],
-                'descricao_team' => $row['descricao_team'],
-                'data_criacao_team' => $row['data_criacao_team']
-            ];
-        }
-        
-        // Close connection
-        mysqli_close($connection);
-        
-        // Return JSON response
-        header('Content-Type: application/json');
-        echo json_encode($teams);
-        
+        return $this->queryBuilder->table('Teams')
+            ->select([
+                'id_team',
+                'nome_team',
+                'descricao_team',
+                'data_criacao_team'
+            ])
+            ->where('status_team', '=', 'active')
+            ->order('nome_team', 'ASC')
+            ->get();
     } catch (Exception $e) {
         error_log("Error in getTeamsForSelect: " . $e->getMessage());
-        
-        header('Content-Type: application/json');
-        http_response_code(500);
-        echo json_encode([
+        return [
             'error' => true,
             'message' => 'Error retrieving teams: ' . $e->getMessage()
-        ]);
+        ];
     }
 }
 
@@ -2689,7 +2635,6 @@ public function getTeams(): array
     }
 }
 
-// New method: Create team
 public function createTeam(): array
 {
     $json = file_get_contents('php://input');
@@ -2709,7 +2654,6 @@ public function createTeam(): array
         $description = isset($data['descricao_team']) ? trim($data['descricao_team']) : '';
         $createdBy = isset($data['created_by_admin']) ? $data['created_by_admin'] : 1;
 
-        // Check if team name already exists
         $existing = $this->queryBuilder->table('Teams')
             ->select(['id_team'])
             ->where('nome_team', '=', $teamName)
@@ -2746,7 +2690,6 @@ public function createTeam(): array
     }
 }
 
-// New method: Delete team
 public function deleteTeam(): array
 {
     $json = file_get_contents('php://input');
@@ -2759,7 +2702,7 @@ public function deleteTeam(): array
     try {
         $teamId = intval($data['team_id']);
 
-        // Soft delete - update status instead of actual deletion
+        
         $this->queryBuilder->table('Teams')
             ->update(['status_team' => 'inactive'])
             ->where('id_team', '=', $teamId)
