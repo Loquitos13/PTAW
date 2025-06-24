@@ -2,29 +2,6 @@
 session_start();
 require_once '../restapi/Database.php';
 
-$apiUrl = "http://estga-dev.ua.pt/~ptaw-2025-gr4/restapi/PrintGoAPI.php";
-
-function executeCurlRequest($ch) {
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    
-    if (curl_errno($ch)) {
-        $error = curl_error($ch);
-        curl_close($ch);
-        throw new Exception("CURL Error: $error");
-    }
-    
-    curl_close($ch);
-    
-    json_decode($response);
-    if(json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception("Invalid JSON response: " . json_last_error_msg());
-    }
-    
-    return $response;
-}
-
 header('Content-Type: application/json');
 
 try {
@@ -56,24 +33,54 @@ try {
 }
 
 function updateAdminInfo($data) {
-    global $apiUrl;
-    
     if(empty($data['id_admin'])) {
         throw new Exception("Admin ID is required");
     }
     
-    $ch = curl_init("$apiUrl/updateAdmin");
+    $adminId = intval($data['id_admin']);
     
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json'
-    ]);
+    // Direct database connection
+    $db = new Database();
+    $connection = $db->getConnection();
     
-    $response = executeCurlRequest($ch);
-    $adminData = json_decode($response, true);
+    // Build update query dynamically
+    $updateFields = [];
+    $params = [];
+    $types = "";
     
-    return $adminData;
+    $allowedFields = ['nome_admin', 'email_admin', 'contacto_admin', 'funcao_admin'];
+    
+    foreach ($allowedFields as $field) {
+        if (isset($data[$field])) {
+            $updateFields[] = "$field = ?";
+            $params[] = $data[$field];
+            $types .= "s";
+        }
+    }
+    
+    if (empty($updateFields)) {
+        throw new Exception("No fields to update");
+    }
+    
+    $query = "UPDATE Admins SET " . implode(", ", $updateFields) . " WHERE id_admin = ?";
+    $params[] = $adminId;
+    $types .= "i";
+    
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param($types, ...$params);
+    
+    if (!$stmt->execute()) {
+        throw new Exception("Failed to update admin information");
+    }
+    
+    $affectedRows = $stmt->affected_rows;
+    $stmt->close();
+    $connection->close();
+    
+    if ($affectedRows === 0) {
+        throw new Exception("No changes made or admin not found");
+    }
+    
+    return ['updated' => true, 'affected_rows' => $affectedRows];
 }
 ?>

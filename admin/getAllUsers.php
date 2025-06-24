@@ -2,36 +2,13 @@
 session_start();
 require_once '../restapi/Database.php';
 
-$apiUrl = "http://estga-dev.ua.pt/~ptaw-2025-gr4/restapi/PrintGoAPI.php";
-
-function executeCurlRequest($ch) {
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    
-    if (curl_errno($ch)) {
-        $error = curl_error($ch);
-        curl_close($ch);
-        throw new Exception("CURL Error: $error");
-    }
-    
-    curl_close($ch);
-    
-    json_decode($response);
-    if(json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception("Invalid JSON response: " . json_last_error_msg());
-    }
-    
-    return $response;
-}
-
 header('Content-Type: application/json');
 
 try {
     $json = file_get_contents('php://input');
     
     if(empty($json)) {
-        $json = '{}'; // Empty object for GET-like requests
+        $json = '{}';
     }
     
     $data = json_decode($json, true);
@@ -55,18 +32,32 @@ try {
 }
 
 function getAllUsers() {
-    global $apiUrl;
+    $db = new Database();
+    $connection = $db->getConnection();
     
-    $ch = curl_init("$apiUrl/users");
+    // Get all users that are not already team members
+    $query = "SELECT c.id_cliente, c.nome_cliente, c.email_cliente
+              FROM Clientes c
+              WHERE c.id_cliente NOT IN (
+                  SELECT DISTINCT tm.id_cliente 
+                  FROM TeamMembers tm 
+                  WHERE tm.status_member = 'active'
+              )
+              ORDER BY c.nome_cliente";
     
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json'
-    ]);
+    $stmt = $connection->prepare($query);
+    $stmt->execute();
     
-    $response = executeCurlRequest($ch);
-    $usersData = json_decode($response, true);
+    $result = $stmt->get_result();
+    $users = [];
     
-    return $usersData;
+    while ($row = $result->fetch_assoc()) {
+        $users[] = $row;
+    }
+    
+    $stmt->close();
+    $connection->close();
+    
+    return $users;
 }
 ?>

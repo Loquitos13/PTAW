@@ -2,36 +2,13 @@
 session_start();
 require_once '../restapi/Database.php';
 
-$apiUrl = "http://estga-dev.ua.pt/~ptaw-2025-gr4/restapi/PrintGoAPI.php";
-
-function executeCurlRequest($ch) {
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    
-    if (curl_errno($ch)) {
-        $error = curl_error($ch);
-        curl_close($ch);
-        throw new Exception("CURL Error: $error");
-    }
-    
-    curl_close($ch);
-    
-    json_decode($response);
-    if(json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception("Invalid JSON response: " . json_last_error_msg());
-    }
-    
-    return $response;
-}
-
 header('Content-Type: application/json');
 
 try {
     $json = file_get_contents('php://input');
     
     if(empty($json)) {
-        $json = '{}'; // Empty object for GET-like requests
+        $json = '{}';
     }
     
     $data = json_decode($json, true);
@@ -40,7 +17,7 @@ try {
         throw new Exception("Invalid JSON: " . json_last_error_msg());
     }
     
-    $result = getTeamMembers();
+    $result = getTeamMembers($data);
     echo json_encode([
         'status' => 'success',
         'data' => $result
@@ -54,19 +31,49 @@ try {
     ]);
 }
 
-function getTeamMembers() {
-    global $apiUrl;
+function getTeamMembers($data) {
+    $db = new Database();
+    $connection = $db->getConnection();
     
-    $ch = curl_init("$apiUrl/teamMembers");
+    $teamId = isset($data['team_id']) ? intval($data['team_id']) : null;
     
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json'
-    ]);
+    if ($teamId) {
+        // Get members of specific team
+        $query = "SELECT tm.id_team_member as id, tm.role_member as role, tm.status_member as status,
+                         c.nome_cliente as first_name, c.email_cliente as email,
+                         t.nome_team as team_name
+                  FROM TeamMembers tm
+                  JOIN Clientes c ON tm.id_cliente = c.id_cliente
+                  JOIN Teams t ON tm.id_team = t.id_team
+                  WHERE tm.id_team = ?
+                  ORDER BY tm.data_adicao DESC";
+        
+        $stmt = $connection->prepare($query);
+        $stmt->bind_param("i", $teamId);
+    } else {
+        // Get all team members
+        $query = "SELECT tm.id_team_member as id, tm.role_member as role, tm.status_member as status,
+                         c.nome_cliente as first_name, c.email_cliente as email,
+                         t.nome_team as team_name
+                  FROM TeamMembers tm
+                  JOIN Clientes c ON tm.id_cliente = c.id_cliente
+                  JOIN Teams t ON tm.id_team = t.id_team
+                  ORDER BY tm.data_adicao DESC";
+        
+        $stmt = $connection->prepare($query);
+    }
     
-    $response = executeCurlRequest($ch);
-    $teamData = json_decode($response, true);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $members = [];
     
-    return $teamData;
+    while ($row = $result->fetch_assoc()) {
+        $members[] = $row;
+    }
+    
+    $stmt->close();
+    $connection->close();
+    
+    return $members;
 }
 ?>

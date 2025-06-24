@@ -3,7 +3,7 @@ session_start();
 
 // Check if admin is logged in
 if (!isset($_SESSION['admin_id'])) {
-    header('Location: login.php');
+    header('Location: ../SignIn.html');
     exit;
 }
 ?>
@@ -121,6 +121,24 @@ if (!isset($_SESSION['admin_id'])) {
   .spinner-border-sm {
     width: 1rem;
     height: 1rem;
+  }
+
+  .team-card {
+    transition: transform 0.2s;
+    cursor: pointer;
+  }
+
+  .team-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .team-member-item {
+    transition: background-color 0.2s;
+  }
+
+  .team-member-item:hover {
+    background-color: #f8f9fa;
   }
 
   @media (max-width: 1200px) {
@@ -291,7 +309,10 @@ if (!isset($_SESSION['admin_id'])) {
                 <a class="nav-link active" href="#" data-tab="general">General</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#" data-tab="team">Team</a>
+                <a class="nav-link" href="#" data-tab="teams">Teams</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" data-tab="members">Team Members</a>
               </li>
             </ul>
           </div>
@@ -407,13 +428,66 @@ if (!isset($_SESSION['admin_id'])) {
           </div>
         </div>
 
-        <!-- Team Tab Content -->
-        <div id="team-content" class="tab-content" style="display: none;">
-          <div class="loading-spinner" id="team-loading">
+        <!-- Teams Tab Content -->
+        <div id="teams-content" class="tab-content" style="display: none;">
+          <div class="loading-spinner" id="teams-loading">
             <div class="spinner-border text-primary" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
-            <p class="mt-2">Loading team information...</p>
+            <p class="mt-2">Loading teams...</p>
+          </div>
+
+          <div class="row gx-4">
+            <div class="col-lg-8">
+              <div class="card shadow-sm mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="card-title mb-0">Teams</h5>
+                  <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createTeamModal">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Create New Team
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div id="teamsList">
+                    <!-- Teams will be loaded here -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Team Statistics</h5>
+                  <div class="text-center">
+                    <div class="row text-center" id="teams-stats">
+                      <div class="col-4">
+                        <div class="text-primary fw-bold fs-4" id="total-teams">0</div>
+                        <small class="text-muted">Total Teams</small>
+                      </div>
+                      <div class="col-4">
+                        <div class="text-success fw-bold fs-4" id="active-teams">0</div>
+                        <small class="text-muted">Active</small>
+                      </div>
+                      <div class="col-4">
+                        <div class="text-warning fw-bold fs-4" id="total-team-members">0</div>
+                        <small class="text-muted">Members</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Members Tab Content -->
+        <div id="members-content" class="tab-content" style="display: none;">
+          <div class="loading-spinner" id="members-loading">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading team members...</p>
           </div>
 
           <div class="row gx-4">
@@ -459,9 +533,9 @@ if (!isset($_SESSION['admin_id'])) {
 
               <div class="card shadow-sm">
                 <div class="card-body">
-                  <h5 class="card-title mb-4">Team Statistics</h5>
+                  <h5 class="card-title mb-4">Member Statistics</h5>
                   <div class="text-center">
-                    <div class="row text-center" id="team-stats">
+                    <div class="row text-center" id="member-stats">
                       <div class="col-4">
                         <div class="text-primary fw-bold fs-4" id="total-members">0</div>
                         <small class="text-muted">Total</small>
@@ -480,6 +554,38 @@ if (!isset($_SESSION['admin_id'])) {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Team Modal -->
+  <div class="modal fade" id="createTeamModal" tabindex="-1" aria-labelledby="createTeamModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createTeamModalLabel">Create New Team</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="create-team-form">
+            <div class="mb-3">
+              <label for="team_name" class="form-label">Team Name *</label>
+              <input type="text" class="form-control" id="team_name" name="nome_team" required minlength="3">
+              <div class="form-text">Team name must be at least 3 characters long</div>
+            </div>
+            <div class="mb-3">
+              <label for="team_description" class="form-label">Description</label>
+              <textarea class="form-control" id="team_description" name="descricao_team" rows="3" placeholder="Optional team description"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" form="create-team-form" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>
+            Create Team
+          </button>
         </div>
       </div>
     </div>

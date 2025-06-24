@@ -301,29 +301,28 @@ CREATE TABLE IF NOT EXISTS user_security_settings (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
-CREATE TABLE IF NOT EXISTS teams (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    description TEXT,
-    owner_id INT NOT NULL,
-    max_members INT DEFAULT 10,
-    status ENUM('active', 'inactive') DEFAULT 'active',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+-- Create Teams table
+CREATE TABLE Teams (
+    id_team INT PRIMARY KEY AUTO_INCREMENT,
+    nome_team VARCHAR(100) NOT NULL,
+    descricao_team TEXT,
+    data_criacao_team DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status_team ENUM('active', 'inactive') DEFAULT 'active',
+    created_by_admin INT,
+    FOREIGN KEY (created_by_admin) REFERENCES Admins(id_admin)
 );
 
-CREATE TABLE IF NOT EXISTS team_members (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    team_id INT NOT NULL,
-    user_id INT NOT NULL,
-    role ENUM('owner', 'admin', 'member') DEFAULT 'member',
-    permissions JSON NULL,
-    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY unique_team_user (team_id, user_id),
-    FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+-- Create TeamMembers table
+CREATE TABLE TeamMembers (
+    id_team_member INT PRIMARY KEY AUTO_INCREMENT,
+    id_team INT NOT NULL,
+    id_cliente INT NOT NULL,
+    role_member ENUM('member', 'admin') DEFAULT 'member',
+    data_adicao DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status_member ENUM('active', 'inactive') DEFAULT 'active',
+    FOREIGN KEY (id_team) REFERENCES Teams(id_team) ON DELETE CASCADE,
+    FOREIGN KEY (id_cliente) REFERENCES Clientes(id_cliente) ON DELETE CASCADE,
+    UNIQUE KEY unique_team_member (id_team, id_cliente)
 );
 
 CREATE TABLE IF NOT EXISTS billing_info (

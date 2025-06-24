@@ -1,4 +1,5 @@
 <?php
+// createTeam.php
 session_start();
 require_once '../restapi/Database.php';
 
@@ -17,10 +18,10 @@ try {
         throw new Exception("Invalid JSON: " . json_last_error_msg());
     }
     
-    $result = addTeamMember($data);
+    $result = createTeam($data);
     echo json_encode([
         'status' => 'success',
-        'message' => 'Team member added successfully',
+        'message' => 'Team created successfully',
         'data' => $result
     ]);
     
@@ -32,52 +33,51 @@ try {
     ]);
 }
 
-function addTeamMember($data) {
-    if(empty($data['id_cliente'])) {
-        throw new Exception("Client ID is required");
+function createTeam($data) {
+    if(empty($data['nome_team'])) {
+        throw new Exception("Team name is required");
     }
     
-    $clienteId = intval($data['id_cliente']);
-    $role = isset($data['role']) ? $data['role'] : 'member';
-    $teamId = isset($data['id_team']) ? intval($data['id_team']) : 1; // Default team
+    $teamName = trim($data['nome_team']);
+    $teamDescription = isset($data['descricao_team']) ? trim($data['descricao_team']) : '';
+    $createdBy = isset($data['created_by_admin']) ? intval($data['created_by_admin']) : 1;
     
-    // Validate role
-    if (!in_array($role, ['member', 'admin'])) {
-        throw new Exception("Invalid role. Must be 'member' or 'admin'");
+    if (strlen($teamName) < 3) {
+        throw new Exception("Team name must be at least 3 characters long");
     }
     
     $db = new Database();
     $connection = $db->getConnection();
     
-    // Check if member already exists in the team
-    $checkQuery = "SELECT id_team_member FROM TeamMembers WHERE id_team = ? AND id_cliente = ?";
+    // Check if team name already exists
+    $checkQuery = "SELECT id_team FROM Teams WHERE nome_team = ? AND status_team = 'active'";
     $checkStmt = $connection->prepare($checkQuery);
-    $checkStmt->bind_param("ii", $teamId, $clienteId);
+    $checkStmt->bind_param("s", $teamName);
     $checkStmt->execute();
     $checkResult = $checkStmt->get_result();
     
     if ($checkResult->num_rows > 0) {
         $checkStmt->close();
         $connection->close();
-        throw new Exception("User is already a member of this team");
+        throw new Exception("Team name already exists");
     }
     $checkStmt->close();
     
-    // Add team member
-    $insertQuery = "INSERT INTO TeamMembers (id_team, id_cliente, role_member) VALUES (?, ?, ?)";
+    // Create team
+    $insertQuery = "INSERT INTO Teams (nome_team, descricao_team, created_by_admin) VALUES (?, ?, ?)";
     $insertStmt = $connection->prepare($insertQuery);
-    $insertStmt->bind_param("iis", $teamId, $clienteId, $role);
+    $insertStmt->bind_param("ssi", $teamName, $teamDescription, $createdBy);
     
     if (!$insertStmt->execute()) {
         $insertStmt->close();
         $connection->close();
-        throw new Exception("Failed to add team member");
+        throw new Exception("Failed to create team");
     }
     
-    $newMemberId = $connection->insert_id;
+    $newTeamId = $connection->insert_id;
     $insertStmt->close();
     $connection->close();
     
-    return ['id' => $newMemberId, 'added' => true];
+    return ['id' => $newTeamId, 'created' => true];
 }
 ?>

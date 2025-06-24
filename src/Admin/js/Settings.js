@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
 class AdminSettings {
     constructor() {
         this.adminId = null;
+        this.apiBase = '../../restapi/PrintGoAPI.php'; 
         this.init();
     }
 
@@ -50,6 +51,14 @@ class AdminSettings {
                 this.addTeamMember();
             });
         }
+
+        const createTeamForm = document.getElementById('create-team-form');
+        if (createTeamForm) {
+            createTeamForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.createTeam();
+            });
+        }
     }
 
     switchTab(tabName) {
@@ -72,26 +81,27 @@ class AdminSettings {
         }
 
         // Load tab data
-        if (tabName === 'team') {
-            this.loadTeamData();
+        if (tabName === 'teams') {
+            this.loadTeamsData();
+        } else if (tabName === 'members') {
+            this.loadMembersData();
         }
     }
 
     async loadAdminData() {
         this.showLoading('general', true);
         try {
-            const response = await fetch('../../admin/getAdminInfo.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id_admin: this.adminId })
+            const response = await fetch(`${this.apiBase}/adminInfoByID/${this.adminId}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
             });
 
             const data = await response.json();
             
-            if (data.status === 'success') {
-                this.populateAdminForm(data.data);
+            if (data && !data.error) {
+                this.populateAdminForm(data);
             } else {
-                this.showAlert('Error loading admin data: ' + data.message, 'danger');
+                this.showAlert('Error loading admin data: ' + (data.message || 'Unknown error'), 'danger');
             }
         } catch (error) {
             console.error('Error loading admin data:', error);
@@ -129,15 +139,15 @@ class AdminSettings {
         data.id_admin = this.adminId;
 
         try {
-            const response = await fetch('../../admin/updateAdminInfo.php', {
-                method: 'POST',
+            const response = await fetch(`${this.apiBase}/updateAdmin`, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
 
             const result = await response.json();
             
-            if (result.status === 'success') {
+            if (result.success) {
                 this.showAlert('Information updated successfully', 'success');
             } else {
                 this.showAlert(result.message || 'Error updating information', 'danger');
@@ -163,8 +173,8 @@ class AdminSettings {
         }
 
         try {
-            const response = await fetch('../../admin/updateAdminPassword.php', {
-                method: 'POST',
+            const response = await fetch(`${this.apiBase}/updateAdminPassword`, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     id_admin: this.adminId,
@@ -175,7 +185,7 @@ class AdminSettings {
 
             const result = await response.json();
             
-            if (result.status === 'success') {
+            if (result.success) {
                 this.showAlert('Password updated successfully', 'success');
                 document.getElementById('password-form').reset();
             } else {
@@ -187,39 +197,113 @@ class AdminSettings {
         }
     }
 
-    async loadTeamData() {
-        this.showLoading('team', true);
+    async loadTeamsData() {
+        this.showLoading('teams', true);
+        try {
+            const response = await fetch(`${this.apiBase}/teams`, { 
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const teamsData = await response.json();
+
+            if (teamsData && Array.isArray(teamsData)) {
+                this.displayTeams(teamsData);
+                this.updateTeamsStats(teamsData);
+            } else if (teamsData && !teamsData.error) {
+                this.displayTeams([]);
+                this.updateTeamsStats([]);
+            } else {
+                this.showAlert('Error loading teams: ' + (teamsData.message || 'Unknown error'), 'danger');
+                this.displayTeams([]);
+                this.updateTeamsStats([]);
+            }
+        } catch (error) {
+            console.error('Error loading teams data:', error);
+            this.showAlert('Error loading teams data', 'danger');
+            this.displayTeams([]);
+            this.updateTeamsStats([]);
+        } finally {
+            this.showLoading('teams', false);
+        }
+    }
+
+    async loadMembersData() {
+        this.showLoading('members', true);
         try {
             const [teamResponse, usersResponse] = await Promise.all([
-                fetch('../../admin/getTeamMembers.php', { 
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({})
+                fetch(`${this.apiBase}/teamMembers`, { 
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
                 }),
-                fetch('../../admin/getAllUsers.php', { 
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({})
+                fetch(`${this.apiBase}/allUsers`, { 
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
                 })
             ]);
 
             const teamData = await teamResponse.json();
             const usersData = await usersResponse.json();
 
-            if (teamData.status === 'success') {
-                this.displayTeamMembers(teamData.data);
-                this.updateTeamStats(teamData.data);
+            if (teamData && Array.isArray(teamData)) {
+                this.displayTeamMembers(teamData);
+                this.updateMemberStats(teamData);
+            } else {
+                this.displayTeamMembers([]);
+                this.updateMemberStats([]);
             }
 
-            if (usersData.status === 'success') {
-                this.populateUserSelect(usersData.data);
+            if (usersData && Array.isArray(usersData)) {
+                this.populateUserSelect(usersData);
+            } else {
+                this.populateUserSelect([]);
             }
         } catch (error) {
-            console.error('Error loading team data:', error);
-            this.showAlert('Error loading team data', 'danger');
+            console.error('Error loading members data:', error);
+            this.showAlert('Error loading members data', 'danger');
+            this.displayTeamMembers([]);
+            this.updateMemberStats([]);
+            this.populateUserSelect([]);
         } finally {
-            this.showLoading('team', false);
+            this.showLoading('members', false);
         }
+    }
+
+    displayTeams(teams) {
+        const teamsList = document.getElementById('teamsList');
+        if (!teamsList) return;
+
+        if (!teams || teams.length === 0) {
+            teamsList.innerHTML = '<p class="text-muted">No teams created yet.</p>';
+            return;
+        }
+
+        teamsList.innerHTML = teams.map(team => `
+            <div class="team-card card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <h6 class="card-title mb-2">${team.nome_team || 'Unnamed Team'}</h6>
+                            <p class="card-text text-muted small mb-2">${team.descricao_team || 'No description'}</p>
+                            <div class="d-flex align-items-center text-muted small">
+                                <i class="bi bi-people me-1"></i>
+                                <span class="me-3">${team.member_count || 0} members</span>
+                                <i class="bi bi-calendar me-1"></i>
+                                <span>Created ${team.data_criacao_team ? new Date(team.data_criacao_team).toLocaleDateString('pt-PT') : 'Unknown'}</span>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-primary" onclick="adminSettings.viewTeamMembers(${team.id_team})">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="adminSettings.deleteTeam(${team.id_team})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
     }
 
     displayTeamMembers(members) {
@@ -232,7 +316,7 @@ class AdminSettings {
         }
 
         teamsList.innerHTML = members.map(member => `
-            <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+            <div class="team-member-item d-flex justify-content-between align-items-center p-3 border-bottom">
                 <div class="d-flex align-items-center">
                     <div class="bg-${member.role === 'admin' ? 'success' : 'primary'} rounded-circle d-flex align-items-center justify-content-center me-3"
                          style="width: 40px; height: 40px; color: white; font-weight: bold;">
@@ -241,11 +325,12 @@ class AdminSettings {
                     <div>
                         <p class="mb-0 fw-medium">${member.first_name || 'Unknown'}</p>
                         <p class="text-muted small mb-0">${member.email || 'No email'}</p>
+                        <p class="text-muted small mb-0">Team: ${member.team_name || 'Unknown'}</p>
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
                     <span class="badge bg-${member.role === 'admin' ? 'success' : 'light text-dark'} me-2">
-                        ${member.role}
+                        ${member.role || 'member'}
                     </span>
                     <button class="btn btn-sm btn-outline-danger" onclick="adminSettings.removeMember(${member.id})">
                         <i class="bi bi-trash"></i>
@@ -267,7 +352,21 @@ class AdminSettings {
         }
     }
 
-    updateTeamStats(members) {
+    updateTeamsStats(teams) {
+        const totalTeams = teams ? teams.length : 0;
+        const activeTeams = teams ? teams.filter(t => t.status_team === 'active').length : 0;
+        const totalMembers = teams ? teams.reduce((sum, team) => sum + parseInt(team.member_count || 0), 0) : 0;
+
+        const totalElement = document.getElementById('total-teams');
+        const activeElement = document.getElementById('active-teams');
+        const membersElement = document.getElementById('total-team-members');
+
+        if (totalElement) totalElement.textContent = totalTeams;
+        if (activeElement) activeElement.textContent = activeTeams;
+        if (membersElement) membersElement.textContent = totalMembers;
+    }
+
+    updateMemberStats(members) {
         const totalMembers = members ? members.length : 0;
         const activeMembers = members ? members.filter(m => m.status === 'active').length : 0;
         const adminMembers = members ? members.filter(m => m.role === 'admin').length : 0;
@@ -281,6 +380,41 @@ class AdminSettings {
         if (adminElement) adminElement.textContent = adminMembers;
     }
 
+    async createTeam() {
+        const formData = new FormData(document.getElementById('create-team-form'));
+        const data = Object.fromEntries(formData);
+        
+        // Add admin ID
+        data.created_by_admin = this.adminId;
+
+        try {
+            const response = await fetch(`${this.apiBase}/createTeam`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showAlert('Team created successfully', 'success');
+                document.getElementById('create-team-form').reset();
+                
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('createTeamModal'));
+                if (modal) modal.hide();
+                
+                // Reload teams data
+                this.loadTeamsData();
+            } else {
+                this.showAlert(result.message || 'Error creating team', 'danger');
+            }
+        } catch (error) {
+            console.error('Error creating team:', error);
+            this.showAlert('Error creating team', 'danger');
+        }
+    }
+
     async addTeamMember() {
         const formData = new FormData(document.getElementById('add-member-form'));
         const data = Object.fromEntries(formData);
@@ -291,7 +425,7 @@ class AdminSettings {
         }
 
         try {
-            const response = await fetch('../../admin/addTeamMember.php', {
+            const response = await fetch(`${this.apiBase}/addTeamMember`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -299,10 +433,10 @@ class AdminSettings {
 
             const result = await response.json();
             
-            if (result.status === 'success') {
+            if (result.success) {
                 this.showAlert('Team member added successfully', 'success');
                 document.getElementById('add-member-form').reset();
-                this.loadTeamData();
+                this.loadMembersData();
             } else {
                 this.showAlert(result.message || 'Error adding team member', 'danger');
             }
@@ -318,17 +452,16 @@ class AdminSettings {
         }
 
         try {
-            const response = await fetch('../../admin/removeTeamMember.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ member_id: memberId })
+            const response = await fetch(`${this.apiBase}/removeTeamMember/${memberId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
             });
 
             const result = await response.json();
             
-            if (result.status === 'success') {
+            if (result.success) {
                 this.showAlert('Team member removed successfully', 'success');
-                this.loadTeamData();
+                this.loadMembersData();
             } else {
                 this.showAlert(result.message || 'Error removing team member', 'danger');
             }
@@ -336,6 +469,38 @@ class AdminSettings {
             console.error('Error removing team member:', error);
             this.showAlert('Error removing team member', 'danger');
         }
+    }
+
+    async deleteTeam(teamId) {
+        if (!confirm('Are you sure you want to delete this team? This action cannot be undone.')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${this.apiBase}/deleteTeam`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ team_id: teamId })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showAlert('Team deleted successfully', 'success');
+                this.loadTeamsData();
+            } else {
+                this.showAlert(result.message || 'Error deleting team', 'danger');
+            }
+        } catch (error) {
+            console.error('Error deleting team:', error);
+            this.showAlert('Error deleting team', 'danger');
+        }
+    }
+
+    viewTeamMembers(teamId) {
+        // Switch to members tab and filter by team
+        this.switchTab('members');
+        // You can add filtering logic here if needed
     }
 
     showAlert(message, type) {

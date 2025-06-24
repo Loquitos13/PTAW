@@ -2383,11 +2383,56 @@ class ApiController
 public function getAdminInfoByID(int $adminID): ?array
 {
     $result = $this->queryBuilder->table('Admins')
-        ->select(['*'])
+        ->select(['id_admin', 'nome_admin', 'email_admin', 'contacto_admin', 'funcao_admin', 'data_criacao_admin'])
         ->where('id_admin', '=', $adminID)
         ->get();
 
     return $result[0] ?? null;
+}
+
+public function updateAdminPassword(): array
+{
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    if (!is_array($data)) {
+        return ['success' => false, 'message' => 'Invalid JSON data received'];
+    }
+
+    $adminId = $data['id_admin'] ?? null;
+    $currentPassword = $data['current_password'] ?? null;
+    $newPassword = $data['new_password'] ?? null;
+
+    if (!$adminId || !$currentPassword || !$newPassword) {
+        return ['success' => false, 'message' => 'Missing required fields'];
+    }
+
+    try {
+        // Check current password (plain text comparison)
+        $admin = $this->queryBuilder->table('Admins')
+            ->select(['pass_admin'])
+            ->where('id_admin', '=', $adminId)
+            ->get();
+
+        if (empty($admin) || $admin[0]['pass_admin'] !== $currentPassword) {
+            return ['success' => false, 'message' => 'Current password is incorrect'];
+        }
+
+        // Update password (plain text)
+        $this->queryBuilder->table('Admins')
+            ->update(['pass_admin' => $newPassword])
+            ->where('id_admin', '=', $adminId)
+            ->execute();
+
+        return ['success' => true, 'message' => 'Password updated successfully'];
+
+    } catch (PDOException $e) {
+        error_log("Database error: " . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => 'Database error: ' . $e->getMessage()
+        ];
+    }
 }
 
 public function updateAdmin(): array
@@ -2402,11 +2447,6 @@ public function updateAdmin(): array
     $key_first_element = array_key_first($data);
     $value_first_element = $data[$key_first_element];
     unset($data[$key_first_element]);
-
-    // Se estiver atualizando a password, hash it
-    if (isset($data['pass_admin'])) {
-        $data['pass_admin'] = password_hash($data['pass_admin'], PASSWORD_DEFAULT);
-    }
 
     try {
         $this->queryBuilder->table('Admins')
@@ -2427,23 +2467,23 @@ public function updateAdmin(): array
 
 public function getTeamMembers(): array
 {
-    
-    try {
-        return $this->queryBuilder->table('Clientes')
+    try {        
+        return $this->queryBuilder->table('TeamMembers')
             ->select([
-                'Clientes.id_cliente as id',
+                'TeamMembers.id_team_member as id',
+                'TeamMembers.role_member as role',
+                'TeamMembers.status_member as status',
                 'Clientes.nome_cliente as first_name',
                 'Clientes.email_cliente as email',
-                'COALESCE(TeamMembers.role, "member") as role',
-                'COALESCE(TeamMembers.status, "active") as status'
+                'Teams.nome_team as team_name'
             ])
-            ->leftJoin('TeamMembers', 'Clientes.id_cliente', '=', 'TeamMembers.id_cliente')
-            ->where('TeamMembers.id_cliente', 'IS NOT', null)
-            ->order('Clientes.id_cliente', 'DESC')
+            ->join('Clientes', 'TeamMembers.id_cliente', '=', 'Clientes.id_cliente')
+            ->leftJoin('Teams', 'TeamMembers.id_team', '=', 'Teams.id_team')
+            ->where('TeamMembers.status_member', '=', 'active')
+            ->order('TeamMembers.data_adicao', 'DESC')
             ->get();
     } catch (Exception $e) {
-      
-        error_log("TeamMembers table might not exist: " . $e->getMessage());
+        error_log("Error in getTeamMembers: " . $e->getMessage());
         return [];
     }
 }
@@ -2458,85 +2498,209 @@ public function addTeamMember(): array
     }
 
     $requiredFields = ['id_cliente', 'role'];
-    $missingFields = [];
-
     foreach ($requiredFields as $field) {
         if (empty($data[$field])) {
-            $missingFields[] = $field;
+            return [
+                'success' => false,
+                'message' => "Missing required field: $field"
+            ];
         }
     }
 
-    if (!empty($missingFields)) {
-        return [
-            'error' => 'Invalid data',
-            'message' => 'Missing required fields: ' . implode(', ', $missingFields)
-        ];
-    }
-
     try {
-       
-        $this->createTeamMembersTableIfNotExists();
         
+        $teamId = $data['id_team'] ?? 1; // Default team
+        $role = $data['role'];
+        $clienteId = $data['id_cliente'];
+
+        // Check if member already exists
+        $existing = $this->queryBuilder->table('TeamMembers')
+            ->select(['id_team_member'])
+            ->where('id_team', '=', $teamId)
+            ->where('id_cliente', '=', $clienteId)
+            ->get();
+
+        if (!empty($existing)) {
+            return ['success' => false, 'message' => 'User is already a member of this team'];
+        }
+
         $this->queryBuilder->table('TeamMembers')
             ->insert([
-                'id_cliente' => $data['id_cliente'],
-                'role' => $data['role'],
-                'status' => $data['status'] ?? 'active',
-                'added_by' => $data['added_by'] ?? 1,
-                'created_at' => date('Y-m-d H:i:s')
+                'id_team' => $teamId,
+                'id_cliente' => $clienteId,
+                'role_member' => $role,
+                'status_member' => 'active',
+                'data_adicao' => date('Y-m-d H:i:s')
             ]);
 
-        return [
-            'success' => true,
-            'message' => 'Team member added successfully'
-        ];
+        return ['success' => true, 'message' => 'Team member added successfully'];
 
     } catch (PDOException $e) {
         error_log("Database error: " . $e->getMessage());
         return [
-            'error' => 'Error adding team member',
+            'success' => false,
             'message' => 'Database error: ' . $e->getMessage()
         ];
     }
 }
+
 
 public function removeTeamMember(int $memberId): array
 {
     try {
         $this->queryBuilder->table('TeamMembers')
             ->delete()
-            ->where('id_cliente', '=', $memberId)
+            ->where('id_team_member', '=', $memberId)
             ->execute();
 
-        return ['success' => true, 'message' => 'Team member removed'];
+        return ['success' => true, 'message' => 'Team member removed successfully'];
     } catch (PDOException $e) {
         error_log("Database error: " . $e->getMessage());
         return [
-            'error' => 'Error removing team member',
+            'success' => false,
             'message' => 'Database error: ' . $e->getMessage()
         ];
     }
 }
 
-private function createTeamMembersTableIfNotExists(): void
+
+public function getAllUsers(): array
 {
     try {
-        $sql = "CREATE TABLE IF NOT EXISTS TeamMembers (
-            id_team_member INT AUTO_INCREMENT PRIMARY KEY,
-            id_cliente INT NOT NULL,
-            role ENUM('member', 'admin') DEFAULT 'member',
-            status ENUM('active', 'inactive') DEFAULT 'active',
-            added_by INT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (id_cliente) REFERENCES Clientes(id_cliente) ON DELETE CASCADE
-        )";
         
-        $this->queryBuilder->getConnection()->exec($sql);
-    } catch (PDOException $e) {
-        error_log("Error creating TeamMembers table: " . $e->getMessage());
-        throw $e;
+        return $this->queryBuilder->table('Clientes')
+            ->select(['id_cliente', 'nome_cliente', 'email_cliente'])
+            ->where('id_cliente', 'NOT IN', function($subquery) {
+                return $subquery->table('TeamMembers')
+                    ->select(['id_cliente'])
+                    ->where('status_member', '=', 'active');
+            })
+            ->order('nome_cliente', 'ASC')
+            ->get();
+    } catch (Exception $e) {
+        error_log("Error in getAllUsers: " . $e->getMessage());
+        // Fallback: get all users if subquery fails
+        return $this->queryBuilder->table('Clientes')
+            ->select(['id_cliente', 'nome_cliente', 'email_cliente'])
+            ->order('nome_cliente', 'ASC')
+            ->get();
     }
 }
+
+// New method: Get all teams
+public function getTeams(): array
+{
+    try {
+        
+        return $this->queryBuilder->table('Teams')
+            ->select([
+                'Teams.id_team',
+                'Teams.nome_team',
+                'Teams.descricao_team',
+                'Teams.data_criacao_team',
+                'Teams.status_team',
+                'Admins.nome_admin as created_by_name',
+                'COUNT(TeamMembers.id_team_member) as member_count'
+            ])
+            ->leftJoin('Admins', 'Teams.created_by_admin', '=', 'Admins.id_admin')
+            ->leftJoin('TeamMembers', 'Teams.id_team', '=', 'TeamMembers.id_team')
+            ->where('Teams.status_team', '=', 'active')
+            ->groupBy('Teams.id_team')
+            ->order('Teams.data_criacao_team', 'DESC')
+            ->get();
+    } catch (Exception $e) {
+        error_log("Error in getTeams: " . $e->getMessage());
+        return [];
+    }
+}
+
+// New method: Create team
+public function createTeam(): array
+{
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    if (!is_array($data)) {
+        return ['success' => false, 'message' => 'Invalid JSON data received'];
+    }
+
+    if (empty($data['nome_team'])) {
+        return ['success' => false, 'message' => 'Team name is required'];
+    }
+
+    try {
+        
+        $teamName = trim($data['nome_team']);
+        $description = isset($data['descricao_team']) ? trim($data['descricao_team']) : '';
+        $createdBy = isset($data['created_by_admin']) ? $data['created_by_admin'] : 1;
+
+        // Check if team name already exists
+        $existing = $this->queryBuilder->table('Teams')
+            ->select(['id_team'])
+            ->where('nome_team', '=', $teamName)
+            ->where('status_team', '=', 'active')
+            ->get();
+
+        if (!empty($existing)) {
+            return ['success' => false, 'message' => 'Team name already exists'];
+        }
+
+        $this->queryBuilder->table('Teams')
+            ->insert([
+                'nome_team' => $teamName,
+                'descricao_team' => $description,
+                'created_by_admin' => $createdBy,
+                'data_criacao_team' => date('Y-m-d H:i:s'),
+                'status_team' => 'active'
+            ]);
+
+        $teamId = $this->queryBuilder->getLastInsertId();
+
+        return [
+            'success' => true,
+            'message' => 'Team created successfully',
+            'id_team' => $teamId
+        ];
+
+    } catch (PDOException $e) {
+        error_log("Database error: " . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => 'Database error: ' . $e->getMessage()
+        ];
+    }
+}
+
+// New method: Delete team
+public function deleteTeam(): array
+{
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    if (!is_array($data) || empty($data['team_id'])) {
+        return ['success' => false, 'message' => 'Team ID is required'];
+    }
+
+    try {
+        $teamId = intval($data['team_id']);
+
+        // Soft delete - update status instead of actual deletion
+        $this->queryBuilder->table('Teams')
+            ->update(['status_team' => 'inactive'])
+            ->where('id_team', '=', $teamId)
+            ->execute();
+
+        return ['success' => true, 'message' => 'Team deleted successfully'];
+
+    } catch (PDOException $e) {
+        error_log("Database error: " . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => 'Database error: ' . $e->getMessage()
+        ];
+    }
+}
+
 
 }
 

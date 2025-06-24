@@ -1,4 +1,5 @@
 <?php
+// deleteTeam.php
 session_start();
 require_once '../restapi/Database.php';
 
@@ -17,10 +18,10 @@ try {
         throw new Exception("Invalid JSON: " . json_last_error_msg());
     }
     
-    $result = removeTeamMember($data);
+    $result = deleteTeam($data);
     echo json_encode([
         'status' => 'success',
-        'message' => 'Team member removed successfully',
+        'message' => 'Team deleted successfully',
         'data' => $result
     ]);
     
@@ -32,35 +33,35 @@ try {
     ]);
 }
 
-function removeTeamMember($data) {
-    if(empty($data['member_id'])) {
-        throw new Exception("Member ID is required");
+function deleteTeam($data) {
+    if(empty($data['team_id'])) {
+        throw new Exception("Team ID is required");
     }
     
-    $memberId = intval($data['member_id']);
+    $teamId = intval($data['team_id']);
     
     $db = new Database();
     $connection = $db->getConnection();
     
-    // Delete team member
-    $deleteQuery = "DELETE FROM TeamMembers WHERE id_team_member = ?";
-    $deleteStmt = $connection->prepare($deleteQuery);
-    $deleteStmt->bind_param("i", $memberId);
+    // Soft delete - update status instead of actual deletion
+    $updateQuery = "UPDATE Teams SET status_team = 'inactive' WHERE id_team = ?";
+    $updateStmt = $connection->prepare($updateQuery);
+    $updateStmt->bind_param("i", $teamId);
     
-    if (!$deleteStmt->execute()) {
-        $deleteStmt->close();
+    if (!$updateStmt->execute()) {
+        $updateStmt->close();
         $connection->close();
-        throw new Exception("Failed to remove team member");
+        throw new Exception("Failed to delete team");
     }
     
-    $affectedRows = $deleteStmt->affected_rows;
-    $deleteStmt->close();
+    $affectedRows = $updateStmt->affected_rows;
+    $updateStmt->close();
     $connection->close();
     
     if ($affectedRows === 0) {
-        throw new Exception("Team member not found");
+        throw new Exception("Team not found");
     }
     
-    return ['removed' => true, 'affected_rows' => $affectedRows];
+    return ['deleted' => true, 'affected_rows' => $affectedRows];
 }
 ?>

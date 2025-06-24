@@ -195,4 +195,15 @@ class QueryBuilder
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    public function raw($sql)
+    {
+        try {
+            $stmt = $this->connection->prepare($sql);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("QueryBuilder raw SQL error: " . $e->getMessage());
+            throw $e;
+        }
+    }
 }
