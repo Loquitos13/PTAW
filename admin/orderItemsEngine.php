@@ -80,7 +80,7 @@ function getOrderItems($id)
 {
     global $apiUrl;
     
-    // Corrigir a URL - remover a barra extra
+
     $url = $apiUrl . "/orderItems/" . $id;
     error_log("Making request to: " . $url);
     

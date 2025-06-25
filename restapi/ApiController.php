@@ -1560,212 +1560,111 @@ class ApiController
     {
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
-
+    
         if (!is_array($data)) {
             return ['success' => false, 'message' => 'Invalid JSON data received'];
         }
-
+    
         $requiredFields = ['order_id', 'customer_info'];
         foreach ($requiredFields as $field) {
             if (!isset($data[$field])) {
                 return ['success' => false, 'message' => "Missing required field: $field"];
             }
         }
-
+    
         $orderId = (int) $data['order_id'];
         $customerInfo = $data['customer_info'];
-
+    
         try {
             error_log("=== UPDATE CUSTOMER INFO DEBUG ===");
             error_log("Order ID: " . $orderId);
             error_log("Customer Info: " . json_encode($customerInfo));
-
+    
+            // Get customer ID from order
             $order = $this->queryBuilder->table('Encomendas')
                 ->select(['Carrinhos.id_cliente'])
                 ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
                 ->where('id_encomenda', '=', $orderId)
                 ->get();
-
+    
             if (empty($order)) {
                 return ['success' => false, 'message' => 'Order not found'];
             }
-
+    
             $clienteId = $order[0]['id_cliente'];
             error_log("Cliente ID found: " . $clienteId);
-
-            $clienteBefore = $this->queryBuilder->table('Clientes')
-                ->select(['*'])
-                ->where('id_cliente', '=', $clienteId)
-                ->get();
-
-            error_log("Cliente BEFORE update: " . json_encode($clienteBefore));
-
-            if (empty($clienteBefore)) {
-                return ['success' => false, 'message' => 'Customer not found in database'];
-            }
-
-            $totalUpdates = 0;
-            $updatedFields = [];
-
+    
+            // Create update data array with field validations
+            $updateData = [];
+            
             if (!empty($customerInfo['nome'])) {
-                try {
-                    $currentNome = $clienteBefore[0]['nome_cliente'] ?? '';
-                    error_log("Current nome_cliente: '$currentNome', New value: '{$customerInfo['nome']}'");
-
-                    if ($currentNome !== $customerInfo['nome']) {
-                        $result = $this->queryBuilder->table('Clientes')
-                            ->update(['nome_cliente' => $customerInfo['nome']])
-                            ->where('id_cliente', '=', $clienteId)
-                            ->execute();
-
-                        error_log("Nome update result: " . ($result ? 'SUCCESS' : 'FAILED'));
-
-                        if ($result) {
-                            $updatedFields[] = 'nome_cliente';
-                            $totalUpdates++;
-                        }
-                    } else {
-                        error_log("Nome unchanged, skipping update");
-                    }
-                } catch (Exception $e) {
-                    error_log("Error updating nome_cliente: " . $e->getMessage());
-                }
+                $updateData['nome_cliente'] = $customerInfo['nome'];
             }
-
+            
             if (!empty($customerInfo['email'])) {
-                try {
-                    $currentEmail = $clienteBefore[0]['email_cliente'] ?? '';
-                    error_log("Current email_cliente: '$currentEmail', New value: '{$customerInfo['email']}'");
-
-                    if ($currentEmail !== $customerInfo['email']) {
-                        $result = $this->queryBuilder->table('Clientes')
-                            ->update(['email_cliente' => $customerInfo['email']])
-                            ->where('id_cliente', '=', $clienteId)
-                            ->execute();
-
-                        error_log("Email update result: " . ($result ? 'SUCCESS' : 'FAILED'));
-
-                        if ($result) {
-                            $updatedFields[] = 'email_cliente';
-                            $totalUpdates++;
-                        }
-                    } else {
-                        error_log("Email unchanged, skipping update");
-                    }
-                } catch (Exception $e) {
-                    error_log("Error updating email_cliente: " . $e->getMessage());
-                }
+                $updateData['email_cliente'] = $customerInfo['email'];
             }
-
-            if (isset($customerInfo['telefone']) && $customerInfo['telefone'] !== '') {
-                try {
-                    $currentTelefone = $clienteBefore[0]['contacto_cliente'] ?? '';
-                    error_log("Current contacto_cliente: '$currentTelefone', New value: '{$customerInfo['telefone']}'");
-
-                    if ($currentTelefone !== $customerInfo['telefone']) {
-                        $result = $this->queryBuilder->table('Clientes')
-                            ->update(['contacto_cliente' => $customerInfo['telefone']])
-                            ->where('id_cliente', '=', $clienteId)
-                            ->execute();
-
-                        error_log("Telefone update result: " . ($result ? 'SUCCESS' : 'FAILED'));
-
-                        if ($result) {
-                            $updatedFields[] = 'contacto_cliente';
-                            $totalUpdates++;
-                        }
-                    } else {
-                        error_log("Telefone unchanged, skipping update");
-                    }
-                } catch (Exception $e) {
-                    error_log("Error updating contacto_cliente: " . $e->getMessage());
-                }
+            
+            if (isset($customerInfo['telefone'])) {
+                $updateData['contacto_cliente'] = $customerInfo['telefone'];
             }
-
-            if (isset($customerInfo['nif']) && $customerInfo['nif'] !== '') {
-                try {
-                    $currentNif = $clienteBefore[0]['nif_cliente'] ?? '';
-                    error_log("Current nif_cliente: '$currentNif', New value: '{$customerInfo['nif']}'");
-
-                    if ($currentNif !== $customerInfo['nif']) {
-                        $result = $this->queryBuilder->table('Clientes')
-                            ->update(['nif_cliente' => $customerInfo['nif']])
-                            ->where('id_cliente', '=', $clienteId)
-                            ->execute();
-
-                        error_log("NIF update result: " . ($result ? 'SUCCESS' : 'FAILED'));
-
-                        if ($result) {
-                            $updatedFields[] = 'nif_cliente';
-                            $totalUpdates++;
-                        }
-                    } else {
-                        error_log("NIF unchanged, skipping update");
-                    }
-                } catch (Exception $e) {
-                    error_log("Error updating nif_cliente: " . $e->getMessage());
-                }
+            
+            if (isset($customerInfo['nif'])) {
+                $updateData['nif_cliente'] = $customerInfo['nif'];
             }
-
+            
             if (!empty($customerInfo['morada'])) {
-                try {
-                    $currentMorada = $clienteBefore[0]['morada_cliente'] ?? '';
-                    error_log("Current morada_cliente: '$currentMorada', New value: '{$customerInfo['morada']}'");
-
-                    if ($currentMorada !== $customerInfo['morada']) {
-                        $result = $this->queryBuilder->table('Clientes')
-                            ->update(['morada_cliente' => $customerInfo['morada']])
-                            ->where('id_cliente', '=', $clienteId)
-                            ->execute();
-
-                        error_log("Morada update result: " . ($result ? 'SUCCESS' : 'FAILED'));
-
-                        if ($result) {
-                            $updatedFields[] = 'morada_cliente';
-                            $totalUpdates++;
-                        }
-                    } else {
-                        error_log("Morada unchanged, skipping update");
-                    }
-                } catch (Exception $e) {
-                    error_log("Error updating morada_cliente: " . $e->getMessage());
-                }
+                $updateData['morada_cliente'] = $customerInfo['morada'];
             }
-
+            
+            if (empty($updateData)) {
+                return ['success' => false, 'message' => 'No valid fields to update'];
+            }
+            
+            // Use a direct PDO approach to avoid QueryBuilder binding issues
+            $pdo = Database::getConnection();
+            
+            // Build the query manually for better control
+            $setClause = [];
+            foreach ($updateData as $field => $value) {
+                $setClause[] = "$field = :$field";
+            }
+            
+            $sql = "UPDATE Clientes SET " . implode(', ', $setClause) . " WHERE id_cliente = :id_cliente";
+            $stmt = $pdo->prepare($sql);
+            
+            // Bind all parameters explicitly
+            foreach ($updateData as $field => $value) {
+                $stmt->bindValue(":$field", $value);
+            }
+            $stmt->bindValue(':id_cliente', $clienteId, PDO::PARAM_INT);
+            
+            // Execute and check result
+            $result = $stmt->execute();
+            
+            if (!$result) {
+                error_log("SQL Error: " . print_r($stmt->errorInfo(), true));
+                return ['success' => false, 'message' => 'Database error during update'];
+            }
+            
+            // Get updated customer info
             $clienteAfter = $this->queryBuilder->table('Clientes')
                 ->select(['*'])
                 ->where('id_cliente', '=', $clienteId)
                 ->get();
-
-            error_log("Cliente AFTER update: " . json_encode($clienteAfter));
-            error_log("Total updates performed: " . $totalUpdates);
-            error_log("=== END DEBUG ===");
-
-            if ($totalUpdates === 0) {
-                return [
-                    'success' => false,
-                    'message' => 'No fields were actually updated - either all values were the same or updates failed',
-                    'debug' => [
-                        'cliente_before' => $clienteBefore[0] ?? null,
-                        'cliente_after' => $clienteAfter[0] ?? null,
-                        'attempted_updates' => $customerInfo
-                    ]
-                ];
-            }
-
+    
             return [
                 'success' => true,
                 'message' => 'Customer information updated successfully',
                 'data' => [
                     'order_id' => $orderId,
                     'client_id' => $clienteId,
-                    'updated_fields' => $updatedFields,
-                    'total_updates' => $totalUpdates,
-                    'before' => $clienteBefore[0] ?? null,
-                    'after' => $clienteAfter[0] ?? null
+                    'updated_fields' => array_keys($updateData),
+                    'updated_data' => $updateData,
+                    'customer' => $clienteAfter[0] ?? null
                 ]
             ];
-
+    
         } catch (PDOException $e) {
             error_log("Database error in updateCustomerInfo: " . $e->getMessage());
             return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
@@ -1779,62 +1678,141 @@ class ApiController
     {
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
-
-        if (!is_array($data) || !isset($data['id_cliente'])) {
-            return ['success' => false, 'message' => 'Dados inválidos'];
+    
+        if (!is_array($data)) {
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
         }
-
+    
+        $requiredFields = ['id_cliente'];
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field])) {
+                return ['success' => false, 'message' => "Missing required field: $field"];
+            }
+        }
+    
         $clienteId = (int) $data['id_cliente'];
-
+    
         try {
+            error_log("=== UPDATE CLIENT INFO DEBUG ===");
+            error_log("Client ID: " . $clienteId);
+            error_log("Client Data: " . json_encode($data));
+    
+            // Check if client exists
             $cliente = $this->queryBuilder->table('Clientes')
-                ->select(['id_cliente'])
+                ->select(['*'])
                 ->where('id_cliente', '=', $clienteId)
                 ->get();
-
+    
             if (empty($cliente)) {
                 return ['success' => false, 'message' => 'Cliente não encontrado'];
             }
-
-            $updateFields = [];
-            $fieldsToUpdate = [
-                'nome_cliente',
-                'email_cliente',
-                'contacto_cliente',
-                'morada_cliente',
-                'cidade_cliente',
-                'state_cliente',
-                'cod_postal_cliente',
-                'pais_cliente'
-            ];
-
-            foreach ($fieldsToUpdate as $field) {
-                if (isset($data[$field]) && $data[$field] !== '') {
-                    $updateFields[$field] = $data[$field];
+    
+            // Create update data array with field validations
+            $updateData = [];
+            
+            if (!empty($data['nome_cliente'])) {
+                $updateData['nome_cliente'] = $data['nome_cliente'];
+            }
+            
+            if (!empty($data['email_cliente'])) {
+                $updateData['email_cliente'] = $data['email_cliente'];
+            }
+            
+            if (isset($data['contacto_cliente'])) {
+                $updateData['contacto_cliente'] = $data['contacto_cliente'];
+            }
+            
+            if (isset($data['morada_cliente'])) {
+                $updateData['morada_cliente'] = $data['morada_cliente'];
+            }
+            
+            if (isset($data['cidade_cliente'])) {
+                $updateData['cidade_cliente'] = $data['cidade_cliente'];
+            }
+            
+            if (isset($data['state_cliente'])) {
+                $updateData['state_cliente'] = $data['state_cliente'];
+            }
+            
+            if (isset($data['cod_postal_cliente'])) {
+                $updateData['cod_postal_cliente'] = $data['cod_postal_cliente'];
+            }
+            
+            if (isset($data['pais_cliente'])) {
+                $updateData['pais_cliente'] = $data['pais_cliente'];
+            }
+            
+            if (isset($data['nif_cliente'])) {
+                $updateData['nif_cliente'] = $data['nif_cliente'];
+            }
+            
+            // Handle password update separately if provided
+            if (isset($data['pass_cliente']) && !empty($data['pass_cliente'])) {
+                // Check current password if provided
+                if (isset($data['current_password']) && !empty($data['current_password'])) {
+                    $storedHashedPassword = $cliente[0]['pass_cliente'];
+                    
+                    if (password_verify($data['current_password'], $storedHashedPassword)) {
+                        // Current password matches, hash the new password
+                        $updateData['pass_cliente'] = password_hash($data['pass_cliente'], PASSWORD_DEFAULT);
+                    } else {
+                        return ['success' => false, 'message' => 'Senha atual incorreta'];
+                    }
+                } else {
+                    // If no current password provided, but new password is, reject
+                    return ['success' => false, 'message' => 'Senha atual é necessária para alterar a senha'];
                 }
             }
-
-            error_log("Campos para atualização: " . json_encode($updateFields));
-
-            if (empty($updateFields)) {
-                return ['success' => false, 'message' => 'Nenhum campo válido para atualizar'];
+            
+            error_log("Fields to update: " . json_encode($updateData));
+    
+            if (empty($updateData)) {
+                return ['success' => false, 'message' => 'Nenhum campo válido para atualização'];
             }
-
-            $result = $this->queryBuilder->table('Clientes')
-                ->update($updateFields)
-                ->where('id_cliente', '=', $clienteId)
-                ->execute();
-
+    
+            // Use direct PDO approach to avoid QueryBuilder binding issues
+            $pdo = Database::getConnection();
+            
+            // Build the query manually for better control
+            $setClause = [];
+            foreach ($updateData as $field => $value) {
+                $setClause[] = "$field = :$field";
+            }
+            
+            $sql = "UPDATE Clientes SET " . implode(', ', $setClause) . " WHERE id_cliente = :id_cliente";
+            $stmt = $pdo->prepare($sql);
+            
+            // Bind all parameters explicitly
+            foreach ($updateData as $field => $value) {
+                $stmt->bindValue(":$field", $value);
+            }
+            $stmt->bindValue(':id_cliente', $clienteId, PDO::PARAM_INT);
+            
+            // Execute and check result
+            $result = $stmt->execute();
+            
             if (!$result) {
-                return ['success' => false, 'message' => 'Falha ao atualizar informações do cliente'];
+                error_log("SQL Error: " . print_r($stmt->errorInfo(), true));
+                return ['success' => false, 'message' => 'Erro de banco de dados durante atualização'];
             }
-
+            
+            // Get updated client info
+            $clienteAfter = $this->queryBuilder->table('Clientes')
+                ->select(['*'])
+                ->where('id_cliente', '=', $clienteId)
+                ->get();
+    
             return [
                 'success' => true,
                 'message' => 'Informações do cliente atualizadas com sucesso',
-                'updated_fields' => array_keys($updateFields)
+                'data' => [
+                    'client_id' => $clienteId,
+                    'updated_fields' => array_keys($updateData),
+                    'updated_data' => $updateData,
+                    'client' => $clienteAfter[0] ?? null
+                ]
             ];
-
+    
         } catch (PDOException $e) {
             error_log("Erro de banco de dados em updateClientInfo: " . $e->getMessage());
             return ['success' => false, 'message' => 'Erro de banco de dados: ' . $e->getMessage()];
@@ -1843,7 +1821,6 @@ class ApiController
             return ['success' => false, 'message' => 'Erro ao atualizar informações: ' . $e->getMessage()];
         }
     }
-
 
     public function showClientInfo($id_cliente): array
     {
