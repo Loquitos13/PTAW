@@ -2,23 +2,38 @@ let currentEditProductId = null;
 let currentDeleteProductId = null;
 
 // Armazena o ID do produto que está a ser editado
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const editButton = e.target.closest('button[data-bs-target="#editProductModal"]');
     if (editButton) {
         currentEditProductId = editButton.getAttribute('data-id');
-        console.log("ID armazenado:", currentEditProductId);
+        const produto = products.find(p => p.id_produto == currentEditProductId);
+        if (produto) {
+            preencherModalEdicao(produto);
+        }
     }
 });
 document.addEventListener("DOMContentLoaded", function () {
-    document.addEventListener('click', function(e) {
-    const deleteButton = e.target.closest('button[data-bs-target="#deleteProductModal"]');
-    if (deleteButton) {
-        currentDeleteProductId = deleteButton.getAttribute('data-id');
-        console.log("ID armazenado:", currentDeleteProductId);
-    }
-});
+    document.addEventListener('click', function (e) {
+        const deleteButton = e.target.closest('button[data-bs-target="#deleteProductModal"]');
+        if (deleteButton) {
+            currentDeleteProductId = deleteButton.getAttribute('data-id');
+            console.log("ID armazenado:", currentDeleteProductId);
+        }
+    });
 
 });
+
+function preencherModalEdicao(produto) {
+    document.getElementById('editProductName').querySelector('input').value = produto.titulo_produto;
+    document.getElementById('editKeywords').querySelector('input').value = produto.keywords_produto;
+    document.getElementById('editCategory').querySelector('select').value = produto.id_categoria;
+    document.getElementById('editPrice').querySelector('input').value = produto.preco_produto;
+    document.getElementById('editStock').querySelector('input').value = produto.stock_produto;
+    document.getElementById('editStatus').querySelector('select').value = produto.status_produto ? "Active" : "Inactive";
+    document.getElementById('editDescription').querySelector('textarea').value = produto.descricao_produto;
+    document.getElementById('editImagemPrincipal').value = produto.imagem_principal;
+    document.getElementById('editModelo3DProduto').textContent = produto.modelo3d_produto || '';
+}
 
 /*
 document.getElementById('productForm').addEventListener('submit', async function (e) {
@@ -61,71 +76,32 @@ document.getElementById('productForm').addEventListener('submit', async function
 document.getElementById("productForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    let titulo_produto = document.getElementById("productName").value;
-    let keywords_produto = document.getElementById("keywords").value;
-    let id_categoria = document.getElementById("category").value;
-    let preco_produto = parseFloat(document.getElementById("price").value);
-    let stock_produto = document.getElementById("stock").value;
-    let status_produto = document.getElementById("status").value === "Active" ? 1 : 0;
-    let descricao_produto = document.getElementById("description").value;
-    /* let imagem_principal = document.getElementById("image").files[0];
-     let modelo3d_produto = document.getElementById("model3d").value;  */
+    const formData = new FormData(this);
 
-    console.log("Título:", titulo_produto);
-    console.log("Keywords:", keywords_produto);
-    console.log("Categoria:", id_categoria);
-    console.log("Preço:", preco_produto);
-    console.log("Stock:", stock_produto);
-    console.log("Status:", status_produto);
-    console.log("Descrição:", descricao_produto);
-
-    if (!titulo_produto || !keywords_produto || !id_categoria || !preco_produto || !stock_produto || !status_produto || !descricao_produto) {
+    if (!formData.get("imagem_principal") || !formData.get("titulo_produto") || !formData.get("keywords_produto") ||
+        !formData.get("id_categoria") || !formData.get("preco_produto") || !formData.get("stock_produto") ||
+        !formData.get("status_produto") || !formData.get("descricao_produto")) {
         alert("Por favor, preencha todos os campos obrigatórios.");
         return;
-
-    } else {
-
-        const formData = {
-            id_categoria: id_categoria,
-            titulo_produto: titulo_produto,
-            modelo3d_produto: "",
-            descricao_produto: descricao_produto,
-            imagem_principal: "",
-            preco_produto: preco_produto,
-            stock_produto: stock_produto,
-            keywords_produto: keywords_produto,
-            status_produto: status_produto,
-            data_criacao_produto: new Date().toISOString().slice(0, 19).replace('T', ' ')
-        };
-
-        const productResult = await productInsertion(formData);
-
-        if (productResult.status === 'success') {
-
-            window.location.href = "/PTAW/src/Admin/produtosAdmin.php";
-
-        }
     }
 
-    async function productInsertion(formData) {
+    const response = await fetch("../../admin/insertProducts.php", {
+        method: "POST",
+        body: formData
+    });
+    const productResult = await response.json();
 
-        const response = await fetch("../../admin/insertProducts.php", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-        });
-        return await response.json();
+    if (productResult.status === 'success') {
+        window.location.href = "/PTAW/src/Admin/produtosAdmin.php";
     }
 
 })
 
 
-    // Carrega os produtos da base de dados
-    document.addEventListener("DOMContentLoaded", function () {
-        fetchAndDisplayProducts();
-    });
+// Carrega os produtos da base de dados
+document.addEventListener("DOMContentLoaded", function () {
+    fetchAndDisplayProducts();
+});
 
 async function fetchAndDisplayProducts() {
     try {
@@ -166,76 +142,40 @@ async function fetchAndDisplayProducts() {
 }
 
 
-async function productUpdate(formData) {
-    const response = await fetch(`../../admin/editProducts.php`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+async function productUpdate(formElement) {
+    const formData = new FormData(formElement);
+    formData.set('id_produto', currentEditProductId);
+
+    if (!formData.get("imagem_principal") && !formData.get("product_image")) {
+        alert("Por favor, selecione uma imagem ou mantenha a atual.");
+        return;
+    }
+
+    const response = await fetch("../../admin/editProducts.php", {
+        method: "POST",
+        body: formData
     });
     return await response.json();
-
 }
 
 document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById('editProductForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
+        e.preventDefault();
 
-    let titulo_produto = document.getElementById("editProductName").value;
-    let keywords_produto = document.getElementById("editKeywords").value;
-    let id_categoria = document.getElementById("editCategory").value;
-    let preco_produto = parseFloat(document.getElementById("editPrice").value);
-    let stock_produto = document.getElementById("editStock").value;
-    let status_produto = document.getElementById("editStatus").value === "Active" ? 1 : 0;
-    let descricao_produto = document.getElementById("editDescription").value;
-    /* let imagem_principal = document.getElementById("image").files[0];
-     let modelo3d_produto = document.getElementById("model3d").value;  */
-
-    console.log("Título:", titulo_produto);
-    console.log("Keywords:", keywords_produto);
-    console.log("Categoria:", id_categoria);
-    console.log("Preço:", preco_produto);
-    console.log("Stock:", stock_produto);
-    console.log("Status:", status_produto);
-    console.log("Descrição:", descricao_produto);
-
-    if (!titulo_produto || !keywords_produto || !id_categoria || !preco_produto || !stock_produto || !status_produto || !descricao_produto) {
-        alert("Por favor, preencha todos os campos obrigatórios.");
-        return;
-
-    } else {
-
-        const formData = {
-            id_produto: currentEditProductId,
-            id_categoria: id_categoria,
-            titulo_produto: titulo_produto,
-            modelo3d_produto: "",
-            descricao_produto: descricao_produto,
-            imagem_principal: "",
-            preco_produto: preco_produto,
-            stock_produto: stock_produto,
-            keywords_produto: keywords_produto,
-            status_produto: status_produto,
-            data_criacao_produto:new Date().toISOString().slice(0, 19).replace('T', ' ')
-        };
-
-        const productResult = await productUpdate(formData);
+        const productResult = await productUpdate(this);
 
         if (productResult.status === 'success') {
             await fetchAndDisplayProducts();
             window.location.href = "/PTAW/src/Admin/produtosAdmin.php";
-
         }
-    }
-});
+    });
 
 });
 
 async function productDeletion(productId) {
     const response = await fetch(`../../admin/deleteProducts.php`, {
-        method: "DELETE",
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
@@ -249,11 +189,11 @@ async function productDeletion(productId) {
 document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("confirmDelete").addEventListener("click", async function (e) {
-    e.preventDefault();
-    await productDeletion(currentDeleteProductId);
-    await fetchAndDisplayProducts();
-    window.location.href = "/PTAW/src/Admin/produtosAdmin.php";
-});
+        e.preventDefault();
+        await productDeletion(currentDeleteProductId);
+        await fetchAndDisplayProducts();
+        window.location.href = "/PTAW/src/Admin/produtosAdmin.php";
+    });
 
 });
 

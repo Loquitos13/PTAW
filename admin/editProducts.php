@@ -1,7 +1,7 @@
 <?php
 require_once '../restapi/Database.php';
 
-$apiUrl = "http://localhost/PTAW/restapi/PrintGoAPI.php";
+$apiUrl = "http://estga-dev.ua.pt/~ptaw-2025-gr4/restapi/PrintGoAPI.php";
 
 function executeCurlRequest($ch) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -27,21 +27,49 @@ function executeCurlRequest($ch) {
 header('Content-Type: application/json');
 
 try {
-    $json = file_get_contents('php://input');
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    if (empty($json)) {
-        throw new Exception("Empty request body");
+        $idProduto = isset($_POST['id_produto']) ? $_POST['id_produto'] : null;
+
+        // Processa nova imagem, se enviada
+        if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
+
+            $uploadDir = __DIR__ . '/../imagens/img_products/';
+            $fileName = $idProduto . '_' . basename($_FILES['product_image']['name']);
+            $uploadFile = $uploadDir . $fileName;
+
+            if (!move_uploaded_file($_FILES['product_image']['tmp_name'], $uploadFile)) {
+                throw new Exception("Erro ao guardar a nova imagem.");
+            }
+
+            $data = $_POST;
+            $data['imagem_principal'] = $fileName;
+        } else {
+            $data = $_POST;
+            if (empty($data['imagem_principal'])) {
+                throw new Exception("Imagem do produto não especificada.");
+            }
+        }
+
+        // Processa novo modelo 3D, se enviado
+        if (isset($_FILES['modelo3d_produto']) && $_FILES['modelo3d_produto']['error'] === UPLOAD_ERR_OK) {
+
+            $model3dDir = __DIR__ . '/../imagens/img_products/'; //Pasta diferente ou a mesma?
+            $model3dName = uniqid() . '_' . basename($_FILES['modelo3d_produto']['name']);
+            $model3dFile = $model3dDir . $model3dName;
+
+            if (!move_uploaded_file($_FILES['modelo3d_produto']['tmp_name'], $model3dFile)) {
+                throw new Exception("Erro ao guardar o novo modelo 3D.");
+            }
+
+            $data['modelo3d_produto'] = $model3dName;
+        }
+
+        $response = updateProductData($data);
+        echo json_encode($response);
+    } else {
+        throw new Exception("Método inválido.");
     }
-
-    $data = json_decode($json, true);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception("Invalid JSON: " . json_last_error_msg());
-    }
-
-    $response = updateProductData($data);
-     echo json_encode($response);
-
 } catch (Exception $e) {
     http_response_code(400);
     echo json_encode([
@@ -59,7 +87,7 @@ function updateProductData($data) {
 
     $ch = curl_init("$apiUrl/updateProduct");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+    curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json'

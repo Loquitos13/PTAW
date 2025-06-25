@@ -6,7 +6,7 @@ header("Access-Control-Allow-Methods: GET, POST");
 
 require_once '../restapi/Database.php';
 
-$apiUrl = "http://localhost/PTAW/restapi/PrintGoAPI.php";
+$apiUrl = "http://estga-dev.ua.pt/~ptaw-2025-gr4/restapi/PrintGoAPI.php";
 
 function executeCurlRequest($ch) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
