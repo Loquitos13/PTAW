@@ -1,7 +1,19 @@
 <?php
 session_start();
-$adminId = $_SESSION['admin_id'] ?? null;
+
+if (!isset($_SESSION['admin_id'])) {
+    header('Location: ../SignIn.html');
+    exit;
+} else {
+
+    $adminID = $_SESSION['admin_id'];
+
+}
+
 ?>
+
+<input type="hidden" id="adminID" value="<?php echo htmlspecialchars($adminID); ?>">
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -265,7 +277,7 @@ $adminId = $_SESSION['admin_id'] ?? null;
               <div class="d-flex align-items-center">
                 <img src="../../imagens/admin.png" alt="" id="img-admin"
                   style="width:40px; height:40px; object-fit:cover; border-radius:50%;">
-                <h6 class="mb-0 ms-3">John Doe</h6>
+                <h6 id="admin_nome" class="mb-0 ms-3">Nome Admin</h6>
               </div>
             </div>
           </div>

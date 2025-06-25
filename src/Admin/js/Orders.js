@@ -14,6 +14,43 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 
+    const adminID = document.getElementById("adminID");
+    
+    getAdminInfo(adminID);
+
+    async function getAdminInfo(adminID) {
+
+        const resultAdminInfo = await adminInfoByID(adminID.value);
+
+        if (resultAdminInfo.status == 'success') {
+
+            const adminName = resultAdminInfo.data["nome_admin"];
+            const adminImage = resultAdminInfo.data["imagem_admin"];
+
+            document.getElementById("admin_nome").textContent = adminName;
+            document.getElementById("img-admin").src = adminImage;
+
+        }
+    }
+
+
+    async function adminInfoByID(id_admin) {
+
+        const response = await fetch('../../admin/getAdmin.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id_admin: id_admin})
+        });
+
+
+        return await response.json();
+
+    }
+
+
+
   loadOrders();
 });
 

@@ -5,8 +5,16 @@ session_start();
 if (!isset($_SESSION['admin_id'])) {
     header('Location: ../SignIn.html');
     exit;
+} else {
+
+    $adminID = $_SESSION['admin_id'];
+
 }
+
 ?>
+
+<input type="hidden" id="adminID" value="<?php echo htmlspecialchars($adminID); ?>">
+
 <!DOCTYPE html>
 <html lang="pt-pt">
 
@@ -288,11 +296,9 @@ if (!isset($_SESSION['admin_id'])) {
                 <p class="text-muted">Manage your store preferences</p>
               </div>
               <div class="d-flex align-items-center">
-                <div class="me-3 text-end d-none d-sm-block">
-                  <i class="bi bi-bell fs-5"></i>
-                </div>
-                <img src="../../imagens/admin.png" alt="Admin Profile" id="img-admin">
-                <span class="ms-2">Admin</span>
+                <img src="../../imagens/admin.png" alt="" id="img-admin"
+                  style="width:40px; height:40px; object-fit:cover; border-radius:50%;">
+                <h6 id="admin_nome" class="mb-0 ms-3">Nome Admin</h6>
               </div>
             </div>
           </div>

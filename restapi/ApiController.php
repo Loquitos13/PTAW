@@ -360,6 +360,20 @@ class ApiController
 
     }
 
+    
+    public function getRecentOrders(): array
+    {
+
+        return $this->queryBuilder->table('Encomendas')
+            ->select(["Encomendas.id_encomenda as OrderID", "Clientes.nome_cliente as Customer", "Encomendas.status_encomenda as Status", "Encomendas.preco_total_encomenda as Amount"])
+            ->join('Carrinhos', 'Encomendas.id_carrinho', '=', 'Carrinhos.id_carrinho')
+            ->join('Clientes', 'Carrinhos.id_cliente', '=', 'Clientes.id_cliente')
+            ->order("Encomendas.data_criacao_encomenda", "DESC")
+            ->limit(10)
+            ->get();
+
+    }
+
     public function numberOfOrdersFilteredByDay($day): array
     {
 

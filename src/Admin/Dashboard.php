@@ -28,6 +28,7 @@ if (!isset($_SESSION['admin_id'])) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
   </script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 
 <style>
@@ -273,272 +274,61 @@ if (!isset($_SESSION['admin_id'])) {
         </div>
       </div>
 
-      <!-- experimentar depois colocar py-4 -->
-      <div class="container-fluid">
-        <div class="row">
-          <!-- div para deixar cada um dos cards responsivos -->
-          <div class="col-lg-3 col-md-6 mb-3">
-            <!-- card de vendas totais -->
-            <div class="card">
-              <!-- corpo do card -->
-              <div class="card-body">
-                <div class="container-fluid p-0">
-                  <!-- cria uma linha para colocar o titulo e a percentagem -->
-                  <div class="row">
-                    <div class="col-7">
-                      <p class="card-title">Total Sales</p>
-                    </div>
-                    <!-- per-possitivo é uma classe que vai dar cor ao valor -->
-                    <div class="col-5 fw-bold per-possitivo">
-                      <p>+12.5%</p>
-                    </div>
+      <div class="container py-4">
+          <div class="row g-3">
+
+              <!-- Total de Pedidos -->
+              <div class="col-md-3">
+                  <div class="metric-card">
+                      <div id="total_orders" class="metric-title">Total Orders</div>
                   </div>
-                  <h5>24,78€</h5>
-                </div>
-                <p class="card-text">vs. $22,123 last month</p>
               </div>
-            </div>
-          </div>
 
-          <!-- div para deixar cada um dos cards responsivos -->
-          <div class="col-lg-3 col-md-6 mb-3">
-            <!-- card de numero de vendas -->
-            <div class="card">
-              <!-- corpo do card -->
-              <div class="card-body">
-                <div class="container-fluid p-0">
-                  <!-- cria uma linha para colocar o titulo e a percentagem -->
-                  <div class="row">
-                    <div class="col-7">
-                      <p class="card-title">Orders</p>
-                    </div>
-                    <!-- per-possitivo é uma classe que vai dar cor ao valor -->
-                    <div class="col-5 fw-bold per-possitivo">
-                      <p>+8.2%</p>
-                    </div>
+              <!-- Receita -->
+              <div class="col-md-3">
+                  <div class="metric-card">
+                      <div id="revenue_metric_card" class="metric-title">Revenue</div>
                   </div>
-                  <h5>384</h5>
-                </div>
-                <p class="card-text">vs. 355 last month</p>
               </div>
-            </div>
-          </div>
 
-          <!-- div para deixar cada um dos cards responsivos -->
-          <div class="col-lg-3 col-md-6 mb-3">
-            <!-- card de numero de clientes -->
-            <div class="card">
-              <!-- corpo do card -->
-              <div class="card-body">
-                <div class="container-fluid p-0">
-                  <!-- cria uma linha para colocar o titulo e a percentagem -->
-                  <div class="row">
-                    <div class="col-7">
-                      <p class="card-title">Customers</p>
-                    </div>
-                    <!-- per-possitivo é uma classe que vai dar cor ao valor -->
-                    <div class="col-5 fw-bold per-possitivo">
-                      <p>+23.5%</p>
-                    </div>
+              <!-- Valor Médio do Pedido -->
+              <div class="col-md-3">
+                  <div class="metric-card">
+                      <div id="avg_revenue" class="metric-title">Avg. Order Value</div>
                   </div>
-                  <h5>1,842</h5>
-                </div>
-                <p class="card-text">vs. 1,492 last month</p>
               </div>
-            </div>
-          </div>
 
-          <!-- div para deixar cada um dos cards responsivos -->
-          <div class="col-lg-3 col-md-6 mb-3">
-            <!-- card de preço medio de encomenda -->
-            <div class="card">
-              <!-- corpo do card -->
-              <div class="card-body">
-                <div class="container-fluid p-0">
-                  <!-- cria uma linha para colocar o titulo e a percentagem -->
-                  <div class="row">
-                    <div class="col-7">
-                      <p class="card-title">Avg. Order Value</p>
-                    </div>
-                    <!-- per-possitivo é uma classe que vai dar cor ao valor -->
-                    <div class="col-5 fw-bold per-negativo">
-                      <p>-2.3%</p>
-                    </div>
+              <!-- Contas Criadas -->
+              <div class="col-md-3">
+                  <div class="metric-card">
+                      <div id="created_accounts" class="metric-title">Created Accounts</div>
                   </div>
-                  <h5>64.50€</h5>
-                </div>
-                <p class="card-text">vs. 66.02€ last month</p>
               </div>
-            </div>
           </div>
-
-        </div>
-
       </div>
-
-      <div class="container-fluid">
-        <div class="row">
-
-          <!-- div para deixar cada um dos cards responsivos -->
-          <div class="col-lg-6 col-md-12 mb-3">
-            <!-- card ordens recentes -->
-            <div class="card">
-              <!-- corpo do card -->
-              <div class="card-body">
-                <div class="container-fluid p-0">
-                  <h5 class="card-title">Recent Orders</h5>
-                  <hr>
-
-                  <!-- Tabela de ordens recentes com scroll -->
-                  <!-- A tabela tem um max-height de 180px e overflow-y: auto para permitir o scroll quando o conteúdo excede essa altura -->
-                  <div style="max-height: 180px; overflow-y: auto;">
-                    <table class="table">
-                      <thead>
-                        <tr>
-                          <th scope="col">Order ID</th>
-                          <th scope="col">Customer</th>
-                          <th scope="col">Status</th>
-                          <th scope="col">Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">7842</th>
-                          <td>Sarah Johnson</td>
-                          <td class="status-comleted">Completed</td>
-                          <td>128.50€</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">7841</th>
-                          <td>Michael Chen</td>
-                          <td class="status-pending ">Pending</td>
-                          <td>85.20€</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">7840</th>
-                          <td>Emily Wilson</td>
-                          <td class="status-processing">Processing</td>
-                          <td>242.00€</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">7840</th>
-                          <td>Emily Wilson</td>
-                          <td class="status-processing">Processing</td>
-                          <td>242.00€</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">7840</th>
-                          <td>Emily Wilson</td>
-                          <td class="status-processing">Processing</td>
-                          <td>242.00€</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">7840</th>
-                          <td>Emily Wilson</td>
-                          <td class="status-processing">Processing</td>
-                          <td>242.00€</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+      <div class="row g-3">
+          <div class="col-md-8">
+              <div class="metric-card">
+              <div id="recent_orders_div" class="metric-title">Recent Orders</div>
+              <br>
+              <table id="recent_orders" class="table"></table>
               </div>
-            </div>
           </div>
-
-          <!-- div para deixar cada um dos cards responsivos -->
-          <div class="col-lg-6 col-md-12 mb-3">
-            <!-- card dos produtos mais vendidos -->
-            <div class="card" style="min-height: 271px;">
-              <!-- corpo do card -->
-              <div class="card-body">
-                <div class="container-fluid p-0">
-                  <h5 class="card-title">Best Selling Products</h5>
-                  <hr>
-                  <!-- Tabela de produtos mais vendidos com scroll -->
-                  <div style="max-height: 180px; overflow-y: auto; overflow-x: hidden;">
-
-                    <div class="row">
-                      <!-- imagem do produto centrada ao meio -->
-                      <div class="col-3 align-items-center justify-content-center d-flex">
-                        <img src="../../imagens/produtos varios hero.png" alt="Product Image" class="" width="auto"
-                          height="55px">
-                      </div>
-                      <!-- Nome do produto e numero de vendas -->
-                      <div class="col-6">
-                        <p class="fw-bold">Classic T-Shirt</p>
-                        <p class="num-sales">1,242 sales</p>
-                      </div>
-                      <!-- Preço do produto e percentagem de vendas -->
-                      <div class="col-3">
-                        <p class="fw-bold">24.99€</p>
-                        <p class="num-sales per-possitivo">+12%</p>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <!-- imagem do produto centrada ao meio -->
-                      <div class="col-3 align-items-center justify-content-center d-flex">
-                        <img src="../../imagens/produtos varios hero.png" alt="Product Image" width="auto"
-                          height="55px">
-                      </div>
-                      <!-- Nome do produto e numero de vendas -->
-                      <div class="col-6">
-                        <p class="fw-bold">Classic T-Shirt</p>
-                        <p class="num-sales">1,242 sales</p>
-                      </div>
-                      <!-- Preço do produto e percentagem de vendas -->
-                      <div class="col-3">
-                        <p class="fw-bold">24.99€</p>
-                        <p class="num-sales per-possitivo">+12%</p>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <!-- imagem do produto centrada ao meio -->
-                      <div class="col-3 align-items-center justify-content-center d-flex">
-                        <img src="../../imagens/produtos varios hero.png" alt="Product Image" width="auto"
-                          height="55px">
-                      </div>
-                      <!-- Nome do produto e numero de vendas -->
-                      <div class="col-6">
-                        <p class="fw-bold">Classic T-Shirt</p>
-                        <p class="num-sales">1,242 sales</p>
-                      </div>
-                      <!-- Preço do produto e percentagem de vendas -->
-                      <div class="col-3">
-                        <p class="fw-bold">24.99€</p>
-                        <p class="num-sales per-possitivo">+12%</p>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <!-- imagem do produto centrada ao meio -->
-                      <div class="col-3 align-items-center justify-content-center d-flex">
-                        <img src="../../imagens/produtos varios hero.png" alt="Product Image" width="auto"
-                          height="55px">
-                      </div>
-                      <!-- Nome do produto e numero de vendas -->
-                      <div class="col-6">
-                        <p class="fw-bold">Classic T-Shirt</p>
-                        <p class="num-sales">1,242 sales</p>
-                      </div>
-                      <!-- Preço do produto e percentagem de vendas -->
-                      <div class="col-3">
-                        <p class="fw-bold">24.99€</p>
-                        <p class="num-sales per-possitivo">+12%</p>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
       </div>
-    </div>
+      
+      <br>
+
+      <div class="row g-3">
+          <div class="col-md-8">
+            <div class="metric-card">
+                <div id="top_products_div" class="metric-title">Top Products</div>
+                <br>
+                <table id="top_products" class="table">
+                </table>
+            </div>
+          </div>
+      </div>
+  </div>
 
   </div>
   </div>

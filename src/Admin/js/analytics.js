@@ -11,6 +11,41 @@ document.addEventListener("DOMContentLoaded", function() {
             </a>
         </li>`;
 
+    const adminID = document.getElementById("adminID");
+    
+    getAdminInfo(adminID);
+
+    async function getAdminInfo(adminID) {
+
+        const resultAdminInfo = await adminInfoByID(adminID.value);
+
+        if (resultAdminInfo.status == 'success') {
+
+            const adminName = resultAdminInfo.data["nome_admin"];
+            const adminImage = resultAdminInfo.data["imagem_admin"];
+
+            document.getElementById("admin_nome").textContent = adminName;
+            document.getElementById("img-admin").src = adminImage;
+
+        }
+    }
+
+
+    async function adminInfoByID(id_admin) {
+
+        const response = await fetch('../../admin/getAdmin.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id_admin: id_admin})
+        });
+
+
+        return await response.json();
+
+    }
+
         async function getServerTime() {
 
             try {
@@ -174,11 +209,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
 
-            document.getElementById("one_star_perc").textContent = (reviews_value[0] / arraySum) * 100 + "%";
-            document.getElementById("two_star_perc").textContent = (reviews_value[1] / arraySum) * 100 + "%";
-            document.getElementById("three_star_perc").textContent = (reviews_value[2] / arraySum) * 100 + "%";
-            document.getElementById("four_star_perc").textContent = (reviews_value[3] / arraySum) * 100 + "%";
-            document.getElementById("five_star_perc").textContent = (reviews_value[4] / arraySum) * 100 + "%";
+            document.getElementById("one_star_perc").textContent  = ((reviews_value[0] / arraySum) * 100).toFixed(2) + "%";
+            document.getElementById("two_star_perc").textContent  = ((reviews_value[1] / arraySum) * 100).toFixed(2) + "%";
+            document.getElementById("three_star_perc").textContent = ((reviews_value[2] / arraySum) * 100).toFixed(2) + "%";
+            document.getElementById("four_star_perc").textContent  = ((reviews_value[3] / arraySum) * 100).toFixed(2) + "%";
+            document.getElementById("five_star_perc").textContent  = ((reviews_value[4] / arraySum) * 100).toFixed(2) + "%";
+
 
             const reviews_color = ['rgb(255, 0, 0)', 'rgb(255, 102, 0)', 'rgb(255, 204, 0)', 'rgb(102, 204, 0)', 'rgb(0, 153, 51)'];
 

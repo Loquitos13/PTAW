@@ -37,6 +37,8 @@ $router->add('GET', '/revenuePerMonth', fn() => $controller->getRevenuePerMonth(
 
 $router->add('GET', '/topProducts', fn() => $controller->getTopProducts());
 
+$router->add('GET', '/recentOrders', fn() => $controller->getRecentOrders());
+
 $router->add('GET', '/numberOfOrdersByDay/$day', fn($day) => $controller->numberOfOrdersFilteredByDay($day));
 
 $router->add('GET', '/numberOfOrdersByMonth/$month', fn($month) => $controller->numberOfOrdersFilteredByMonth($month));

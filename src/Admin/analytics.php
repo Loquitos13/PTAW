@@ -253,43 +253,11 @@ if (!isset($_SESSION['admin_id'])) {
                         <p class="dashboard-subtitle">Monitor your business performance</p>
                     </div>
                     <div class="col-md-4 d-flex justify-content-end align-items-center">
-                        <button style="border: none; background: none; padding: 0; cursor: pointer; margin-right: 10px">
-                            <svg width="34" height="36" viewBox="0 0 34 36" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <g filter="url(#filter0_d_52_30)">
-                                    <path
-                                        d="M2 9C2 4.58172 5.58172 1 10 1H24C28.4183 1 32 4.58172 32 9V25C32 29.4183 28.4183 33 24 33H10C5.58172 33 2 29.4183 2 25V9Z"
-                                        fill="white" />
-                                    <path d="M10 7H24V27H10V7Z" stroke="#E5E7EB" />
-                                    <g clip-path="url(#clip0_52_30)">
-                                        <path
-                                            d="M16.9993 9C16.4462 9 15.9993 9.44687 15.9993 10V10.5594C13.7337 10.9188 11.9993 12.8812 11.9993 15.25V16.2937C11.9993 17.7125 11.5149 19.0906 10.6306 20.1969L10.1649 20.7812C9.98368 21.0063 9.9493 21.3156 10.0743 21.575C10.1993 21.8344 10.4618 22 10.7493 22H23.2493C23.5368 22 23.7993 21.8344 23.9243 21.575C24.0493 21.3156 24.0149 21.0063 23.8337 20.7812L23.3681 20.2C22.4837 19.0906 21.9993 17.7125 21.9993 16.2937V15.25C21.9993 12.8812 20.2649 10.9188 17.9993 10.5594V10C17.9993 9.44687 17.5524 9 16.9993 9ZM16.9993 12H17.2493C19.0431 12 20.4993 13.4563 20.4993 15.25V16.2937C20.4993 17.7906 20.9337 19.25 21.7399 20.5H12.2587C13.0649 19.25 13.4993 17.7906 13.4993 16.2937V15.25C13.4993 13.4563 14.9556 12 16.7493 12H16.9993ZM18.9993 23H16.9993H14.9993C14.9993 23.5312 15.2087 24.0406 15.5837 24.4156C15.9587 24.7906 16.4681 25 16.9993 25C17.5306 25 18.0399 24.7906 18.4149 24.4156C18.7899 24.0406 18.9993 23.5312 18.9993 23Z"
-                                            fill="#4B5563" />
-                                    </g>
-                                </g>
-                                <defs>
-                                    <filter id="filter0_d_52_30" x="0" y="0" width="34" height="36"
-                                        filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                                        <feFlood flood-opacity="0" result="BackgroundImageFix" />
-                                        <feColorMatrix in="SourceAlpha" type="matrix"
-                                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-                                        <feOffset dy="1" />
-                                        <feGaussianBlur stdDeviation="1" />
-                                        <feColorMatrix type="matrix"
-                                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0" />
-                                        <feBlend mode="normal" in2="BackgroundImageFix"
-                                            result="effect1_dropShadow_52_30" />
-                                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_52_30"
-                                            result="shape" />
-                                    </filter>
-                                    <clipPath id="clip0_52_30">
-                                        <path d="M10 9H24V25H10V9Z" fill="white" />
-                                    </clipPath>
-                                </defs>
-                            </svg>
-                        </button>
-                        <img src="Frame.svg">
-                        <div class="ms-3 mb-0">John Doe</div>
+                        <div class="d-flex align-items-center">
+                            <img src="../../imagens/admin.png" alt="" id="img-admin"
+                            style="width:40px; height:40px; object-fit:cover; border-radius:50%;">
+                            <h6 id="admin_nome" class="mb-0 ms-3">Nome Admin</h6>
+                        </div>
                     </div>
                 </div>
             </header>
