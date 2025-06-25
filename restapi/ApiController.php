@@ -306,6 +306,17 @@ class ApiController
         return $result[0] ?? null;
     }
 
+    public function getAdminByID(int $adminID): ?array
+    {
+
+        $result = $this->queryBuilder->table('Admins')
+            ->select(['nome_admin', 'email_admin', 'contacto_admin', 'funcao_admin', 'imagem_admin'])
+            ->where('id_admin', '=', $adminID)
+            ->get();
+
+        return $result[0] ?? null;
+    }
+
     public function getEncomendas(): array
     {
 

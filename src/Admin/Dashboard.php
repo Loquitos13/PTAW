@@ -1,14 +1,19 @@
 <?php
-/*
 session_start();
 
-if (!isset($_SESSION['admin_email'])) {
+// Check if admin is logged in
+if (!isset($_SESSION['admin_id'])) {
+    header('Location: ../SignIn.html');
+    exit;
+} else {
 
-  header("location: /~ptaw-2025-gr4/src/SignIn.html");
+    $adminID = $_SESSION['admin_id'];
 
 }
-*/
+
 ?>
+
+<input type="hidden" id="adminID" value="<?php echo htmlspecialchars($adminID); ?>">
 
 
 <!DOCTYPE html>
@@ -20,11 +25,9 @@ if (!isset($_SESSION['admin_email'])) {
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
   integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-<script src="js/Dashboard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
   </script>
-<script src="js/Dashboard.php"></script>
 
 
 <style>
@@ -249,16 +252,6 @@ if (!isset($_SESSION['admin_email'])) {
     <!-- Conteudo principal -->
     <div class="flex-grow-1 p-4" id="main-content">
 
-      <?php /*echo ($_SESSION['admin_email']); */ ?>
-
-      <!--
-      <a href="/PTAW/src/logout.php" class="nav-link">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5985E1">
-          <path
-            d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
-        </svg>
-      </a> -->
-
       <!-- Header do Dashboard -->
       <div class="container-fluid">
         <div class="row">
@@ -273,7 +266,7 @@ if (!isset($_SESSION['admin_email'])) {
               <div class="d-flex align-items-center">
                 <img src="../../imagens/admin.png" alt="" id="img-admin"
                   style="width:40px; height:40px; object-fit:cover; border-radius:50%;">
-                <h6 class="mb-0 ms-3">John Doe</h6>
+                <h6 id="admin_nome" class="mb-0 ms-3">Nome Admin</h6>
               </div>
             </div>
           </div>
@@ -551,5 +544,7 @@ if (!isset($_SESSION['admin_email'])) {
   </div>
 
 </body>
+
+<script src="js/Dashboard.js"></script>
 
 </html>

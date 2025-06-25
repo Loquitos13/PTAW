@@ -1,3 +1,20 @@
+<?php
+session_start();
+
+// Check if admin is logged in
+if (!isset($_SESSION['admin_id'])) {
+    header('Location: ../SignIn.html');
+    exit;
+} else {
+
+    $adminID = $_SESSION['admin_id'];
+
+}
+
+?>
+
+<input type="hidden" id="adminID" value="<?php echo htmlspecialchars($adminID); ?>">
+
 <!DOCTYPE html>
 <html lang="en">
 

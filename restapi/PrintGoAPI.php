@@ -27,6 +27,8 @@ $router->add('GET', '/userByEmail/$userEmail', fn($userEmail) => $controller->ge
 
 $router->add('GET', '/adminByEmail/$adminEmail', fn($adminEmail) => $controller->getAdminByEmail($adminEmail));
 
+$router->add('GET', '/adminByID/$id', fn($id) => $controller->getAdminByID($id));
+
 $router->add('GET', '/encomendas', fn() => $controller->getEncomendas());
 
 $router->add('GET', '/encomendasChart', fn() => $controller->getEncomendasChart());
