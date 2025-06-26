@@ -172,12 +172,88 @@ class ApiController
 
     public function getProducts(): array
     {
-
-        return $this->queryBuilder->table('Produtos')
-            ->select(['*'])
-            ->order('id_produto', 'DESC')
+        $rows = $this->queryBuilder->table('Produtos')
+            ->select([
+                'Produtos.id_produto AS id_produto',
+                'Produtos.id_categoria',
+                'Produtos.data_criacao_produto',
+                'Produtos.titulo_produto',
+                'Produtos.modelo3d_produto',
+                'Produtos.descricao_produto',
+                'Produtos.imagem_principal',
+                'Produtos.preco_produto',
+                'Produtos.stock_produto',
+                'Produtos.keywords_produto',
+                'Produtos.status_produto',
+                'Cores.id_cor',
+                'Cores.hex_cor',
+                'Cores.nome_cor',
+                'Dimensoes.dimensao_tipo',
+                'Dimensoes.tamanho',
+                'ImagemProdutos.id_imagem_extra',
+                'ImagemProdutos.imagem_extra',
+                'ImagemProdutos.imagem_extra_2',
+                'ImagemProdutos.imagem_extra_3'
+            ])
+            ->leftJoin('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
+            ->leftJoin('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
+            ->leftJoin('Dimensoes', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
+            ->leftJoin('ImagemProdutos', 'Produtos.id_produto', '=', 'ImagemProdutos.id_produto')
+            ->order('Produtos.id_produto', 'DESC')
             ->get();
 
+        if (empty($rows)) {
+            return [];
+        }
+
+        $produtos = [];
+        foreach ($rows as $row) {
+            $id = $row['id_produto'];
+            if (!isset($produtos[$id])) {
+                $produtos[$id] = [
+                    'id_produto' => $row['id_produto'],
+                    'id_categoria' => $row['id_categoria'],
+                    'data_criacao_produto' => $row['data_criacao_produto'],
+                    'titulo_produto' => $row['titulo_produto'],
+                    'modelo3d_produto' => $row['modelo3d_produto'],
+                    'descricao_produto' => $row['descricao_produto'],
+                    'imagem_principal' => $row['imagem_principal'],
+                    'preco_produto' => $row['preco_produto'],
+                    'stock_produto' => $row['stock_produto'],
+                    'keywords_produto' => $row['keywords_produto'],
+                    'status_produto' => $row['status_produto'],
+                    'cores' => [],
+                    'dimensoes' => [],
+                    'imagens_extras' => []
+                ];
+            }
+
+            if ($row['id_cor'] && !in_array($row['id_cor'], array_column($produtos[$id]['cores'], 'id_cor'))) {
+                $produtos[$id]['cores'][] = [
+                    'id_cor' => $row['id_cor'],
+                    'hex_cor' => $row['hex_cor'],
+                    'nome_cor' => $row['nome_cor']
+                ];
+            }
+
+            if ($row['tamanho'] && !in_array($row['tamanho'], array_column($produtos[$id]['dimensoes'], 'tamanho'))) {
+                $produtos[$id]['dimensoes'][] = [
+                    'dimensao_tipo' => $row['dimensao_tipo'],
+                    'tamanho' => $row['tamanho']
+                ];
+            }
+
+            if ($row['id_imagem_extra'] && !in_array($row['id_imagem_extra'], array_column($produtos[$id]['imagens_extras'], 'id_imagem_extra'))) {
+                $produtos[$id]['imagens_extras'][] = [
+                    'id_imagem_extra' => $row['id_imagem_extra'],
+                    'imagem_extra' => $row['imagem_extra'],
+                    'imagem_extra_2' => $row['imagem_extra_2'],
+                    'imagem_extra_3' => $row['imagem_extra_3']
+                ];
+            }
+        }
+        
+        return array_values($produtos);
     }
 
     public function getProductsBYCategory(int $productCategory, int $currentProductID): array
@@ -825,19 +901,16 @@ class ApiController
 
     public function insertProduct(): array
     {
-
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
 
         if (!is_array($data)) {
-
             return ['success' => false, 'message' => 'Invalid JSON data received'];
-
         }
 
         $requiredFields = [
             'id_categoria',
-            'titulo_produto',
+                'titulo_produto',
             'descricao_produto',
             'preco_produto',
             'stock_produto',
@@ -845,20 +918,15 @@ class ApiController
         ];
 
         $missingFields = [];
-
         foreach ($requiredFields as $field) {
-
             if (empty($data[$field])) {
-
                 $missingFields[] = $field;
-
             }
         }
 
         $dataCriacao = date("Y-m-d H:i:s");
 
         if (!empty($missingFields)) {
-
             return [
                 'error' => 'Invalid data',
                 'message' => 'Missing required fields: ' . implode(', ', $missingFields)
@@ -866,7 +934,6 @@ class ApiController
         }
 
         try {
-
             $this->queryBuilder->table('Produtos')
                 ->insert([
                     'id_categoria' => $data['id_categoria'],
@@ -880,59 +947,130 @@ class ApiController
                     'status_produto' => $data['status_produto'],
                     'data_criacao_produto' => $dataCriacao,
                 ]);
+            $id_produto = $this->queryBuilder->getLastInsertId();
 
-            return ['success' => 'Product created'];
+            if (!empty($data['variantes']) && is_array($data['variantes'])) {
+                foreach ($data['variantes'] as $variante) {
+                    $this->queryBuilder->table('ProdutosVariantes')
+                        ->insert([
+                            'id_produto' => $id_produto,
+                            'id_cor' => $variante['id_cor'],
+                            'promocao' => $variante['promocao'] ?? 0
+                        ]);
+                }
+            }
+
+            if (!empty($data['dimensoes']) && is_array($data['dimensoes'])) {
+                foreach ($data['dimensoes'] as $dimensao) {
+                    $this->queryBuilder->table('Dimensoes')
+                        ->insert([
+                            'id_produto' => $id_produto,
+                            'dimensao_tipo' => $dimensao['dimensao_tipo'] ?? null,
+                            'tamanho' => $dimensao['tamanho'] ?? null
+                        ]);
+                }
+            }
+
+            if (!empty($data['imagens_extras']) && is_array($data['imagens_extras'])) {
+                foreach ($data['imagens_extras'] as $img) {
+                    $this->queryBuilder->table('ImagemProdutos')
+                        ->insert([
+                            'id_produto' => $id_produto,
+                            'imagem_extra' => $img['imagem_extra'] ?? null,
+                            'imagem_extra_2' => $img['imagem_extra_2'] ?? null,
+                            'imagem_extra_3' => $img['imagem_extra_3'] ?? null
+                        ]);
+                }
+            }
+
+            return ['success' => 'Product created', 'id_produto' => $id_produto];
 
         } catch (PDOException $e) {
-
             error_log("Database error: " . $e->getMessage());
-
             return [
                 'error' => 'Error creating the product',
                 'message' => 'Database error: ' . $e->getMessage()
             ];
-
         }
     }
 
     public function updateProduct(): array
     {
-
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
 
         if (!is_array($data)) {
-
             return ['success' => false, 'message' => 'Invalid JSON data received'];
-
         }
 
         $key_first_element = array_key_first($data);
-
         $value_first_element = $data[$key_first_element];
-
         unset($data[$key_first_element]);
 
         try {
-
             $this->queryBuilder->table('Produtos')
                 ->update($data)
                 ->where($key_first_element, '=', $value_first_element)
                 ->execute();
 
+            if (!empty($data['variantes']) && is_array($data['variantes'])) {
+                $this->queryBuilder->table('ProdutosVariantes')
+                    ->delete()
+                    ->where('id_produto', '=', $value_first_element)
+                    ->execute();
+
+                foreach ($data['variantes'] as $variante) {
+                    $this->queryBuilder->table('ProdutosVariantes')
+                        ->insert([
+                            'id_produto' => $value_first_element,
+                            'id_cor' => $variante['id_cor'],
+                            'promocao' => $variante['promocao'] ?? 0
+                        ]);
+                }
+            }
+
+            if (!empty($data['dimensoes']) && is_array($data['dimensoes'])) {
+                $this->queryBuilder->table('Dimensoes')
+                    ->delete()
+                    ->where('id_produto', '=', $value_first_element)
+                    ->execute();
+
+                foreach ($data['dimensoes'] as $dimensao) {
+                    $this->queryBuilder->table('Dimensoes')
+                        ->insert([
+                            'id_produto' => $value_first_element,
+                            'dimensao_tipo' => $dimensao['dimensao_tipo'] ?? null,
+                            'tamanho' => $dimensao['tamanho'] ?? null
+                        ]);
+                }
+            }
+
+            if (!empty($data['imagens_extras']) && is_array($data['imagens_extras'])) {
+                $this->queryBuilder->table('ImagemProdutos')
+                    ->delete()
+                    ->where('id_produto', '=', $value_first_element)
+                    ->execute();
+
+                foreach ($data['imagens_extras'] as $img) {
+                    $this->queryBuilder->table('ImagemProdutos')
+                        ->insert([
+                            'id_produto' => $value_first_element,
+                            'imagem_extra' => $img['imagem_extra'] ?? null,
+                            'imagem_extra_2' => $img['imagem_extra_2'] ?? null,
+                            'imagem_extra_3' => $img['imagem_extra_3'] ?? null
+                        ]);
+                }
+            }
+
             return ['success' => 'Product updated'];
 
         } catch (PDOException $e) {
-
             error_log("Database error: " . $e->getMessage());
-
             return [
                 'error' => 'Error updating the product',
                 'message' => 'Database error: ' . $e->getMessage()
             ];
-
         }
-
     }
 
     public function deleteProductByID($productID): array

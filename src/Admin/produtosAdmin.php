@@ -237,7 +237,7 @@
 
                             <div class="col-md-6" id="editStatus">
                                 <label class="form-label">Status</label>
-                                <select class="form-select" name="status_produto">
+                                <select class="form-select status-options" name="status_produto">
                                 </select>
                             </div>
 
