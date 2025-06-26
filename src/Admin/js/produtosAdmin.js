@@ -32,7 +32,7 @@ function preencherModalEdicao(produto) {
     document.getElementById('editCategory').querySelector('select').value = produto.id_categoria;
     document.getElementById('editPrice').querySelector('input').value = produto.preco_produto;
     document.getElementById('editStock').querySelector('input').value = produto.stock_produto;
-    document.getElementById('editStatus').querySelector('select').value = produto.status_produto ? "Active" : "Inactive";
+    document.getElementById('editStatus').querySelector('select').value = String(produto.status_produto);
     document.getElementById('editDescription').querySelector('textarea').value = produto.descricao_produto;
     document.getElementById('editImagemPrincipal').value = produto.imagem_principal;
     document.getElementById('editModelo3DProduto').value = produto.modelo3d_produto || '';
@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 fetchCategories().then(categories => {
     document.querySelectorAll('.category-options').forEach(categoryScroll => {
-        // Adiciona a opção "All Categories"
         let optionAll = document.createElement('option');
         optionAll.value = "all";
         optionAll.innerHTML = "All Categories";
@@ -83,6 +82,7 @@ fetchCategories().then(categories => {
     }
 
     document.querySelectorAll('.status-options').forEach(statusScroll => {
+        statusScroll.innerHTML = "";
         let optionAll = document.createElement('option');
         optionAll.value = "all";
         optionAll.innerHTML = "All Status";
@@ -92,7 +92,7 @@ fetchCategories().then(categories => {
         opcoesStatus.forEach(status => {
             let option = document.createElement('option');
             option.value = status;
-            option.innerHTML = status;
+            option.innerHTML = status == 1 ? "Active" : "Inactive";
             statusScroll.appendChild(option);
         });
     });
@@ -234,7 +234,7 @@ async function fetchAndDisplayProducts(selectedCategory = null, selectedStatus =
                     <td>${product.id_categoria}</td>
                     <td>${parseFloat(product.preco_produto).toFixed(2)}€</td>
                     <td>${product.stock_produto}</td>
-                    <td>${product.stock_produto > 0 ? "In Stock" : "Out of Stock"}</td>
+                    <td>${product.status_produto == 1 ? "Active" : "Inactive"}</td>
                     <td>
                         <button type="button" class="btn btn-sm" data-id="${product.id_produto}" data-bs-toggle="modal" data-bs-target="#editProductModal">
                             <i class="bi bi-pencil-square"></i>

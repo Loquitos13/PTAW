@@ -37,6 +37,8 @@ $router->add('GET', '/revenuePerMonth', fn() => $controller->getRevenuePerMonth(
 
 $router->add('GET', '/topProducts', fn() => $controller->getTopProducts());
 
+$router->add('GET', '/topProductsIndex', fn() => $controller->getTopProductsByCount());
+
 $router->add('GET', '/recentOrders', fn() => $controller->getRecentOrders());
 
 $router->add('GET', '/numberOfOrdersByDay/$day', fn($day) => $controller->numberOfOrdersFilteredByDay($day));
@@ -90,6 +92,8 @@ $router->add('GET', '/classificationFeedback', fn() => $controller->getClassific
 $router->add('POST', '/insertFeedback', fn() => $controller->insertFeedback());
 
 $router->add('GET', '/products', fn() => $controller->getProducts());
+
+$router->add('GET', '/productsAdmin', fn() => $controller->getProductsAdmin());
 
 $router->add('GET', '/getCategoriesByID', fn() => $controller->getCategoriesByID());
 

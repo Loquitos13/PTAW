@@ -266,56 +266,7 @@ session_start();
   <div id="prodDestaques">
     <h2>Popular Products</h2>
     <div class="containerDestaques">
-      <a href="" class="boxItemLink">
-        <div class="boxItem">
-          <img src="imagens/produtos varios hero.png" alt="" class="boxItemImg">
-          <p class="boxItemTitle">Product Title</p>
-          <p class="boxItemDescription">Product description goes here.</p>
-          <div class="boxItemFooter">
-            <span class="boxItemPrice">10,00€</span>
-            <button type="button" class="btn btn-primary"
-              style="background-color: #4F46E5; border:0;">Customize</button>
-          </div>
-        </div>
-      </a>
-      <a href="" class="boxItemLink">
-        <div class="boxItem">
-          <img src="imagens/produtos varios hero.png" alt="" class="boxItemImg">
-          <p class="boxItemTitle">Product Title</p>
-          <p class="boxItemDescription">Product description goes here.</p>
-          <div class="boxItemFooter">
-            <span class="boxItemPrice">10,00€</span>
-            <button type="button" class="btn btn-primary"
-              style="background-color: #4F46E5; border:0;">Customize</button>
-          </div>
-        </div>
-      </a>
-      <a href="" class="boxItemLink">
-        <div class="boxItem">
-          <img src="imagens/produtos varios hero.png" alt="" class="boxItemImg">
-          <p class="boxItemTitle">Product Title</p>
-          <p class="boxItemDescription">Product description goes here.</p>
-          <div class="boxItemFooter">
-            <span class="boxItemPrice">10,00€</span>
-            <button type="button" class="btn btn-primary"
-              style="background-color: #4F46E5; border:0;">Customize</button>
-          </div>
-        </div>
-      </a>
-      <a href="" class="boxItemLink">
-        <div class="boxItem">
-          <img src="imagens/produtos varios hero.png" alt="" class="boxItemImg">
-          <p class="boxItemTitle">Product Title</p>
-          <p class="boxItemDescription">Product description goes here.</p>
-          <div class="boxItemFooter">
-            <span class="boxItemPrice">10,00€</span>
-            <button type="button" class="btn btn-primary"
-              style="background-color: #4F46E5; border:0;">Customize</button>
-          </div>
-        </div>
-      </a>
-
-
+     containerDestaques
     </div>
   </div>
   <div class="feedback-carousel-container">

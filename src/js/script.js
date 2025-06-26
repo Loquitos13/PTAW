@@ -40,20 +40,193 @@ document.addEventListener("DOMContentLoaded", function () {
   } else {
     console.log("Elemento #cartId não encontrado.");
   }*/
+
+    
 });
 
 // estrutura de dados para feedbacks
 let feedbacks = [];
 let currentIndex = 0;
 
-// função utilitária para remover acentos e converter para minúsculas
-function normalizarTexto(texto) {
-  if (!texto) return "";
-  return texto
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+
+async function getTopProducts() {
+  try {
+    // Try calling your API directly
+    const response = await fetch('client/getTopProductsIndex.php', {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro ao apanhar produtos: ${response.status} - ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    
+    // Log para debug
+    console.log('API Response:', result);
+    
+    // Verificar se há erro na resposta
+    if (result.error) {
+      throw new Error(result.message || 'Erro desconhecido da API');
+    }
+    
+    // Retornar dados - ajustar conforme estrutura da API
+    return Array.isArray(result) ? result : result.data || [];
+    
+  } catch (err) {
+    console.error('Erro ao buscar produtos:', err);
+    
+    // Fallback: return mock data for testing
+    console.log('Using mock data for testing...');
+    return [
+      {
+        id_produto: 1,
+        titulo_produto: "Produto Teste 1",
+        descricao_produto: "Descrição do produto teste 1",
+        preco_produto: "19.99",
+        imagem_produto: "imagens/produtos varios hero.png"
+      },
+      {
+        id_produto: 2,
+        titulo_produto: "Produto Teste 2", 
+        descricao_produto: "Descrição do produto teste 2",
+        preco_produto: "29.99",
+        imagem_produto: "imagens/produtos varios hero.png"
+      }
+    ];
+  }
 }
+
+async function populateTopProducts() {
+  try {
+    const products = await getTopProducts();
+    
+    const container = document.querySelector(".containerDestaques");
+    
+    if (!container) {
+      console.error('Container dos produtos não encontrado');
+      return;
+    }
+
+    // Mostrar loading enquanto carrega
+    container.innerHTML = "<p>Carregando produtos...</p>";
+
+    if (!Array.isArray(products) || products.length === 0) {
+      container.innerHTML = "<p>Nenhum produto disponível.</p>";
+      return;
+    }
+
+    // Limpar container
+    container.innerHTML = "";
+
+    // Limitar a 4 produtos conforme a API
+    const limitedProducts = products.slice(0, 4);
+    
+    limitedProducts.forEach((product) => {
+      const productElement = createProductItem(product);
+      container.appendChild(productElement);
+    });
+
+  } catch (error) {
+    console.error('Erro ao popular produtos:', error);
+    const container = document.querySelector(".containerDestaques");
+    if (container) {
+      container.innerHTML = "<p>Erro ao carregar produtos. Tente novamente mais tarde.</p>";
+    }
+  }
+}
+
+function createProductItem(product) {
+  const productLink = document.createElement('a');
+  productLink.href = `produto.html?id=${product.id_produto}`; 
+  productLink.className = 'boxItemLink';
+
+  const productDiv = document.createElement('div');
+  productDiv.className = 'boxItem';
+
+  // Imagem do produto
+  const productImg = document.createElement('img');
+  productImg.src = product.imagem_produto || 'imagens/produtos varios hero.png';
+  productImg.alt = product.titulo_produto || 'Produto';
+  productImg.className = 'boxItemImg';
+  
+  // Adicionar evento de erro para imagem
+  productImg.onerror = function() {
+    this.src = 'imagens/produtos varios hero.png';
+  };
+
+  // Título do produto
+  const productTitle = document.createElement('p');
+  productTitle.className = 'boxItemTitle';
+  productTitle.textContent = normalizarTexto(product.titulo_produto);
+
+  // Descrição do produto (truncar se muito longa)
+  const productDescription = document.createElement('p');
+  productDescription.className = 'boxItemDescription';
+  const description = normalizarTexto(product.descricao_produto);
+  productDescription.textContent = description.length > 100 ? 
+    description.substring(0, 100) + '...' : description;
+
+  // Footer com preço e botão
+  const productFooter = document.createElement('div');
+  productFooter.className = 'boxItemFooter';
+
+  const productPrice = document.createElement('span');
+  productPrice.className = 'boxItemPrice';
+  const price = parseFloat(product.preco_produto) || 0;
+  productPrice.textContent = `${price.toFixed(2)}€`;
+
+  const customizeButton = document.createElement('button');
+  customizeButton.type = 'button';
+  customizeButton.className = 'btn btn-primary';
+  customizeButton.style.backgroundColor = '#4F46E5';
+  customizeButton.style.border = '0';
+  customizeButton.textContent = 'Customize';
+  
+  // Adicionar funcionalidade ao botão
+  customizeButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    // Redirecionar para página de customização
+    window.location.href = `customize.html?id=${product.id_produto}`;
+  });
+
+  // Montagem da estrutura
+  productFooter.appendChild(productPrice);
+  productFooter.appendChild(customizeButton);
+
+  productDiv.appendChild(productImg);
+  productDiv.appendChild(productTitle);
+  productDiv.appendChild(productDescription);
+  productDiv.appendChild(productFooter);
+
+  productLink.appendChild(productDiv);
+
+  return productLink;
+}
+
+// Função para normalizar texto
+function normalizarTexto(texto) {
+  if (!texto) return '';
+  return texto.toString().trim();
+}
+
+// Inicializar quando DOM estiver pronto
+document.addEventListener('DOMContentLoaded', function(){
+  populateTopProducts();
+});
+
+// Opcional: Adicionar refresh automático ou manual
+function refreshProducts() {
+  populateTopProducts();
+}
+
+// Expor função globalmente se necessário
+window.refreshProducts = refreshProducts;
 
 // obter feedbacks da api
 async function getFeedbacks() {
@@ -195,6 +368,7 @@ async function convertFeedbacks() {
     }
   }
 }
+
 
 // actualizar o estado do carrossel
 function updateCarouselState(index) {
