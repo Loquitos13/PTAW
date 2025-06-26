@@ -172,6 +172,16 @@ class ApiController
 
     public function getProducts(): array
     {
+
+        return $this->queryBuilder->table('Produtos')
+            ->select(['*'])
+            ->order('id_produto', 'DESC')
+            ->get();
+
+    }
+
+    public function getProductsAdmin(): array
+    {
         $rows = $this->queryBuilder->table('Produtos')
             ->select([
                 'Produtos.id_produto AS id_produto',
@@ -252,7 +262,7 @@ class ApiController
                 ];
             }
         }
-        
+
         return array_values($produtos);
     }
 
