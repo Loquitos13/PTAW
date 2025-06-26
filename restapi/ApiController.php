@@ -436,6 +436,50 @@ class ApiController
 
     }
 
+public function getTopProductsByCount(): array
+{
+    // Primeiro tentar produtos com encomendas (top por vendas)
+    $productsWithOrders = $this->queryBuilder->table('Produtos p')
+        ->select([
+            "p.id_produto", 
+            "p.titulo_produto", 
+            "p.descricao_produto", 
+            "p.preco_produto",
+            "p.imagem_produto"
+        ])
+        ->join('EncomendaItens ei', 'p.id_produto', '=', 'ei.id_produto')
+        ->where('p.status_produto', '=', 1) // Só produtos ativos
+        ->groupBy("p.id_produto, p.titulo_produto, p.descricao_produto, p.preco_produto, p.imagem_produto")
+        ->order("COUNT(DISTINCT ei.id_encomenda)", "DESC")
+        ->limit(4)
+        ->get();
+
+    // Se temos pelo menos 4 produtos com vendas, retornar
+    if (count($productsWithOrders) >= 4) {
+        return $productsWithOrders;
+    }
+
+    // Caso contrário, complementar com produtos ativos mais recentes
+    $existingIds = array_column($productsWithOrders, 'id_produto');
+    $whereNotIn = !empty($existingIds) ? 
+        " AND id_produto NOT IN (" . implode(',', $existingIds) . ")" : "";
+    
+    $additionalProducts = $this->queryBuilder->table('Produtos')
+        ->select([
+            "id_produto", 
+            "titulo_produto", 
+            "descricao_produto", 
+            "preco_produto",
+            "imagem_produto"
+        ])
+        ->where('status_produto', '=', 1)
+        ->order("data_criacao_produto", "DESC")
+        ->limit(4 - count($productsWithOrders))
+        ->get();
+
+    return array_merge($productsWithOrders, $additionalProducts);
+}  
+
     
     public function getRecentOrders(): array
     {
