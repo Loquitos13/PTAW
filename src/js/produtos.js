@@ -3,89 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#link-produtos").innerHTML = `<li class="nav-item"><a href="<?= $base_url ?>/index.php" class="nav-link active" style="background-color: #4F46E5;">Products</a></li>`;
 });
 
-/*
-document.addEventListener('DOMContentLoaded', function () {
-    const colors = ["red","blue","green","orange","purple","black"]; 
-
-// Generate color buttons dynamically
-const colorContainer = document.getElementById("idColorOptions");
-colors.forEach(color => {
-    const btn = document.createElement("button");
-    btn.classList.add("colorBtn");
-    btn.style.backgroundColor = color;
-    btn.setAttribute("data-color", color);
-    
-    // Set click event immediately (slow for whatever reason and not working as intended)
-    btn.onclick = function () {
-        document.querySelectorAll(".colorBtn").forEach(colorBtn => colorBtn.classList.remove("activeColor"));
-        this.classList.add("activeColor");
-    };
-
-    colorContainer.appendChild(btn);
-});
-
-const colorsMobile = ["red","blue","green","orange","purple","black"]; 
-
-
-const colorContainerMobile = document.getElementById("idColorOptions-mobile");
-colorsMobile.forEach(color => {
-    const btn = document.createElement("button");
-    btn.classList.add("colorBtn");
-    btn.style.backgroundColor = color;
-    btn.setAttribute("data-color", color);
-    
-    // Set click event immediately (slow for whatever reason and not working as intended)
-    btn.onclick = function () {
-        document.querySelectorAll(".colorBtn").forEach(colorBtn => colorBtn.classList.remove("activeColor"));
-        this.classList.add("activeColor");
-    };
-
-    colorContainerMobile.appendChild(btn);
-});
-
-})*/
-/* Descontinuado pois agora os tamanhos e feito pelo bootstrap
-document.addEventListener('DOMContentLoaded', function () {
-    const sizes = ["S", "M", "L", "XL", "2XL"];
-
-    // Generate size buttons dynamically
-    const sizeContainer = document.getElementById("idSizeOptions");
-    sizes.forEach(size => {
-        const btn = document.createElement("button");
-        btn.classList.add("sizeBtn");
-        btn.textContent = size;
-
-        // Set click event immediately
-        btn.onclick = function () {
-            document.querySelectorAll(".sizeBtn").forEach(sizeBtn => sizeBtn.classList.remove("activeSize"));
-            this.classList.add("activeSize");
-        };
-
-        sizeContainer.appendChild(btn);
-    });
-
-    const sizesMobile = ["S", "M", "L", "XL", "2XL"];
-
-    // Generate size buttons dynamically
-    const sizeContainerMobile = document.getElementById("idSizeOptions-mobile");
-    sizesMobile.forEach(size => {
-        const btn = document.createElement("button");
-        btn.classList.add("sizeBtn");
-        btn.textContent = size;
-
-        // Set click event immediately
-        btn.onclick = function () {
-            document.querySelectorAll(".sizeBtn").forEach(sizeBtn => sizeBtn.classList.remove("activeSize"));
-            this.classList.add("activeSize");
-        };
-
-        sizeContainerMobile.appendChild(btn);
-    });
-
-})
-*/
-
-
 document.addEventListener('DOMContentLoaded', function () {
     const menuToggle = document.getElementById('menu-toggle');
     const menuMobile = document.getElementById('menu-mobile');
@@ -98,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Optionally close the menu when clicking a link
+    // Opcionalmente fecha o menu ao clicar em um link
     const links = menuMobile.querySelectorAll('a');
     links.forEach(link => {
         link.addEventListener('click', () => {
@@ -165,206 +82,232 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-/* Exemplo para obter o valor do tamanho selecionado, no desktop e mobile
-document.addEventListener('DOMContentLoaded', function () {
-    const radios = document.querySelectorAll('.btn-check[name="size"]');
-    radios.forEach(function (radio) {
-        radio.addEventListener('change', function () {
-            if (radio.checked) {
-                console.log('Tamanho selecionado, mobile:', radio.value);
-            }
-        });
-    });
 
-    const radios_desktop = document.querySelectorAll('.btn-check[name="size-desktop"]');
-    radios_desktop.forEach(function (radio) {
-        radio.addEventListener('change', function () {
-            if (radio.checked) {
-                console.log('Tamanho selecionado, desktop:', radio.value);
-            }
-        });
-    });
-});*/
+// --- SUPORTE MOBILE E DESKTOP PARA FILTROS ---
 
-async function atualizarCoresPorCategoria() {
-    const colorContainer = document.getElementById("idColorOptions");
-    if (!colorContainer) {
-        console.error("Container de cores não encontrado");
+// Função utilitária para obter prefixos de IDs para desktop/mobile
+function getFiltroPrefix(isMobile) {
+    return isMobile ? '-mobile' : '';
+}
+
+// --- FILTROS DESKTOP E MOBILE: LÓGICA UNIFICADA E DINÂMICA ---
+
+// Utilitário para obter os elementos de filtro por contexto
+function getFiltroElements(context) {
+    return {
+        categoriasContainer: document.getElementById(context === 'mobile' ? 'categorias-container-mobile' : 'categorias-container'),
+        colorContainer: document.getElementById(context === 'mobile' ? 'idColorOptions-mobile' : 'idColorOptions'),
+        sizeContainer: document.getElementById(context === 'mobile' ? 'size-selector-mobile' : 'size-selector-desktop'),
+        precoMinInput: document.getElementById(context === 'mobile' ? 'price-min-input-mobile' : 'price-min-input'),
+        precoMaxInput: document.getElementById(context === 'mobile' ? 'price-max-input-mobile' : 'price-max-input'),
+        applyBtn: document.getElementById(context === 'mobile' ? 'apply-filters' : 'apply-filters-desktop'),
+        clearBtn: document.getElementById(context === 'mobile' ? 'clear-filters-mobile' : 'clear-filters-desktop'),
+        categoriaPrefix: context === 'mobile' ? 'defaultCategoryMobile' : 'defaultCategory',
+        colorRadioName: context === 'mobile' ? 'color-mobile' : 'color',
+        sizeRadioName: context === 'mobile' ? 'size-mobile' : 'size-desktop',
+    };
+}
+
+// Popular categorias (desktop e mobile)
+function popularCategoriasAmbos() {
+    fetch('../restapi/PrintGoAPI.php/getCategoriesByID')
+        .then(response => response.json())
+        .then(data => {
+            ['desktop', 'mobile'].forEach(context => {
+                const els = getFiltroElements(context);
+                if (els.categoriasContainer) {
+                    els.categoriasContainer.innerHTML = '';
+                    data.forEach((categoria, i) => {
+                        const divCategoria = document.createElement('div');
+                        divCategoria.classList.add('form-check');
+                        const inputCategoria = document.createElement('input');
+                        inputCategoria.classList.add('form-check-input');
+                        inputCategoria.type = 'checkbox';
+                        inputCategoria.value = categoria.id_categoria;
+                        inputCategoria.id = `${els.categoriaPrefix}${i}`;
+                        const labelCategoria = document.createElement('label');
+                        labelCategoria.classList.add('form-check-label');
+                        labelCategoria.setAttribute('for', `${els.categoriaPrefix}${i}`);
+                        labelCategoria.textContent = categoria.titulo_categoria;
+                        divCategoria.appendChild(inputCategoria);
+                        divCategoria.appendChild(labelCategoria);
+                        els.categoriasContainer.appendChild(divCategoria);
+                    });
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao buscar categorias:', error);
+        });
+}
+
+// Atualizar cores por categoria (desktop e mobile)
+async function atualizarCoresPorCategoriaAmbos(context) {
+    const els = getFiltroElements(context);
+    if (!els.colorContainer) return;
+    els.colorContainer.innerHTML = '';
+    const categoriasSelecionadas = [...document.querySelectorAll(`input[type=checkbox][id^="${els.categoriaPrefix}"]:checked`)].map(cb => cb.value);
+    if (categoriasSelecionadas.length === 0) {
+        els.colorContainer.innerHTML = '<p>Selecione uma categoria para ver as cores disponíveis.</p>';
         return;
     }
-    colorContainer.innerHTML = ""; // Clear previous content immediately
-
     try {
-        // Obtém os valores (IDs) das categorias que estão selecionadas.
-        const categoriasSelecionadas = [...document.querySelectorAll('input[type=checkbox][id^="defaultCategory"]:checked')].map(cb => cb.value);
-        // console.log("Categorias selecionadas:", categoriasSelecionadas);
-
-        if (categoriasSelecionadas.length === 0) {
-            // console.log("Nenhuma categoria selecionada para buscar cores.");
-            colorContainer.innerHTML = "<p>Selecione uma categoria para ver as cores disponíveis.</p>";
-            return;
-        }
-
-        // Converte o array de categorias selecionadas em uma string separada por vírgulas para a URL da API.
         const categoriasStr = categoriasSelecionadas.join(',');
-        // console.log("Buscando cores para categorias:", categoriasStr);
-
         const response = await fetch(`../restapi/PrintGoAPI.php/getColorsByCategories/${categoriasStr}`);
         const data = await response.json();
-
-        if (!data || (!data.cores && !Array.isArray(data))) {
-            console.error("Formato de resposta inesperado ao buscar cores:", data);
-            colorContainer.innerHTML = "<p>Erro ao carregar cores (formato inválido).</p>";
-            return;
-        }
-
         const cores = data.cores || (Array.isArray(data) ? data : []);
-
         if (cores.length === 0) {
-            colorContainer.innerHTML = "<p>Nenhuma cor disponível para esta categoria.</p>";
+            els.colorContainer.innerHTML = '<p>Nenhuma cor disponível para esta categoria.</p>';
             return;
         }
-
         cores.forEach(cor => {
-            //console.log("Cor recebida:", cor);
-            const input = document.createElement("input");
-            input.type = "radio";
-            input.className = "btn-check";
-            input.name = "color";
-            input.id = `color-${cor.nome_cor}`;
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.className = 'btn-check';
+            input.name = els.colorRadioName;
+            input.id = `color-${cor.nome_cor}${context === 'mobile' ? '-mobile' : ''}`;
             input.value = cor.hex_cor;
             input.setAttribute('data-color-name', cor.nome_cor);
-            input.autocomplete = "off";
-
-            const label = document.createElement("label");
-            label.className = "btnColor rounded-circle p-2";
-            label.setAttribute("for", `color-${cor.nome_cor}`);
+            input.autocomplete = 'off';
+            const label = document.createElement('label');
+            label.className = 'btnColor rounded-circle p-2';
+            label.setAttribute('for', input.id);
             label.style.backgroundColor = cor.hex_cor;
-            label.style.border = "2px solid #ccc";
+            label.style.border = '2px solid #ccc';
             label.title = cor.nome_cor;
-
-            colorContainer.appendChild(input);
-            colorContainer.appendChild(label);
+            els.colorContainer.appendChild(input);
+            els.colorContainer.appendChild(label);
         });
     } catch (error) {
-        console.error("Erro ao atualizar cores:", error);
-        colorContainer.innerHTML = "<p>Ocorreu um erro ao carregar as cores.</p>";
+        els.colorContainer.innerHTML = '<p>Ocorreu um erro ao carregar as cores.</p>';
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const categoriasContainer = document.getElementById('categorias-container');
-    // Adiciona um listener de evento 'change' ao container de categorias.
-    // Isso permite detectar quando um checkbox de categoria é marcado ou desmarcado.
-    categoriasContainer.addEventListener('change', function (e) {
-        // Verifica se o evento foi disparado por um checkbox de categoria específico.
-        if (e.target && e.target.matches('input[type=checkbox][id^="defaultCategory"]')) {
-            atualizarCoresPorCategoria(); // Chama a função para atualizar as cores.
-        }
-    });
-});
-
-// Mostrar Tamanhos consoante a categoria selecionada
-async function atualizarSizePorCategoria() {
-    const sizeContainer = document.getElementById("size-selector-desktop");
-    if (!sizeContainer) {
-        console.error("Container de tamanhos (desktop) não encontrado.");
+// Atualizar tamanhos por categoria (desktop e mobile)
+async function atualizarSizePorCategoriaAmbos(context) {
+    const els = getFiltroElements(context);
+    if (!els.sizeContainer) return;
+    els.sizeContainer.innerHTML = '';
+    const categoriasSelecionadas = [...document.querySelectorAll(`input[type=checkbox][id^="${els.categoriaPrefix}"]:checked`)].map(cb => cb.value);
+    if (categoriasSelecionadas.length === 0) {
+        els.sizeContainer.innerHTML = '<p>Selecione uma categoria para ver os tamanhos disponíveis.</p>';
         return;
     }
-    sizeContainer.innerHTML = ""; // Clear previous content immediately
-
     try {
-        // Obtém os valores (IDs) das categorias que estão selecionadas.
-        const categoriasSelecionadas = [...document.querySelectorAll('input[type=checkbox][id^="defaultCategory"]:checked')].map(cb => cb.value);
-        // console.log("Categorias selecionadas para tamanhos:", categoriasSelecionadas);
-
-        if (categoriasSelecionadas.length === 0) {
-            // console.log("Nenhuma categoria selecionada para buscar tamanhos.");
-            sizeContainer.innerHTML = "<p>Selecione uma categoria para ver os tamanhos disponíveis.</p>";
-            return;
-        }
-
         const categoriasStr = categoriasSelecionadas.join(',');
-        // console.log("Buscando tamanhos para categorias:", categoriasStr);
-
         const response = await fetch(`../restapi/PrintGoAPI.php/getSizesByCategories/${categoriasStr}`);
         const data = await response.json();
-        // console.log("Resposta da API de tamanhos:", data);
-
         if (!Array.isArray(data)) {
-            console.error("Resposta da API de tamanhos não é um array:", data);
-            sizeContainer.innerHTML = "<p>Erro ao carregar tamanhos (formato inválido).</p>";
+            els.sizeContainer.innerHTML = '<p>Erro ao carregar tamanhos (formato inválido).</p>';
             return;
         }
-
-        if (data.length === 0) {
-            sizeContainer.innerHTML = "<p>Nenhum tamanho disponível para esta categoria.</p>";
-            return;
-        }
-
         const todosTamanhos = data.flatMap(item => {
             if (typeof item.tamanho === 'string' && item.tamanho.includes(',')) {
                 return item.tamanho.split(',').map(t => t.trim());
             }
             return item.tamanho;
         });
-
-        // console.log("Todos os tamanhos combinados:", todosTamanhos);
-        const tamanhosSemDuplicatas = [...new Set(todosTamanhos)].filter(t => t); // Filter out empty/null if any
-
-        // console.log("Tamanhos únicos:", tamanhosSemDuplicatas);
-
+        const tamanhosSemDuplicatas = [...new Set(todosTamanhos)].filter(t => t);
         if (tamanhosSemDuplicatas.length === 0) {
-            sizeContainer.innerHTML = "<p>Nenhum tamanho disponível para esta categoria após processamento.</p>";
+            els.sizeContainer.innerHTML = '<p>Nenhum tamanho disponível para esta categoria.</p>';
             return;
         }
-
-        // Itera sobre cada tamanho recebido e cria um input de rádio e um label correspondente.
         tamanhosSemDuplicatas.forEach(tamanho => {
-
             const btnGroup = document.createElement('div');
             btnGroup.classList.add('btn-group', 'me-2');
             btnGroup.setAttribute('role', 'group');
             btnGroup.setAttribute('aria-label', 'Size option');
-
             const input = document.createElement('input');
             input.type = 'radio';
             input.classList.add('btn-check');
-            input.name = 'size-desktop';
+            input.name = els.sizeRadioName;
             input.value = tamanho;
-            input.id = `btnradio-${tamanho}-desktop`;
+            input.id = `btnradio-${tamanho}${context === 'mobile' ? '-mobile' : '-desktop'}`;
             input.autocomplete = 'off';
-
             const label = document.createElement('label');
             label.classList.add('btn', 'btn-outline-primary');
-            label.setAttribute('for', `btnradio-${tamanho}-desktop`);
-            label.textContent = tamanho.replace(/%20/g, " ");
-
+            label.setAttribute('for', input.id);
+            label.textContent = tamanho.replace(/%20/g, ' ');
             btnGroup.appendChild(input);
             btnGroup.appendChild(label);
-            sizeContainer.appendChild(btnGroup);
+            els.sizeContainer.appendChild(btnGroup);
         });
     } catch (error) {
-        console.error("Erro ao atualizar tamanhos:", error); // Corrected error message
-        sizeContainer.innerHTML = "<p>Ocorreu um erro ao carregar os tamanhos.</p>";
+        els.sizeContainer.innerHTML = '<p>Ocorreu um erro ao carregar os tamanhos.</p>';
     }
 }
-document.addEventListener('DOMContentLoaded', function () {
-    const categoriasContainer = document.getElementById('categorias-container');
-    // Adiciona um listener de evento 'change' ao container de categorias.
-    // Isso permite detectar quando um checkbox de categoria é marcado ou desmarcado.
-    categoriasContainer.addEventListener('change', function (e) {
-        // Verifica se o evento foi disparado por um checkbox de categoria específico.
-        if (e.target && e.target.matches('input[type=checkbox][id^="defaultCategory"]')) {
-            atualizarSizePorCategoria(); // Chama a função para atualizar as cores.
+
+// Listeners para atualizar filtros dinâmicos (categorias, cores, tamanhos) para desktop e mobile
+function setupFiltroListenersAmbos() {
+    ['desktop', 'mobile'].forEach(context => {
+        const els = getFiltroElements(context);
+        if (els.categoriasContainer) {
+            els.categoriasContainer.addEventListener('change', function (e) {
+                if (e.target && e.target.matches(`input[type=checkbox][id^="${els.categoriaPrefix}"]`)) {
+                    atualizarCoresPorCategoriaAmbos(context);
+                    atualizarSizePorCategoriaAmbos(context);
+                }
+            });
         }
     });
+}
+
+// Aplicar filtros (desktop e mobile)
+function setupApplyClearBtnsAmbos() {
+    ['desktop', 'mobile'].forEach(context => {
+        const els = getFiltroElements(context);
+        if (els.applyBtn) {
+            els.applyBtn.addEventListener('click', function () {
+                const filtros = {
+                    categorias: [...document.querySelectorAll(`input[type=checkbox][id^="${els.categoriaPrefix}"]:checked`)].map(cb => cb.value),
+                    precoMin: els.precoMinInput ? els.precoMinInput.value : '0',
+                    precoMax: els.precoMaxInput ? els.precoMaxInput.value : '100',
+                    cores: [...document.querySelectorAll(`input[name="${els.colorRadioName}"]:checked`)].map(cb => cb.getAttribute('data-color-name')),
+                    tamanhos: [...document.querySelectorAll(`input[name="${els.sizeRadioName}"]:checked`)].map(cb => cb.value),
+                };
+                buscarProdutos(filtros);
+                if (context === 'mobile') closeMobileOffcanvas();
+            });
+        }
+        if (els.clearBtn) {
+            els.clearBtn.addEventListener('click', function () {
+                document.querySelectorAll(`input[type=checkbox][id^="${els.categoriaPrefix}"]`).forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                const checkedColor = document.querySelector(`input[name="${els.colorRadioName}"]:checked`);
+                if (checkedColor) checkedColor.checked = false;
+                const checkedSize = document.querySelector(`input[name="${els.sizeRadioName}"]:checked`);
+                if (checkedSize) checkedSize.checked = false;
+                if (els.precoMinInput && els.precoMaxInput) {
+                    els.precoMinInput.value = '0';
+                    els.precoMaxInput.value = '100';
+                }
+                atualizarCoresPorCategoriaAmbos(context);
+                atualizarSizePorCategoriaAmbos(context);
+                buscarProdutos();
+                if (context === 'mobile') closeMobileOffcanvas();
+            });
+        }
+    });
+}
+
+// Inicialização dos filtros dinâmicos para ambos contextos
+
+document.addEventListener('DOMContentLoaded', function () {
+    popularCategoriasAmbos();
+    setupFiltroListenersAmbos();
+    setupApplyClearBtnsAmbos();
+    setTimeout(() => {
+        atualizarCoresPorCategoriaAmbos('desktop');
+        atualizarSizePorCategoriaAmbos('desktop');
+        atualizarCoresPorCategoriaAmbos('mobile');
+        atualizarSizePorCategoriaAmbos('mobile');
+    }, 500);
 });
 
 // Variável para controlar o índice atual
 let currentIndex = 0;
 
-// --- START PAGINATION ---
 let todosOsProdutos = []; // Store all fetched products
 let paginaAtual = 1;
 const produtosPorPagina = 12;
@@ -414,17 +357,17 @@ function buscarProdutos(filtros = {}) {
     let url = '';
 
     if (isEmptyFilters) {
-        // If no filters, get all products
+        // Se não houver filtros, obtém todos os produtos
         url = '../restapi/PrintGoAPI.php/products';
     } else {
-        // Format parameters for the API endpoint
+        // Formata os parâmetros para o endpoint da API
         const categoria = filtros.categorias && filtros.categorias.length > 0 ? filtros.categorias.join(',') : '_';
         const precoMinimo = filtros.precoMin || '0';
         const precoMaximo = filtros.precoMax || '100';
         const cor = filtros.cores && filtros.cores.length > 0 ? filtros.cores.join(',') : '_';
         const tamanho = filtros.tamanhos && filtros.tamanhos.length > 0 ? filtros.tamanhos.join(',') : '_';
 
-        // Call the API endpoint with path parameters
+        // Chama o endpoint da API com parâmetros de caminho
         url = `../restapi/PrintGoAPI.php/filterProducts/${categoria}/${precoMinimo}/${precoMaximo}/${cor}/${tamanho}`;
     }
 
@@ -649,36 +592,45 @@ if (applyFiltersDesktop) {
 const clearFiltersDesktop = document.getElementById('clear-filters-desktop');
 if (clearFiltersDesktop) {
     clearFiltersDesktop.addEventListener('click', function () {
-        // 1. Deselect all category checkboxes
+        // 1. Desmarca todas as caixas de seleção de categoria
         document.querySelectorAll('input[type=checkbox][id^="defaultCategory"]').forEach(checkbox => {
             checkbox.checked = false;
         });
-
-        // 2. Deselect any checked color radio button
+        // 2. Desmarca qualquer botão de opção de cor selecionado
         const checkedColor = document.querySelector('input[name="color"]:checked');
         if (checkedColor) {
             checkedColor.checked = false;
         }
-
-        // 3. Deselect any checked size radio button (desktop)
+        // 3. Desmarca qualquer botão de opção de tamanho selecionado (desktop)
         const checkedSizeDesktop = document.querySelector('input[name="size-desktop"]:checked');
         if (checkedSizeDesktop) {
             checkedSizeDesktop.checked = false;
         }
-
-        // 4. Reset the price range input fields (desktop)
+        // 4. Reseta os campos de entrada de faixa de preço (desktop)
         const priceMinInput = document.getElementById('price-min-input');
         const priceMaxInput = document.getElementById('price-max-input');
         if (priceMinInput && priceMaxInput) {
             priceMinInput.value = "0";
             priceMaxInput.value = "100";
         }
-
-        // These functions will now clear their respective containers and show a placeholder message
+        // Essas funções agora vão limpar seus respectivos containers e mostrar uma mensagem de placeholder
         atualizarCoresPorCategoria();
         atualizarSizePorCategoria();
-
-        // 6. Fetch and display all products (no filters)
+        // 6. Busca e exibe todos os produtos (sem filtros)
         buscarProdutos();
     });
+}
+
+// Fecha o offcanvas de filtros no mobile
+function closeMobileOffcanvas() {
+    const offcanvasEl = document.getElementById('filtros_mob');
+    if (offcanvasEl && typeof bootstrap !== 'undefined' && bootstrap.Offcanvas) {
+        const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
+        offcanvas.hide();
+    } else if (offcanvasEl) {
+        // fallback: esconde manualmente
+        offcanvasEl.classList.remove('show');
+        offcanvasEl.style.display = 'none';
+        document.body.classList.remove('offcanvas-backdrop', 'show');
+    }
 }
