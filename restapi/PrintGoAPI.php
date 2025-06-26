@@ -93,6 +93,8 @@ $router->add('POST', '/insertFeedback', fn() => $controller->insertFeedback());
 
 $router->add('GET', '/products', fn() => $controller->getProducts());
 
+$router->add('GET', '/productsAdmin', fn() => $controller->getProductsAdmin());
+
 $router->add('GET', '/getCategoriesByID', fn() => $controller->getCategoriesByID());
 
 $router->add('GET', '/getSizesByCategories/$categorias', fn($categorias) => $controller->getSizesByCategories($categorias));
