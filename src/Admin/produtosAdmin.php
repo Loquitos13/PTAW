@@ -159,7 +159,15 @@
                                 <label class="form-label">Description</label>
                                 <textarea class="form-control" rows="3" name="descricao_produto"></textarea>
                             </div>
+
+                            <div class="col-12 mt-2">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
+                                    data-bs-target="#variantModal">
+                                    Adicionar Variantes
+                                </button>
+                            </div>
                         </div>
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary">Save Product</button>
@@ -245,7 +253,12 @@
                                 <label class="form-label">Description</label>
                                 <textarea class="form-control" rows="3" name="descricao_produto"></textarea>
                             </div>
-                            <div id="infoMessage"></div>
+                            <div class="col-12 mt-2">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
+                                    data-bs-target="#variantModal">
+                                    Editar Variantes
+                                </button>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
@@ -274,6 +287,38 @@
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 </div>
 
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Adicionar/Editar Variantes -->
+    <div class="modal fade" id="variantModal" tabindex="-1" aria-labelledby="variantModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="variantModalLabel">Gerir Variantes</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="variantForm">
+                        <div class="mb-3">
+                            <label class="form-label">Cor</label>
+                            <input type="text" class="form-control" name="cor" id="inputCor">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Dimensão</label>
+                            <input type="text" class="form-control" name="dimensao" id="inputTamanho">
+                        </div>
+
+                        <button type="button" class="btn btn-primary" id="addVariantBtn">Adicionar Variante</button>
+                    </form>
+                    <hr>
+                    <div id="availableVariants"></div>
+                    <div id="selectedVariants"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
             </div>
         </div>
     </div>

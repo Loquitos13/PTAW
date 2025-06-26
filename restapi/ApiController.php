@@ -182,36 +182,41 @@ class ApiController
 
     public function getProductsAdmin(): array
     {
-        $rows = $this->queryBuilder->table('Produtos')
-            ->select([
-                'Produtos.id_produto AS id_produto',
-                'Produtos.id_categoria',
-                'Produtos.data_criacao_produto',
-                'Produtos.titulo_produto',
-                'Produtos.modelo3d_produto',
-                'Produtos.descricao_produto',
-                'Produtos.imagem_principal',
-                'Produtos.preco_produto',
-                'Produtos.stock_produto',
-                'Produtos.keywords_produto',
-                'Produtos.status_produto',
-                'Cores.id_cor',
-                'Cores.hex_cor',
-                'Cores.nome_cor',
-                'Dimensoes.dimensao_tipo',
-                'Dimensoes.tamanho',
-                'ImagemProdutos.id_imagem_extra',
-                'ImagemProdutos.imagem_extra',
-                'ImagemProdutos.imagem_extra_2',
-                'ImagemProdutos.imagem_extra_3'
-            ])
-            ->leftJoin('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
-            ->leftJoin('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
-            ->leftJoin('Dimensoes', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
-            ->leftJoin('ImagemProdutos', 'Produtos.id_produto', '=', 'ImagemProdutos.id_produto')
-            ->order('Produtos.id_produto', 'DESC')
-            ->get();
-
+        try {
+            $rows = $this->queryBuilder->table('Produtos')
+                ->select([
+                    'Produtos.id_produto AS id_produto',
+                    'Produtos.id_categoria',
+                    'Produtos.data_criacao_produto',
+                    'Produtos.titulo_produto',
+                    'Produtos.modelo3d_produto',
+                    'Produtos.descricao_produto',
+                    'Produtos.imagem_principal',
+                    'Produtos.preco_produto',
+                    'Produtos.stock_produto',
+                    'Produtos.keywords_produto',
+                    'Produtos.status_produto',
+                    'Cores.id_cor',
+                    'Cores.hex_cor',
+                    'Cores.nome_cor',
+                    'Dimensoes.dimensao_tipo',
+                    'Dimensoes.tamanho',
+                    'ImagemProdutos.id_imagem_extra',
+                    'ImagemProdutos.imagem_extra',
+                    'ImagemProdutos.imagem_extra_2',
+                    'ImagemProdutos.imagem_extra_3'
+                ])
+                ->leftJoin('ProdutosVariantes', 'Produtos.id_produto', '=', 'ProdutosVariantes.id_produto')
+                ->leftJoin('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
+                ->leftJoin('Dimensoes', 'Produtos.id_produto', '=', 'Dimensoes.id_produto')
+                ->leftJoin('ImagemProdutos', 'Produtos.id_produto', '=', 'ImagemProdutos.id_produto')
+                ->order('Produtos.id_produto', 'DESC')
+                ->get();
+        } catch (Exception $e) {
+            error_log("ERRO SQL: " . $e->getMessage());
+            return ['error' => 'Erro SQL', 'message' => $e->getMessage()];
+        }
+                
         if (empty($rows)) {
             return [];
         }

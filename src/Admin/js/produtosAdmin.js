@@ -1,17 +1,46 @@
-let products = [];
+let allProductsAdmin = [];
+let variants = [];
 let currentEditProductId = null;
 let currentDeleteProductId = null;
 let currentCategoryFilter = "all";
 let currentStatusFilter = "all";
+
+
+
+async function carregarProdutosAdmin() {
+    const response = await fetch("../../admin/getProductsAdmin.php");
+    allProductsAdmin = await response.json();
+}
 
 // Armazena o ID do produto que está a ser editado
 document.addEventListener('click', function (e) {
     const editButton = e.target.closest('button[data-bs-target="#editProductModal"]');
     if (editButton) {
         currentEditProductId = editButton.getAttribute('data-id');
-        const produto = products.find(p => p.id_produto == currentEditProductId);
+        const produto = allProductsAdmin.find(p => p.id_produto == currentEditProductId);
         if (produto) {
+            variants.length = 0;
+
+            //CONFIRMAR SE TODAS AS COMBINAÇÕES SÃO VÁLIDAS
+            //Gera todas as combinações possíveis das variantes que já existem na base de dados 
+            if (produto.cores && produto.dimensoes) {
+                produto.cores.forEach(cor => {
+                    produto.dimensoes.forEach(dim => {
+                        variants.push({ cor: cor.hex_cor, tamanho: dim.tamanho });
+                    });
+                });
+            } else if (produto.cores) {
+                produto.cores.forEach(cor => {
+                    variants.push({ cor: cor.hex_cor, tamanho: "" });
+                });
+            } else if (produto.dimensoes) {
+                produto.dimensoes.forEach(dim => {
+                    variants.push({ cor: "", tamanho: dim.tamanho });
+                });
+            }
+
             preencherModalEdicao(produto);
+            preencherModalVariantes();
         }
     }
 });
@@ -26,6 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+
 function preencherModalEdicao(produto) {
     document.getElementById('editProductName').querySelector('input').value = produto.titulo_produto;
     document.getElementById('editKeywords').querySelector('input').value = produto.keywords_produto;
@@ -38,8 +68,74 @@ function preencherModalEdicao(produto) {
     document.getElementById('editModelo3DProduto').value = produto.modelo3d_produto || '';
 }
 
+function preencherModalVariantes() {
+    let availableList = document.getElementById('availableVariants');
+    availableList.innerHTML = "";
+
+    const idCategoria = document.getElementById('editCategory').querySelector('select').value;
+    const { cores, tamanhos } = getVariantsByCategory(idCategoria);
+
+    const coresDisponiveis = cores.filter(cor =>
+        !variants.some(v => v.cor === cor.hex_cor)
+    );
+
+    const tamanhosDisponiveis = tamanhos.filter(tamanho =>
+        !variants.some(v => v.tamanho === tamanho)
+    );
+
+    let box = document.createElement('div');
+    let anotherBox = document.createElement('div');
+
+    coresDisponiveis.forEach(cor => {
+        let span = document.createElement('span');
+        span.setAttribute('class', 'colorClass');
+        span.setAttribute('style', 'background-color:' + cor.hex_cor + ';');
+        box.appendChild(span);
+    });
+
+    tamanhosDisponiveis.forEach(tamanho => {
+        let anotherSpan = document.createElement('span');
+        anotherSpan.setAttribute('class', 'sizeClass');
+        anotherSpan.textContent = tamanho;
+        anotherBox.appendChild(anotherSpan);
+    });
+
+    availableList.appendChild(box);
+    availableList.appendChild(anotherBox);
+}
+
+function getVariantsByCategory(idCategoria) {
+    const produtosCategoria = allProductsAdmin.filter(p => p.id_categoria == idCategoria);
+
+    const cores = [];
+    const tamanhos = [];
+    produtosCategoria.forEach(produto => {
+        if (produto.cores) {
+            produto.cores.forEach(cor => {
+                if (!cores.some(c => c.id_cor === cor.id_cor)) {
+                    cores.push(cor);
+                }
+            });
+        }
+        if (produto.dimensoes) {
+            produto.dimensoes.forEach(dim => {
+                if (!tamanhos.includes(dim.tamanho)) {
+                    tamanhos.push(dim.tamanho);
+                }
+            });
+        }
+    });
+
+    return { cores, tamanhos };
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
+    await carregarProdutosAdmin();
     fetchAndDisplayProducts("all","all");
+
+    document.getElementById('addVariantBtn').addEventListener('click', function () {
+        addVariants();
+    })
 })
 
 fetchCategories().then(categories => {
@@ -60,12 +156,12 @@ fetchCategories().then(categories => {
 });
 
     document.querySelectorAll('.category-options').forEach(categoryScroll => {
-        categoryScroll.addEventListener("change", function () {
+        categoryScroll.addEventListener("change", async function () {
             currentCategoryFilter = this.value;
             if (currentCategoryFilter.innerHTML === "All Categories") {
                 currentCategoryFilter = "all";
             }
-            fetchAndDisplayProducts(currentCategoryFilter,currentStatusFilter);
+            await fetchAndDisplayProducts(currentCategoryFilter,currentStatusFilter);
         });
     })
 
@@ -99,12 +195,12 @@ fetchCategories().then(categories => {
 });
 
     document.querySelectorAll('.status-options').forEach(statusScroll => {
-        statusScroll.addEventListener("change", function () {
+        statusScroll.addEventListener("change", async function () {
             currentStatusFilter = this.value;
             if (currentStatusFilter.innerHTML === "All Status") {
                 currentStatusFilter = "all";
             }
-            fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
+            await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
         });
     })
 
@@ -146,11 +242,76 @@ document.getElementById('productForm').addEventListener('submit', async function
     }
 }); */
 
+function addVariants() {
+    const cor = document.getElementById('inputCor').value;
+    const tamanho = document.getElementById('inputTamanho').value;
 
+    if (!cor && !tamanho) {
+        alert("Preencha pelo menos a cor ou a dimensão!");
+        return;
+    }
+
+    const exists = variants.some(v =>
+        v.cor === cor && v.tamanho === tamanho
+    );
+    if (exists) {
+        alert("Esta variante já foi adicionada.");
+        return;
+    }
+
+    variants.push({ cor, tamanho });
+    showVariants();
+    preencherModalVariantes();
+}
+
+function showVariants() {
+    let selectedList = document.getElementById('selectedVariants');
+    selectedList.innerHTML = "";
+
+    variants.forEach((variant,index) => {
+        if (variant.cor) {
+            let span = document.createElement('span');
+            span.className = 'sizeClass';
+            span.style.backgroundColor = variant.cor;
+            span.style.position = "relative";
+
+            let removeBtn = document.createElement('button');
+            removeBtn.setAttribute('class', 'remove-variant-btn');
+            removeBtn.textContent = "x";
+            removeBtn.onclick = function () {
+                variants.splice(index, 1);
+                showVariants();
+                preencherModalVariantes();
+            };
+
+            span.appendChild(removeBtn);
+            selectedList.appendChild(span);
+        }
+        if (variant.tamanho) {
+            let span = document.createElement('span');
+            span.className = 'colorClass';
+            span.textContent = variant.tamanho;
+
+
+            let removeBtn = document.createElement('button');
+            removeBtn.setAttribute('class', 'remove-variant-btn');
+            removeBtn.textContent = "x";
+            removeBtn.onclick = function () {
+                variants.splice(index, 1);
+                showVariants();
+                preencherModalVariantes();
+            };
+
+            span.appendChild(removeBtn);
+            selectedList.appendChild(span);
+        }
+    });
+}
 document.getElementById("productForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const formData = new FormData(this);
+    formData.append('variantes', JSON.stringify(variants));
 
     if (!formData.get("imagem_principal") || !formData.get("titulo_produto") || !formData.get("keywords_produto") ||
         !formData.get("id_categoria") || !formData.get("preco_produto") || !formData.get("stock_produto") ||
@@ -166,10 +327,17 @@ document.getElementById("productForm").addEventListener("submit", async function
     const productResult = await response.json();
 
     if (productResult.status === 'success') {
-        window.location.href = "/PTAW/src/Admin/produtosAdmin.php";
+        variants.length = 0;
+        await carregarProdutosAdmin();
+        await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
+        if (modal) modal.hide();
+        alert('Produto inserido com sucesso!');
     }
 
 })
+
+
 
 async function fetchCategories() {
     try {
@@ -208,10 +376,10 @@ async function fetchProducts() {
 // Carrega e mostra os produtos da base de dados
 async function fetchAndDisplayProducts(selectedCategory = null, selectedStatus = null) {
     try {
-        const response = await fetch("../../admin/getProducts.php");
+        const response = await fetch("../../admin/getProductsAdmin.php");
         const data = await response.json();
 
-        products = data;
+        allProductsAdmin = data;
 
         const tbody = document.getElementById("productTableBody");
         tbody.innerHTML = ""; // limpa a tabela antes de atualizar
@@ -280,8 +448,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const productResult = await productUpdate(this);
 
         if (productResult.status === 'success') {
-            await fetchAndDisplayProducts();
-            window.location.href = "/PTAW/src/Admin/produtosAdmin.php";
+            await carregarProdutosAdmin();
+            await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
+            if (modal) modal.hide();
+            alert('Produto atualizado com sucesso!');
         }
     });
 
@@ -305,8 +476,11 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("confirmDelete").addEventListener("click", async function (e) {
         e.preventDefault();
         await productDeletion(currentDeleteProductId);
-        await fetchAndDisplayProducts();
-        window.location.href = "/PTAW/src/Admin/produtosAdmin.php";
+        await carregarProdutosAdmin();
+        await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
+        const modal = bootstrap.Modal.getInstance(document.getElementById('deleteProductModal'));
+        if (modal) modal.hide();
+        alert('Produto eliminado com sucesso!');
     });
 
 });
