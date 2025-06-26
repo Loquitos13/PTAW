@@ -51,13 +51,11 @@
                             <input type="text" class="form-control" placeholder="Search products...">
                         </div>
                         <div class="col-6 col-md-2">
-                            <select class="form-select">
-                                <option>All Categories</option>
+                            <select class="form-select category-options">
                             </select>
                         </div>
                         <div class="col-6 col-md-2">
-                            <select class="form-select">
-                                <option>All Status</option>
+                            <select class="form-select status-options">
                             </select>
                         </div>
                         <div class="col-6 col-md-2">
@@ -101,28 +99,30 @@
                 <div class="modal-body">
                     <!-- Formulário -->
                     <form id="productForm" method="POST">
-                        <!-- Área de upload Imagem -->
-                        <div class="col-mb-6 p-4 border border-dashed text-center rounded bg-light">
-                            <div class="mb-2">
-                                <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                        <div class="row">
+                            <!-- Área de upload Imagem -->
+                            <div class="col-md-6 p-4 border border-dashed text-center rounded bg-light">
+                                <div class="mb-2">
+                                    <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                                </div>
+                                <p class="text-muted">Drag and drop your product image here<br><strong>or</strong></p>
+                                <input type="file" class="form-control" name="imagem_principal" id="productImage"
+                                    style="display:none;">
+                                <button class="btn btn-outline-primary" id="browseImageButton">Browse Files</button>
+                                <span id="fileNameImage" class="ms-2 text-muted"></span>
                             </div>
-                            <p class="text-muted">Drag and drop your product image here<br><strong>or</strong></p>
-                            <input type="file" class="form-control" name="imagem_principal" id="productImage"
-                                style="display:none;">
-                            <button class="btn btn-outline-primary" id="browseImageButton">Browse Files</button>
-                            <span id="fileNameImage" class="ms-2 text-muted"></span>
-                        </div>
-                        <!-- Área de upload Modelo 3D -->
-                        <div class="col-md-6 p-4 border border-dashed text-center rounded bg-light">
-                            <div class="mb-2">
-                                <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                            <!-- Área de upload Modelo 3D -->
+                            <div class="col-md-6 p-4 border border-dashed text-center rounded bg-light">
+                                <div class="mb-2">
+                                    <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                                </div>
+                                <p class="text-muted">3D Model (.glb, ...)<br><strong>or</strong></p>
+                                <input type="file" class="form-control" name="modelo3d_produto" id="productModel3D"
+                                    style="display:none;">
+                                <button type="button" class="btn btn-outline-primary" id="browseModelButton">Browse
+                                    Model</button>
+                                <span id="fileNameModel" class="ms-2 text-muted"></span>
                             </div>
-                            <p class="text-muted">3D Model (.glb, ...)<br><strong>or</strong></p>
-                            <input type="file" class="form-control" name="modelo3d_produto" id="productModel3D"
-                                style="display:none;">
-                            <button type="button" class="btn btn-outline-primary" id="browseModelButton">Browse
-                                Model</button>
-                            <span id="fileNameModel" class="ms-2 text-muted"></span>
                         </div>
                         <div class="row g-3">
                             <div class="col-md-6" id="productName">
@@ -136,8 +136,7 @@
 
                             <div class="col-md-6" id="category">
                                 <label class="form-label">Category</label>
-                                <select class="form-select" name="id_categoria">
-                                    <option value="0">Select Category</option>
+                                <select class="form-select category-options" name="id_categoria">
                                 </select>
                             </div>
                             <div class="col-md-6" id="price">
@@ -153,8 +152,6 @@
                             <div class="col-md-6" id="status">
                                 <label class="form-label">Status</label>
                                 <select class="form-select" name="status_produto">
-                                    <option>Active</option>
-                                    <option>Inactive</option>
                                 </select>
                             </div>
 
@@ -186,30 +183,32 @@
                 <div class="modal-body">
                     <!-- Formulário -->
                     <form id="editProductForm" method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="imagem_principal" id="editImagemPrincipal">
-                        <!-- Área de upload Imagem -->
-                        <div class="mb-4 p-4 border border-dashed text-center rounded bg-light">
-                            <div class="mb-2">
-                                <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                        <div class="row">
+                            <input type="hidden" name="imagem_principal" id="editImagemPrincipal">
+                            <!-- Área de upload Imagem -->
+                            <div class="col-md-6 p-4 border border-dashed text-center rounded bg-light">
+                                <div class="mb-2">
+                                    <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                                </div>
+                                <p class="text-muted">Drag and drop your product image here<br><strong>or</strong></p>
+                                <input type="file" class="form-control" name="product_image" id="editProductImage"
+                                    style="display:none;">
+                                <button class="btn btn-outline-primary" id="editBrowseButton">Browse Files</button>
+                                <span id="editFileName" class="ms-2 text-muted"></span>
                             </div>
-                            <p class="text-muted">Drag and drop your product image here<br><strong>or</strong></p>
-                            <input type="file" class="form-control" name="product_image" id="editProductImage"
-                                style="display:none;">
-                            <button class="btn btn-outline-primary" id="editBrowseButton">Browse Files</button>
-                            <span id="editFileName" class="ms-2 text-muted"></span>
-                        </div>
-                        <!-- Área de upload Modelo 3D -->
-                         <input type="hidden" name="modelo3d_produto" id="editModelo3dProduto">
-                        <div class="col-md-6 p-4 border border-dashed text-center rounded bg-light">
-                            <div class="mb-2">
-                                <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                            <!-- Área de upload Modelo 3D -->
+                            <input type="hidden" name="modelo3d_produto" id="editModelo3dProduto">
+                            <div class="col-md-6 p-4 border border-dashed text-center rounded bg-light">
+                                <div class="mb-2">
+                                    <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                                </div>
+                                <p class="text-muted">3D Model (.glb, ...)<br><strong>or</strong></p>
+                                <input type="file" class="form-control" name="modelo3d_produto" id="editProductModel3D"
+                                    style="display:none;">
+                                <button type="button" class="btn btn-outline-primary" id="editModelButton">Browse
+                                    Model</button>
+                                <span id="editNameModel" class="ms-2 text-muted"></span>
                             </div>
-                            <p class="text-muted">3D Model (.glb, ...)<br><strong>or</strong></p>
-                            <input type="file" class="form-control" name="modelo3d_produto" id="editProductModel3D"
-                                style="display:none;">
-                            <button type="button" class="btn btn-outline-primary" id="editModelButton">Browse
-                                Model</button>
-                            <span id="editNameModel" class="ms-2 text-muted"></span>
                         </div>
                         <div class="row g-3">
                             <div class="col-md-6" id="editProductName">
@@ -223,8 +222,7 @@
 
                             <div class="col-md-6" id="editCategory">
                                 <label class="form-label">Category</label>
-                                <select class="form-select" name="id_categoria">
-                                    <option value="0">Select Category</option>
+                                <select class="form-select category-options" name="id_categoria">
                                 </select>
                             </div>
                             <div class="col-md-6" id="editPrice">
@@ -240,8 +238,6 @@
                             <div class="col-md-6" id="editStatus">
                                 <label class="form-label">Status</label>
                                 <select class="form-select" name="status_produto">
-                                    <option>Active</option>
-                                    <option>Inactive</option>
                                 </select>
                             </div>
 
