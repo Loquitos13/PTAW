@@ -65,7 +65,11 @@ function preencherModalEdicao(produto) {
     document.getElementById('editStatus').querySelector('select').value = String(produto.status_produto);
     document.getElementById('editDescription').querySelector('textarea').value = produto.descricao_produto;
     document.getElementById('editImagemPrincipal').value = produto.imagem_principal;
-    document.getElementById('editModelo3DProduto').value = produto.modelo3d_produto || '';
+    
+    const modelo3DElement = document.getElementById('editModelo3DProduto');
+    if (modelo3DElement) {
+        modelo3DElement.textContent = produto.modelo3d_produto || '';
+    }
 }
 
 function preencherModalVariantes() {
@@ -86,6 +90,8 @@ function preencherModalVariantes() {
     let box = document.createElement('div');
     let anotherBox = document.createElement('div');
 
+    console.log(idCategoria, cores, tamanhos)
+
     coresDisponiveis.forEach(cor => {
         let span = document.createElement('span');
         span.setAttribute('class', 'colorClass');
@@ -96,7 +102,7 @@ function preencherModalVariantes() {
     tamanhosDisponiveis.forEach(tamanho => {
         let anotherSpan = document.createElement('span');
         anotherSpan.setAttribute('class', 'sizeClass');
-        anotherSpan.textContent = tamanho;
+        anotherSpan.textContent = decodeURIComponent(tamanho);
         anotherBox.appendChild(anotherSpan);
     });
 
@@ -268,43 +274,33 @@ function showVariants() {
     let selectedList = document.getElementById('selectedVariants');
     selectedList.innerHTML = "";
 
-    variants.forEach((variant,index) => {
-        if (variant.cor) {
-            let span = document.createElement('span');
-            span.className = 'sizeClass';
-            span.style.backgroundColor = variant.cor;
-            span.style.position = "relative";
+    variants.forEach((variant, index) => {
+        let span = document.createElement('span');
+        span.style.position = "relative";
 
-            let removeBtn = document.createElement('button');
-            removeBtn.setAttribute('class', 'remove-variant-btn');
-            removeBtn.textContent = "x";
-            removeBtn.onclick = function () {
-                variants.splice(index, 1);
-                showVariants();
-                preencherModalVariantes();
-            };
-
-            span.appendChild(removeBtn);
-            selectedList.appendChild(span);
-        }
-        if (variant.tamanho) {
-            let span = document.createElement('span');
+        if (variant.cor && variant.tamanho) {
+            span.className = 'variantClass';
+            span.innerHTML = `<span class="colorClass" style="background-color:${variant.cor};"></span> <span class="sizeClass">${variant.tamanho}</span>`;  
+        } else if (variant.cor) {
             span.className = 'colorClass';
-            span.textContent = variant.tamanho;
-
-
-            let removeBtn = document.createElement('button');
-            removeBtn.setAttribute('class', 'remove-variant-btn');
-            removeBtn.textContent = "x";
-            removeBtn.onclick = function () {
-                variants.splice(index, 1);
-                showVariants();
-                preencherModalVariantes();
-            };
-
-            span.appendChild(removeBtn);
-            selectedList.appendChild(span);
+            span.style.backgroundColor = variant.cor;
+        } else if (variant.tamanho) {
+            span.className = 'sizeClass';
+            span.textContent = decodeURIComponent(variant.tamanho);;
         }
+
+        let removeBtn = document.createElement('button');
+        removeBtn.setAttribute('class', 'remove-variant-btn');
+        removeBtn.textContent = "x";
+
+        removeBtn.onclick = function () {
+            variants.splice(index, 1);
+            showVariants();
+            preencherModalVariantes();
+        };
+
+        span.appendChild(removeBtn);
+        selectedList.appendChild(span);
     });
 }
 document.getElementById("productForm").addEventListener("submit", async function (e) {

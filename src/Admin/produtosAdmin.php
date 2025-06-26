@@ -313,8 +313,8 @@
                         <button type="button" class="btn btn-primary" id="addVariantBtn">Adicionar Variante</button>
                     </form>
                     <hr>
-                    <div id="availableVariants"></div>
-                    <div id="selectedVariants"></div>
+                    <div id="availableVariants">Variantes Disponíveis:</div>
+                    <div id="selectedVariants">Variantes Selecionadas:</div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
