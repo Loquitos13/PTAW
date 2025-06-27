@@ -44,3 +44,16 @@
     line-height: 16px;
     padding: 0;
 }
+
+.selectedColors,
+.selectedDimensions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.selectedColors span,
+.selectedDimensions span {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}

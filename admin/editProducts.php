@@ -54,7 +54,7 @@ try {
         // Processa novo modelo 3D, se enviado
         if (isset($_FILES['modelo3d_produto']) && $_FILES['modelo3d_produto']['error'] === UPLOAD_ERR_OK) {
 
-            $model3dDir = __DIR__ . '/../imagens/img_products/'; //Pasta diferente ou a mesma?
+            $model3dDir = __DIR__ . '/../public/modelos3D/';
             $model3dName = uniqid() . '_' . basename($_FILES['modelo3d_produto']['name']);
             $model3dFile = $model3dDir . $model3dName;
 
@@ -63,6 +63,13 @@ try {
             }
 
             $data['modelo3d_produto'] = $model3dName;
+        }
+
+         if (isset($data['cores'])) {
+            $data['cores'] = json_decode($data['cores'], true);
+        }
+        if (isset($data['dimensoes'])) {
+            $data['dimensoes'] = json_decode($data['dimensoes'], true);
         }
 
         $response = updateProductData($data);

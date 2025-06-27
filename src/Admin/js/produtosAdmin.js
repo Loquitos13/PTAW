@@ -1,50 +1,272 @@
 let allProductsAdmin = [];
-let variants = [];
+let selectedColors = [];
+let selectedDimensions = [];
 let currentEditProductId = null;
 let currentDeleteProductId = null;
 let currentCategoryFilter = "all";
 let currentStatusFilter = "all";
 
 
+document.addEventListener('DOMContentLoaded', async function () {
+    await carregarProdutosAdmin();
+    fetchAndDisplayProducts("all", "all");
 
-async function carregarProdutosAdmin() {
-    const response = await fetch("../../admin/getProductsAdmin.php");
-    allProductsAdmin = await response.json();
-}
+    // Limpa os arrays quando abre o formulário de inserção
+    document.getElementById('addProductModal').addEventListener('show.bs.modal', function () {
+        selectedColors = [];
+        selectedDimensions = [];
+        const form = document.getElementById('productForm');
+        showColors(form);
+        showDimensions(form);
+    });
 
-// Armazena o ID do produto que está a ser editado
-document.addEventListener('click', function (e) {
-    const editButton = e.target.closest('button[data-bs-target="#editProductModal"]');
-    if (editButton) {
-        currentEditProductId = editButton.getAttribute('data-id');
-        const produto = allProductsAdmin.find(p => p.id_produto == currentEditProductId);
-        if (produto) {
-            variants.length = 0;
+    // Armazena o ID do produto que está a ser editado
+    document.addEventListener('click', function (e) {
+        const form = document.getElementById('editProductForm');
+        const editButton = e.target.closest('button[data-bs-target="#editProductModal"]');
+        if (editButton) {
+            currentEditProductId = editButton.getAttribute('data-id');
+            const produto = allProductsAdmin.find(p => p.id_produto == currentEditProductId);
+            if (produto) {
+                selectedColors = [];
+                selectedDimensions = [];
 
-            //CONFIRMAR SE TODAS AS COMBINAÇÕES SÃO VÁLIDAS
-            //Gera todas as combinações possíveis das variantes que já existem na base de dados 
-            if (produto.cores && produto.dimensoes) {
-                produto.cores.forEach(cor => {
-                    produto.dimensoes.forEach(dim => {
-                        variants.push({ cor: cor.hex_cor, tamanho: dim.tamanho });
-                    });
-                });
-            } else if (produto.cores) {
-                produto.cores.forEach(cor => {
-                    variants.push({ cor: cor.hex_cor, tamanho: "" });
-                });
-            } else if (produto.dimensoes) {
-                produto.dimensoes.forEach(dim => {
-                    variants.push({ cor: "", tamanho: dim.tamanho });
-                });
+                if (produto.cores) {
+                    selectedColors = produto.cores.map(cor => ({
+                        id_cor: cor.id_cor,
+                        hex_cor: cor.hex_cor,
+                        nome_cor: cor.nome_cor
+                    }));
+                }
+                if (produto.dimensoes) {
+                    selectedDimensions = produto.dimensoes.map(dim => ({
+                        dimensao_tipo: dim.dimensao_tipo,
+                        tamanho: dim.tamanho
+                    }));
+                }
+
+                preencherModalEdicao(produto);
+                showColors(form);
+                showDimensions(form);
             }
-
-            preencherModalEdicao(produto);
-            preencherModalVariantes();
         }
-    }
-});
-document.addEventListener("DOMContentLoaded", function () {
+    });
+
+    fetchCategories().then(categories => {
+        document.querySelectorAll('.category-options').forEach(categoryScroll => {
+            let optionAll = document.createElement('option');
+            optionAll.value = "all";
+            optionAll.innerHTML = "All Categories";
+            optionAll.selected = true;
+            categoryScroll.appendChild(optionAll);
+
+            for (let i = 0; i < categories.length; i++) {
+                let option = document.createElement('option');
+                option.value = categories[i].id_categoria;
+                option.innerHTML = categories[i].titulo_categoria;
+                categoryScroll.appendChild(option);
+            }
+        });
+    });
+
+    document.querySelectorAll('.category-options').forEach(categoryScroll => {
+        categoryScroll.addEventListener("change", async function () {
+            currentCategoryFilter = this.value;
+            if (currentCategoryFilter.innerHTML === "All Categories") {
+                currentCategoryFilter = "all";
+            }
+            await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
+        });
+    })
+
+    fetchProducts().then(products => {
+        const statusAdicionados = new Set();
+        const opcoesStatus = [];
+
+        for (let i = 0; i < products.length; i++) {
+            const status = products[i].status_produto;
+            if (!statusAdicionados.has(status)) {
+                statusAdicionados.add(status);
+                opcoesStatus.push(status);
+            }
+        }
+
+        document.querySelectorAll('.status-options').forEach(statusScroll => {
+            statusScroll.innerHTML = "";
+            let optionAll = document.createElement('option');
+            optionAll.value = "all";
+            optionAll.innerHTML = "All Status";
+            optionAll.selected = true;
+            statusScroll.appendChild(optionAll);
+
+            opcoesStatus.forEach(status => {
+                let option = document.createElement('option');
+                option.value = status;
+                option.innerHTML = status == 1 ? "Active" : "Inactive";
+                statusScroll.appendChild(option);
+            });
+        });
+    });
+
+    document.querySelectorAll('.status-options').forEach(statusScroll => {
+        statusScroll.addEventListener("change", async function () {
+            currentStatusFilter = this.value;
+            if (currentStatusFilter.innerHTML === "All Status") {
+                currentStatusFilter = "all";
+            }
+            await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
+        });
+    })
+
+    // Formulário de Inserção
+    document.getElementById("productForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        const variantes = selectedColors.map(cor => ({
+            id_cor: cor.hex.replace('#', '')
+        }));
+
+        // Transformar dimensões no formato esperado
+        const dimensoes = selectedDimensions.map(dim => ({
+            dimensao_tipo: "",
+            tamanho: dim
+        }));
+
+        formData.append('variantes', JSON.stringify(variantes));
+        formData.append('dimensoes', JSON.stringify(dimensoes));
+
+        formData.delete('cor_produto[]');
+        formData.delete('dimensao_produto[]');
+
+        if (!formData.get("imagem_principal") || !formData.get("titulo_produto") || !formData.get("keywords_produto") ||
+            !formData.get("id_categoria") || !formData.get("preco_produto") || !formData.get("stock_produto") ||
+            !formData.get("status_produto") || !formData.get("descricao_produto")) {
+            alert("Por favor, preencha todos os campos obrigatórios.");
+            return;
+        }
+
+        const response = await fetch("../../admin/insertProducts.php", {
+            method: "POST",
+            body: formData
+        });
+        const productResult = await response.json();
+
+        if (productResult.status === 'success') {
+            await carregarProdutosAdmin();
+            await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
+            if (modal) modal.hide();
+            alert('Produto inserido com sucesso!');
+        }
+    });
+
+    // Formulário de Edição
+    document.getElementById('editProductForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const productResult = await productUpdate(this);
+
+        if (productResult.status === 'success') {
+            await carregarProdutosAdmin();
+            await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
+            if (modal) modal.hide();
+            alert('Produto atualizado com sucesso!');
+        }
+    });
+
+    // Confirmação de Eliminação
+    document.getElementById("confirmDelete").addEventListener("click", async function (e) {
+        e.preventDefault();
+        await productDeletion(currentDeleteProductId);
+        await carregarProdutosAdmin();
+        await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
+        const modal = bootstrap.Modal.getInstance(document.getElementById('deleteProductModal'));
+        if (modal) modal.hide();
+        alert('Produto eliminado com sucesso!');
+    });
+
+    // Atualizar referência do ficheiro (inserção)
+    const browseImageButton = document.getElementById("browseImageButton");
+    const productImageInput = document.getElementById("productImage");
+    const fileNameImage = document.getElementById("fileNameImage");
+
+    browseImageButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        productImageInput.click();
+    });
+
+    productImageInput.addEventListener("change", function () {
+        if (productImageInput.files.length > 0) {
+            fileNameImage.textContent = productImageInput.files[0].name;
+        } else {
+            fileNameImage.textContent = "";
+        }
+    });
+
+    const browseModelButton = document.getElementById("browseModelButton");
+    const productModelInput = document.getElementById("productModel3D");
+    const fileNameModel = document.getElementById("fileNameModel");
+
+    browseModelButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        productModelInput.click();
+    });
+
+    productModelInput.addEventListener("change", function () {
+        if (productModelInput.files.length > 0) {
+            fileNameModel.textContent = productModelInput.files[0].name;
+        } else {
+            fileNameModel.textContent = "";
+        }
+    });
+
+    // Atualizar referência do ficheiro (edição)
+    const editBrowseButton = document.getElementById("editBrowseButton");
+    const productImageEdited = document.getElementById("editProductImage");
+    const editFileName = document.getElementById("editFileName");
+
+    editBrowseButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        productImageEdited.click();
+    });
+
+    productImageEdited.addEventListener("change", function () {
+        if (productImageEdited.files.length > 0) {
+            editFileName.textContent = productImageEdited.files[0].name;
+        } else {
+            editFileName.textContent = "";
+        }
+    });
+
+    const editModelButton = document.getElementById("editModelButton");
+    const productModelEdited = document.getElementById("editProductModel3D");
+    const editNameModel = document.getElementById("editNameModel");
+
+    editModelButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        productModelEdited.click();
+    });
+
+    productModelEdited.addEventListener("change", function () {
+        if (productModelEdited.files.length > 0) {
+            editNameModel.textContent = productModelEdited.files[0].name;
+        } else {
+            editNameModel.textContent = "";
+        }
+    });
+
+    // Atualizar valor do color picker em tempo real
+    document.addEventListener('input', function (e) {
+        if (e.target.matches('input[type="color"].color-picker')) {
+            const span = e.target.parentElement.querySelector('.colorValue');
+            if (span) span.textContent = e.target.value;
+        }
+    });
+
+    // Guardar o ID do produto a eliminar
     document.addEventListener('click', function (e) {
         const deleteButton = e.target.closest('button[data-bs-target="#deleteProductModal"]');
         if (deleteButton) {
@@ -53,8 +275,89 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    document.querySelectorAll('.addColorBtn').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            const form = btn.closest('form');
+            addColor(form);
+        });
+    });
+
+    document.querySelectorAll('.addDimensionBtn').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            const form = btn.closest('form');
+            addDimension(form);
+        });
+    });
+
 });
 
+async function carregarProdutosAdmin() {
+    const response = await fetch("../../admin/getProductsAdmin.php");
+    allProductsAdmin = await response.json();
+}
+
+function showColors(form) {
+    const coresDiv = form.querySelector('.selectedColors');
+    coresDiv.innerHTML = "";
+    selectedColors.forEach((cor, idx) => {
+        const span = document.createElement('span');
+        span.innerHTML = `<span class='colorClass' style="background:${cor.hex_cor} "></span> ${cor.nome_cor || cor.hex_cor}`;
+
+        const btn = document.createElement('button');
+        btn.textContent = "x";
+        btn.onclick = () => { selectedColors.splice(idx, 1); showColors(form); };
+        span.appendChild(btn);
+        coresDiv.appendChild(span);
+    });
+}
+
+function showDimensions(form) {
+    const dimsDiv = form.querySelector('.selectedDimensions');
+    dimsDiv.innerHTML = "";
+    selectedDimensions.forEach((dim, idx) => {
+        const span = document.createElement('span');
+        span.textContent = dim.tamanho.replace(/%20/g, " ");
+
+        const btn = document.createElement('button');
+        btn.textContent = "x";
+        btn.onclick = () => { selectedDimensions.splice(idx, 1); showDimensions(form); };
+        span.appendChild(btn);
+        dimsDiv.appendChild(span);
+    });
+}
+
+function addColor(form) {
+    const colorInput = form.querySelector('#variantsSection input[type="color"]');
+    const colorValue = colorInput.value;
+    // Podes pedir nome ou só hex
+    if (!colorValue) {
+        alert("Escolha uma cor!");
+        return;
+    }
+    // Evitar duplicados
+    if (selectedColors.some(c => c.hex_cor === colorValue)) {
+        alert("Esta cor já foi adicionada.");
+        return;
+    }
+    selectedColors.push({ hex_cor: colorValue, nome_cor: colorValue });
+    showColors(form);
+}
+
+function addDimension(form) {
+    const dimInput = form.querySelector('#variantsSection input[type="text"]');
+    let dimValue = dimInput.value.trim();
+    if (!dimValue) {
+        alert("Introduza uma dimensão!");
+        return;
+    }
+    dimValue = dimValue.replace(/ /g, "%20");
+    if (selectedDimensions.some(d => d.tamanho === dimValue)) {
+        alert("Esta dimensão já foi adicionada.");
+        return;
+    }
+    selectedDimensions.push({ tamanho: dimValue });
+    showDimensions(form);
+}
 
 function preencherModalEdicao(produto) {
     document.getElementById('editProductName').querySelector('input').value = produto.titulo_produto;
@@ -65,51 +368,13 @@ function preencherModalEdicao(produto) {
     document.getElementById('editStatus').querySelector('select').value = String(produto.status_produto);
     document.getElementById('editDescription').querySelector('textarea').value = produto.descricao_produto;
     document.getElementById('editImagemPrincipal').value = produto.imagem_principal;
-    
+
     const modelo3DElement = document.getElementById('editModelo3DProduto');
     if (modelo3DElement) {
         modelo3DElement.textContent = produto.modelo3d_produto || '';
     }
 }
-
-function preencherModalVariantes() {
-    let availableList = document.getElementById('availableVariants');
-    availableList.innerHTML = "";
-
-    const idCategoria = document.getElementById('editCategory').querySelector('select').value;
-    const { cores, tamanhos } = getVariantsByCategory(idCategoria);
-
-    const coresDisponiveis = cores.filter(cor =>
-        !variants.some(v => v.cor === cor.hex_cor)
-    );
-
-    const tamanhosDisponiveis = tamanhos.filter(tamanho =>
-        !variants.some(v => v.tamanho === tamanho)
-    );
-
-    let box = document.createElement('div');
-    let anotherBox = document.createElement('div');
-
-    console.log(idCategoria, cores, tamanhos)
-
-    coresDisponiveis.forEach(cor => {
-        let span = document.createElement('span');
-        span.setAttribute('class', 'colorClass');
-        span.setAttribute('style', 'background-color:' + cor.hex_cor + ';');
-        box.appendChild(span);
-    });
-
-    tamanhosDisponiveis.forEach(tamanho => {
-        let anotherSpan = document.createElement('span');
-        anotherSpan.setAttribute('class', 'sizeClass');
-        anotherSpan.textContent = decodeURIComponent(tamanho);
-        anotherBox.appendChild(anotherSpan);
-    });
-
-    availableList.appendChild(box);
-    availableList.appendChild(anotherBox);
-}
-
+/*
 function getVariantsByCategory(idCategoria) {
     const produtosCategoria = allProductsAdmin.filter(p => p.id_categoria == idCategoria);
 
@@ -135,83 +400,6 @@ function getVariantsByCategory(idCategoria) {
     return { cores, tamanhos };
 }
 
-document.addEventListener('DOMContentLoaded', async function () {
-    await carregarProdutosAdmin();
-    fetchAndDisplayProducts("all","all");
-
-    document.getElementById('addVariantBtn').addEventListener('click', function () {
-        addVariants();
-    })
-})
-
-fetchCategories().then(categories => {
-    document.querySelectorAll('.category-options').forEach(categoryScroll => {
-        let optionAll = document.createElement('option');
-        optionAll.value = "all";
-        optionAll.innerHTML = "All Categories";
-        optionAll.selected = true;
-        categoryScroll.appendChild(optionAll);
-
-        for (let i = 0; i < categories.length; i++) {
-            let option = document.createElement('option');
-            option.value = categories[i].id_categoria;
-            option.innerHTML = categories[i].titulo_categoria;
-            categoryScroll.appendChild(option);
-        }
-    });
-});
-
-    document.querySelectorAll('.category-options').forEach(categoryScroll => {
-        categoryScroll.addEventListener("change", async function () {
-            currentCategoryFilter = this.value;
-            if (currentCategoryFilter.innerHTML === "All Categories") {
-                currentCategoryFilter = "all";
-            }
-            await fetchAndDisplayProducts(currentCategoryFilter,currentStatusFilter);
-        });
-    })
-
-    fetchProducts().then(products => {
-    const statusAdicionados = new Set();
-    const opcoesStatus = [];
-
-    for (let i = 0; i < products.length; i++) {
-        const status = products[i].status_produto;
-        if (!statusAdicionados.has(status)) {
-            statusAdicionados.add(status);
-            opcoesStatus.push(status);
-        }
-    }
-
-    document.querySelectorAll('.status-options').forEach(statusScroll => {
-        statusScroll.innerHTML = "";
-        let optionAll = document.createElement('option');
-        optionAll.value = "all";
-        optionAll.innerHTML = "All Status";
-        optionAll.selected = true;
-        statusScroll.appendChild(optionAll);
-
-        opcoesStatus.forEach(status => {
-            let option = document.createElement('option');
-            option.value = status;
-            option.innerHTML = status == 1 ? "Active" : "Inactive";
-            statusScroll.appendChild(option);
-        });
-    });
-});
-
-    document.querySelectorAll('.status-options').forEach(statusScroll => {
-        statusScroll.addEventListener("change", async function () {
-            currentStatusFilter = this.value;
-            if (currentStatusFilter.innerHTML === "All Status") {
-                currentStatusFilter = "all";
-            }
-            await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
-        });
-    })
-
-
-/*
 document.getElementById('productForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
@@ -247,93 +435,6 @@ document.getElementById('productForm').addEventListener('submit', async function
 
     }
 }); */
-
-function addVariants() {
-    const cor = document.getElementById('inputCor').value;
-    const tamanho = document.getElementById('inputTamanho').value;
-
-    if (!cor && !tamanho) {
-        alert("Preencha pelo menos a cor ou a dimensão!");
-        return;
-    }
-
-    const exists = variants.some(v =>
-        v.cor === cor && v.tamanho === tamanho
-    );
-    if (exists) {
-        alert("Esta variante já foi adicionada.");
-        return;
-    }
-
-    variants.push({ cor, tamanho });
-    showVariants();
-    preencherModalVariantes();
-}
-
-function showVariants() {
-    let selectedList = document.getElementById('selectedVariants');
-    selectedList.innerHTML = "";
-
-    variants.forEach((variant, index) => {
-        let span = document.createElement('span');
-        span.style.position = "relative";
-
-        if (variant.cor && variant.tamanho) {
-            span.className = 'variantClass';
-            span.innerHTML = `<span class="colorClass" style="background-color:${variant.cor};"></span> <span class="sizeClass">${variant.tamanho}</span>`;  
-        } else if (variant.cor) {
-            span.className = 'colorClass';
-            span.style.backgroundColor = variant.cor;
-        } else if (variant.tamanho) {
-            span.className = 'sizeClass';
-            span.textContent = decodeURIComponent(variant.tamanho);;
-        }
-
-        let removeBtn = document.createElement('button');
-        removeBtn.setAttribute('class', 'remove-variant-btn');
-        removeBtn.textContent = "x";
-
-        removeBtn.onclick = function () {
-            variants.splice(index, 1);
-            showVariants();
-            preencherModalVariantes();
-        };
-
-        span.appendChild(removeBtn);
-        selectedList.appendChild(span);
-    });
-}
-document.getElementById("productForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-    formData.append('variantes', JSON.stringify(variants));
-
-    if (!formData.get("imagem_principal") || !formData.get("titulo_produto") || !formData.get("keywords_produto") ||
-        !formData.get("id_categoria") || !formData.get("preco_produto") || !formData.get("stock_produto") ||
-        !formData.get("status_produto") || !formData.get("descricao_produto")) {
-        alert("Por favor, preencha todos os campos obrigatórios.");
-        return;
-    }
-
-    const response = await fetch("../../admin/insertProducts.php", {
-        method: "POST",
-        body: formData
-    });
-    const productResult = await response.json();
-
-    if (productResult.status === 'success') {
-        variants.length = 0;
-        await carregarProdutosAdmin();
-        await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
-        const modal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
-        if (modal) modal.hide();
-        alert('Produto inserido com sucesso!');
-    }
-
-})
-
-
 
 async function fetchCategories() {
     try {
@@ -378,14 +479,14 @@ async function fetchAndDisplayProducts(selectedCategory = null, selectedStatus =
         allProductsAdmin = data;
 
         const tbody = document.getElementById("productTableBody");
-        tbody.innerHTML = ""; // limpa a tabela antes de atualizar
+        tbody.innerHTML = "";
 
         let filteredData = data;
         if (selectedCategory && selectedCategory !== "all") {
             filteredData = data.filter(product => product.id_categoria == selectedCategory);
         }
 
-         if (selectedStatus && selectedStatus !== "all") {
+        if (selectedStatus && selectedStatus !== "all") {
             filteredData = filteredData.filter(product => product.status_produto == selectedStatus);
         }
 
@@ -423,6 +524,8 @@ async function fetchAndDisplayProducts(selectedCategory = null, selectedStatus =
 async function productUpdate(formElement) {
     const formData = new FormData(formElement);
     formData.set('id_produto', currentEditProductId);
+    formData.append('cores', JSON.stringify(selectedColors));
+    formData.append('dimensoes', JSON.stringify(selectedDimensions));
 
     if (!formData.get("imagem_principal") && !formData.get("product_image")) {
         alert("Por favor, selecione uma imagem ou mantenha a atual.");
@@ -436,24 +539,6 @@ async function productUpdate(formElement) {
     return await response.json();
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-
-    document.getElementById('editProductForm').addEventListener('submit', async function (e) {
-        e.preventDefault();
-
-        const productResult = await productUpdate(this);
-
-        if (productResult.status === 'success') {
-            await carregarProdutosAdmin();
-            await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
-            const modal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
-            if (modal) modal.hide();
-            alert('Produto atualizado com sucesso!');
-        }
-    });
-
-});
-
 async function productDeletion(productId) {
     const response = await fetch(`../../admin/deleteProducts.php`, {
         method: "POST",
@@ -465,93 +550,4 @@ async function productDeletion(productId) {
 
     return await response.json();
 }
-
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    document.getElementById("confirmDelete").addEventListener("click", async function (e) {
-        e.preventDefault();
-        await productDeletion(currentDeleteProductId);
-        await carregarProdutosAdmin();
-        await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
-        const modal = bootstrap.Modal.getInstance(document.getElementById('deleteProductModal'));
-        if (modal) modal.hide();
-        alert('Produto eliminado com sucesso!');
-    });
-
-});
-
-//Para inserir a referência do ficheiro
-document.addEventListener("DOMContentLoaded", function () {
-    const browseImageButton = document.getElementById("browseImageButton");
-    const productImageInput = document.getElementById("productImage");
-    const fileNameImage = document.getElementById("fileNameImage");
-
-    browseImageButton.addEventListener("click", function (e) {
-        e.preventDefault();
-        productImageInput.click(); // abre o explorador de ficheiros
-    });
-
-    productImageInput.addEventListener("change", function () {
-        if (productImageInput.files.length > 0) {
-            fileNameImage.textContent = productImageInput.files[0].name;
-        } else {
-            fileNameImage.textContent = "";
-        }
-    });
-
-    const browseModelButton = document.getElementById("browseModelButton");
-    const productModelInput = document.getElementById("productModel3D");
-    const fileNameModel = document.getElementById("fileNameModel");
-
-    browseModelButton.addEventListener("click", function (e) {
-        e.preventDefault();
-        productModelInput.click();
-    });
-
-    productModelInput.addEventListener("change", function () {
-        if (productModelInput.files.length > 0) {
-            fileNameModel.textContent = productModelInput.files[0].name;
-        } else {
-            fileNameModel.textContent = "";
-        }
-    });
-});
-
-//Para atualizar a referência do ficheiro
-document.addEventListener("DOMContentLoaded", function () {
-    const editBrowseButton = document.getElementById("editBrowseButton");
-    const productImageEdited = document.getElementById("editProductImage");
-    const editFileName = document.getElementById("editFileName");
-
-    editBrowseButton.addEventListener("click", function (e) {
-        e.preventDefault();
-        productImageEdited.click(); // abre o explorador de ficheiros
-    });
-
-    productImageEdited.addEventListener("change", function () {
-        if (productImageEdited.files.length > 0) {
-            editFileName.textContent = productImageEdited.files[0].name;
-        } else {
-            editFileName.textContent = "";
-        }
-    });
-
-    const editModelButton = document.getElementById("editModelButton");
-    const productModelEdited = document.getElementById("editProductModel3D");
-    const editNameModel = document.getElementById("editNameModel");
-
-    editModelButton.addEventListener("click", function (e) {
-        e.preventDefault();
-        productModelEdited.click();
-    });
-
-    productModelEdited.addEventListener("change", function () {
-        if (productModelEdited.files.length > 0) {
-            editNameModel.textContent = productModelEdited.files[0].name;
-        } else {
-            editNameModel.textContent = "";
-        }
-    });
-});
 

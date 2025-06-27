@@ -982,7 +982,7 @@ class ApiController
 
         $requiredFields = [
             'id_categoria',
-                'titulo_produto',
+            'titulo_produto',
             'descricao_produto',
             'preco_produto',
             'stock_produto',
@@ -1023,12 +1023,19 @@ class ApiController
 
             if (!empty($data['variantes']) && is_array($data['variantes'])) {
                 foreach ($data['variantes'] as $variante) {
+
+                    $cor_info = $this->queryBuilder->table('Cores')
+                        ->select(['nome_cor', 'hex_cor'])
+                        ->where('id_cor', '=', $variante['id_cor'])
+                        ->first();
+
                     $this->queryBuilder->table('ProdutosVariantes')
                         ->insert([
                             'id_produto' => $id_produto,
                             'id_cor' => $variante['id_cor'],
                             'promocao' => $variante['promocao'] ?? 0
                         ]);
+                    error_log("Cor adicionada: ID: {$variante['id_cor']}, Nome: {$cor_info['nome_cor']}, Hex: {$cor_info['hex_cor']}");
                 }
             }
 
@@ -1040,6 +1047,10 @@ class ApiController
                             'dimensao_tipo' => $dimensao['dimensao_tipo'] ?? null,
                             'tamanho' => $dimensao['tamanho'] ?? null
                         ]);
+                
+                    $id_dimensao = $this->queryBuilder->getLastInsertId();
+
+                    error_log("Dimensão adicionada: ID: {$id_dimensao}, Tipo: {$dimensao['dimensao_tipo']}, Tamanho: {$dimensao['tamanho']}");
                 }
             }
 
@@ -1092,12 +1103,20 @@ class ApiController
                     ->execute();
 
                 foreach ($data['variantes'] as $variante) {
+
+                    $cor_info = $this->queryBuilder->table('Cores')
+                        ->select(['nome_cor', 'hex_cor'])
+                        ->where('id_cor', '=', $variante['id_cor'])
+                        ->first();
+
                     $this->queryBuilder->table('ProdutosVariantes')
                         ->insert([
                             'id_produto' => $value_first_element,
                             'id_cor' => $variante['id_cor'],
                             'promocao' => $variante['promocao'] ?? 0
                         ]);
+
+                    error_log("Cor atualizada: ID: {$variante['id_cor']}, Nome: {$cor_info['nome_cor']}, Hex: {$cor_info['hex_cor']}");
                 }
             }
 
@@ -1114,6 +1133,10 @@ class ApiController
                             'dimensao_tipo' => $dimensao['dimensao_tipo'] ?? null,
                             'tamanho' => $dimensao['tamanho'] ?? null
                         ]);
+                
+                    $id_dimensao = $this->queryBuilder->getLastInsertId();
+
+                    error_log("Dimensão atualizada: ID: {$id_dimensao}, Tipo: {$dimensao['dimensao_tipo']}, Tamanho: {$dimensao['tamanho']}");
                 }
             }
 

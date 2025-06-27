@@ -98,7 +98,7 @@
 
                 <div class="modal-body">
                     <!-- Formulário -->
-                    <form id="productForm" method="POST">
+                    <form id="productForm" method="POST" enctype="multipart/form-data">
                         <div class="row">
                             <!-- Área de upload Imagem -->
                             <div class="col-md-6 p-4 border border-dashed text-center rounded bg-light">
@@ -151,7 +151,7 @@
 
                             <div class="col-md-6" id="status">
                                 <label class="form-label">Status</label>
-                                <select class="form-select" name="status_produto">
+                                <select class="form-select status-options" name="status_produto">
                                 </select>
                             </div>
 
@@ -160,11 +160,40 @@
                                 <textarea class="form-control" rows="3" name="descricao_produto"></textarea>
                             </div>
 
-                            <div class="col-12 mt-2">
-                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
-                                    data-bs-target="#variantModal">
-                                    Adicionar Variantes
-                                </button>
+                            <div class="row g-2" id="variantsSection">
+                                <div class="col-md-4">
+                                    <label class="form-label">Nome da Cor</label>
+                                    <input type="text" class="form-control nome-cor-input" name="nome_cor[]"
+                                        placeholder="Nome da cor">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Cor</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" class="form-control form-control-color color-picker"
+                                            name="cor_produto[]" value="#563d7c" title="Escolha a sua cor">
+                                        <span class="colorValue fw-bold">#563d7c</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Tipo de Dimensão</label>
+                                    <input type="text" class="form-control tipo-dimensao-input" name="tipo_dimensao[]"
+                                        placeholder="Tipo de dimensão">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Dimensão</label>
+                                    <input type="text" class="form-control" name="dimensao_produto[]"
+                                        placeholder="Dimensão">
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <button type="button" class="btn btn-outline-primary addColorBtn">Adicionar
+                                        Cor</button>
+                                    <button type="button" class="btn btn-outline-primary addDimensionBtn">Adicionar
+                                        Dimensão</button>
+                                </div>
+                                <div class="col-12">
+                                    <div class="selectedColors"></div>
+                                    <div class="selectedDimensions"></div>
+                                </div>
                             </div>
                         </div>
 
@@ -253,11 +282,40 @@
                                 <label class="form-label">Description</label>
                                 <textarea class="form-control" rows="3" name="descricao_produto"></textarea>
                             </div>
-                            <div class="col-12 mt-2">
-                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
-                                    data-bs-target="#variantModal">
-                                    Editar Variantes
-                                </button>
+                            <div class="row g-2" id="variantsSection">
+                                <div class="col-md-4">
+                                    <label class="form-label">Nome da Cor</label>
+                                    <input type="text" class="form-control nome-cor-input" name="nome_cor[]"
+                                        placeholder="Nome da cor">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Cor</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" class="form-control form-control-color color-picker"
+                                            name="cor_produto[]" value="#563d7c" title="Escolha a sua cor">
+                                        <span class="colorValue fw-bold">#563d7c</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Tipo de Dimensão</label>
+                                    <input type="text" class="form-control tipo-dimensao-input" name="tipo_dimensao[]"
+                                        placeholder="Tipo de dimensão">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Dimensão</label>
+                                    <input type="text" class="form-control" name="dimensao_produto[]"
+                                        placeholder="Dimensão">
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <button type="button" class="btn btn-outline-primary addColorBtn">Adicionar
+                                        Cor</button>
+                                    <button type="button" class="btn btn-outline-primary addDimensionBtn">Adicionar
+                                        Dimensão</button>
+                                </div>
+                                <div class="col-12">
+                                    <div class="selectedColors"></div>
+                                    <div class="selectedDimensions"></div>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -291,37 +349,6 @@
         </div>
     </div>
 
-    <!-- Modal para Adicionar/Editar Variantes -->
-    <div class="modal fade" id="variantModal" tabindex="-1" aria-labelledby="variantModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="variantModalLabel">Gerir Variantes</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="variantForm">
-                        <div class="mb-3">
-                            <label class="form-label">Cor</label>
-                            <input type="text" class="form-control" name="cor" id="inputCor">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Dimensão</label>
-                            <input type="text" class="form-control" name="dimensao" id="inputTamanho">
-                        </div>
-
-                        <button type="button" class="btn btn-primary" id="addVariantBtn">Adicionar Variante</button>
-                    </form>
-                    <hr>
-                    <div id="availableVariants">Variantes Disponíveis:</div>
-                    <div id="selectedVariants">Variantes Selecionadas:</div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/produtosAdmin.js"></script>
