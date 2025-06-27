@@ -451,7 +451,20 @@ class ApiController
 
     }
 
-public function getTopProductsByCount(): array
+    public function getTopProductsByCount(): array
+    {
+
+        return $this->queryBuilder->table('Produtos p')
+            ->select(["p.id_produto", "p.titulo_produto AS nome_produto", "COUNT(DISTINCT ei.id_encomenda) AS total_encomendas", "p.descricao_produto", "p.preco_produto", "p.imagem_principal AS imagem_produto"])
+            ->join('EncomendaItens ei', 'p.id_produto', '=', 'ei.id_produto')
+            ->groupBy("p.id_produto, p.titulo_produto")
+            ->order("total_encomendas", "DESC")
+            ->limit(4)
+            ->get();
+
+    }
+
+/*public function getTopProductsByCount(): array
 {
     // Primeiro tentar produtos com encomendas (top por vendas)
     $productsWithOrders = $this->queryBuilder->table('Produtos p')
@@ -462,7 +475,7 @@ public function getTopProductsByCount(): array
             "p.preco_produto",
             "p.imagem_produto"
         ])
-        ->join('EncomendaItens ei', 'p.id_produto', '=', 'ei.id_produto')
+        ->join('EncomendaItens ei', 'p.id_produto', '=', 'ei.id_produto')   
         ->where('p.status_produto', '=', 1) // Só produtos ativos
         ->groupBy("p.id_produto, p.titulo_produto, p.descricao_produto, p.preco_produto, p.imagem_produto")
         ->order("COUNT(DISTINCT ei.id_encomenda)", "DESC")
@@ -493,7 +506,7 @@ public function getTopProductsByCount(): array
         ->get();
 
     return array_merge($productsWithOrders, $additionalProducts);
-}  
+}*/
 
     
     public function getRecentOrders(): array
@@ -1490,7 +1503,7 @@ public function getTopProductsByCount(): array
     {
 
         return $this->queryBuilder->table('CarrinhoItens')
-            ->select(['id_carrinho_item as ID', 'titulo_produto as Name', 'imagem_principal as Image', 'preco as Price', 'quantidade as Quantity', 'tamanho as Size', 'cor as Color', 'personalizado as Personalization'])
+            ->select(['id_carrinho_item as ID', 'titulo_produto as Name', 'imagem_principal as Image', 'preco as Price', 'quantidade as Quantity', 'tamanho as Size', 'cor as Color', 'id_personalizacao as Personalization'])
             ->join('Produtos', 'CarrinhoItens.id_produto', '=', 'Produtos.id_produto')
             ->where('CarrinhoItens.id_carrinho', '=', $id_carrinho)
             ->get();
@@ -1506,7 +1519,7 @@ public function getTopProductsByCount(): array
             ->where('id_produto', '=', $id_product)
             ->where('tamanho', '=', $tamanho)
             ->where('cor', '=', $cor)
-            ->where('personalizado', '=', $personalizado)
+            ->where('id_personalizacao', '=', $personalizado)
             ->get();
 
     }
@@ -1552,7 +1565,7 @@ public function getTopProductsByCount(): array
                     'preco' => $data['preco'],
                     'tamanho' => $data['tamanho'],
                     'cor' => $data['cor'],
-                    'personalizado' => $data['personalizado']
+                    'id_personalizacao' => $data['id_personalizacao'] ?? null
                 ]);
 
             $lastId = $this->queryBuilder->getLastInsertId();
@@ -1702,7 +1715,6 @@ public function getTopProductsByCount(): array
         }
 
         $requiredFields = [
-            'id_carrinho_item',
             'imagem_escolhida',
             'modelo3d_personalizado',
             'preco_personalizado'
@@ -1730,16 +1742,18 @@ public function getTopProductsByCount(): array
 
             $this->queryBuilder->table('Personalizacao')
                 ->insert([
-                    'id_carrinho_item' => $data['id_carrinho_item'],
                     'imagem_escolhida' => $data['imagem_escolhida'],
                     'modelo3d_personalizado' => $data['modelo3d_personalizado'],
                     'preco_personalizado' => $data['preco_personalizado'] ?? 0,
                     'mensagem_personalizada' => $data['mensagem_personalizada'] ?? '',
                 ]);
 
+                $id_personalizacao = $this->queryBuilder->getLastInsertId();
+
             return [
                 'success' => true,
-                'message' => 'Personalization created'
+                'message' => 'Personalization created',
+                'id_personalizacao' => $id_personalizacao
             ];
 
         } catch (PDOException $e) {
@@ -2266,9 +2280,8 @@ public function getTopProductsByCount(): array
     {
 
         return $this->queryBuilder->table('CarrinhoItens')
-            ->select(['CarrinhoItens.id_produto as ProductId', 'preco as Price', 'quantidade as Quantity', 'tamanho as Size', 'cor as Color', 'COALESCE(Personalizacao.id_carrinho_item, 0) AS PersonalizacaoId'])
+            ->select(['CarrinhoItens.id_produto as ProductId', 'preco as Price', 'quantidade as Quantity', 'tamanho as Size', 'cor as Color', 'id_personalizacao AS PersonalizacaoId'])
             ->join('Produtos', 'CarrinhoItens.id_produto', '=', 'Produtos.id_produto')
-            ->leftJoin('Personalizacao', 'CarrinhoItens.id_carrinho_item', '=', 'Personalizacao.id_carrinho_item')
             ->where('CarrinhoItens.id_carrinho', '=', $id_carrinho)
             ->get();
 

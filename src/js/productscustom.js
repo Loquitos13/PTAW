@@ -698,13 +698,23 @@ async function uploadToDB(pathToFile, pathToImage) {
     id_carrinho: cartId,
     id_produto: productID,
     tamanho: tamanhoValue,
-    cor: corValue,
-    personalizado: 1,
+    cor: corValue
   };
 
   const carrinhoItemId = await checkCarrinhoItem(formData);
 
   if (carrinhoItemId.data.length === 0) {
+    
+    const personalizationData = {
+        imagem_escolhida: pathToImage,
+        modelo3d_personalizado: pathToFile,
+        preco_personalizado: 0,
+        mensagem_personalizada: ''
+    };
+
+    const resultAddPersonalization = await addPersonalization(personalizationData);
+
+    console.log(resultAddPersonalization);
 
     const valuesToAdd = {
       id_carrinho: cartId,
@@ -713,28 +723,10 @@ async function uploadToDB(pathToFile, pathToImage) {
       cor: corValue,
       quantidade: 1,
       preco: productPriceValue,
-      personalizado: 1,
+      id_personalizacao: resultAddPersonalization.data.id_personalizacao,
     };
 
-    const getLastId = await addCarrinhoItem(valuesToAdd);
-
-    if (getLastId.status === 'success') {
-
-      const personalizationData = {
-        id_carrinho_item: getLastId.id.id_cart_item,
-        imagem_escolhida: pathToImage,
-        modelo3d_personalizado: pathToFile,
-        preco_personalizado: 0,
-        mensagem_personalizada: ''
-      };
-
-      await addPersonalization(personalizationData);
-
-    } else {
-
-      console.log("Error adding personalization");
-
-    }
+    await addCarrinhoItem(valuesToAdd);
 
   } else {
 
@@ -803,10 +795,13 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
         id_produto: productID,
         tamanho: tamanhoValue,
         cor: corValue,
-        personalizado: 0,
+        id_personalizacao: 1,
       };
 
       const carrinhoItemId = await checkCarrinhoItem(formData);
+
+      console.log(formData);
+      console.log(carrinhoItemId);
 
       if (carrinhoItemId.data.length === 0) {
 
@@ -817,7 +812,7 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
           cor: corValue,
           quantidade: 1,
           preco: productPriceValue,
-          personalizado: 0,
+          id_personalizacao: 1,
         };
 
         await addCarrinhoItem(valuesToAdd);

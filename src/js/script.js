@@ -79,25 +79,7 @@ async function getTopProducts() {
     
   } catch (err) {
     console.error('Erro ao buscar produtos:', err);
-    
-    // Fallback: return mock data for testing
-    console.log('Using mock data for testing...');
-    return [
-      {
-        id_produto: 1,
-        titulo_produto: "Produto Teste 1",
-        descricao_produto: "Descrição do produto teste 1",
-        preco_produto: "19.99",
-        imagem_produto: "imagens/produtos varios hero.png"
-      },
-      {
-        id_produto: 2,
-        titulo_produto: "Produto Teste 2", 
-        descricao_produto: "Descrição do produto teste 2",
-        preco_produto: "29.99",
-        imagem_produto: "imagens/produtos varios hero.png"
-      }
-    ];
+  
   }
 }
 
@@ -142,7 +124,7 @@ async function populateTopProducts() {
 
 function createProductItem(product) {
   const productLink = document.createElement('a');
-  productLink.href = `produto.html?id=${product.id_produto}`; 
+  productLink.href = `src/productscustom.php?id=${product.id_produto}`; 
   productLink.className = 'boxItemLink';
 
   const productDiv = document.createElement('div');
@@ -151,7 +133,7 @@ function createProductItem(product) {
   // Imagem do produto
   const productImg = document.createElement('img');
   productImg.src = product.imagem_produto || 'imagens/produtos varios hero.png';
-  productImg.alt = product.titulo_produto || 'Produto';
+  productImg.alt = product.nome_produto || 'Produto';
   productImg.className = 'boxItemImg';
   
   // Adicionar evento de erro para imagem
@@ -162,7 +144,7 @@ function createProductItem(product) {
   // Título do produto
   const productTitle = document.createElement('p');
   productTitle.className = 'boxItemTitle';
-  productTitle.textContent = normalizarTexto(product.titulo_produto);
+  productTitle.textContent = normalizarTexto(product.nome_produto);
 
   // Descrição do produto (truncar se muito longa)
   const productDescription = document.createElement('p');
@@ -192,7 +174,7 @@ function createProductItem(product) {
     e.preventDefault();
     e.stopPropagation();
     // Redirecionar para página de customização
-    window.location.href = `customize.html?id=${product.id_produto}`;
+    window.location.href = `src/productscustom.php?id=${product.id_produto}`;
   });
 
   // Montagem da estrutura

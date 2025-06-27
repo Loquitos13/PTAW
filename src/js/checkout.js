@@ -431,7 +431,7 @@ async function createOrder() {
                         preco: item.Price,
                         nome_cor: item.Color,
                         tamanho: item.Size,
-                        id_personalizacao: item.PersonalizacaoId === 0 ? null : item.PersonalizacaoId
+                        id_personalizacao: item.PersonalizacaoId === null ? null : item.PersonalizacaoId
                     }
 
                     const orderItensResp = await fetch('../client/addOrderItens.php', {

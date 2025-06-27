@@ -40,7 +40,7 @@ try {
         throw new Exception("Invalid JSON: " . json_last_error_msg());
     }
     
-    $result = checkCarrinhoItem($data['id_carrinho'], $data['id_produto'], $data['tamanho'], $data['cor'], $data['personalizado']);
+    $result = checkCarrinhoItem($data['id_carrinho'], $data['id_produto'], $data['tamanho'], $data['cor'], $data['id_personalizacao']);
 
     echo json_encode([
         'status' => 'success',
