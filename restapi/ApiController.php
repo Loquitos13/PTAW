@@ -180,6 +180,16 @@ class ApiController
 
     }
 
+    public function getColors(): array
+    {
+
+        return $this->queryBuilder->table('Cores')
+            ->select(['*'])
+            ->order('id_cor', 'DESC')
+            ->get();
+
+    }
+
     public function getProductsAdmin(): array
     {
         try {
