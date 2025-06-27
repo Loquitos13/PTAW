@@ -23,9 +23,9 @@ export async function renderCart() {
 
             element.Size = element.Size.replaceAll('%20', ' ');
             
-            if(element.Personalization === 1) {
+            if(element.Personalization !== 1) {
 
-              element.Personalization = 'Personalized item';
+              element.Personalization = '| Personalized item';
 
             } else {
 
@@ -41,7 +41,7 @@ export async function renderCart() {
                     </div>
                     <div class="col-8 d-flex justify-content-between align-items-start cart-item">
                         <div>
-                            <p class="product-info mb-1">${element.Name} | ${element.Personalization}</p>
+                            <p class="product-info mb-1">${element.Name} ${element.Personalization}</p>
                             <span class="product-info">Size: ${element.Size}</span>
                             <span class="product-info"> | </span>
                             <span class="product-info">Color: ${element.Color}</span>

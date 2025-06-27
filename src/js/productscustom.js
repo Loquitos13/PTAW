@@ -689,32 +689,36 @@ function getDate() {
 
 }
 
-
 async function uploadToDB(pathToFile, pathToImage) {
 
   tamanhoValue = tamanhoValue.replaceAll(' ', '%20');
+
+  const personalizationData = {
+    imagem_escolhida: pathToImage,
+    modelo3d_personalizado: pathToFile,
+    preco_personalizado: 0,
+    mensagem_personalizada: ''
+  };
+
+  const resultAddPersonalization = await addPersonalization(personalizationData);
+
+  console.log(resultAddPersonalization);
+
+  const idPersonalizacao = resultAddPersonalization.data.id_personalizacao;
 
   const formData = {
     id_carrinho: cartId,
     id_produto: productID,
     tamanho: tamanhoValue,
-    cor: corValue
+    cor: corValue,
+    id_personalizacao: idPersonalizacao,
   };
 
   const carrinhoItemId = await checkCarrinhoItem(formData);
+  
+  console.log(carrinhoItemId);
 
   if (carrinhoItemId.data.length === 0) {
-    
-    const personalizationData = {
-        imagem_escolhida: pathToImage,
-        modelo3d_personalizado: pathToFile,
-        preco_personalizado: 0,
-        mensagem_personalizada: ''
-    };
-
-    const resultAddPersonalization = await addPersonalization(personalizationData);
-
-    console.log(resultAddPersonalization);
 
     const valuesToAdd = {
       id_carrinho: cartId,
@@ -723,7 +727,7 @@ async function uploadToDB(pathToFile, pathToImage) {
       cor: corValue,
       quantidade: 1,
       preco: productPriceValue,
-      id_personalizacao: resultAddPersonalization.data.id_personalizacao,
+      id_personalizacao: idPersonalizacao,
     };
 
     await addCarrinhoItem(valuesToAdd);
@@ -799,9 +803,6 @@ document.querySelectorAll("#btnAddToCart").forEach((button) => {
       };
 
       const carrinhoItemId = await checkCarrinhoItem(formData);
-
-      console.log(formData);
-      console.log(carrinhoItemId);
 
       if (carrinhoItemId.data.length === 0) {
 
