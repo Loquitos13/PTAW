@@ -224,6 +224,16 @@ session_start();
             align-items: center;
             gap: 20px;
         }
+
+        #search-toggle {
+            display: block;
+        }
+    }
+
+    @media (min-width: 1201px) {
+        #search-toggle {
+            display: none;
+        }
     }
 </style>
 

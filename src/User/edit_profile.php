@@ -223,6 +223,16 @@ $id_cliente = $_SESSION['user_id'];
             align-items: center;
             gap: 20px;
         }
+
+        #search-toggle {
+            display: block;
+        }
+    }
+
+    @media (min-width: 1201px) {
+        #search-toggle {
+            display: none;
+        }
     }
 </style>
 
@@ -262,7 +272,8 @@ $id_cliente = $_SESSION['user_id'];
                     <div class="card-body">
                         <h5 class="mb-3">Password</h5>
                         <label class="form-label">Current Password</label>
-                        <input type="password" class="form-control mb-3" id="currentPassword" placeholder="Enter current password">
+                        <input type="password" class="form-control mb-3" id="currentPassword"
+                            placeholder="Enter current password">
                         <label class="form-label">New Password</label>
                         <input type="password" class="form-control" id="newPassword" placeholder="Enter new password">
                     </div>
@@ -276,9 +287,11 @@ $id_cliente = $_SESSION['user_id'];
                         <h5 class="mb-3">Payment Methods</h5>
                         <div class="d-flex justify-content-between align-items-center">
                             <span id="cardLast4"></span>
-                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#paymentModal">Edit</button>
+                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#paymentModal">Edit</button>
                         </div>
-                        <button class="btn btn-outline-secondary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#addCardModal">Add New Card</button>
+                        <button class="btn btn-outline-secondary w-100 mt-3" data-bs-toggle="modal"
+                            data-bs-target="#addCardModal">Add New Card</button>
                     </div>
                 </div>
                 <div class="card shadow-sm">
@@ -311,7 +324,7 @@ $id_cliente = $_SESSION['user_id'];
     </div>
 
     <!-- Modal for Edit Payment Method -->
-        <!-- Modal para Editar Método de Pagamento - Corrigir IDs duplicados -->
+    <!-- Modal para Editar Método de Pagamento - Corrigir IDs duplicados -->
     <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -361,7 +374,8 @@ $id_cliente = $_SESSION['user_id'];
                     <form>
                         <div class="mb-3">
                             <label for="cardNumber" class="form-label">Card Number</label>
-                            <input type="text" class="form-control" id="newCardNumber" placeholder="1234 5678 9012 3456">
+                            <input type="text" class="form-control" id="newCardNumber"
+                                placeholder="1234 5678 9012 3456">
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">

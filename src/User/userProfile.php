@@ -1,14 +1,13 @@
-
 <?php
-$base_url="/~ptaw-2025-gr4";
+$base_url = "/~ptaw-2025-gr4";
 session_start();
 if (!isset($_SESSION['user_id'])) {
-  header("location: /~ptaw-2025-gr4/src/SignIn.html");
-  exit;
+    header("location: /~ptaw-2025-gr4/src/SignIn.html");
+    exit;
 } else {
-  $id_cliente = $_SESSION['user_id'];
-  // Log para debug
-  error_log("ID do cliente no userProfile.php: $id_cliente");
+    $id_cliente = $_SESSION['user_id'];
+    // Log para debug
+    error_log("ID do cliente no userProfile.php: $id_cliente");
 }
 ?>
 
@@ -235,6 +234,16 @@ if (!isset($_SESSION['user_id'])) {
             align-items: center;
             gap: 20px;
         }
+
+        #search-toggle {
+            display: block;
+        }
+    }
+
+    @media (min-width: 1201px) {
+        #search-toggle {
+            display: none;
+        }
     }
 </style>
 
@@ -252,7 +261,8 @@ if (!isset($_SESSION['user_id'])) {
             <!-- User Profile Card -->
             <div class="col-lg-4 mb-4">
                 <div class="text-center mb-4" id="user-profile-card">
-                    <img src="../../imagens/camisola.png" alt="Sarah Anderson" width="30%" height="30%" class="rounded-circle img-thumbnail mb-3">
+                    <img src="../../imagens/camisola.png" alt="Sarah Anderson" width="30%" height="30%"
+                        class="rounded-circle img-thumbnail mb-3">
                     <h4 class="mb-0">Sarah Anderson</h4>
                     <p class="text-muted">Member since January 2025</p>
                     <a href="./edit_profile.php">
@@ -267,8 +277,10 @@ if (!isset($_SESSION['user_id'])) {
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                                 <span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box text-primary me-2" viewBox="0 0 16 16">
-                                        <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-box text-primary me-2" viewBox="0 0 16 16">
+                                        <path
+                                            d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z" />
                                     </svg>
                                     12 Orders
                                 </span>

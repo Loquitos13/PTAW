@@ -236,6 +236,16 @@ session_start();
       flex-direction: column;
       align-items: center;
     }
+
+    #search-toggle {
+      display: block;
+    }
+  }
+
+  @media (min-width: 1201px) {
+    #search-toggle {
+      display: none;
+    }
   }
 </style>
 
