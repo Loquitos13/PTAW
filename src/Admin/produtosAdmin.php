@@ -174,24 +174,27 @@
                                         <span class="colorValue fw-bold">#563d7c</span>
                                     </div>
                                 </div>
+                                <div class="col-12 mt-2">
+                                    <button type="button" class="btn btn-outline-primary addColorBtn">Adicionar
+                                        Cor</button>
+                                    <div class="selectedColors"></div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2" id="dimensionsSection">
                                 <div class="col-md-4">
                                     <label class="form-label">Tipo de Dimensão</label>
                                     <input type="text" class="form-control tipo-dimensao-input" name="tipo_dimensao[]"
                                         placeholder="Tipo de dimensão">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label class="form-label">Dimensão</label>
                                     <input type="text" class="form-control" name="dimensao_produto[]"
                                         placeholder="Dimensão">
                                 </div>
                                 <div class="col-12 mt-2">
-                                    <button type="button" class="btn btn-outline-primary addColorBtn">Adicionar
-                                        Cor</button>
                                     <button type="button" class="btn btn-outline-primary addDimensionBtn">Adicionar
                                         Dimensão</button>
-                                </div>
-                                <div class="col-12">
-                                    <div class="selectedColors"></div>
                                     <div class="selectedDimensions"></div>
                                 </div>
                             </div>
@@ -296,24 +299,27 @@
                                         <span class="colorValue fw-bold">#563d7c</span>
                                     </div>
                                 </div>
+                                <div class="col-12 mt-2">
+                                    <button type="button" class="btn btn-outline-primary addColorBtn">Adicionar
+                                        Cor</button>
+                                    <div class="selectedColors"></div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2" id="dimensionsSection">
                                 <div class="col-md-4">
                                     <label class="form-label">Tipo de Dimensão</label>
                                     <input type="text" class="form-control tipo-dimensao-input" name="tipo_dimensao[]"
                                         placeholder="Tipo de dimensão">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label class="form-label">Dimensão</label>
                                     <input type="text" class="form-control" name="dimensao_produto[]"
                                         placeholder="Dimensão">
                                 </div>
                                 <div class="col-12 mt-2">
-                                    <button type="button" class="btn btn-outline-primary addColorBtn">Adicionar
-                                        Cor</button>
                                     <button type="button" class="btn btn-outline-primary addDimensionBtn">Adicionar
                                         Dimensão</button>
-                                </div>
-                                <div class="col-12">
-                                    <div class="selectedColors"></div>
                                     <div class="selectedDimensions"></div>
                                 </div>
                             </div>

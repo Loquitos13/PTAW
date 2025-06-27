@@ -66,7 +66,14 @@ try {
         }
 
          if (isset($data['cores'])) {
-            $data['cores'] = json_decode($data['cores'], true);
+            $cores = is_array($data['cores']) ? $data['cores'] : json_decode($data['cores'], true);
+            $data['variantes'] = [];
+            foreach ($cores as $cor) {
+                $data['variantes'][] = [
+                    'id_cor' => $cor['id_cor'] ?? null,
+                ];
+            }
+            unset($data['cores']);
         }
         if (isset($data['dimensoes'])) {
             $data['dimensoes'] = json_decode($data['dimensoes'], true);
@@ -103,7 +110,7 @@ function updateProductData($data) {
     $response = executeCurlRequest($ch);
     $decoded = json_decode($response, true);
 
-    if (!is_array($decoded) || (isset($decoded['success']) && $decoded['success'] !== 'Product updated')) {
+    if (!is_array($decoded) || (isset($decoded['success']) && !$decoded['success'])) {
         throw new Exception("Erro ao atualizar produto na API: " . ($decoded['message'] ?? 'Erro desconhecido'));
     }
 

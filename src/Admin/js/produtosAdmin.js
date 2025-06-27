@@ -1,6 +1,7 @@
 let allProductsAdmin = [];
 let selectedColors = [];
 let selectedDimensions = [];
+let allCores = [];
 let currentEditProductId = null;
 let currentDeleteProductId = null;
 let currentCategoryFilter = "all";
@@ -9,6 +10,7 @@ let currentStatusFilter = "all";
 
 document.addEventListener('DOMContentLoaded', async function () {
     await carregarProdutosAdmin();
+    await fetchCores();
     fetchAndDisplayProducts("all", "all");
 
     // Limpa os arrays quando abre o formulário de inserção
@@ -125,13 +127,13 @@ document.addEventListener('DOMContentLoaded', async function () {
         const formData = new FormData(this);
 
         const variantes = selectedColors.map(cor => ({
-            id_cor: cor.hex.replace('#', '')
+        id_cor: cor.id_cor
         }));
 
         // Transformar dimensões no formato esperado
         const dimensoes = selectedDimensions.map(dim => ({
-            dimensao_tipo: "",
-            tamanho: dim
+        dimensao_tipo: dim.dimensao_tipo,
+        tamanho: dim.tamanho
         }));
 
         formData.append('variantes', JSON.stringify(variantes));
@@ -301,8 +303,7 @@ function showColors(form) {
     coresDiv.innerHTML = "";
     selectedColors.forEach((cor, idx) => {
         const span = document.createElement('span');
-        span.innerHTML = `<span class='colorClass' style="background:${cor.hex_cor} "></span> ${cor.nome_cor || cor.hex_cor}`;
-
+        span.innerHTML = `<span class='colorClass' style="background:${cor.hex_cor}"></span> ${cor.nome_cor} (${cor.hex_cor})`;
         const btn = document.createElement('button');
         btn.textContent = "x";
         btn.onclick = () => { selectedColors.splice(idx, 1); showColors(form); };
@@ -316,7 +317,7 @@ function showDimensions(form) {
     dimsDiv.innerHTML = "";
     selectedDimensions.forEach((dim, idx) => {
         const span = document.createElement('span');
-        span.textContent = dim.tamanho.replace(/%20/g, " ");
+        span.textContent = (dim.dimensao_tipo ? dim.dimensao_tipo + " - " : "") + dim.tamanho;
 
         const btn = document.createElement('button');
         btn.textContent = "x";
@@ -326,36 +327,82 @@ function showDimensions(form) {
     });
 }
 
-function addColor(form) {
+async function addColor(form) {
     const colorInput = form.querySelector('#variantsSection input[type="color"]');
+    const nomeInput = form.querySelector('#variantsSection input.nome-cor-input');
     const colorValue = colorInput.value;
-    // Podes pedir nome ou só hex
-    if (!colorValue) {
-        alert("Escolha uma cor!");
-        return;
+    const nomeValue = nomeInput.value.trim();
+
+
+    let corObj = allCores.find(cor =>
+        cor.hex_cor.toLowerCase() === colorValue.toLowerCase() ||
+        cor.nome_cor.toLowerCase() === nomeValue.toLowerCase()
+    );
+
+    if (!corObj) {
+
+        if (!nomeValue) {
+            alert("Indique um nome para a nova cor!");
+            return;
+        }
+        if (!confirm("Cor não encontrada. Deseja adicionar esta cor à base de dados?")) return;
+
+
+        const response = await fetch("../../admin/insertColors.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome_cor: nomeValue, hex_cor: colorValue })
+        });
+        const result = await response.json();
+        if (!result.success) {
+            alert("Erro ao adicionar cor: " + (result.message || "Erro desconhecido"));
+            return;
+        }
+
+        corObj = {
+            id_cor: result.id_cor,
+            nome_cor: nomeValue,
+            hex_cor: colorValue
+        };
+        allCores.push(corObj);
     }
-    // Evitar duplicados
-    if (selectedColors.some(c => c.hex_cor === colorValue)) {
+
+    if (selectedColors.some(c => c.id_cor === corObj.id_cor)) {
         alert("Esta cor já foi adicionada.");
         return;
     }
-    selectedColors.push({ hex_cor: colorValue, nome_cor: colorValue });
+    selectedColors.push({
+        id_cor: corObj.id_cor,
+        nome_cor: corObj.nome_cor,
+        hex_cor: corObj.hex_cor
+    });
     showColors(form);
 }
 
 function addDimension(form) {
-    const dimInput = form.querySelector('#variantsSection input[type="text"]');
+
+    const tipoInput = form.querySelector('#dimensionsSection input.tipo-dimensao-input');
+    const dimInput = form.querySelector('#dimensionsSection input[name="dimensao_produto[]"]');
+    if (!dimInput) {
+        alert("Campo de dimensão não encontrado!");
+        return;
+    }
+    const tipoValue = tipoInput ? tipoInput.value.trim() : "";
     let dimValue = dimInput.value.trim();
+
     if (!dimValue) {
         alert("Introduza uma dimensão!");
         return;
     }
+
     dimValue = dimValue.replace(/ /g, "%20");
-    if (selectedDimensions.some(d => d.tamanho === dimValue)) {
+
+    if (selectedDimensions.some(d => d.tamanho === dimValue && d.dimensao_tipo === tipoValue)) {
         alert("Esta dimensão já foi adicionada.");
         return;
     }
-    selectedDimensions.push({ tamanho: dimValue });
+
+    selectedDimensions.push({ dimensao_tipo: tipoValue, tamanho: dimValue });
     showDimensions(form);
 }
 
@@ -469,6 +516,11 @@ async function fetchProducts() {
     }
 }
 
+async function fetchCores() {
+    const response = await fetch("../../admin/getCores.php");
+    allCores = await response.json();
+}
+
 
 // Carrega e mostra os produtos da base de dados
 async function fetchAndDisplayProducts(selectedCategory = null, selectedStatus = null) {
@@ -524,8 +576,13 @@ async function fetchAndDisplayProducts(selectedCategory = null, selectedStatus =
 async function productUpdate(formElement) {
     const formData = new FormData(formElement);
     formData.set('id_produto', currentEditProductId);
-    formData.append('cores', JSON.stringify(selectedColors));
-    formData.append('dimensoes', JSON.stringify(selectedDimensions));
+    formData.append('variantes', JSON.stringify(selectedColors.map(cor => ({
+        id_cor: cor.id_cor
+    }))));
+    formData.append('dimensoes', JSON.stringify(selectedDimensions.map(dim => ({
+        dimensao_tipo: dim.dimensao_tipo,
+        tamanho: dim.tamanho
+    }))));
 
     if (!formData.get("imagem_principal") && !formData.get("product_image")) {
         alert("Por favor, selecione uma imagem ou mantenha a atual.");

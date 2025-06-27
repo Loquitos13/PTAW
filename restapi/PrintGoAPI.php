@@ -85,6 +85,10 @@ $router->add('GET', '/getOrders', fn() => $controller->getOrders());
 
 $router->add('POST', '/insertProduct', fn() => $controller->insertProduct());
 
+$router->add('POST', '/insertColors', fn() => $controller->insertColors());
+
+$router->add('GET', '/colors', fn() => $controller->getColors());
+
 $router->add('GET', '/feedbacks', fn() => $controller->getFeedbacks());
 
 $router->add('GET', '/classificationFeedback', fn() => $controller->getClassificationFeedback());

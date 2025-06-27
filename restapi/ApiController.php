@@ -980,6 +980,68 @@ class ApiController
         return $result[0] ?? null;
     }
 
+    public function insertColor(): array
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+
+        $requiredFields = ['nome_cor', 'hex_cor'];
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+            return [
+                'error' => 'Invalid data',
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+
+            $existing = $this->queryBuilder->table('Cores')
+                ->select(['id_cor'])
+                ->where('nome_cor', '=', $data['nome_cor'])
+                ->orWhere('hex_cor', '=', $data['hex_cor'])
+                ->get();
+
+            if (!empty($existing)) {
+                return [
+                    'success' => false,
+                    'message' => 'Cor já existe',
+                    'id_cor' => $existing[0]['id_cor']
+                ];
+            }
+
+            $this->queryBuilder->table('Cores')
+                ->insert([
+                    'nome_cor' => $data['nome_cor'],
+                    'hex_cor' => $data['hex_cor']
+                ]);
+            $id_cor = $this->queryBuilder->getLastInsertId();
+
+            return [
+                'success' => true,
+                'message' => 'Cor inserida com sucesso',
+                'id_cor' => $id_cor
+            ];
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
 
     public function insertProduct(): array
     {
@@ -1030,6 +1092,7 @@ class ApiController
                     'data_criacao_produto' => $dataCriacao,
                 ]);
             $id_produto = $this->queryBuilder->getLastInsertId();
+
 
             if (!empty($data['variantes']) && is_array($data['variantes'])) {
                 foreach ($data['variantes'] as $variante) {
