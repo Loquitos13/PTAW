@@ -517,7 +517,7 @@ async function fetchProducts() {
 }
 
 async function fetchCores() {
-    const response = await fetch("../../admin/getCores.php");
+    const response = await fetch("../../admin/getColors.php");
     allCores = await response.json();
 }
 

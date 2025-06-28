@@ -34,7 +34,7 @@ try {
         // Processa nova imagem, se enviada
         if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
 
-            $uploadDir = __DIR__ . '/../imagens/img_products/';
+            $uploadDir = __DIR__ . '/../imagens/img_product/';
             $fileName = $idProduto . '_' . basename($_FILES['product_image']['name']);
             $uploadFile = $uploadDir . $fileName;
 

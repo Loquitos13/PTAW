@@ -3,10 +3,6 @@ $base_url = "http://estga-dev.ua.pt/~ptaw-2025-gr4";
 
 require_once '../restapi/Database.php';
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 //para o servidor usar: $base_url/restapi/PrintGoAPI.php
 $apiUrl = "http://estga-dev.ua.pt/~ptaw-2025-gr4/restapi/PrintGoAPI.php";
 
@@ -34,20 +30,20 @@ function executeCurlRequest($ch) {
 header('Content-Type: application/json');
 
 try {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['product_image'])) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagem_principal'])) {
 
         $idProduto = isset($_POST['id_produto']) ? $_POST['id_produto'] : null;
 
         // --- Processamento da imagem principal ---
-        if ($_FILES['product_image']['error'] !== UPLOAD_ERR_OK) {
+        if ($_FILES['imagem_principal']['error'] !== UPLOAD_ERR_OK) {
             throw new Exception("Erro no upload da imagem.");
         }
 
-        $uploadDir = __DIR__ . '/../imagens/img_products/';
-        $fileName = $idProduto . '_' . basename($_FILES['product_image']['name']);
+        $uploadDir = __DIR__ . '/../imagens/img_product/';
+        $fileName = $idProduto . '_' . basename($_FILES['imagem_principal']['name']);
         $uploadFile = $uploadDir . $fileName;
 
-        if (!move_uploaded_file($_FILES['product_image']['tmp_name'], $uploadFile)) {
+        if (!move_uploaded_file($_FILES['imagem_principal']['tmp_name'], $uploadFile)) {
             throw new Exception("Erro ao guardar a imagem.");
         }
 
@@ -55,9 +51,19 @@ try {
         $model3dName = null;
         if (isset($_FILES['modelo3d_produto']) && $_FILES['modelo3d_produto']['error'] === UPLOAD_ERR_OK) {
 
-            $model3dDir = __DIR__ . '/../public/modelo3D/';
+            $model3dDir = __DIR__ . '/../public/modelos3D/';
             $model3dName = uniqid() . '_' . basename($_FILES['modelo3d_produto']['name']);
             $model3dFile = $model3dDir . $model3dName;
+
+            if (!is_uploaded_file($_FILES['modelo3d_produto']['tmp_name'])) {
+                throw new Exception("Ficheiro temporário do modelo 3D não existe ou upload falhou.");
+            }
+            if (!is_dir($model3dDir)) {
+                throw new Exception("Diretório de upload do modelo 3D não existe: $model3dDir");
+            }
+            if (!is_writable($model3dDir)) {
+                throw new Exception("Diretório de upload do modelo 3D sem permissões de escrita: $model3dDir");
+            }
 
             if (!move_uploaded_file($_FILES['modelo3d_produto']['tmp_name'], $model3dFile)) {
                 throw new Exception("Erro ao guardar o modelo 3D.");
@@ -67,27 +73,30 @@ try {
         $data = $_POST;
         $data['imagem_principal'] = $fileName;
         if ($model3dName) {
-            $data['modelo3d_produto'] = $model3dName;
+            $data['modelo3d_produto'] = $model3dFile;
         }
-
-        if (isset($data['variantes'])) {
-            $data['variantes'] = json_decode($data['variantes'], true);
-        } elseif (isset($data['cores'])) {
-            $data['variantes'] = array_map(function($cor) {
-                return ['id_cor' => $cor['hex_cor'] ?? $cor];
-            }, json_decode($data['cores'], true));
-        }
-
-        if (isset($data['dimensoes'])) {
-            $data['dimensoes'] = json_decode($data['dimensoes'], true);
-        }
+        $data['variantes'] = isset($_POST['variantes']) ? json_decode(stripslashes($_POST['variantes']), true) : [];
+        $data['dimensoes'] = isset($_POST['dimensoes']) ? json_decode(stripslashes($_POST['dimensoes']), true) : [];
 
         $data['status_produto'] = in_array($data['status_produto'], ['active', 'inactive', '1', '0']) ? 
         $data['status_produto'] : 'active';
 
-        error_log('DADOS A ENVIAR PARA API: ' . json_encode($data));
+        / DEBUG TEMPORÁRIO
+        header('Content-Type: application/json');
+        echo json_encode([
+                "status" => "debug",
+                "variantes" => $data['variantes'],
+                "dimensoes" => $data['dimensoes'],
+                "files" => $_FILES
+            ]);
+            exit;
+
         $result = addProduct($data);
-        error_log('RESPOSTA DA API: ' . json_encode($result));
+
+        if (!isset($data['variantes']) || !is_array($data['variantes'])) {
+            echo json_encode(["status" => "error", "message" => "Variantes não recebidas ou mal formadas"]);
+            exit;
+        }
 
         echo json_encode([
             'status' => 'success',
@@ -99,6 +108,14 @@ try {
     } else {
         throw new Exception("Pedido inválido ou sem imagem.");
     }
+} catch (Exception $e) {
+    http_response_code(500);
+    error_log("Erro no insertProducts.php: " . $e->getMessage());
+    echo json_encode([
+        'status' => 'error',
+        'message' => $e->getMessage()
+    ]);
+    exit;
 }
 
 function addProduct($data) {
