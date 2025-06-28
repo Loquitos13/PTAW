@@ -66,7 +66,7 @@
                     </div>
                 </div>
 
-                <div style="max-height: 180px; overflow-y: auto;">
+                <div style="max-height: 500px; overflow-y: auto;">
                     <table class="table">
                         <thead>
                             <tr>

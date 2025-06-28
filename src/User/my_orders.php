@@ -1,5 +1,15 @@
 <?php
 session_start();
+$base_url = "/~ptaw-2025-gr4";
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("location: /~ptaw-2025-gr4/src/SignIn.html");
+    exit;
+} else {
+    $id_cliente = $_SESSION['user_id'];
+    // Log para debug
+    error_log("ID do cliente no userProfile.php: $id_cliente");
+}
 ?>
 
 
@@ -9,7 +19,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>My Orders - PrintCraft</title>
+    <title>My Orders - Print&Go</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -237,7 +247,7 @@ session_start();
     }
 </style>
 
-<body>
+<body data-user-id="<?= htmlspecialchars($id_cliente) ?>">
 
     <!-- Menu Mobile -->
     <?php include '../includes/header-mobile.php'; ?>
@@ -251,17 +261,19 @@ session_start();
         <p>View and track all your orders</p>
 
         <!-- Tabs -->
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <div>
-                <button class="btn btn-primary me-2">All Orders</button>
-                <button class="btn btn-light me-2">Processing</button>
-                <button class="btn btn-light me-2">Shipped</button>
-                <button class="btn btn-light">Delivered</button>
+        <div id="controls" class="d-flex align-items-center justify-content-between mb-3">
+            <div id="filter-buttons">
+                <button class="btn btn-primary me-2" data-status="all">All Orders</button>
+                <button class="btn btn-light me-2" data-status="processing">Processing</button>
+                <button class="btn btn-light me-2" data-status="shipped">Shipped</button>
+                <button class="btn btn-light" data-status="delivered">Delivered</button>
             </div>
-            <input type="text" class="form-control search-bar" placeholder="Search orders...">
+            <input type="text" class="form-control search-bar" placeholder="Search orders..." style="max-width: 300px;">
         </div>
 
+        <div id="orders-container"></div>
         <!-- Order List -->
+         <!--
         <div class="order-card">
             <div class="d-flex justify-content-between">
                 <div>
@@ -299,12 +311,12 @@ session_start();
                 </div>
             </div>
         </div>
-
+        -->
     </div>
 
     <!-- Footer -->
     <?php include '../includes/footer.php'; ?>
-
+    <script src="js/my_orders.js"></script>
 </body>
 
 </html>

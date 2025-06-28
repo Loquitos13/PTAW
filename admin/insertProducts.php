@@ -6,9 +6,11 @@ require_once '../restapi/Database.php';
 //para o servidor usar: $base_url/restapi/PrintGoAPI.php
 $apiUrl = "http://estga-dev.ua.pt/~ptaw-2025-gr4/restapi/PrintGoAPI.php";
 
-function executeCurlRequest($ch) {
+function executeCurlRequest($ch) {   
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
     $response = curl_exec($ch);
+
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     if (curl_errno($ch)) {
@@ -18,6 +20,7 @@ function executeCurlRequest($ch) {
     }
 
     curl_close($ch);
+
 
     json_decode($response);
     if(json_last_error() !== JSON_ERROR_NONE) {
@@ -75,28 +78,11 @@ try {
         if ($model3dName) {
             $data['modelo3d_produto'] = $model3dFile;
         }
-        $data['variantes'] = isset($_POST['variantes']) ? json_decode(stripslashes($_POST['variantes']), true) : [];
-        $data['dimensoes'] = isset($_POST['dimensoes']) ? json_decode(stripslashes($_POST['dimensoes']), true) : [];
 
         $data['status_produto'] = in_array($data['status_produto'], ['active', 'inactive', '1', '0']) ? 
         $data['status_produto'] : 'active';
 
-        / DEBUG TEMPORÁRIO
-        header('Content-Type: application/json');
-        echo json_encode([
-                "status" => "debug",
-                "variantes" => $data['variantes'],
-                "dimensoes" => $data['dimensoes'],
-                "files" => $_FILES
-            ]);
-            exit;
-
         $result = addProduct($data);
-
-        if (!isset($data['variantes']) || !is_array($data['variantes'])) {
-            echo json_encode(["status" => "error", "message" => "Variantes não recebidas ou mal formadas"]);
-            exit;
-        }
 
         echo json_encode([
             'status' => 'success',
@@ -110,7 +96,6 @@ try {
     }
 } catch (Exception $e) {
     http_response_code(500);
-    error_log("Erro no insertProducts.php: " . $e->getMessage());
     echo json_encode([
         'status' => 'error',
         'message' => $e->getMessage()
@@ -133,9 +118,10 @@ function addProduct($data) {
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json'
     ]);
-
     $response = executeCurlRequest($ch);
     $decoded = json_decode($response, true);
+
+
 
     if (!$decoded || (isset($decoded['success']) && !$decoded['success'])) {
         throw new Exception("Erro ao inserir produto na API: " . ($decoded['message'] ?? 'Erro desconhecido'));

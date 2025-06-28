@@ -190,6 +190,22 @@ class ApiController
 
     }
 
+    public function getDimensions(): array
+    {
+        return $this->queryBuilder->table('Dimensoes')
+            ->select(['*'])
+            ->order('id_dimensao', 'DESC')
+            ->get();
+    }
+
+    public function getProductVariants(): array
+    {
+        return $this->queryBuilder->table('ProdutosVariantes')
+            ->select(['*'])
+            ->order('id_produto_variante', 'DESC')
+            ->get();
+    }
+
     public function getProductsAdmin(): array
     {
         try {
@@ -372,6 +388,50 @@ class ApiController
             ->get();
 
         return $result[0] ?? null;
+    }
+
+    public function getColorsByProduct($idProduto): ?array
+    {
+        try {
+            $query = $this->QueryBuilder->table('ProdutosVariantes')
+                ->select(['Cores.id_cor', 'Cores.nome_cor', 'Cores.hex_cor'])
+                ->join('Cores', 'ProdutosVariantes.id_cor', '=', 'Cores.id_cor')
+                ->where('ProdutosVariantes.id_produto', '=', $idProduto)
+                ->groupBy('Cores.id_cor')
+                ->get();
+        
+            return [
+                'success' => true,
+                'cores' => $query
+            ];
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Erro ao buscar cores do produto',
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function getDimensionsByProduct($idProduto): ?array
+    {
+        try {
+            $query = $this->QueryBuilder->table('Dimensoes')
+                ->select(['dimensao_tipo', 'tamanho'])
+                ->where('id_produto', '=', $idProduto)
+                ->get();
+        
+            return [
+                'success' => true,
+                'dimensoes' => $query
+            ];
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Erro ao buscar dimensões do produto',
+                'error' => $e->getMessage()
+            ];
+        }
     }
 
     public function getUserByID(int $userID): ?array
@@ -980,6 +1040,200 @@ class ApiController
         return $result[0] ?? null;
     }
 
+    public function insertDimension(): array
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = ['dimensao_tipo', 'tamanho', 'id_produto'];
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+            return [
+                'success' => false,
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+            $this->queryBuilder->table('Dimensoes')
+                ->insert([
+                    'dimensao_tipo' => $data['dimensao_tipo'],
+                    'tamanho' => $data['tamanho'],
+                    'id_produto' => $data['id_produto']
+                ]);
+            $id_dimensao = $this->queryBuilder->getLastInsertId();
+
+            return [
+                'success' => true,
+                'message' => 'Dimensão inserida com sucesso',
+                'id_dimensao' => $id_dimensao
+            ];
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Erro ao inserir dimensão: ' . $e->getMessage()
+            ];
+        }
+    }
+
+public function insertProductVariant(): array
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $requiredFields = ['id_produto', 'id_cor'];
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+            return [
+                'success' => false,
+                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
+            ];
+        }
+
+        try {
+            $this->queryBuilder->table('ProdutosVariantes')
+                ->insert([
+                    'id_produto' => $data['id_produto'],
+                    'id_cor' => $data['id_cor'],
+                    'promocao' => $data['promocao'] ?? 0
+                ]);
+            $id_variante = $this->queryBuilder->getLastInsertId();
+
+            return [
+                'success' => true,
+                'message' => 'Variante de produto inserida com sucesso',
+                'id_produto_variante' => $id_variante
+            ];
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Erro ao inserir variante: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function updateDimensions(): array
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $key_first_element = array_key_first($data);
+        $value_first_element = $data[$key_first_element];
+        unset($data[$key_first_element]);
+
+        $allowedFields = [
+            'dimensao_tipo',
+            'tamanho',
+            'id_produto'
+        ];
+
+        $updateData = [];
+        foreach ($allowedFields as $field) {
+            if (isset($data[$field])) {
+                $updateData[$field] = $data[$field];
+            }
+        }
+
+        if (empty($updateData)) {
+            return [
+                'success' => false,
+                'message' => 'No valid dimension fields to update'
+            ];
+        }
+
+        try {
+            $this->queryBuilder->table('Dimensoes')
+                ->update($updateData)
+                ->where($key_first_element, '=', $value_first_element)
+                ->execute();
+
+            return ['success' => 'Dimension updated'];
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            return [
+                'error' => 'Error updating the dimension',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function updateProductVariant(): array
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!is_array($data)) {
+            return ['success' => false, 'message' => 'Invalid JSON data received'];
+        }
+
+        $key_first_element = array_key_first($data);
+        $value_first_element = $data[$key_first_element];
+        unset($data[$key_first_element]);
+
+        $allowedFields = [
+            'id_produto',
+            'id_cor',
+            'promocao'
+        ];
+
+        $updateData = [];
+        foreach ($allowedFields as $field) {
+            if (isset($data[$field])) {
+                $updateData[$field] = $data[$field];
+            }
+        }
+
+        if (empty($updateData)) {
+            return [
+                'success' => false,
+                'message' => 'No valid product variant fields to update'
+            ];
+        }
+
+        try {
+            $this->queryBuilder->table('ProdutosVariantes')
+                ->update($updateData)
+                ->where($key_first_element, '=', $value_first_element)
+                ->execute();
+
+            return ['success' => 'Product variant updated'];
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            return [
+                'error' => 'Error updating the product variant',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
     public function insertColor(): array
     {
         $json = file_get_contents('php://input');
@@ -1092,52 +1346,6 @@ class ApiController
                     'data_criacao_produto' => $dataCriacao,
                 ]);
             $id_produto = $this->queryBuilder->getLastInsertId();
-
-
-            if (!empty($data['variantes']) && is_array($data['variantes'])) {
-                foreach ($data['variantes'] as $variante) {
-
-                    $cor_info = $this->queryBuilder->table('Cores')
-                        ->select(['nome_cor', 'hex_cor'])
-                        ->where('id_cor', '=', $variante['id_cor'])
-                        ->first();
-
-                    $this->queryBuilder->table('ProdutosVariantes')
-                        ->insert([
-                            'id_produto' => $id_produto,
-                            'id_cor' => $variante['id_cor'],
-                            'promocao' => $variante['promocao'] ?? 0
-                        ]);
-                    error_log("Cor adicionada: ID: {$variante['id_cor']}, Nome: {$cor_info['nome_cor']}, Hex: {$cor_info['hex_cor']}");
-                }
-            }
-
-            if (!empty($data['dimensoes']) && is_array($data['dimensoes'])) {
-                foreach ($data['dimensoes'] as $dimensao) {
-                    $this->queryBuilder->table('Dimensoes')
-                        ->insert([
-                            'id_produto' => $id_produto,
-                            'dimensao_tipo' => $dimensao['dimensao_tipo'] ?? null,
-                            'tamanho' => $dimensao['tamanho'] ?? null
-                        ]);
-                
-                    $id_dimensao = $this->queryBuilder->getLastInsertId();
-
-                    error_log("Dimensão adicionada: ID: {$id_dimensao}, Tipo: {$dimensao['dimensao_tipo']}, Tamanho: {$dimensao['tamanho']}");
-                }
-            }
-
-            if (!empty($data['imagens_extras']) && is_array($data['imagens_extras'])) {
-                foreach ($data['imagens_extras'] as $img) {
-                    $this->queryBuilder->table('ImagemProdutos')
-                        ->insert([
-                            'id_produto' => $id_produto,
-                            'imagem_extra' => $img['imagem_extra'] ?? null,
-                            'imagem_extra_2' => $img['imagem_extra_2'] ?? null,
-                            'imagem_extra_3' => $img['imagem_extra_3'] ?? null
-                        ]);
-                }
-            }
 
             return ['success' => 'Product created', 'id_produto' => $id_produto];
 
@@ -1339,7 +1547,6 @@ class ApiController
                         ->leftJoin('Produtos', 'EncomendaItens.id_produto', '=', 'Produtos.id_produto')
                         ->where('EncomendaItens.id_encomenda', '=', $encomenda['id_encomenda'])
                         ->get();
-
 
                     $encomenda['itens'] = $itens;
                 } catch (Exception $innerEx) {

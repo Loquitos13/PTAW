@@ -40,7 +40,7 @@ try {
         throw new Exception("Invalid JSON: " . json_last_error_msg());
     }
 
-    $result = insertColorData($data['nome_cor'], $data['hex_cor']);
+    $result = updateDimensionData($data);
     echo json_encode($result);
 
 } catch(Exception $e) {
@@ -51,19 +51,16 @@ try {
     ]);
 }
 
-function insertColorData($nome_cor, $hex_cor) {
+function updateDimensionData($data) {
     global $apiUrl;
 
-    if(empty($nome_cor) || empty($hex_cor)) {
-        throw new Exception("Nome e hexadecimal da cor são obrigatórios");
+    if (empty($data) || !is_array($data) || empty($data['id_produto']) || empty($data['id_cor'])) {
+        throw new Exception("Os campos 'id_produto' e 'id_cor' são obrigatórios para atualização da variante de produto");
     }
 
-    $payload = json_encode([
-        'nome_cor' => $nome_cor,
-        'hex_cor' => $hex_cor
-    ]);
+    $payload = json_encode($data);
 
-    $ch = curl_init("$apiUrl/insertColor");
+    $ch = curl_init("$apiUrl/updateProductVariants");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
@@ -74,9 +71,9 @@ function insertColorData($nome_cor, $hex_cor) {
     $response = executeCurlRequest($ch);
     $decoded = json_decode($response, true);
 
-    if (!isset($decoded['id_cor'])) {
-        throw new Exception("Erro ao inserir produto na API: " . ($decoded['message'] ?? 'Erro desconhecido'));
+    if (!$decoded || (isset($decoded['success']) && !$decoded['success'])) {
+        throw new Exception("Erro ao atualizar dimensão na API: " . ($decoded['message'] ?? 'Erro desconhecido'));
     }
 
-    return $decoded;
+    return $response;
 }

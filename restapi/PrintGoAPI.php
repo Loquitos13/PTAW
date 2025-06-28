@@ -83,11 +83,31 @@ $router->add('DELETE', '/deleteUserByID/$id', fn($id) => $controller->deleteUser
 
 $router->add('GET', '/getOrders', fn() => $controller->getOrders());
 
+$router->add('GET', '/getOrderItems/$id', fn($id) => $controller->getOrderItems($id));
+
+$router->add('GET', '/getUserOrders/$id', fn($id) => $controller->getUserOrders($id));
+
 $router->add('POST', '/insertProduct', fn() => $controller->insertProduct());
 
-$router->add('POST', '/insertColor', fn() => $controller->insertColors());
+$router->add('POST', '/insertColor', fn() => $controller->insertColor());
+
+$router->add('POST', '/insertDimension', fn() => $controller->insertDimension());
+
+$router->add('POST', '/insertProductVariant', fn() => $controller->insertProductVariant());
+
+$router->add('POST', '/updateDimensions', fn() => $controller->updateDimensions());
+
+$router->add('POST', '/updateProductVariant', fn() => $controller->updateProductVariant());
 
 $router->add('GET', '/colors', fn() => $controller->getColors());
+
+$router->add('GET', '/dimensions', fn() => $controller->getDimensions());
+
+$router->add('GET', '/getColorsByProduct/$id', fn($id) => $controller->getColorsByProduct($id));
+
+$router->add('GET', '/getDimensionsByProduct/$id', fn($id) => $controller->getDimensionsByProduct($id));
+
+$router->add('GET', '/productVariants', fn() => $controller->getProductVariants());
 
 $router->add('GET', '/feedbacks', fn() => $controller->getFeedbacks());
 
