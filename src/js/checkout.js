@@ -102,10 +102,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         step.insignia.classList.add('active');
         step.barraProgresso.classList.add('active');
         step.barraNomes.classList.add('active');
-		
+
         step.buttons.style.display = 'flex';
     }
-    
+
     steps.forEach((step, index) => {
         if (step.nextButton) {
             step.nextButton.addEventListener('click', function (e) {
@@ -369,30 +369,30 @@ function getSelectedDeliveryOption() {
 
 function getDate() {
 
-  const now = new Date();
+    const now = new Date();
 
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const hour = String(now.getHours()).padStart(2, '0');
-  const minute = String(now.getMinutes()).padStart(2, '0');
-  const second = String(now.getSeconds()).padStart(2, '0');
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hour = String(now.getHours()).padStart(2, '0');
+    const minute = String(now.getMinutes()).padStart(2, '0');
+    const second = String(now.getSeconds()).padStart(2, '0');
 
-  const formatted = `${year}-${month}-${day}-${hour}-${minute}-${second}`;
+    const formatted = `${year}-${month}-${day}-${hour}-${minute}-${second}`;
 
-  return formatted;
+    return formatted;
 
 }
 
 async function createOrder() {
 
-        const orderValues = {
-            id_carrinho: cartId,
-            preco_total_encomenda: parseFloat(document.getElementById('total').textContent.replace('€', '')),
-            fatura: 'FAT-' + getDate(),
-            status_encomenda: 'Pendente',
-            notas_encomenda: document.getElementById('userNotes').value,
-        }
+    const orderValues = {
+        id_carrinho: cartId,
+        preco_total_encomenda: parseFloat(document.getElementById('total').textContent.replace('€', '')),
+        fatura: 'FAT-' + getDate(),
+        status_encomenda: 'Pendente',
+        notas_encomenda: document.getElementById('userNotes').value,
+    }
 
     try {
 
@@ -412,12 +412,12 @@ async function createOrder() {
 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id_carrinho : cartId})
+                body: JSON.stringify({ id_carrinho: cartId })
 
             });
 
             const cartItensData = await cartItensResp.json();
-            
+
             if (cartItensData.status === 'success') {
 
                 cartItensData.message.forEach(async (item, index) => {
@@ -450,7 +450,7 @@ async function createOrder() {
 
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({id_carrinho : cartId})
+                            body: JSON.stringify({ id_carrinho: cartId })
 
                         });
 
@@ -459,12 +459,12 @@ async function createOrder() {
                     }
                 });
 
-                
+
                 const checkPaymentCardResp = await fetch('../client/checkPaymentCard.php', {
 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({numero_cartao : document.getElementById('cardNumber').value})
+                    body: JSON.stringify({ numero_cartao: document.getElementById('cardNumber').value })
 
                 });
 
@@ -552,3 +552,17 @@ async function createOrder() {
     }
 
 }
+document.getElementById("payment-button").addEventListener("click", function () {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth" // efeito suave
+    });
+});
+
+document.getElementById("review-button").addEventListener("click", function () {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth" // efeito suave
+    });
+});
+

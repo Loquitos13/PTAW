@@ -170,14 +170,6 @@ $cartId = $_SESSION['user_cart_id'];
                     Continue to Payment <i class="bi bi-arrow-right"></i>
                 </button>
             </div>
-            <script>
-                document.getElementById("payment-button").addEventListener("click", function () {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: "smooth" // efeito suave
-                    });
-                });
-            </script>
             <div class="space"></div>
             <div class="Insignia" id="payment-insignia">
             <span class="badge rounded-pill text-bg-primary bg-blueviolet First">1</span>
@@ -299,14 +291,7 @@ $cartId = $_SESSION['user_cart_id'];
                 <span>Payment</span>
                 <span>Confirm</span>
             </div>
-               <script>
-     document.getElementById("review-button").addEventListener("click", function () {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: "smooth" // efeito suave
-                    });
-                });
-            </script>
+           
             <div class="container-shipping">
                 <div class="container-details">
                     <h1>Order Review</h1>
