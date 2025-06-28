@@ -553,11 +553,8 @@ async function createOrder() {
 
 }
 document.getElementById("payment-button").addEventListener("click", function () {
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth" // efeito suave
+   window.scroll(0,0);
     });
-});
 
 document.getElementById("review-button").addEventListener("click", function () {
     window.scrollTo({
