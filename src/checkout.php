@@ -299,6 +299,14 @@ $cartId = $_SESSION['user_cart_id'];
                 <span>Payment</span>
                 <span>Confirm</span>
             </div>
+               <script>
+     document.getElementById("review-button").addEventListener("click", function () {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth" // efeito suave
+                    });
+                });
+            </script>
             <div class="container-shipping">
                 <div class="container-details">
                     <h1>Order Review</h1>
