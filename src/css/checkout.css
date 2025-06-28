@@ -6,9 +6,7 @@ body {
 }
 
 .main-container {
-      width: 100%;/* ELIMIANR SE DER MERDA*/
-     max-width: 100px;/*ELIMIANR SE DER MERDA */
-    margin: 5vh auto 5vh auto;/*PASSAR DE AUTO PARA 10 VW */
+    margin: 5vh 10vw 5vh 10vw;/*PASSAR DE AUTO PARA 10 VW */
 }
 
 .container-delivery,
