@@ -56,7 +56,7 @@ try {
 
             $model3dDir = __DIR__ . '/../public/modelos3D/';
             $model3dName = uniqid() . '_' . basename($_FILES['modelo3d_produto']['name']);
-            $model3dFile = $model3dDir . $model3dName;
+            $model3dFile = __DIR__ . '/../public/modelos3D/' . $model3dName;
 
             if (!is_uploaded_file($_FILES['modelo3d_produto']['tmp_name'])) {
                 throw new Exception("Ficheiro temporário do modelo 3D não existe ou upload falhou.");
