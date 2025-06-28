@@ -820,7 +820,7 @@ async function inserirProdutoCompleto() {
 
         const payload = {
             dimensao_tipo: dim.dimensao_tipo,
-            tamanho: dim.tamanho,
+            tamanho: dim.tamanho.replace(' ', /%20/g),
             id_produto: id_produto
         };
 
