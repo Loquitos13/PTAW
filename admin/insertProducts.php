@@ -43,9 +43,13 @@ try {
         }
 
         $uploadDir = __DIR__ . '/../imagens/img_product/';
-        $fileName = $idProduto . '_' . basename($_FILES['imagem_principal']['name']);
+        $fileName = basename($_FILES['imagem_principal']['name']);
         $uploadFile = $uploadDir . $fileName;
 
+        if (move_uploaded_file($_FILES['imagem_principal']['tmp_name'], $uploadFile)) {
+             global $base_url;
+            $fullImageUrl = $base_url . '/imagens/img_product/' . $fileName;
+        }
         if (!move_uploaded_file($_FILES['imagem_principal']['tmp_name'], $uploadFile)) {
             throw new Exception("Erro ao guardar a imagem.");
         }
@@ -55,7 +59,7 @@ try {
         if (isset($_FILES['modelo3d_produto']) && $_FILES['modelo3d_produto']['error'] === UPLOAD_ERR_OK) {
 
             $model3dDir = __DIR__ . '/../public/modelos3D/';
-            $model3dName = uniqid() . '_' . basename($_FILES['modelo3d_produto']['name']);
+            $model3dName = basename($_FILES['modelo3d_produto']['name']);
             $model3dFile = __DIR__ . '/../public/modelos3D/' . $model3dName;
 
             if (!is_uploaded_file($_FILES['modelo3d_produto']['tmp_name'])) {
@@ -74,13 +78,10 @@ try {
         }
 
         $data = $_POST;
-        $data['imagem_principal'] = $fileName;
+        $data['imagem_principal'] = $fullImageUrl;
         if ($model3dName) {
-            $data['modelo3d_produto'] = $model3dFile;
+            $data['modelo3d_produto'] = $base_url . '/public/modelos3D/' . $model3dName;
         }
-
-        $data['status_produto'] = in_array($data['status_produto'], ['active', 'inactive', '1', '0']) ? 
-        $data['status_produto'] : 'active';
 
         $result = addProduct($data);
 
