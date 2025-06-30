@@ -197,16 +197,19 @@ hr {
 .Insignia.active {
     display: flex;
     gap: 10px;
+     padding: 0 5vw;
 }
 
 .BarraProgresso.active {
     display: flex;
     justify-content: space-between;
+     padding: 0 5vw;
 }
 
 .BarraNomes.active {
     display: flex;
     justify-content: space-between;
+     padding: 0 5vw;
 }
 
 .product-image {
