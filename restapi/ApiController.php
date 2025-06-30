@@ -171,13 +171,12 @@ class ApiController
     }
 
     public function getProducts(): array
-    {
-
+    {   
         return $this->queryBuilder->table('Produtos')
             ->select(['*'])
+            ->where('status_produto', '=', 1)
             ->order('id_produto', 'DESC')
             ->get();
-
     }
 
     public function getColors(): array
@@ -1451,28 +1450,24 @@ public function insertProductVariant(): array
 
     public function deleteProductByID($productID): array
     {
-
         try {
-
             $this->queryBuilder->table('Produtos')
-                ->delete()
+                ->update(['status_produto' => 0])
                 ->where('id_produto', '=', $productID)
                 ->execute();
 
-            return ['success' => 'Product deleted'];
+            return ['success' => 'Produto deactivated successfully'];
 
         } catch (PDOException $e) {
-
             error_log("Database error: " . $e->getMessage());
 
             return [
-                'error' => 'Error deleting the product',
+                'error' => 'Error deactivating product',
                 'message' => 'Database error: ' . $e->getMessage()
             ];
-
         }
-
     }
+    
     public function getCarrinhoItens($userID): array
     {
         return $this->queryBuilder->table('CarrinhoItens')

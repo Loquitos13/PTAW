@@ -310,7 +310,7 @@ function setupDeleteProductEvent() {
         await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
         const modal = bootstrap.Modal.getInstance(document.getElementById('deleteProductModal'));
         if (modal) modal.hide();
-        alert('Produto eliminado com sucesso!');
+        alert('Product deactivated successfully');
     });
 }
 
@@ -871,7 +871,7 @@ async function inserirProdutoCompleto() {
         }
     }
 
-    alert("Produto, dimensões, cores e variantes inseridos com sucesso!");
+    alert("Product inserted successfully!");
     await carregarProdutosAdmin();
     await fetchAndDisplayProducts(currentCategoryFilter, currentStatusFilter);
 
